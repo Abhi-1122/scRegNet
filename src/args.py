@@ -79,11 +79,30 @@ def parse_args():
     parser.add_argument("--type", type=str, default="MLP") # score metric
     parser.add_argument("--mlp_dim_hidden", type=int, default=64) 
     parser.add_argument("--mlp_num_layers", type=int, default=2)
+    
+    # Hidden dimensions for each layer (for manual training without Optuna)
+    parser.add_argument("--gnn_hidden_dims", type=int, nargs='+', default=None,
+                       help="Hidden dimensions for each GNN layer")
+    parser.add_argument("--mlp_hidden_dims", type=int, nargs='+', default=None,
+                       help="Hidden dimensions for each MLP layer")
 
     #params for GAT
     parser.add_argument("--reduction", type=str, default="concate")
     parser.add_argument("--num_heads", type=int, default=3)
     parser.add_argument("--alpha", type=int, default=0.2)
+
+    # Cross-Modal Attention parameters
+    parser.add_argument("--use_cross_attention", action="store_true", default=False,
+                       help="Use cross-modal attention instead of concatenation")
+    parser.add_argument("--cross_attention_layers", type=int, default=2,
+                       help="Number of cross-attention layers")
+    parser.add_argument("--cross_attention_heads", type=int, default=4,
+                       help="Number of attention heads")
+    parser.add_argument("--cross_attention_hidden_dim", type=int, default=256,
+                       help="Hidden dimension for cross-attention")
+    parser.add_argument("--cross_attention_fusion_mode", type=str, default="concat",
+                       choices=["concat", "add", "gated"],
+                       help="How to fuse scFM and GNN embeddings after attention")
 
     args = parser.parse_args()
     return args

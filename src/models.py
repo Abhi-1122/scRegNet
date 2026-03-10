@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, SAGEConv
+from cross_modal_attention import IterativeCrossModalFusion
 
 
 class AttentionLayer(nn.Module):
@@ -72,14 +73,37 @@ class scTransNet_GCN(nn.Module):
             self.convs.append(GCNConv(input_dim, hidden_dim))
             input_dim = hidden_dim
         
+        # Store GNN output dimension
+        self.gnn_output_dim = input_dim
+        
+        # Cross-Modal Attention Fusion
+        self.use_cross_attention = getattr(self.args, 'use_cross_attention', False)
+        
+        if self.use_cross_attention:
+            # Create cross-modal attention fusion module
+            self.cross_modal_fusion = IterativeCrossModalFusion(
+                scfm_dim=gene_dim,
+                gnn_dim=self.gnn_output_dim,
+                hidden_dim=getattr(self.args, 'cross_attention_hidden_dim', 256),
+                num_layers=getattr(self.args, 'cross_attention_layers', 2),
+                num_heads=getattr(self.args, 'cross_attention_heads', 4),
+                dropout=self.args.dropout,
+                fusion_mode=getattr(self.args, 'cross_attention_fusion_mode', 'concat')
+            )
+            fused_dim = self.cross_modal_fusion.get_output_dim()
+        else:
+            # Original concatenation
+            fused_dim = gene_dim + self.gnn_output_dim
+        
+        # MLP layers for TF and Target embeddings
         self.layers = torch.nn.ModuleList()
         for i in range(self.args.mlp_num_layers):
             hidden_dim_mlp = self.args.mlp_hidden_dims[i]
 
             if i==0:
-                self.layers.append(nn.Linear(input_dim+gene_dim,hidden_dim_mlp))
+                self.layers.append(nn.Linear(fused_dim, hidden_dim_mlp))
             else:
-                self.layers.append(nn.Linear(input_dim,hidden_dim_mlp))
+                self.layers.append(nn.Linear(input_dim, hidden_dim_mlp))
             
             input_dim = hidden_dim_mlp
 
@@ -120,8 +144,17 @@ class scTransNet_GCN(nn.Module):
             raise TypeError(r'{} is not available'.format(self.type))
         
     def forward(self, x, adj, train_sample, llm_emb):
-        embed = self.encode(x,adj)
-        embed = torch.cat((llm_emb, embed), dim=1)
+        # GNN encoding
+        embed = self.encode(x, adj)
+        
+        # Cross-Modal Fusion: Replace simple concatenation with attention-based fusion
+        if self.use_cross_attention:
+            # Deep cross-modal attention fusion
+            embed = self.cross_modal_fusion(llm_emb, embed)
+        else:
+            # Original simple concatenation
+            embed = torch.cat((llm_emb, embed), dim=1)
+        
         tf_embed = target_embed = embed
 
         for i, layer in enumerate(self.layers):

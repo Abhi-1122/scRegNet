@@ -14,11 +14,14 @@ from src.utils import set_logging, set_seed
 from src.args import save_args, parse_args
 import warnings
 
-from optuna.exceptions import ExperimentalWarning
+try:
+    from optuna.exceptions import ExperimentalWarning
+    warnings.filterwarnings("ignore", category=ExperimentalWarning, module="optuna.multi_objective")
+except ImportError:
+    pass
 
 logger = logging.getLogger(__name__)
 
-warnings.filterwarnings("ignore", category=ExperimentalWarning, module="optuna.multi_objective")
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
@@ -29,7 +32,10 @@ class Trainer:
 
     @property
     def device(self):
-        return torch.device(self.args.single_gpu if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            gpu_id = self.args.single_gpu if self.args.single_gpu < torch.cuda.device_count() else 0
+            return torch.device(f"cuda:{gpu_id}")
+        return torch.device("cpu")
     
     def _get_embeddings(self, gene_num, data_input):
         if self.args.llm_type == "Geneformer":
@@ -215,7 +221,7 @@ def main():
 
     trainer = Trainer(args)
     AUROC, AUPRC = trainer.train()
-    logger.info(AUROC, AUPRC)
+    logger.info(f"Final Results - AUROC: {AUROC}, AUPRC: {AUPRC}")
 
     del trainer
     torch.cuda.empty_cache()

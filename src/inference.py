@@ -54,7 +54,10 @@ class Infer:
     
     @property
     def device(self):
-        return torch.device(self.args.single_gpu if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            gpu_id = self.args.single_gpu if self.args.single_gpu < torch.cuda.device_count() else 0
+            return torch.device(f"cuda:{gpu_id}")
+        return torch.device("cpu")
     
     def _get_embeddings(self, gene_num, data_input):
         if self.args.llm_type == "Geneformer":
@@ -169,7 +172,10 @@ class Infer:
         train_data, test_data, adj, data_feature1, data_feature2 = self._prepare_data()
         self.model = self.get_model()
         model_path = os.path.join(self.args.output_dir, f"best/ckpt/model.pt")
-        self.model.load_state_dict(torch.load(model_path)) 
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        self.model.load_state_dict(
+            torch.load(model_path, map_location=device, weights_only=False)
+        )
         self.model.eval()
 
         results_train = []
@@ -209,7 +215,7 @@ def main(best_dir):
     return results_train, results_test
 
 if __name__ == "__main__":
-    best_dir = './out/GCN/Geneformer/tf_500_hESC/best/'
+    best_dir = './out/GCN/Geneformer/tf_500_hESC_cross_attention/best/'
     _, results_test = main(best_dir)
 
     metric_keys = results_test[0].keys()
