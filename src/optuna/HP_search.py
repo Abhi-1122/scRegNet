@@ -11,12 +11,21 @@ import torch
 import torch.distributed as dist
 from optuna.exceptions import ExperimentalWarning
 from optuna.trial import TrialState
-from optuna_dashboard import run_server
+
+try:
+    from optuna_dashboard import run_server
+except ImportError:
+    run_server = None
+
+try:
+    from optuna.integration.wandb import WeightsAndBiasesCallback
+    _USE_WANDB = True
+except ImportError:
+    _USE_WANDB = False
 
 from ..args import parse_args
 from ..train import Trainer
 from ..utils import set_seed
-from optuna.integration.wandb import WeightsAndBiasesCallback
 
 logger = logging.getLogger(__name__)
 # optuna.logging.set_verbosity(optuna.logging.ERROR)
@@ -103,7 +112,12 @@ class Single_HP_search(HP_search):
         set_seed(random_seed=args.random_seed)
 
         wandb_kwargs = {"project": "optuna-wandb"}
-        wandbc = WeightsAndBiasesCallback(metric_name="AUROC", wandb_kwargs=wandb_kwargs)
+
+        if _USE_WANDB:
+            wandbc = WeightsAndBiasesCallback(metric_name="AUROC", wandb_kwargs=wandb_kwargs)
+            callbacks = [partial(save_best_trial, output_dir=args.output_dir), wandbc]
+        else:
+            callbacks = [partial(save_best_trial, output_dir=args.output_dir)]
 
         study = optuna.create_study(
             direction="maximize",
@@ -113,7 +127,7 @@ class Single_HP_search(HP_search):
             pruner=optuna.pruners.SuccessiveHalvingPruner(),
         )
         study.optimize(
-            self.objective, n_trials=n_trials, callbacks=[partial(save_best_trial, output_dir=args.output_dir), wandbc]
+            self.objective, n_trials=n_trials, callbacks=callbacks
         )
         assert study is not None
         pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])

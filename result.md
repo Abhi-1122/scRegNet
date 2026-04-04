@@ -1,0 +1,2 @@
+hESC, cross-modal attention, GCN, Geneformer - {'AUC': np.float64(0.8880371038730825), 'AUPR': np.float64(0.6256634105352816)}
+hESC, simple concat,  GCN, Geneformer - {'AUC': np.float64(0.8868084813546812), 'AUPR': np.float64(0.6194518538459475)}

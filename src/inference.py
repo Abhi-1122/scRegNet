@@ -6,11 +6,11 @@ import gc
 import logging
 import random
 import torch
-from args import load_args
-from utils import set_logging, store_results
+from src.args import load_args
+from src.utils import set_logging, store_results
 import warnings
-from models import scTransNet_GCN, scTransNet_SAGE, scTransNet_GAT
-from utils import scRNADataset, load_data, adj2saprse_tensor
+from src.models import scTransNet_GCN, scTransNet_SAGE, scTransNet_GAT
+from src.utils import scRNADataset, load_data, adj2saprse_tensor
 from sklearn.metrics import roc_auc_score, average_precision_score
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -215,7 +215,7 @@ def main(best_dir):
     return results_train, results_test
 
 if __name__ == "__main__":
-    best_dir = './out/GCN/Geneformer/tf_500_hESC_cross_attention/best/'
+    best_dir = './out/GCN/Geneformer/tf_500_hHEP/best/'
     _, results_test = main(best_dir)
 
     metric_keys = results_test[0].keys()

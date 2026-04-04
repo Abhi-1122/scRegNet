@@ -104,6 +104,19 @@ def parse_args():
                        choices=["concat", "add", "gated"],
                        help="How to fuse scFM and GNN embeddings after attention")
 
+    # ── Spatial extension (scRegNet-Spatial) ──────────────────────────────
+    parser.add_argument("--use_spatial", action="store_true", default=False,
+                        help="Enable scRegNet-Spatial: SpatialGNN + AttentionPool "
+                             "on the Visium spot graph before the gene-level GCN.")
+    parser.add_argument("--spatial_data_folder", type=str, default="./hHEP_spatial",
+                        help="Folder containing spatial_expression.csv, "
+                             "spatial_knn_graph.pt and gene_spot_mask.pt.")
+    parser.add_argument("--spatial_gnn_hidden", type=int, default=128,
+                        help="Hidden dim of the first SpatialGNN (GraphSAGE) layer.")
+    parser.add_argument("--spatial_gnn_out", type=int, default=128,
+                        help="Output dim of SpatialGNN; becomes the input dim for "
+                             "the downstream gene-level GCN.")
+
     args = parser.parse_args()
     return args
 

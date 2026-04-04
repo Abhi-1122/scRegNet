@@ -32,6 +32,38 @@ class GNN_HP_search(Single_HP_search):
 
         args.optimizer_name = trial.suggest_categorical("optimizer", ["Adam", "RMSprop", "SGD"])
         return args
+
+
+class Spatial_HP_search(Single_HP_search):
+    """Optuna search space for scRegNet-Spatial.
+    Tunes all GNN/MLP hyperparameters plus the SpatialGNN hidden/output dims."""
+    def setup_search_space(self, args, trial):
+        # Core GNN / MLP / training HPs (same range as GNN_HP_search)
+        args.gnn_lr           = trial.suggest_float("gnn_lr", 1e-5, 1e-2, log=True)
+        args.gnn_weight_decay = trial.suggest_float("gnn_weight_decay", 1e-7, 1e-4, log=True)
+        args.dropout          = trial.suggest_float("gnn_dropout", 0.1, 0.8)
+        args.gnn_num_layers   = trial.suggest_int("gnn_num_layers", 1, 4)
+        args.mlp_num_layers   = trial.suggest_int("mlp_num_layers", 1, 4)
+        args.batch_size       = trial.suggest_int("batch_size", 32, 256)
+
+        args.gnn_hidden_dims = [
+            trial.suggest_int(f"gnn_hidden_dim_l{i}", 4, 256)
+            for i in range(args.gnn_num_layers)
+        ]
+        args.mlp_hidden_dims = [
+            trial.suggest_int(f"mlp_hidden_dim_l{i}", 4, 256)
+            for i in range(args.mlp_num_layers)
+        ]
+
+        args.optimizer_name = trial.suggest_categorical("optimizer", ["Adam", "RMSprop", "SGD"])
+
+        # Spatial-specific HPs
+        args.spatial_gnn_hidden = trial.suggest_int("spatial_gnn_hidden", 32, 256)
+        args.spatial_gnn_out    = trial.suggest_int("spatial_gnn_out",    32, 256)
+
+        # Ensure spatial mode is on
+        args.use_spatial = True
+        return args
     
     
 class GAT_HP_search(Single_HP_search):

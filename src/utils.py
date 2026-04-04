@@ -100,10 +100,11 @@ class load_data():
 
 
 def adj2saprse_tensor(adj):
-    coo = adj.tocoo()
-    i = torch.LongTensor([coo.row, coo.col])
+    csr = adj.tocsr()
+    coo = csr.tocoo()
+    i = torch.from_numpy(np.stack([coo.row, coo.col], axis=0).astype(np.int64))
     v = torch.from_numpy(coo.data).float()
-    adj_sp_tensor = torch.sparse_coo_tensor(i, v, coo.shape)
+    adj_sp_tensor = torch.sparse_coo_tensor(i, v, coo.shape).to_sparse_csr()
     return adj_sp_tensor
 
 

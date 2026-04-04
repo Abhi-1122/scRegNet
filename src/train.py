@@ -8,7 +8,7 @@ from torch.nn import functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from src.models import scTransNet_GCN, scTransNet_SAGE, scTransNet_GAT
+from src.models import scTransNet_GCN, scTransNet_SAGE, scTransNet_GAT, scRegNet_Spatial
 from src.utils import scRNADataset, load_data, adj2saprse_tensor, Evaluation
 from src.utils import set_logging, set_seed
 from src.args import save_args, parse_args
@@ -105,7 +105,9 @@ class Trainer:
         gene_num = feature2.shape[0]
         feature1 = self._get_embeddings(gene_num, data_input)
         self.input_dim = feature2.size()[1]
-        self.gene_dim = feature1.size()[1]
+        self.gene_dim  = feature1.size()[1]
+        self.num_genes = gene_num
+        self.scrna_gene_list = list(data_input.index)  # ordered gene names from scRNA data
 
         data_feature2 = feature2.to(self.device)
         
@@ -125,8 +127,63 @@ class Trainer:
         return train_load, test_data, adj, data_feature1, data_feature2
 
 
+    def _prepare_spatial_data(self, scrna_gene_list):
+        """
+        Load the three spatial artefacts produced by hHEP_spatial/:
+          spatial_expression.csv  – genes × spots expression (replaces BL-ExpressionData)
+          spatial_knn_graph.pt    – PyG edge_index + edge_weights for spot kNN graph
+          gene_spot_mask.pt       – per-gene list of expressing spot indices
+
+        The spatial expression matrix is reindexed to match *scrna_gene_list* so
+        that num_genes, the adjacency matrix, and the SpatialGNN input all agree.
+        Genes present in scRNA but absent from spatial are zero-filled.
+
+        Returns:
+            data_feature2_spatial : (num_genes, num_spots) float tensor on device
+            spatial_edge_index    : (2, E) long tensor on device
+            spatial_edge_weight   : (E,)  float tensor on device
+            gene_spot_mask        : list[num_genes] of long tensors on device
+        """
+        import os
+        import pandas as pd
+        sdir = self.args.spatial_data_folder
+
+        # Expression matrix (genes × spots) – align to scRNA gene ordering
+        expr = pd.read_csv(os.path.join(sdir, "spatial_expression.csv"), index_col=0)
+        # Reindex rows to match scRNA gene list; missing genes become NaN → 0
+        expr = expr.reindex(scrna_gene_list).fillna(0.0)
+        from src.utils import load_data
+        loader = load_data(expr)
+        feat = loader.exp_data()                                         # (num_scrna_genes, num_spots)
+        data_feature2_spatial = torch.from_numpy(feat).to(self.device)
+
+        # Spatial kNN graph
+        knn = torch.load(os.path.join(sdir, "spatial_knn_graph.pt"))
+        spatial_edge_index  = knn["edge_index" ].to(self.device)
+        spatial_edge_weight = knn["edge_weights"].to(self.device)
+
+        # Gene–spot expression mask – reindex to scRNA gene ordering
+        mask_dict      = torch.load(os.path.join(sdir, "gene_spot_mask.pt"))
+        spatial_gene_order = mask_dict["gene_order"]          # 933-gene list
+        spatial_mask_by_name = dict(zip(spatial_gene_order, mask_dict["gene_spot_mask"]))
+        empty = torch.tensor([], dtype=torch.long)
+        gene_spot_mask = [
+            spatial_mask_by_name.get(g, empty).to(self.device)
+            for g in scrna_gene_list                           # 948-gene scRNA ordering
+        ]
+
+        return data_feature2_spatial, spatial_edge_index, spatial_edge_weight, gene_spot_mask
+
     def get_model(self):
-        if self.args.gnn_type == "GCN":
+        if getattr(self.args, "use_spatial", False):
+            model = scRegNet_Spatial(
+                num_genes = self.num_genes,
+                num_spots = self.num_spots,
+                args      = self.args,
+                gene_dim  = self.gene_dim,
+                device    = self.device,
+            ).to(self.device)
+        elif self.args.gnn_type == "GCN":
             model = scTransNet_GCN(input_dim=self.input_dim,
                                    args=self.args,
                                    gene_dim=self.gene_dim,
@@ -151,6 +208,19 @@ class Trainer:
         max_AUC = 0
         accumulate_patience = 0
         train_load, test_data, adj, data_feature1, data_feature2 = self._prepare_data()
+
+        # ── Spatial branch: load extra artefacts ──────────────────────────
+        use_spatial = getattr(self.args, "use_spatial", False)
+        if use_spatial:
+            (
+                data_feature2,          # override: (num_genes, num_spots) spatial expr
+                spatial_edge_index,
+                spatial_edge_weight,
+                gene_spot_mask,
+            ) = self._prepare_spatial_data(self.scrna_gene_list)
+            self.num_spots = data_feature2.shape[1]
+        # ─────────────────────────────────────────────────────────────────
+
         self.model = self.get_model()
         optimizer = getattr(optim, self.args.optimizer_name)(self.model.parameters(), lr=self.args.gnn_lr, weight_decay=self.args.gnn_weight_decay)
 
@@ -165,7 +235,13 @@ class Trainer:
                 else:
                     train_y = train_y.to(self.device).view(-1, 1)
 
-                pred = self.model(data_feature2, adj, train_x, data_feature1)
+                if use_spatial:
+                    pred = self.model(
+                        data_feature2, adj, train_x, data_feature1,
+                        spatial_edge_index, spatial_edge_weight, gene_spot_mask,
+                    )
+                else:
+                    pred = self.model(data_feature2, adj, train_x, data_feature1)
 
                 if self.args.flag:
                     pred = torch.softmax(pred, dim=1)
@@ -180,7 +256,13 @@ class Trainer:
             
             if (epoch+1) % self.args.gnn_eval_interval == 0:
                 self.model.eval()
-                score = self.model(data_feature2, adj, test_data, data_feature1)
+                if use_spatial:
+                    score = self.model(
+                        data_feature2, adj, test_data, data_feature1,
+                        spatial_edge_index, spatial_edge_weight, gene_spot_mask,
+                    )
+                else:
+                    score = self.model(data_feature2, adj, test_data, data_feature1)
 
                 if self.args.flag:
                     score = torch.softmax(score, dim=1)

@@ -1,0 +1,30 @@
+# Core ML
+# Install PyTorch separately with the right CUDA version for your cluster, e.g.:
+#   pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu121
+torch==2.5.1
+torchvision==0.20.1
+
+# PyG – install wheels matching your torch+CUDA versions from:
+#   https://data.pyg.org/whl/
+torch-geometric==2.7.0
+
+# Data / ML
+numpy>=1.24,<2.3
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.3
+
+# Single-cell
+anndata>=0.10
+scanpy>=1.9
+squidpy>=1.4
+
+# Hyperparameter search
+optuna>=3.0
+optuna-dashboard
+optuna-integration[wandb]
+wandb
+
+# Utilities
+tqdm>=4.60
+colorlog>=6.0
