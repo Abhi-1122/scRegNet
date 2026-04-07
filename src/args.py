@@ -104,6 +104,19 @@ def parse_args():
                        choices=["concat", "add", "gated"],
                        help="How to fuse scFM and GNN embeddings after attention")
 
+    # hard negative mining (Norman perturbation DE)
+    parser.add_argument("--use_hard_negatives", action="store_true", default=False,
+                       help="Augment training with mined hard negatives from perturbation DE")
+    parser.add_argument("--hard_negative_file", type=str,
+                       default="./perturb_pretrain/perturb_triples/perturb_triples.csv",
+                       help="CSV file with columns TF,Gene,Log2FC,PVal_adj")
+    parser.add_argument("--hard_negative_log2fc_threshold", type=float, default=0.1,
+                       help="Absolute log2FC threshold for selecting non-responsive TF-Gene pairs")
+    parser.add_argument("--hard_negative_padj_threshold", type=float, default=0.5,
+                       help="Adjusted p-value threshold for selecting hard negatives")
+    parser.add_argument("--hard_negative_weight", type=float, default=2.0,
+                       help="Training loss weight for hard negative samples")
+
     args = parser.parse_args()
     return args
 

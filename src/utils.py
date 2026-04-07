@@ -32,11 +32,15 @@ class RankFilter(logging.Filter):
 
 
 class scRNADataset(Dataset):
-    def __init__(self,train_set,num_gene,flag=False):
+    def __init__(self,train_set,num_gene,flag=False,sample_weights=None):
         super(scRNADataset, self).__init__()
         self.train_set = train_set
         self.num_gene = num_gene
         self.flag = flag
+        if sample_weights is None:
+            self.sample_weights = np.ones(len(self.train_set), dtype=np.float32)
+        else:
+            self.sample_weights = np.asarray(sample_weights, dtype=np.float32)
 
     def __getitem__(self, idx):
         train_data = self.train_set[:,:2]
@@ -51,8 +55,9 @@ class scRNADataset(Dataset):
 
         data = train_data[idx].astype(np.int64)
         label = train_label[idx].astype(np.float32)
+        weight = self.sample_weights[idx].astype(np.float32)
 
-        return data, label
+        return data, label, weight
 
     def __len__(self):
         return len(self.train_set)

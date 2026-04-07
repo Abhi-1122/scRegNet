@@ -108,12 +108,16 @@ class Trainer:
         self.gene_dim = feature1.size()[1]
 
         data_feature2 = feature2.to(self.device)
+
+        sample_weights = np.ones(len(train_data), dtype=np.float32)
+        if self.args.use_hard_negatives:
+            train_data, sample_weights = self._augment_with_hard_negatives(data_input, train_data, sample_weights)
         
         if self.args.llm_type == "scBERT":
             feature1 = feature1[:-1]
         
         data_feature1 = feature1.to(self.device)
-        train_load = scRNADataset(train_data, gene_num, flag=self.args.flag)
+        train_load = scRNADataset(train_data, gene_num, flag=self.args.flag, sample_weights=sample_weights)
         adj = train_load.Adj_Generate(tf, loop=self.args.loop)
         adj = adj2saprse_tensor(adj)
         adj = adj.to(self.device)
@@ -123,6 +127,60 @@ class Trainer:
         test_data = test_data.to(self.device)
 
         return train_load, test_data, adj, data_feature1, data_feature2
+
+
+    def _augment_with_hard_negatives(self, data_input, train_data, sample_weights):
+        hard_negative_file = self.args.hard_negative_file
+        if not os.path.exists(hard_negative_file):
+            logger.warning(f"Hard-negative file not found: {hard_negative_file}. Skipping hard negatives.")
+            return train_data, sample_weights
+
+        norman_df = pd.read_csv(hard_negative_file)
+        required_cols = {"TF", "Gene", "Log2FC", "PVal_adj"}
+        if not required_cols.issubset(norman_df.columns):
+            logger.warning(
+                f"Hard-negative file missing required columns {required_cols}. Skipping hard negatives."
+            )
+            return train_data, sample_weights
+
+        hard_negatives = norman_df[
+            (norman_df["Log2FC"].abs() < self.args.hard_negative_log2fc_threshold)
+            & (norman_df["PVal_adj"] > self.args.hard_negative_padj_threshold)
+        ][["TF", "Gene"]]
+
+        gene_to_idx = {str(gene): idx for idx, gene in enumerate(data_input.index.astype(str))}
+        existing_pairs = {(int(row[0]), int(row[1])) for row in train_data}
+        positive_pairs = {(int(row[0]), int(row[1])) for row in train_data if int(row[-1]) == 1}
+
+        hard_rows = []
+        for tf_name, gene_name in hard_negatives.itertuples(index=False):
+            tf_idx = gene_to_idx.get(str(tf_name))
+            gene_idx = gene_to_idx.get(str(gene_name))
+            if tf_idx is None or gene_idx is None:
+                continue
+
+            pair = (tf_idx, gene_idx)
+            if pair in existing_pairs or pair in positive_pairs:
+                continue
+
+            hard_rows.append([tf_idx, gene_idx, 0])
+            existing_pairs.add(pair)
+
+        if len(hard_rows) == 0:
+            logger.info("No valid hard negatives were added after index overlap and deduplication.")
+            return train_data, sample_weights
+
+        hard_negative_array = np.asarray(hard_rows, dtype=train_data.dtype)
+        hard_negative_weights = np.full(len(hard_negative_array), self.args.hard_negative_weight, dtype=np.float32)
+
+        augmented_train = np.concatenate([train_data, hard_negative_array], axis=0)
+        augmented_weights = np.concatenate([sample_weights, hard_negative_weights], axis=0)
+
+        logger.info(
+            f"Added {len(hard_negative_array)} hard negatives from {hard_negative_file}. "
+            f"Total train edges: {len(augmented_train)}"
+        )
+        return augmented_train, augmented_weights
 
 
     def get_model(self):
@@ -156,7 +214,7 @@ class Trainer:
 
         for epoch in tqdm(range(self.args.gnn_epochs)):
             running_loss = 0.0
-            for train_x, train_y in DataLoader(train_load, batch_size=self.args.batch_size, shuffle=True):
+            for train_x, train_y, sample_weight in DataLoader(train_load, batch_size=self.args.batch_size, shuffle=True):
                 self.model.train()
                 optimizer.zero_grad()
 
@@ -172,7 +230,14 @@ class Trainer:
                 else:
                     pred = torch.sigmoid(pred)
 
-                loss_BCE = F.binary_cross_entropy(pred, train_y)
+                sample_weight = sample_weight.to(self.device)
+                per_elem_loss = F.binary_cross_entropy(pred, train_y, reduction="none")
+                if self.args.flag:
+                    per_sample_loss = per_elem_loss.mean(dim=1)
+                else:
+                    per_sample_loss = per_elem_loss.view(-1)
+
+                loss_BCE = (per_sample_loss * sample_weight).mean()
                 loss_BCE.backward()
                 optimizer.step()
 
