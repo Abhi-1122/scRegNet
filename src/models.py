@@ -2,7 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, SAGEConv
-from cross_modal_attention import IterativeCrossModalFusion
+try:
+    from src.cross_modal_attention import IterativeCrossModalFusion
+except ModuleNotFoundError:
+    from cross_modal_attention import IterativeCrossModalFusion
 
 
 class AttentionLayer(nn.Module):
@@ -110,6 +113,13 @@ class scTransNet_GCN(nn.Module):
         if self.args.type == 'MLP':
             self.linear = nn.Linear(2*input_dim, 2)
 
+        self.pair_embed_dim = 2 * input_dim
+        self.proj_head = nn.Sequential(
+            nn.Linear(self.pair_embed_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64),
+        )
+
         self.reset_parameters()
     
     def reset_parameters(self):
@@ -118,6 +128,10 @@ class scTransNet_GCN(nn.Module):
         
         for layer in self.layers:
             layer.reset_parameters()
+
+        for layer in self.proj_head:
+            if isinstance(layer, nn.Linear):
+                layer.reset_parameters()
         
     def encode(self,x,adj):
         for i, conv in enumerate(self.convs):
@@ -143,7 +157,7 @@ class scTransNet_GCN(nn.Module):
         else:
             raise TypeError(r'{} is not available'.format(self.type))
         
-    def forward(self, x, adj, train_sample, llm_emb):
+    def forward(self, x, adj, train_sample, llm_emb, return_embeddings=False):
         # GNN encoding
         embed = self.encode(x, adj)
         
@@ -176,8 +190,13 @@ class scTransNet_GCN(nn.Module):
 
         train_tf = tf_embed[train_sample[:,0]]
         train_target = target_embed[train_sample[:, 1]]
+        pair_embed = torch.cat([train_tf, train_target], dim=1)
 
         pred = self.decode(train_tf, train_target)
+
+        if return_embeddings:
+            z = F.normalize(self.proj_head(pair_embed), dim=-1)
+            return pred, z
 
         return pred
     
@@ -212,6 +231,13 @@ class scTransNet_SAGE(nn.Module):
         if self.args.type == 'MLP':
             self.linear = nn.Linear(2*input_dim, 2)
 
+        self.pair_embed_dim = 2 * input_dim
+        self.proj_head = nn.Sequential(
+            nn.Linear(self.pair_embed_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64),
+        )
+
         self.reset_parameters()
     
     def reset_parameters(self):
@@ -220,6 +246,10 @@ class scTransNet_SAGE(nn.Module):
         
         for layer in self.layers:
             layer.reset_parameters()
+
+        for layer in self.proj_head:
+            if isinstance(layer, nn.Linear):
+                layer.reset_parameters()
 
     def encode(self,x,adj):
         for i, conv in enumerate(self.convs):
@@ -245,7 +275,7 @@ class scTransNet_SAGE(nn.Module):
         else:
             raise TypeError(r'{} is not available'.format(self.type))
         
-    def forward(self, x, adj, train_sample, llm_emb):
+    def forward(self, x, adj, train_sample, llm_emb, return_embeddings=False):
         embed = self.encode(x,adj)
         embed = torch.cat((llm_emb, embed), dim=1)
         tf_embed = target_embed = embed
@@ -269,8 +299,13 @@ class scTransNet_SAGE(nn.Module):
 
         train_tf = tf_embed[train_sample[:,0]]
         train_target = target_embed[train_sample[:, 1]]
+        pair_embed = torch.cat([train_tf, train_target], dim=1)
 
         pred = self.decode(train_tf, train_target)
+
+        if return_embeddings:
+            z = F.normalize(self.proj_head(pair_embed), dim=-1)
+            return pred, z
 
         return pred
     
@@ -314,6 +349,13 @@ class scTransNet_GAT(nn.Module):
         if self.args.type == 'MLP':
             self.linear = nn.Linear(2*input_dim, 2)
 
+        self.pair_embed_dim = 2 * input_dim
+        self.proj_head = nn.Sequential(
+            nn.Linear(self.pair_embed_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64),
+        )
+
         self.reset_parameters()
     
     def reset_parameters(self):
@@ -323,6 +365,10 @@ class scTransNet_GAT(nn.Module):
         
         for layer in self.layers:
             layer.reset_parameters()
+
+        for layer in self.proj_head:
+            if isinstance(layer, nn.Linear):
+                layer.reset_parameters()
 
     def encode(self,x,adj):
         for i, conv in enumerate(self.convs):
@@ -353,7 +399,7 @@ class scTransNet_GAT(nn.Module):
         else:
             raise TypeError(r'{} is not available'.format(self.type))
         
-    def forward(self, x, adj, train_sample, llm_emb):
+    def forward(self, x, adj, train_sample, llm_emb, return_embeddings=False):
         embed = self.encode(x,adj)
         embed = torch.cat((llm_emb, embed), dim=1)
         tf_embed = target_embed = embed
@@ -377,8 +423,13 @@ class scTransNet_GAT(nn.Module):
 
         train_tf = tf_embed[train_sample[:,0]]
         train_target = target_embed[train_sample[:, 1]]
+        pair_embed = torch.cat([train_tf, train_target], dim=1)
 
         pred = self.decode(train_tf, train_target)
+
+        if return_embeddings:
+            z = F.normalize(self.proj_head(pair_embed), dim=-1)
+            return pred, z
 
         return pred
     

@@ -12,6 +12,7 @@ from src.models import scTransNet_GCN, scTransNet_SAGE, scTransNet_GAT
 from src.utils import scRNADataset, load_data, adj2saprse_tensor, Evaluation
 from src.utils import set_logging, set_seed
 from src.args import save_args, parse_args
+from src.supcon_loss import SupConLoss
 import warnings
 from src.load_pretrained_gcn import load_pretrained_gcn
 
@@ -24,6 +25,9 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 warnings.filterwarnings("ignore", category=FutureWarning)
+
+SUPCON_TEMPERATURE = 0.07
+LAMBDA = 0.1
 
 
 class Trainer: 
@@ -214,6 +218,7 @@ class Trainer:
         if getattr(self.args, "pretrained_gcn", False):
             load_pretrained_gcn(self.model, self.args.pretrained_gcn_ckpt, map_location=self.device)
         optimizer = getattr(optim, self.args.optimizer_name)(self.model.parameters(), lr=self.args.gnn_lr, weight_decay=self.args.gnn_weight_decay)
+        supcon_criterion = SupConLoss(temperature=SUPCON_TEMPERATURE).to(self.device)
 
         for epoch in tqdm(range(self.args.gnn_epochs)):
             running_loss = 0.0
@@ -226,12 +231,12 @@ class Trainer:
                 else:
                     train_y = train_y.to(self.device).view(-1, 1)
 
-                pred = self.model(data_feature2, adj, train_x, data_feature1)
+                logits, z = self.model(data_feature2, adj, train_x, data_feature1, return_embeddings=True)
 
                 if self.args.flag:
-                    pred = torch.softmax(pred, dim=1)
+                    pred = torch.softmax(logits, dim=1)
                 else:
-                    pred = torch.sigmoid(pred)
+                    pred = torch.sigmoid(logits)
 
                 sample_weight = sample_weight.to(self.device)
                 per_elem_loss = F.binary_cross_entropy(pred, train_y, reduction="none")
@@ -241,10 +246,18 @@ class Trainer:
                     per_sample_loss = per_elem_loss.view(-1)
 
                 loss_BCE = (per_sample_loss * sample_weight).mean()
-                loss_BCE.backward()
+
+                if self.args.flag:
+                    supcon_labels = train_y.argmax(dim=1).long()
+                else:
+                    supcon_labels = train_y.view(-1).long()
+
+                loss_con = supcon_criterion(z, supcon_labels)
+                loss = loss_BCE + LAMBDA * loss_con
+                loss.backward()
                 optimizer.step()
 
-                running_loss += loss_BCE.item()
+                running_loss += loss.item()
             
             if (epoch+1) % self.args.gnn_eval_interval == 0:
                 self.model.eval()
