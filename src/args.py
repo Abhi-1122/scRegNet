@@ -117,6 +117,13 @@ def parse_args():
     parser.add_argument("--hard_negative_weight", type=float, default=2.0,
                        help="Training loss weight for hard negative samples")
 
+    # pretrained GCN initialization
+    parser.add_argument("--pretrained_gcn", action="store_true", default=False,
+                       help="Initialize scRegNet GCN backbone from a pretrained checkpoint")
+    parser.add_argument("--pretrained_gcn_ckpt", type=str,
+                       default="./perturb_pretrain/checkpoints/pretrained_scregnet_gcn.pt",
+                       help="Path to pretrained GCN checkpoint")
+
     args = parser.parse_args()
     return args
 

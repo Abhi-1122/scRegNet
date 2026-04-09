@@ -5,6 +5,7 @@ import os
 import gc
 import logging
 import random
+import argparse
 import torch
 from args import load_args
 from utils import set_logging, store_results
@@ -12,6 +13,7 @@ import warnings
 from models import scTransNet_GCN, scTransNet_SAGE, scTransNet_GAT
 from utils import scRNADataset, load_data, adj2saprse_tensor
 from sklearn.metrics import roc_auc_score, average_precision_score
+from load_pretrained_gcn import load_pretrained_gcn, inspect_model_keys
 warnings.filterwarnings("ignore", category=UserWarning)
 
 logger = logging.getLogger(__name__)
@@ -171,11 +173,21 @@ class Infer:
     def infer(self):
         train_data, test_data, adj, data_feature1, data_feature2 = self._prepare_data()
         self.model = self.get_model()
+        if getattr(self.args, "pretrained_gcn", False):
+            inspect_model_keys(self.model)
+            load_pretrained_gcn(self.model, self.args.pretrained_gcn_ckpt, map_location=self.device)
+
         model_path = os.path.join(self.args.output_dir, f"best/ckpt/model.pt")
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        self.model.load_state_dict(
-            torch.load(model_path, map_location=device, weights_only=False)
-        )
+        if os.path.exists(model_path):
+            self.model.load_state_dict(
+                torch.load(model_path, map_location=device, weights_only=False)
+            )
+        elif not getattr(self.args, "pretrained_gcn", False):
+            raise FileNotFoundError(
+                f"Model checkpoint not found at {model_path}. "
+                "Either train first or pass --pretrained_gcn to initialize the GCN backbone."
+            )
         self.model.eval()
 
         results_train = []
@@ -215,8 +227,21 @@ def main(best_dir):
     return results_train, results_test
 
 if __name__ == "__main__":
-    best_dir = './out/GCN/Geneformer/tf_500_hESC/best/'
-    _, results_test = main(best_dir)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--best_dir", type=str, default='./out/GCN/Geneformer/tf_500_hESC/best/')
+    parser.add_argument("--pretrained_gcn", action="store_true", default=False)
+    parser.add_argument("--pretrained_gcn_ckpt", type=str,
+                        default="./perturb_pretrain/checkpoints/pretrained_scregnet_gcn.pt")
+    cli_args = parser.parse_args()
+
+    best_dir = cli_args.best_dir
+    set_logging()
+    args = load_args(os.path.join(best_dir, 'ckpt'))
+    args.pretrained_gcn = cli_args.pretrained_gcn
+    args.pretrained_gcn_ckpt = cli_args.pretrained_gcn_ckpt
+
+    infer = Infer(args)
+    _, results_test = infer.infer()
 
     metric_keys = results_test[0].keys()
     metrics = {key: np.array([result[key] for result in results_test]) for key in metric_keys}

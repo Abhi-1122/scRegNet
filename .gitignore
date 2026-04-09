@@ -32,3 +32,6 @@ wandb/
 *.npy
 *.csv
 optuna.db
+
+data/norman
+data/norman.zip

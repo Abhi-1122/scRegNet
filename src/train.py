@@ -13,6 +13,7 @@ from src.utils import scRNADataset, load_data, adj2saprse_tensor, Evaluation
 from src.utils import set_logging, set_seed
 from src.args import save_args, parse_args
 import warnings
+from src.load_pretrained_gcn import load_pretrained_gcn
 
 try:
     from optuna.exceptions import ExperimentalWarning
@@ -210,6 +211,8 @@ class Trainer:
         accumulate_patience = 0
         train_load, test_data, adj, data_feature1, data_feature2 = self._prepare_data()
         self.model = self.get_model()
+        if getattr(self.args, "pretrained_gcn", False):
+            load_pretrained_gcn(self.model, self.args.pretrained_gcn_ckpt, map_location=self.device)
         optimizer = getattr(optim, self.args.optimizer_name)(self.model.parameters(), lr=self.args.gnn_lr, weight_decay=self.args.gnn_weight_decay)
 
         for epoch in tqdm(range(self.args.gnn_epochs)):
