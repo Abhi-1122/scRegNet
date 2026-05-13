@@ -17,6 +17,30 @@ warnings.filterwarnings("ignore", category=UserWarning)
 logger = logging.getLogger(__name__)
 
 
+def _normalize_runtime_paths(args):
+    src_dir = os.path.dirname(os.path.abspath(__file__))
+
+    def _resolve(path_value):
+        if not isinstance(path_value, str) or path_value.strip() == "":
+            return path_value
+        if os.path.isabs(path_value):
+            return path_value
+        if os.path.exists(path_value):
+            return path_value
+
+        candidate_from_src = os.path.normpath(os.path.join(src_dir, path_value))
+        if os.path.exists(candidate_from_src):
+            return candidate_from_src
+
+        return path_value
+
+    for key in ["data_folder", "scFM_folder", "output_dir", "ckpt_dir", "ckpt_name", "hard_negative_file"]:
+        if hasattr(args, key):
+            setattr(args, key, _resolve(getattr(args, key)))
+
+    return args
+
+
 def set_seed(random_seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
@@ -242,6 +266,14 @@ def main(best_dir):
     set_logging()
     
     args = load_args(os.path.join(best_dir, 'ckpt'))
+    args = _normalize_runtime_paths(args)
+
+    runtime_output_dir = os.path.normpath(os.path.join(best_dir, '..'))
+    args.output_dir = runtime_output_dir
+    args.ckpt_dir = os.path.join(best_dir, 'ckpt')
+    if hasattr(args, 'ckpt_name') and isinstance(args.ckpt_name, str):
+        args.ckpt_name = os.path.join(args.ckpt_dir, os.path.basename(args.ckpt_name))
+
     logger.info(args)
 
     infer = Infer(args)
