@@ -1,2 +1,3 @@
 base hESC : {'AUC': np.float64(0.8868084813546812), 'AUPR': np.float64(0.6194518538459475)}
 cross attention: scFM as query: 0.8845752774242667 0.618982252139178
+cross attention: GNN as query: 0.8775430525480626 0.6090441156670963

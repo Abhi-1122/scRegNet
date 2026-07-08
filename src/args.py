@@ -101,6 +101,11 @@ def parse_args():
     parser.add_argument("--cross_attention_output_dim", type=int, default=None,
                     help="Optional: compress 896-dim fused output before MLP. "
                          "None = keep at scfm_dim (896).")
+    parser.add_argument("--cross_attention_query", type=str, default="scfm",
+                    choices=["scfm", "gnn"],
+                    help="Which modality is the Query in cross-attention. "
+                         "'scfm' = scFM queries GNN (scFM gets updated). "
+                         "'gnn' = GNN queries scFM (GNN gets updated). Ablation flag.")
 
     args = parser.parse_args()
     return args

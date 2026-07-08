@@ -7,6 +7,11 @@ try:
 except ImportError:
     from src.cross_modal_attention import AlignedCrossAttentionFusion
 
+try:
+    from cross_modal_attention import AlignedCrossAttentionFusion, AlignedCrossAttentionFusionGNNQuery
+except ImportError:
+    from src.cross_modal_attention import AlignedCrossAttentionFusion, AlignedCrossAttentionFusionGNNQuery
+
 
 class AttentionLayer(nn.Module):
     def __init__(self,input_dim,output_dim,alpha=0.2,bias=True):
@@ -82,16 +87,27 @@ class scTransNet_GCN(nn.Module):
         # Cross-Modal Attention Fusion
         self.use_cross_attention = getattr(self.args, 'use_cross_attention', False)
         if self.use_cross_attention:
-            self.cross_modal_fusion = AlignedCrossAttentionFusion(
-                scfm_dim=gene_dim,                                               # 896
-                gnn_dim=self.gnn_output_dim,                                     # 128
-                num_heads=getattr(self.args, 'cross_attention_heads', 8),
-                dropout=self.args.dropout,
-                output_dim=getattr(self.args, 'cross_attention_output_dim', None),  # None = stays 896
-            )
-            fused_dim = self.cross_modal_fusion.get_output_dim()  # 896
+            query_mode = getattr(self.args, 'cross_attention_query', 'scfm')  # 'scfm' or 'gnn'
+
+            if query_mode == 'gnn':
+                self.cross_modal_fusion = AlignedCrossAttentionFusionGNNQuery(
+                    scfm_dim=gene_dim,
+                    gnn_dim=self.gnn_output_dim,
+                    num_heads=getattr(self.args, 'cross_attention_heads', 8),
+                    dropout=self.args.dropout,
+                    output_dim=getattr(self.args, 'cross_attention_output_dim', None),
+                )
+            else:  # default: scfm-as-query
+                self.cross_modal_fusion = AlignedCrossAttentionFusion(
+                    scfm_dim=gene_dim,
+                    gnn_dim=self.gnn_output_dim,
+                    num_heads=getattr(self.args, 'cross_attention_heads', 8),
+                    dropout=self.args.dropout,
+                    output_dim=getattr(self.args, 'cross_attention_output_dim', None),
+                )
+            fused_dim = self.cross_modal_fusion.get_output_dim()
         else:
-            fused_dim = gene_dim + self.gnn_output_dim  # fallback concat = 1024
+            fused_dim = gene_dim + self.gnn_output_dim
         
         # MLP layers for TF and Target embeddings
         self.layers = torch.nn.ModuleList()
