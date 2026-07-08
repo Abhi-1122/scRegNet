@@ -1,4 +1,5 @@
 import argparse
+from email import parser
 import json
 import logging
 import os
@@ -93,16 +94,13 @@ def parse_args():
 
     # Cross-Modal Attention parameters
     parser.add_argument("--use_cross_attention", action="store_true", default=False,
-                       help="Use cross-modal attention instead of concatenation")
-    parser.add_argument("--cross_attention_layers", type=int, default=2,
-                       help="Number of cross-attention layers")
-    parser.add_argument("--cross_attention_heads", type=int, default=4,
-                       help="Number of attention heads")
-    parser.add_argument("--cross_attention_hidden_dim", type=int, default=256,
-                       help="Hidden dimension for cross-attention")
-    parser.add_argument("--cross_attention_fusion_mode", type=str, default="concat",
-                       choices=["concat", "add", "gated"],
-                       help="How to fuse scFM and GNN embeddings after attention")
+                    help="Use aligned cross-modal attention instead of concatenation")
+    parser.add_argument("--cross_attention_heads", type=int, default=8,
+                    help="Attention heads (scfm_dim=896 must be divisible). "
+                         "Valid: 1,2,4,7,8,14,16,...")
+    parser.add_argument("--cross_attention_output_dim", type=int, default=None,
+                    help="Optional: compress 896-dim fused output before MLP. "
+                         "None = keep at scfm_dim (896).")
 
     args = parser.parse_args()
     return args

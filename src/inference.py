@@ -215,7 +215,7 @@ def main(best_dir):
     return results_train, results_test
 
 if __name__ == "__main__":
-    best_dir = './out/GCN/Geneformer/tf_500_hESC_cross_attention/best/'
+    best_dir = './out/GCN/Geneformer/tf_500_hESC/best/'
     _, results_test = main(best_dir)
 
     metric_keys = results_test[0].keys()

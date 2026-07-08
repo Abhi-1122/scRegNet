@@ -2,7 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, SAGEConv
-from cross_modal_attention import IterativeCrossModalFusion
+try:
+    from cross_modal_attention import AlignedCrossAttentionFusion
+except ImportError:
+    from src.cross_modal_attention import AlignedCrossAttentionFusion
 
 
 class AttentionLayer(nn.Module):
@@ -78,22 +81,17 @@ class scTransNet_GCN(nn.Module):
         
         # Cross-Modal Attention Fusion
         self.use_cross_attention = getattr(self.args, 'use_cross_attention', False)
-        
         if self.use_cross_attention:
-            # Create cross-modal attention fusion module
-            self.cross_modal_fusion = IterativeCrossModalFusion(
-                scfm_dim=gene_dim,
-                gnn_dim=self.gnn_output_dim,
-                hidden_dim=getattr(self.args, 'cross_attention_hidden_dim', 256),
-                num_layers=getattr(self.args, 'cross_attention_layers', 2),
-                num_heads=getattr(self.args, 'cross_attention_heads', 4),
+            self.cross_modal_fusion = AlignedCrossAttentionFusion(
+                scfm_dim=gene_dim,                                               # 896
+                gnn_dim=self.gnn_output_dim,                                     # 128
+                num_heads=getattr(self.args, 'cross_attention_heads', 8),
                 dropout=self.args.dropout,
-                fusion_mode=getattr(self.args, 'cross_attention_fusion_mode', 'concat')
+                output_dim=getattr(self.args, 'cross_attention_output_dim', None),  # None = stays 896
             )
-            fused_dim = self.cross_modal_fusion.get_output_dim()
+            fused_dim = self.cross_modal_fusion.get_output_dim()  # 896
         else:
-            # Original concatenation
-            fused_dim = gene_dim + self.gnn_output_dim
+            fused_dim = gene_dim + self.gnn_output_dim  # fallback concat = 1024
         
         # MLP layers for TF and Target embeddings
         self.layers = torch.nn.ModuleList()
