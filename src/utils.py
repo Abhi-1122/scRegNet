@@ -3,6 +3,7 @@ from torch.utils.data import Dataset
 from sklearn.preprocessing import StandardScaler
 import scipy.sparse as sp
 import numpy as np
+import pandas as pd
 from sklearn.metrics import roc_auc_score,average_precision_score
 import logging
 import colorlog
@@ -97,6 +98,22 @@ class load_data():
             data_feature = self.data_normalize(data_feature)
         data_feature = data_feature.astype(np.float32)
         return data_feature
+
+
+def build_ppi_adjacency(ppi_edges_csv, gene_to_idx, num_gene, loop=False):
+    edges = pd.read_csv(ppi_edges_csv)
+    adj = sp.dok_matrix((num_gene, num_gene), dtype=np.float32)
+    for gene1, gene2 in zip(edges['Gene1'], edges['Gene2']):
+        if gene1 not in gene_to_idx or gene2 not in gene_to_idx:
+            continue
+        i, j = gene_to_idx[gene1], gene_to_idx[gene2]
+        adj[i, j] = 1.0
+        adj[j, i] = 1.0
+
+    if loop:
+        adj = adj + sp.identity(num_gene)
+
+    return adj.todok()
 
 
 def adj2saprse_tensor(adj):

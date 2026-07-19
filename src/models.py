@@ -12,6 +12,11 @@ try:
 except ImportError:
     from src.cross_modal_attention import AlignedCrossAttentionFusion, AlignedCrossAttentionFusionGNNQuery
 
+try:
+    from graph_fusion import GraphFusion
+except ImportError:
+    from src.graph_fusion import GraphFusion
+
 
 class AttentionLayer(nn.Module):
     def __init__(self,input_dim,output_dim,alpha=0.2,bias=True):
@@ -74,16 +79,45 @@ class scTransNet_GCN(nn.Module):
         self.args = args
         self.device = device
 
+        original_input_dim = input_dim
         self.convs = torch.nn.ModuleList()
-        
+
         for i in range(self.args.gnn_num_layers):
             hidden_dim = self.args.gnn_hidden_dims[i]
             self.convs.append(GCNConv(input_dim, hidden_dim))
             input_dim = hidden_dim
-        
+
         # Store GNN output dimension
         self.gnn_output_dim = input_dim
-        
+
+        # PPI dual-encoder / multi-view (Method 1 / Method 2)
+        self.use_ppi = getattr(self.args, 'use_ppi', False)
+        self.multi_view = getattr(self.args, 'multi_view', False)
+        graph_output_dim = self.gnn_output_dim
+        if self.use_ppi:
+            self.convs_ppi = torch.nn.ModuleList()
+            ppi_in_dim = original_input_dim
+            for i in range(self.args.gnn_num_layers):
+                hidden_dim = self.args.gnn_hidden_dims[i]
+                self.convs_ppi.append(GCNConv(ppi_in_dim, hidden_dim))
+                ppi_in_dim = hidden_dim
+
+            self.graph_fusion = GraphFusion(
+                dim_a=self.gnn_output_dim,
+                dim_b=self.gnn_output_dim,
+                fusion_type=getattr(self.args, 'ppi_fusion_type', 'concat'),
+                num_heads=getattr(self.args, 'ppi_fusion_heads', 1),
+            )
+            graph_output_dim = self.graph_fusion.get_output_dim()
+
+            if self.multi_view:
+                self.view_gates_g2p = torch.nn.ModuleList()
+                self.view_gates_p2g = torch.nn.ModuleList()
+                for i in range(self.args.gnn_num_layers):
+                    hidden_dim = self.args.gnn_hidden_dims[i]
+                    self.view_gates_g2p.append(nn.Linear(hidden_dim, hidden_dim))
+                    self.view_gates_p2g.append(nn.Linear(hidden_dim, hidden_dim))
+
         # Cross-Modal Attention Fusion
         self.use_cross_attention = getattr(self.args, 'use_cross_attention', False)
         if self.use_cross_attention:
@@ -92,7 +126,7 @@ class scTransNet_GCN(nn.Module):
             if query_mode == 'gnn':
                 self.cross_modal_fusion = AlignedCrossAttentionFusionGNNQuery(
                     scfm_dim=gene_dim,
-                    gnn_dim=self.gnn_output_dim,
+                    gnn_dim=graph_output_dim,
                     num_heads=getattr(self.args, 'cross_attention_heads', 8),
                     dropout=self.args.dropout,
                     output_dim=getattr(self.args, 'cross_attention_output_dim', None),
@@ -100,15 +134,15 @@ class scTransNet_GCN(nn.Module):
             else:  # default: scfm-as-query
                 self.cross_modal_fusion = AlignedCrossAttentionFusion(
                     scfm_dim=gene_dim,
-                    gnn_dim=self.gnn_output_dim,
+                    gnn_dim=graph_output_dim,
                     num_heads=getattr(self.args, 'cross_attention_heads', 8),
                     dropout=self.args.dropout,
                     output_dim=getattr(self.args, 'cross_attention_output_dim', None),
                 )
             fused_dim = self.cross_modal_fusion.get_output_dim()
         else:
-            fused_dim = gene_dim + self.gnn_output_dim
-        
+            fused_dim = gene_dim + graph_output_dim
+
         # MLP layers for TF and Target embeddings
         self.layers = torch.nn.ModuleList()
         for i in range(self.args.mlp_num_layers):
@@ -129,19 +163,66 @@ class scTransNet_GCN(nn.Module):
     def reset_parameters(self):
         for conv in self.convs:
             conv.reset_parameters()
-        
+
+        if self.use_ppi:
+            for conv in self.convs_ppi:
+                conv.reset_parameters()
+            if self.multi_view:
+                for gate in self.view_gates_g2p:
+                    gate.reset_parameters()
+                for gate in self.view_gates_p2g:
+                    gate.reset_parameters()
+
         for layer in self.layers:
             layer.reset_parameters()
-        
+
     def encode(self,x,adj):
         for i, conv in enumerate(self.convs):
             x = conv(x,adj)
             if i < len(self.convs) - 1:
-                x = F.relu(x) 
+                x = F.relu(x)
                 p = self.args.dropout
                 x = F.dropout(x, p, training=self.training)
-        return x 
-        
+        return x
+
+    def encode_ppi(self, x, adj_ppi):
+        for i, conv in enumerate(self.convs_ppi):
+            x = conv(x, adj_ppi)
+            if i < len(self.convs_ppi) - 1:
+                x = F.relu(x)
+                p = self.args.dropout
+                x = F.dropout(x, p, training=self.training)
+        return x
+
+    def encode_multiview(self, x, adj, adj_ppi):
+        """Method 2: interleave GRN/PPI encoders layer-by-layer, letting the two
+        views exchange information at each layer instead of only at the end."""
+        x_grn, x_ppi = x, x
+        view_guidance = getattr(self.args, 'view_guidance', 'symmetric')
+        num_layers = len(self.convs)
+
+        for i in range(num_layers):
+            x_grn = self.convs[i](x_grn, adj)
+            x_ppi = self.convs_ppi[i](x_ppi, adj_ppi)
+
+            if view_guidance == 'symmetric':
+                g2p = torch.sigmoid(self.view_gates_g2p[i](x_grn))
+                p2g = torch.sigmoid(self.view_gates_p2g[i](x_ppi))
+                x_grn, x_ppi = x_grn + p2g * x_ppi, x_ppi + g2p * x_grn
+            elif view_guidance == 'grn_guides_ppi':
+                g2p = torch.sigmoid(self.view_gates_g2p[i](x_grn))
+                x_ppi = x_ppi + g2p * x_grn
+            elif view_guidance == 'ppi_guides_grn':
+                p2g = torch.sigmoid(self.view_gates_p2g[i](x_ppi))
+                x_grn = x_grn + p2g * x_ppi
+
+            if i < num_layers - 1:
+                p = self.args.dropout
+                x_grn = F.dropout(F.relu(x_grn), p, training=self.training)
+                x_ppi = F.dropout(F.relu(x_ppi), p, training=self.training)
+
+        return x_grn, x_ppi
+
     def decode(self,tf_embed,target_embed):
         if self.args.type =='dot':
             prob = torch.mul(tf_embed, target_embed)
@@ -157,10 +238,18 @@ class scTransNet_GCN(nn.Module):
         else:
             raise TypeError(r'{} is not available'.format(self.type))
         
-    def forward(self, x, adj, train_sample, llm_emb):
+    def forward(self, x, adj, train_sample, llm_emb, adj_ppi=None):
         # GNN encoding
-        embed = self.encode(x, adj)
-        
+        if self.use_ppi and self.multi_view and adj_ppi is not None:
+            embed_grn, embed_ppi = self.encode_multiview(x, adj, adj_ppi)
+            embed = self.graph_fusion(embed_grn, embed_ppi)
+        elif self.use_ppi and adj_ppi is not None:
+            embed_grn = self.encode(x, adj)
+            embed_ppi = self.encode_ppi(x, adj_ppi)
+            embed = self.graph_fusion(embed_grn, embed_ppi)
+        else:
+            embed = self.encode(x, adj)
+
         # Cross-Modal Fusion: Replace simple concatenation with attention-based fusion
         if self.use_cross_attention:
             # Deep cross-modal attention fusion
@@ -259,7 +348,7 @@ class scTransNet_SAGE(nn.Module):
         else:
             raise TypeError(r'{} is not available'.format(self.type))
         
-    def forward(self, x, adj, train_sample, llm_emb):
+    def forward(self, x, adj, train_sample, llm_emb, adj_ppi=None):
         embed = self.encode(x,adj)
         embed = torch.cat((llm_emb, embed), dim=1)
         tf_embed = target_embed = embed
@@ -270,7 +359,7 @@ class scTransNet_SAGE(nn.Module):
             if i < len(self.layers) - 1:
                 p = self.args.dropout
                 tf_embed = F.dropout(tf_embed, p)
-        
+
         for i, layer in enumerate(self.layers):
             target_embed = layer(target_embed)
             target_embed = F.leaky_relu(target_embed)
@@ -287,7 +376,7 @@ class scTransNet_SAGE(nn.Module):
         pred = self.decode(train_tf, train_target)
 
         return pred
-    
+
     def get_embedding(self):
         return self.tf_ouput, self.target_output
 
@@ -367,7 +456,7 @@ class scTransNet_GAT(nn.Module):
         else:
             raise TypeError(r'{} is not available'.format(self.type))
         
-    def forward(self, x, adj, train_sample, llm_emb):
+    def forward(self, x, adj, train_sample, llm_emb, adj_ppi=None):
         embed = self.encode(x,adj)
         embed = torch.cat((llm_emb, embed), dim=1)
         tf_embed = target_embed = embed

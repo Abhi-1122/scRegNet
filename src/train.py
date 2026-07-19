@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+import glob
 import gc
 import logging
 import torch
@@ -9,7 +10,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from src.models import scTransNet_GCN, scTransNet_SAGE, scTransNet_GAT
-from src.utils import scRNADataset, load_data, adj2saprse_tensor, Evaluation
+from src.utils import scRNADataset, load_data, adj2saprse_tensor, Evaluation, build_ppi_adjacency
 from src.utils import set_logging, set_seed
 from src.args import save_args, parse_args
 import warnings
@@ -96,7 +97,8 @@ class Trainer:
         test_data = pd.read_csv(test_file, index_col=0).values
         tf = pd.read_csv(tf_file,index_col=0)['index'].values.astype(np.int64)
         tf = torch.from_numpy(tf).to(self.device)
-        target = pd.read_csv(target_file,index_col=0)['index'].values.astype(np.int64)
+        target_df = pd.read_csv(target_file, index_col=0)
+        target = target_df['index'].values.astype(np.int64)
         target = torch.from_numpy(target).to(self.device)
 
         loader = load_data(data_input)
@@ -108,10 +110,10 @@ class Trainer:
         self.gene_dim = feature1.size()[1]
 
         data_feature2 = feature2.to(self.device)
-        
+
         if self.args.llm_type == "scBERT":
             feature1 = feature1[:-1]
-        
+
         data_feature1 = feature1.to(self.device)
         train_load = scRNADataset(train_data, gene_num, flag=self.args.flag)
         adj = train_load.Adj_Generate(tf, loop=self.args.loop)
@@ -122,7 +124,17 @@ class Trainer:
         test_data = torch.from_numpy(test_data)
         test_data = test_data.to(self.device)
 
-        return train_load, test_data, adj, data_feature1, data_feature2
+        adj_ppi = None
+        if getattr(self.args, 'use_ppi', False):
+            gene_to_idx = dict(zip(target_df['Gene'], target_df['index']))
+            ppi_matches = glob.glob(os.path.join(path, 'STRING', '*.edges.csv'))
+            if not ppi_matches:
+                raise FileNotFoundError(f"--use_ppi set but no *.edges.csv found under {os.path.join(path, 'STRING')}")
+            adj_ppi = build_ppi_adjacency(ppi_matches[0], gene_to_idx, gene_num, loop=self.args.loop)
+            adj_ppi = adj2saprse_tensor(adj_ppi)
+            adj_ppi = adj_ppi.to(self.device)
+
+        return train_load, test_data, adj, adj_ppi, data_feature1, data_feature2
 
 
     def get_model(self):
@@ -150,7 +162,7 @@ class Trainer:
     def train(self):
         max_AUC = 0
         accumulate_patience = 0
-        train_load, test_data, adj, data_feature1, data_feature2 = self._prepare_data()
+        train_load, test_data, adj, adj_ppi, data_feature1, data_feature2 = self._prepare_data()
         self.model = self.get_model()
         optimizer = getattr(optim, self.args.optimizer_name)(self.model.parameters(), lr=self.args.gnn_lr, weight_decay=self.args.gnn_weight_decay)
 
@@ -165,7 +177,7 @@ class Trainer:
                 else:
                     train_y = train_y.to(self.device).view(-1, 1)
 
-                pred = self.model(data_feature2, adj, train_x, data_feature1)
+                pred = self.model(data_feature2, adj, train_x, data_feature1, adj_ppi=adj_ppi)
 
                 if self.args.flag:
                     pred = torch.softmax(pred, dim=1)
@@ -177,10 +189,10 @@ class Trainer:
                 optimizer.step()
 
                 running_loss += loss_BCE.item()
-            
+
             if (epoch+1) % self.args.gnn_eval_interval == 0:
                 self.model.eval()
-                score = self.model(data_feature2, adj, test_data, data_feature1)
+                score = self.model(data_feature2, adj, test_data, data_feature1, adj_ppi=adj_ppi)
 
                 if self.args.flag:
                     score = torch.softmax(score, dim=1)

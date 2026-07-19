@@ -107,6 +107,23 @@ def parse_args():
                          "'scfm' = scFM queries GNN (scFM gets updated). "
                          "'gnn' = GNN queries scFM (GNN gets updated). Ablation flag.")
 
+    # PPI dual-encoder / multi-view parameters
+    parser.add_argument("--use_ppi", action="store_true", default=False,
+                    help="Add a second GNN encoder branch over the PPI adjacency")
+    parser.add_argument("--multi_view", action="store_true", default=False,
+                    help="Method 2: interleave GRN/PPI encoders layer-by-layer with cross-view "
+                         "guidance instead of Method 1's late fusion. Requires --use_ppi.")
+    parser.add_argument("--ppi_fusion_type", type=str, default="concat",
+                    choices=["concat", "gate", "attention"],
+                    help="How to fuse embed_grn and embed_ppi into embed_graph")
+    parser.add_argument("--ppi_fusion_heads", type=int, default=1,
+                    help="Attention heads for --ppi_fusion_type attention; must divide the "
+                         "GNN output dim")
+    parser.add_argument("--view_guidance", type=str, default="symmetric",
+                    choices=["symmetric", "grn_guides_ppi", "ppi_guides_grn"],
+                    help="Multi-view (Method 2) only: which view guides/weights the other "
+                         "during per-layer cross-view interaction")
+
     args = parser.parse_args()
     return args
 

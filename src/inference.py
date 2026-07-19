@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import os
+import glob
 import gc
 import logging
 import random
@@ -10,7 +11,7 @@ from args import load_args
 from utils import set_logging, store_results
 import warnings
 from models import scTransNet_GCN, scTransNet_SAGE, scTransNet_GAT
-from utils import scRNADataset, load_data, adj2saprse_tensor
+from utils import scRNADataset, load_data, adj2saprse_tensor, build_ppi_adjacency
 from sklearn.metrics import roc_auc_score, average_precision_score
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -118,7 +119,8 @@ class Infer:
         test_data = pd.read_csv(test_file, index_col=0).values
         tf = pd.read_csv(tf_file,index_col=0)['index'].values.astype(np.int64)
         tf = torch.from_numpy(tf).to(self.device)
-        target = pd.read_csv(target_file,index_col=0)['index'].values.astype(np.int64)
+        target_df = pd.read_csv(target_file, index_col=0)
+        target = target_df['index'].values.astype(np.int64)
         target = torch.from_numpy(target).to(self.device)
 
         loader = load_data(data_input)
@@ -132,7 +134,7 @@ class Infer:
         data_feature2 = feature2.to(self.device)
         if self.args.llm_type == "scBERT":
             feature1 = feature1[:-1]
-        
+
         data_feature1 = feature1.to(self.device)
         train_load = scRNADataset(train_data, gene_num, flag=self.args.flag)
         adj = train_load.Adj_Generate(tf, loop=self.args.loop)
@@ -143,7 +145,17 @@ class Infer:
         test_data = torch.from_numpy(test_data)
         test_data = test_data.to(self.device)
 
-        return train_data, test_data, adj, data_feature1, data_feature2
+        adj_ppi = None
+        if getattr(self.args, 'use_ppi', False):
+            gene_to_idx = dict(zip(target_df['Gene'], target_df['index']))
+            ppi_matches = glob.glob(os.path.join(path, 'STRING', '*.edges.csv'))
+            if not ppi_matches:
+                raise FileNotFoundError(f"use_ppi set but no *.edges.csv found under {os.path.join(path, 'STRING')}")
+            adj_ppi = build_ppi_adjacency(ppi_matches[0], gene_to_idx, gene_num, loop=self.args.loop)
+            adj_ppi = adj2saprse_tensor(adj_ppi)
+            adj_ppi = adj_ppi.to(self.device)
+
+        return train_data, test_data, adj, adj_ppi, data_feature1, data_feature2
     
     def get_model(self):
 
@@ -169,7 +181,7 @@ class Infer:
     
     
     def infer(self):
-        train_data, test_data, adj, data_feature1, data_feature2 = self._prepare_data()
+        train_data, test_data, adj, adj_ppi, data_feature1, data_feature2 = self._prepare_data()
         self.model = self.get_model()
         model_path = os.path.join(self.args.output_dir, f"best/ckpt/model.pt")
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -181,8 +193,8 @@ class Infer:
         results_train = []
         results_test = []
         for _ in tqdm(range(50)):
-            score_test = self.model(data_feature2, adj, test_data, data_feature1)
-            score_train = self.model(data_feature2, adj, train_data, data_feature1)
+            score_test = self.model(data_feature2, adj, test_data, data_feature1, adj_ppi=adj_ppi)
+            score_train = self.model(data_feature2, adj, train_data, data_feature1, adj_ppi=adj_ppi)
 
             if self.args.flag:
                 score_train = torch.softmax(score_train, dim=1)
@@ -215,8 +227,9 @@ def main(best_dir):
     return results_train, results_test
 
 if __name__ == "__main__":
-    best_dir = './out/GCN/Geneformer/tf_500_hESC/best/'
-    _, results_test = main(best_dir)
+    import sys
+    best_dir = sys.argv[1] if len(sys.argv) > 1 else './out/GCN/Geneformer/tf_500_hESC/best/'
+    results_train, results_test = main(best_dir)
 
     metric_keys = results_test[0].keys()
     metrics = {key: np.array([result[key] for result in results_test]) for key in metric_keys}
@@ -224,3 +237,6 @@ if __name__ == "__main__":
     std_metrics = {key: np.std(metrics[key]) for key in metric_keys}
 
     print(mean_metrics)
+
+    store_results(results_train, os.path.join(best_dir, 'ckpt'), 'train')
+    store_results(results_test, os.path.join(best_dir, 'ckpt'), 'test')
