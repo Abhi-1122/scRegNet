@@ -93,10 +93,22 @@ class Trainer:
                     gene_embeddings.append(x)
             gene_embeddings = np.array(gene_embeddings)
 
+        elif self.args.llm_type == "UCE":
+            scFM_embs = os.path.join(self.args.scFM_folder, "UCE")
+            embs = pd.read_csv(os.path.join(scFM_embs, f'{self.args.cell_type}_{self.args.num_TF}_gene_embeddings.csv'), index_col=0)
+            x = np.zeros(embs.shape[1])
+            gene_embeddings = []
+            for gene in data_input.index:
+                if gene in embs.index:
+                    gene_embeddings.append(embs.loc[gene].values.astype(np.float32))
+                else:
+                    gene_embeddings.append(x)
+            gene_embeddings = np.array(gene_embeddings)
+
         feature1 = torch.from_numpy(gene_embeddings).float()
         return feature1
-    
-        
+
+
     def _prepare_data(self):
         path = os.path.join(self.args.data_folder, f'{self.args.cell_type}/TFs+{self.args.num_TF}/')
         exp_file = os.path.join(path, 'BL--ExpressionData.csv')

@@ -20,3 +20,7 @@ Experiment C - with scFM, PANDA (TF,target) edge score concatenated as extra MLP
 --- scGPT: bowang-lab/scGPT "whole-human" checkpoint (33M cells), gene embeddings extracted via direct token-embedding-layer lookup (model.encoder(gene_ids)), 512-dim, 848/910 genes matched in vocab ---
 scGPT (in place of Geneformer): AUC 0.8858171517687466  AUPR 0.622468339307352
 (vs Geneformer baseline: AUC 0.8874168254173435  AUPR 0.6225032814400465)
+
+--- UCE: snap-stanford/UCE 4-layer checkpoint (mirrored on HF perturblab/uce-4-layer; official figshare host blocked by AWS WAF from this network), gene embeddings extracted via UCE's gene-identity projection (model.encoder: Linear(5120,1280)->GELU->LayerNorm) applied directly to each gene's precomputed ESM2 protein embedding -- no cell inference, same data-independent-lookup pattern as scGPT/Geneformer -- 1280-dim, 848/910 genes matched in the human ESM2 vocab ---
+UCE (in place of Geneformer): AUC 0.883870605760344  AUPR 0.6187186909235445
+(vs Geneformer baseline: AUC 0.8874168254173435  AUPR 0.6225032814400465; vs scGPT: AUC 0.8858171517687466  AUPR 0.622468339307352)
