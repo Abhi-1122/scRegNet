@@ -102,7 +102,19 @@ class Infer:
                     cnt=cnt+1
                     
             gene_embeddings = np.array(final_gene_embeddings)
-        
+
+        elif self.args.llm_type == "scGPT":
+            scFM_embs = os.path.join(self.args.scFM_folder, "scGPT")
+            embs = pd.read_csv(os.path.join(scFM_embs, f'{self.args.cell_type}_{self.args.num_TF}_gene_embeddings.csv'), index_col=0)
+            x = np.zeros(embs.shape[1])
+            gene_embeddings = []
+            for gene in data_input.index:
+                if gene in embs.index:
+                    gene_embeddings.append(embs.loc[gene].values.astype(np.float32))
+                else:
+                    gene_embeddings.append(x)
+            gene_embeddings = np.array(gene_embeddings)
+
         feature1 = torch.from_numpy(gene_embeddings).float()
         return feature1
         
