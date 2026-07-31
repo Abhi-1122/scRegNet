@@ -127,7 +127,29 @@ class Infer:
         feature2 = loader.exp_data()
         feature2 = torch.from_numpy(feature2)
         gene_num = feature2.shape[0]
-        feature1 = self._get_embeddings(gene_num, data_input)
+
+        panda_full_np = None
+        panda_full_train_np = None
+        node_feature_source = getattr(self.args, 'node_feature_source', 'scfm')
+        use_panda_edge = getattr(self.args, 'use_panda_edge', False)
+        if node_feature_source == 'panda' or use_panda_edge:
+            panda_path = os.path.join(path, 'PANDA', 'panda_full_matrix.npy')
+            if not os.path.exists(panda_path):
+                raise FileNotFoundError(f"node_feature_source='panda' or --use_panda_edge set but "
+                                         f"{panda_path} not found. Run src/build_panda.py first.")
+            panda_full_np = np.load(panda_path)
+        if use_panda_edge:
+            oof_path = os.path.join(path, 'PANDA', 'panda_full_matrix_train_oof.npy')
+            if not os.path.exists(oof_path):
+                raise FileNotFoundError(f"--use_panda_edge set but {oof_path} not found. "
+                                         f"Run src/build_panda.py first.")
+            panda_full_train_np = np.load(oof_path)
+
+        if node_feature_source == 'panda':
+            tf_np = pd.read_csv(tf_file, index_col=0)['index'].values.astype(np.int64)
+            feature1 = torch.from_numpy(panda_full_np[tf_np, :].T).float()
+        else:
+            feature1 = self._get_embeddings(gene_num, data_input)
         self.input_dim = feature2.size()[1]
         self.gene_dim = feature1.size()[1]
 
@@ -155,7 +177,14 @@ class Infer:
             adj_ppi = adj2saprse_tensor(adj_ppi)
             adj_ppi = adj_ppi.to(self.device)
 
-        return train_data, test_data, adj, adj_ppi, data_feature1, data_feature2
+        panda_full = None
+        if panda_full_np is not None:
+            panda_full = torch.from_numpy(panda_full_np).float().to(self.device)
+        panda_full_train = None
+        if panda_full_train_np is not None:
+            panda_full_train = torch.from_numpy(panda_full_train_np).float().to(self.device)
+
+        return train_data, test_data, adj, adj_ppi, data_feature1, data_feature2, panda_full, panda_full_train
     
     def get_model(self):
 
@@ -181,7 +210,7 @@ class Infer:
     
     
     def infer(self):
-        train_data, test_data, adj, adj_ppi, data_feature1, data_feature2 = self._prepare_data()
+        train_data, test_data, adj, adj_ppi, data_feature1, data_feature2, panda_full, panda_full_train = self._prepare_data()
         self.model = self.get_model()
         model_path = os.path.join(self.args.output_dir, f"best/ckpt/model.pt")
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -190,11 +219,14 @@ class Infer:
         )
         self.model.eval()
 
+        panda_edge_test = panda_full[test_data[:, 0], test_data[:, 1]] if panda_full is not None else None
+        panda_edge_train = panda_full_train[train_data[:, 0], train_data[:, 1]] if panda_full_train is not None else None
+
         results_train = []
         results_test = []
         for _ in tqdm(range(50)):
-            score_test = self.model(data_feature2, adj, test_data, data_feature1, adj_ppi=adj_ppi)
-            score_train = self.model(data_feature2, adj, train_data, data_feature1, adj_ppi=adj_ppi)
+            score_test = self.model(data_feature2, adj, test_data, data_feature1, adj_ppi=adj_ppi, panda_edge_feat=panda_edge_test)
+            score_train = self.model(data_feature2, adj, train_data, data_feature1, adj_ppi=adj_ppi, panda_edge_feat=panda_edge_train)
 
             if self.args.flag:
                 score_train = torch.softmax(score_train, dim=1)

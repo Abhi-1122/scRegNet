@@ -112,3 +112,105 @@ adjacency (Python's `argparse type=bool` treats any non-empty string,
 including `"false"`, as `True` — a pre-existing footgun in `src/args.py`),
 diverging from baseline's `loop=False`. It was re-run correctly (omitting
 the flag so it defaults to `False`) before reporting the numbers above.
+
+## Follow-up: PANDA (classical network integration, no foundation model)
+
+Motivated by the ablation above: since scFM only edges out GRN-only by a small
+margin, does a *classical* (non-deep-learned) network-integration signal do
+just as well as scFM, or add anything on top of it? [PANDA](https://doi.org/10.1371/journal.pone.0064832)
+(Glass et al. 2013) iteratively refines a TF-target regulatory prior using
+co-expression and TF-TF PPI evidence via message passing — no gradient
+descent, no embeddings, no scFM.
+
+**New file `src/build_panda.py`** builds PANDA's three inputs for
+hESC/TFs+500 and runs it via `netZooPy`'s `Panda` class:
+- **Expression**: `BL--ExpressionData.csv` directly (genes × cells); PANDA
+  computes the co-expression network internally (`np.corrcoef`).
+- **Regulatory prior**: the ~3030 train-positive TF-target edges from
+  `Train_set.csv` (weight=1.0), mapped to gene symbols via `Target.csv`.
+- **TF-TF PPI**: the existing STRING PPI edges (`STRING/*.edges.csv`),
+  filtered to pairs where both genes are in `TF.csv` (410 TFs; PANDA's PPI
+  input is a TF-TF cooperativity network, not the full gene-gene PPI used by
+  the Method 1/2 experiments above).
+
+PANDA's output is a single (410 TFs × 910 genes) regulatory-score matrix,
+re-indexed onto this project's global gene-index space and scaled (not
+centered, so the ~100 TFs with no PANDA coverage stay exactly 0) into
+`data/hESC/TFs+500/PANDA/panda_full_matrix.npy`.
+
+**`src/args.py`** — new flags: `--node_feature_source {scfm,panda}`
+(Experiment B) and `--use_panda_edge` (Experiment C).
+
+- **Experiment B — no scFM.** `feature1` (normally scFM/Geneformer) is
+  replaced with PANDA's per-gene profile: column *j* of the PANDA matrix
+  (a 410-dim vector — one score per TF — for gene *j*). No model code change
+  needed at all: `gene_dim` is already derived dynamically from `feature1`'s
+  shape in `train.py`/`inference.py`, so the existing concat/cross-attention
+  fusion and MLP head adapt automatically.
+- **Experiment C — with scFM.** The full scFM+GNN pipeline is unchanged;
+  PANDA's edge score for the specific `(TF_i, target_j)` pair being scored is
+  concatenated as one extra scalar feature onto the MLP head's input
+  (`scTransNet_GCN.decode()`'s new `extra_feat` parameter; `self.linear`'s
+  input width grows by 1 when `--use_panda_edge` is set).
+
+### Leakage bug and fix (important)
+
+The first version of Experiment C scored **AUROC 0.7742 / AUPRC 0.3466** —
+far worse than every other variant tried, including the plain ablations.
+Diagnosis: PANDA's regulatory prior *is* the train-positive edges (weight=1),
+so a train-positive edge's own PANDA score is almost a direct echo of "you
+told me this was positive": train-positive scores averaged **9.98 ± 2.25**
+vs. **-0.03 ± 0.58** for everything else, while test-positive scores (never
+in any prior) showed no such separation (**0.50 ± 0.66** vs. **-0.02 ± 0.58**
+for test-negatives). The model learned to lean on this near-perfect
+train-only shortcut during training, which is worthless (and actively
+misleading) at test time — that's what collapsed AUPRC, not PANDA
+integration being inherently unhelpful.
+
+**Fix**: `src/build_panda.py` now also computes a leakage-safe matrix via
+5-fold out-of-fold scoring — for each fold, PANDA is rerun with that fold's
+train-positive edges excluded from the prior, and those edges are scored
+from the resulting held-out matrix (`panda_full_matrix_train_oof.npy`).
+`train.py`/`inference.py` use this OOF matrix for all **train**-pair lookups
+and the original full-prior matrix for all **test**-pair lookups (test edges
+were never in any prior, so they were already leakage-free). After the fix,
+train-positive scores dropped to **0.28 ± 0.65** — in line with test-positive
+scores, confirming the leak was closed.
+
+### Results
+
+| Run | AUROC | AUPRC | ΔAUROC vs. baseline | ΔAUPRC vs. baseline |
+|---|---|---|---|---|
+| **Baseline** (GRN + scFM) | 0.8874 | 0.6225 | — | — |
+| **Experiment B** — no scFM, PANDA profile only | 0.8799 | 0.6102 | −0.0075 (−0.85%) | −0.0123 (−1.98%) |
+| **Experiment C** — scFM + GNN + PANDA edge feature (leakage-fixed) | **0.8902** | **0.6333** | **+0.0028 (+0.32%)** | **+0.0108 (+1.73%)** |
+
+Checkpoints/results: `out/GCN/Geneformer/tf_500_hESC_panda_only/best/ckpt/`,
+`out/GCN/Geneformer/tf_500_hESC_panda_edge/best/ckpt/`.
+
+**Reading:** Experiment B (no scFM at all) beats *both* single-modality
+ablations above — GRN-only (0.8747/0.5916) and scFM-only (0.8774/0.6064) —
+despite using no foundation model and no deep-learned embedding, just a
+classical iterative-refinement score. That's a meaningful result on its own:
+a non-deep-learning, non-pretrained signal gets closer to full-model
+performance than either deep-learned single modality does alone.
+
+Experiment C is the best result across every experiment in this project so
+far — small but real gains on top of the already-strong scFM+GNN baseline,
+after fixing the leakage. This suggests PANDA's edge-level regulatory
+evidence (co-expression + PPI, refined via message passing) contains a
+sliver of genuinely complementary signal beyond what scFM + GRN-topology
+already capture, unlike the raw STRING PPI network tried in Methods 1/2,
+which added nothing. The difference is plausibly *how* the information is
+combined (PANDA does its own principled refinement/message-passing before
+the score ever reaches the model, vs. Methods 1/2 asking a GNN branch to
+learn everything about PPI structure from scratch with reused, untuned
+hyperparameters) and *what* it's built from (co-expression evidence, which
+Methods 1/2 never had access to).
+
+Caveats: single seed (42), hyperparameters reused from the GRN+scFM search
+rather than re-tuned for the extra PANDA feature, and the PANDA prior is
+built once from all train-positive edges (Experiment C's leakage fix only
+re-scores individual edges out-of-fold — the co-expression and PPI networks
+themselves are shared and unaffected, which is standard practice, not a
+remaining leak).

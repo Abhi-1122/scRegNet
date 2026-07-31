@@ -105,7 +105,34 @@ class Trainer:
         feature2 = loader.exp_data()
         feature2 = torch.from_numpy(feature2)
         gene_num = feature2.shape[0]
-        feature1 = self._get_embeddings(gene_num, data_input)
+
+        panda_full_np = None
+        panda_full_train_np = None
+        node_feature_source = getattr(self.args, 'node_feature_source', 'scfm')
+        use_panda_edge = getattr(self.args, 'use_panda_edge', False)
+        if node_feature_source == 'panda' or use_panda_edge:
+            panda_path = os.path.join(path, 'PANDA', 'panda_full_matrix.npy')
+            if not os.path.exists(panda_path):
+                raise FileNotFoundError(f"node_feature_source='panda' or --use_panda_edge set but "
+                                         f"{panda_path} not found. Run src/build_panda.py first.")
+            panda_full_np = np.load(panda_path)
+        if use_panda_edge:
+            # PANDA's motif prior IS the train-positive edges, so scoring a train edge
+            # from panda_full_np would leak its own label (score ~10 vs ~0 for everything
+            # else). Use the leakage-safe, k-fold out-of-fold matrix for TRAIN-pair
+            # lookups instead; test-pair lookups stay on panda_full_np (already
+            # leakage-free, since test edges are never part of any prior).
+            oof_path = os.path.join(path, 'PANDA', 'panda_full_matrix_train_oof.npy')
+            if not os.path.exists(oof_path):
+                raise FileNotFoundError(f"--use_panda_edge set but {oof_path} not found. "
+                                         f"Run src/build_panda.py first.")
+            panda_full_train_np = np.load(oof_path)
+
+        if node_feature_source == 'panda':
+            tf_np = pd.read_csv(tf_file, index_col=0)['index'].values.astype(np.int64)
+            feature1 = torch.from_numpy(panda_full_np[tf_np, :].T).float()
+        else:
+            feature1 = self._get_embeddings(gene_num, data_input)
         self.input_dim = feature2.size()[1]
         self.gene_dim = feature1.size()[1]
 
@@ -134,7 +161,14 @@ class Trainer:
             adj_ppi = adj2saprse_tensor(adj_ppi)
             adj_ppi = adj_ppi.to(self.device)
 
-        return train_load, test_data, adj, adj_ppi, data_feature1, data_feature2
+        panda_full = None
+        if panda_full_np is not None:
+            panda_full = torch.from_numpy(panda_full_np).float().to(self.device)
+        panda_full_train = None
+        if panda_full_train_np is not None:
+            panda_full_train = torch.from_numpy(panda_full_train_np).float().to(self.device)
+
+        return train_load, test_data, adj, adj_ppi, data_feature1, data_feature2, panda_full, panda_full_train
 
 
     def get_model(self):
@@ -162,7 +196,7 @@ class Trainer:
     def train(self):
         max_AUC = 0
         accumulate_patience = 0
-        train_load, test_data, adj, adj_ppi, data_feature1, data_feature2 = self._prepare_data()
+        train_load, test_data, adj, adj_ppi, data_feature1, data_feature2, panda_full, panda_full_train = self._prepare_data()
         self.model = self.get_model()
         optimizer = getattr(optim, self.args.optimizer_name)(self.model.parameters(), lr=self.args.gnn_lr, weight_decay=self.args.gnn_weight_decay)
 
@@ -177,7 +211,8 @@ class Trainer:
                 else:
                     train_y = train_y.to(self.device).view(-1, 1)
 
-                pred = self.model(data_feature2, adj, train_x, data_feature1, adj_ppi=adj_ppi)
+                panda_edge_feat = panda_full_train[train_x[:, 0], train_x[:, 1]] if panda_full_train is not None else None
+                pred = self.model(data_feature2, adj, train_x, data_feature1, adj_ppi=adj_ppi, panda_edge_feat=panda_edge_feat)
 
                 if self.args.flag:
                     pred = torch.softmax(pred, dim=1)
@@ -192,7 +227,8 @@ class Trainer:
 
             if (epoch+1) % self.args.gnn_eval_interval == 0:
                 self.model.eval()
-                score = self.model(data_feature2, adj, test_data, data_feature1, adj_ppi=adj_ppi)
+                panda_edge_feat_test = panda_full[test_data[:, 0], test_data[:, 1]] if panda_full is not None else None
+                score = self.model(data_feature2, adj, test_data, data_feature1, adj_ppi=adj_ppi, panda_edge_feat=panda_edge_feat_test)
 
                 if self.args.flag:
                     score = torch.softmax(score, dim=1)

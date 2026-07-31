@@ -1,3 +1,17 @@
 base hESC : {'AUC': np.float64(0.8868084813546812), 'AUPR': np.float64(0.6194518538459475)}
 cross attention: scFM as query: 0.8845752774242667 0.618982252139178
 cross attention: GNN as query: 0.8775430525480626 0.6090441156670963
+
+--- PPI experiments (hESC TFs+500, GCN + Geneformer, reused hyperparameters) ---
+baseline (GRN + scFM, fresh re-run): AUC 0.8874168254173435  AUPR 0.6225032814400465
+method 1 - dual GNN encoder, PPI attention fusion: AUC 0.8861494548694726  AUPR 0.6157266640603738
+method 2 - multi-view, symmetric cross-view gating: AUC 0.8839986292497095  AUPR 0.6151693644711511
+
+--- modality ablation (hESC TFs+500, GCN + Geneformer, same hyperparameters, no PPI) ---
+no_scfm (GRN-GNN only, scFM fusion skipped): AUC 0.8746697590694025  AUPR 0.5915796000418554
+no_grn (scFM only, GNN encoding skipped): AUC 0.8774178964128779  AUPR 0.6064140610776391
+
+--- PANDA experiments (hESC TFs+500, GCN + Geneformer, same hyperparameters, no PPI) ---
+--- PANDA prior: train-positive TF-target edges (weight=1.0) + co-expression (from BL--ExpressionData.csv) + TF-TF STRING PPI, via netZooPy ---
+Experiment B - no scFM, PANDA per-gene profile (410-dim, TF-target regulatory scores) replaces scFM embedding: AUC 0.8798530767717808  AUPR 0.6102228546730484
+Experiment C - with scFM, PANDA (TF,target) edge score concatenated as extra MLP feature, K-fold out-of-fold scoring for train edges (fixes prior-membership leakage): AUC 0.890241091789277  AUPR 0.6332873555813547

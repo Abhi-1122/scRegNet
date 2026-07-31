@@ -130,6 +130,18 @@ def parse_args():
                     help="'no_scfm' = MLP head sees only the GNN graph embedding. "
                          "'no_grn' = MLP head sees only the raw scFM gene embedding.")
 
+    # PANDA (classical network-integration, no foundation model) experiments
+    parser.add_argument("--node_feature_source", type=str, default="scfm",
+                    choices=["scfm", "panda"],
+                    help="Experiment B: which per-gene feature feeds the model in place "
+                         "of llm_emb. 'scfm' = Geneformer embeddings (default). 'panda' = "
+                         "PANDA's per-gene regulatory profile (row=TF, no scFM at all), "
+                         "loaded from data/<cell_type>/TFs+<num_TF>/PANDA/panda_full_matrix.npy.")
+    parser.add_argument("--use_panda_edge", action="store_true", default=False,
+                    help="Experiment C: concatenate PANDA's (TF,target) edge score as an "
+                         "extra scalar feature onto the MLP head, on top of the existing "
+                         "scFM+GNN pipeline (unchanged otherwise).")
+
     args = parser.parse_args()
     return args
 

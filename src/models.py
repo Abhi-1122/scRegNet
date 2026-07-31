@@ -161,11 +161,12 @@ class scTransNet_GCN(nn.Module):
             
             input_dim = hidden_dim_mlp
 
+        self.use_panda_edge = getattr(self.args, 'use_panda_edge', False)
         if self.args.type == 'MLP':
-            self.linear = nn.Linear(2*input_dim, 2)
+            self.linear = nn.Linear(2 * input_dim + (1 if self.use_panda_edge else 0), 2)
 
         self.reset_parameters()
-    
+
     def reset_parameters(self):
         for conv in self.convs:
             conv.reset_parameters()
@@ -229,7 +230,7 @@ class scTransNet_GCN(nn.Module):
 
         return x_grn, x_ppi
 
-    def decode(self,tf_embed,target_embed):
+    def decode(self, tf_embed, target_embed, extra_feat=None):
         if self.args.type =='dot':
             prob = torch.mul(tf_embed, target_embed)
             prob = torch.sum(prob,dim=1).view(-1,1)
@@ -238,13 +239,16 @@ class scTransNet_GCN(nn.Module):
             prob = torch.cosine_similarity(tf_embed,target_embed,dim=1).view(-1,1)
             return prob
         elif self.args.type == 'MLP':
-            h = torch.cat([tf_embed, target_embed],dim=1)
+            pieces = [tf_embed, target_embed]
+            if extra_feat is not None:
+                pieces.append(extra_feat)
+            h = torch.cat(pieces, dim=1)
             prob = self.linear(h)
             return prob
         else:
             raise TypeError(r'{} is not available'.format(self.type))
-        
-    def forward(self, x, adj, train_sample, llm_emb, adj_ppi=None):
+
+    def forward(self, x, adj, train_sample, llm_emb, adj_ppi=None, panda_edge_feat=None):
         # GNN encoding (skipped entirely for the no_grn ablation)
         if self.ablation != 'no_grn':
             if self.use_ppi and self.multi_view and adj_ppi is not None:
@@ -291,7 +295,11 @@ class scTransNet_GCN(nn.Module):
         train_tf = tf_embed[train_sample[:,0]]
         train_target = target_embed[train_sample[:, 1]]
 
-        pred = self.decode(train_tf, train_target)
+        extra_feat = None
+        if self.use_panda_edge and panda_edge_feat is not None:
+            extra_feat = panda_edge_feat.view(-1, 1)
+
+        pred = self.decode(train_tf, train_target, extra_feat=extra_feat)
 
         return pred
     
