@@ -68,3 +68,47 @@ concluding PPI is unhelpful in general:
 - Only `view_guidance=symmetric` was run for Method 2; the one-directional guidance variants
   (`grn_guides_ppi`, `ppi_guides_grn`) were not evaluated.
 - Single seed (42), no variance estimate across seeds.
+
+## Follow-up: modality ablation (GRN vs. scFM contribution)
+
+The PPI results above raised the question of whether the GRN-GNN branch is
+contributing much at all relative to the scFM embeddings — motivated by
+`--ablation {no_scfm, no_grn}` (new flag in `src/args.py`, wired into
+`scTransNet_GCN.forward()` in `src/models.py`). Same dataset, same reused
+hyperparameters as the baseline above, no PPI involved.
+
+- `no_scfm`: the MLP head sees only the GNN's GRN-graph embedding — the
+  concat/cross-attention fusion with `llm_emb` is skipped entirely (`embed`
+  stays as the raw GNN output).
+- `no_grn`: the MLP head sees only the raw scFM (Geneformer) gene embedding —
+  the GNN encoder (`self.encode(x, adj)`) is skipped entirely and
+  `embed = llm_emb`.
+
+| Run | AUROC | AUPRC | ΔAUROC vs. baseline | ΔAUPRC vs. baseline |
+|---|---|---|---|---|
+| **Baseline** (GRN + scFM) | 0.8874 | 0.6225 | — | — |
+| **no_scfm** — GRN-GNN only | 0.8747 | 0.5916 | −0.0127 (−1.43%) | −0.0309 (−4.97%) |
+| **no_grn** — scFM only | 0.8774 | 0.6064 | −0.0100 (−1.13%) | −0.0161 (−2.59%) |
+
+Checkpoints/results: `out/GCN/Geneformer/tf_500_hESC_ablation_no_scfm/best/ckpt/`,
+`out/GCN/Geneformer/tf_500_hESC_ablation_no_grn/best/ckpt/`.
+
+**Reading:** neither modality alone comes close to matching the full model —
+both single-modality runs lose 1–5% relative to baseline. scFM-only is
+slightly closer to baseline than GRN-only (notably on AUPRC: −2.59% vs.
+−4.97%), so scFM does carry a bit more of the predictive signal on its own,
+but the gap between the two ablations is small (0.0027 AUROC, 0.0148 AUPRC)
+— this does not support "scFM accounts for the majority of the
+information." The more robust conclusion is that **GRN and scFM are
+complementary**: combining them beats either alone by a clear margin, so the
+GRN-GNN branch is doing real work, not riding on scFM. This also reframes
+the PPI result above — PPI's failure to help is not because the existing
+GRN branch is negligible, but more likely because PPI-as-a-second-graph-view
+duplicates information already inside the (meaningfully contributing) GRN
+signal rather than adding a third independent source.
+
+*Note:* an initial `no_scfm` run accidentally set `--loop true` on the GRN
+adjacency (Python's `argparse type=bool` treats any non-empty string,
+including `"false"`, as `True` — a pre-existing footgun in `src/args.py`),
+diverging from baseline's `loop=False`. It was re-run correctly (omitting
+the flag so it defaults to `False`) before reporting the numbers above.

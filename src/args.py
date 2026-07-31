@@ -124,6 +124,12 @@ def parse_args():
                     help="Multi-view (Method 2) only: which view guides/weights the other "
                          "during per-layer cross-view interaction")
 
+    # Ablation: drop one modality entirely to measure its contribution
+    parser.add_argument("--ablation", type=str, default="full",
+                    choices=["full", "no_scfm", "no_grn"],
+                    help="'no_scfm' = MLP head sees only the GNN graph embedding. "
+                         "'no_grn' = MLP head sees only the raw scFM gene embedding.")
+
     args = parser.parse_args()
     return args
 

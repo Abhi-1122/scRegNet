@@ -143,6 +143,12 @@ class scTransNet_GCN(nn.Module):
         else:
             fused_dim = gene_dim + graph_output_dim
 
+        self.ablation = getattr(self.args, 'ablation', 'full')
+        if self.ablation == 'no_scfm':
+            fused_dim = graph_output_dim
+        elif self.ablation == 'no_grn':
+            fused_dim = gene_dim
+
         # MLP layers for TF and Target embeddings
         self.layers = torch.nn.ModuleList()
         for i in range(self.args.mlp_num_layers):
@@ -239,25 +245,30 @@ class scTransNet_GCN(nn.Module):
             raise TypeError(r'{} is not available'.format(self.type))
         
     def forward(self, x, adj, train_sample, llm_emb, adj_ppi=None):
-        # GNN encoding
-        if self.use_ppi and self.multi_view and adj_ppi is not None:
-            embed_grn, embed_ppi = self.encode_multiview(x, adj, adj_ppi)
-            embed = self.graph_fusion(embed_grn, embed_ppi)
-        elif self.use_ppi and adj_ppi is not None:
-            embed_grn = self.encode(x, adj)
-            embed_ppi = self.encode_ppi(x, adj_ppi)
-            embed = self.graph_fusion(embed_grn, embed_ppi)
-        else:
-            embed = self.encode(x, adj)
+        # GNN encoding (skipped entirely for the no_grn ablation)
+        if self.ablation != 'no_grn':
+            if self.use_ppi and self.multi_view and adj_ppi is not None:
+                embed_grn, embed_ppi = self.encode_multiview(x, adj, adj_ppi)
+                embed = self.graph_fusion(embed_grn, embed_ppi)
+            elif self.use_ppi and adj_ppi is not None:
+                embed_grn = self.encode(x, adj)
+                embed_ppi = self.encode_ppi(x, adj_ppi)
+                embed = self.graph_fusion(embed_grn, embed_ppi)
+            else:
+                embed = self.encode(x, adj)
 
-        # Cross-Modal Fusion: Replace simple concatenation with attention-based fusion
-        if self.use_cross_attention:
+        # Fusion with scFM embedding (skipped entirely for the no_scfm/no_grn ablations)
+        if self.ablation == 'no_grn':
+            embed = llm_emb
+        elif self.ablation == 'no_scfm':
+            pass  # embed stays as the GNN-only graph embedding
+        elif self.use_cross_attention:
             # Deep cross-modal attention fusion
             embed = self.cross_modal_fusion(llm_emb, embed)
         else:
             # Original simple concatenation
             embed = torch.cat((llm_emb, embed), dim=1)
-        
+
         tf_embed = target_embed = embed
 
         for i, layer in enumerate(self.layers):
