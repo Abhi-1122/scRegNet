@@ -152,6 +152,13 @@ centered, so the ~100 TFs with no PANDA coverage stay exactly 0) into
   concatenated as one extra scalar feature onto the MLP head's input
   (`scTransNet_GCN.decode()`'s new `extra_feat` parameter; `self.linear`'s
   input width grows by 1 when `--use_panda_edge` is set).
+- **Experiment D — scFM only, no GRN-GNN.** Combines the existing
+  `--ablation no_grn` flag (GNN encoding skipped entirely, `embed = llm_emb`)
+  with `--use_panda_edge`. No new code — the two flags already composed
+  cleanly, since `use_panda_edge`'s `extra_feat` concatenation happens after
+  `embed` is resolved, regardless of which ablation path produced it. Tests
+  whether PANDA's edge signal helps scFM specifically, with no GRN topology
+  in the picture at all.
 
 ### Leakage bug and fix (important)
 
@@ -184,9 +191,23 @@ scores, confirming the leak was closed.
 | **Baseline** (GRN + scFM) | 0.8874 | 0.6225 | — | — |
 | **Experiment B** — no scFM, PANDA profile only | 0.8799 | 0.6102 | −0.0075 (−0.85%) | −0.0123 (−1.98%) |
 | **Experiment C** — scFM + GNN + PANDA edge feature (leakage-fixed) | **0.8902** | **0.6333** | **+0.0028 (+0.32%)** | **+0.0108 (+1.73%)** |
+| **Experiment D** — scFM + PANDA edge feature, no GNN | 0.8829 | 0.6175 | −0.0045 (−0.51%) | −0.0050 (−0.80%) |
 
 Checkpoints/results: `out/GCN/Geneformer/tf_500_hESC_panda_only/best/ckpt/`,
-`out/GCN/Geneformer/tf_500_hESC_panda_edge/best/ckpt/`.
+`out/GCN/Geneformer/tf_500_hESC_panda_edge/best/ckpt/`,
+`out/GCN/Geneformer/tf_500_hESC_panda_scfm_only/best/ckpt/`.
+
+Experiment D vs. the plain scFM-only ablation (no PANDA, no GRN) from the
+section above: 0.8829/0.6175 vs. 0.8774/0.6064 — adding PANDA's edge feature
+to scFM alone gives **+0.0055 AUROC (+0.62%) / +0.0111 AUPRC (+1.83%)**, a
+clear improvement, closing roughly half the AUROC gap and about a third of
+the AUPRC gap to the full baseline. So PANDA's edge signal helps scFM on its
+own too, not only when paired with the GRN-GNN branch (Experiment C) — but
+it helps *more* when GRN topology is also present (Experiment C's gain over
+baseline is positive; Experiment D's gain over scFM-only doesn't fully close
+the gap to baseline), suggesting GRN topology and PANDA's edge evidence are
+at least partially complementary rather than redundant substitutes for one
+another.
 
 **Reading:** Experiment B (no scFM at all) beats *both* single-modality
 ablations above — GRN-only (0.8747/0.5916) and scFM-only (0.8774/0.6064) —
