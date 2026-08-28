@@ -224,7 +224,10 @@ class Trainer:
         self.model = self.get_model()
         optimizer = getattr(optim, self.args.optimizer_name)(self.model.parameters(), lr=self.args.gnn_lr, weight_decay=self.args.gnn_weight_decay)
 
-        for epoch in tqdm(range(self.args.gnn_epochs)):
+        epoch_iter = range(self.args.gnn_epochs)
+        if getattr(self.args, 'show_progress_bar', True):
+            epoch_iter = tqdm(epoch_iter)
+        for epoch in epoch_iter:
             running_loss = 0.0
             for train_x, train_y in DataLoader(train_load, batch_size=self.args.batch_size, shuffle=True):
                 self.model.train()
@@ -265,13 +268,14 @@ class Trainer:
                     accumulate_patience = 0
                     max_AUC = AUC
                     AUC_AUPR = AUPR
-                    self.args.ckpt_name = os.path.join(self.args.ckpt_dir, f"model_seed{self.args.random_seed}.pt")
-                    torch.save(
-                        self.model.state_dict(),
-                        self.args.ckpt_name,
-                    )
-                     
-                    save_args(self.args, self.args.ckpt_dir)
+                    if getattr(self.args, 'save_checkpoint', True):
+                        self.args.ckpt_name = os.path.join(self.args.ckpt_dir, f"model_seed{self.args.random_seed}.pt")
+                        torch.save(
+                            self.model.state_dict(),
+                            self.args.ckpt_name,
+                        )
+
+                        save_args(self.args, self.args.ckpt_dir)
                 else:
                     accumulate_patience += 1
                     if accumulate_patience >= 10:

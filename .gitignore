@@ -32,3 +32,4 @@ wandb/
 *.npy
 *.csv
 optuna.db
+/tuning/

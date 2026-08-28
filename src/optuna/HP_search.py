@@ -11,12 +11,10 @@ import torch
 import torch.distributed as dist
 from optuna.exceptions import ExperimentalWarning
 from optuna.trial import TrialState
-from optuna_dashboard import run_server
 
 from ..args import parse_args
 from ..train import Trainer
 from ..utils import set_seed
-from optuna.integration.wandb import WeightsAndBiasesCallback
 
 logger = logging.getLogger(__name__)
 # optuna.logging.set_verbosity(optuna.logging.ERROR)
@@ -98,6 +96,8 @@ class Single_HP_search(HP_search):
 
     def run(self, n_trials):
         # run
+        from optuna.integration.wandb import WeightsAndBiasesCallback  # optional dep, only needed here
+
         args = self.args
         args.random_seed = args.start_seed
         set_seed(random_seed=args.random_seed)

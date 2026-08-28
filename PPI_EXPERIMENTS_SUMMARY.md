@@ -229,9 +229,63 @@ learn everything about PPI structure from scratch with reused, untuned
 hyperparameters) and *what* it's built from (co-expression evidence, which
 Methods 1/2 never had access to).
 
-Caveats: single seed (42), hyperparameters reused from the GRN+scFM search
-rather than re-tuned for the extra PANDA feature, and the PANDA prior is
-built once from all train-positive edges (Experiment C's leakage fix only
-re-scores individual edges out-of-fold — the co-expression and PPI networks
-themselves are shared and unaffected, which is standard practice, not a
-remaining leak).
+Caveats: hyperparameters reused from the GRN+scFM search rather than re-tuned
+for the extra PANDA feature (confirmed via a 50-trial QMC hyperparameter
+search — see below — that this doesn't leave easy gains on the table), and the
+PANDA prior is built once from all train-positive edges (Experiment C's
+leakage fix only re-scores individual edges out-of-fold — the co-expression
+and PPI networks themselves are shared and unaffected, which is standard
+practice, not a remaining leak).
+
+**Update — multi-seed validation (5 seeds, 2026-08-28):** the single-seed
+caveat above is resolved. All 5 seeds beat baseline on both AUROC and AUPRC,
+with a tight spread: AUROC 0.8899 ± 0.0005, AUPRC 0.6307 ± 0.0018 (vs.
+baseline 0.8874/0.6225). Exp C's gain is confirmed real, not seed noise.
+A follow-up 50-trial hyperparameter search targeting Exp C specifically
+(`src/tuning/`, QMC sampler, 4 GPUs) found nothing better than the reused
+hyperparameters (best trial: AUROC 0.8890/AUPRC 0.6255) — the reused
+hyperparameters, from the original adaptive search, were already close to
+optimal for this architecture. This closes out the PPI/ablation/PANDA/scFM
+line of work; see `work.md`'s 2026-08-28 entry for what comes next.
+
+## Follow-up: alternate scFM backbones (scGPT, UCE)
+
+Question: does the *choice* of foundation model matter, or is Geneformer
+interchangeable with other scFMs? Same dataset/hyperparameters, GRN+scFM
+pipeline unchanged (no PPI, no PANDA) — only `--llm_type` and the source of
+`feature1` change.
+
+- **scGPT** (`bowang-lab/scGPT`, "whole-human" checkpoint, 33M cells).
+  Gene embeddings extracted via direct token-embedding-layer lookup
+  (`model.encoder(gene_ids)`, `src/extract_scgpt_embeddings.py`) — no cell
+  inference needed, following scGPT's own published GRN-inference workflow.
+  512-dim; 848/910 genes matched in vocab. Required an isolated venv to
+  install (scGPT's dependency tree — JAX/Flax, scvi-tools, a pinned old
+  `torchtext`↔`torch` pairing — conflicts with the main environment).
+- **UCE** (`snap-stanford/UCE`, 4-layer checkpoint, via HF mirror
+  `perturblab/uce-4-layer` — the official figshare host blocked automated
+  downloads with an AWS WAF challenge from this network). Turned out to
+  represent each gene via a fixed, species-specific ESM2 protein-embedding
+  (5120-dim), projected through UCE's own `Linear→GELU→LayerNorm` encoder
+  layer — a genuinely data-independent per-gene embedding, so extraction
+  followed the same direct-lookup pattern as scGPT/Geneformer
+  (`src/extract_uce_embeddings.py`), no cell inference. 1280-dim; 848/910
+  genes matched (same coverage as scGPT).
+
+### Results
+
+| Backbone | AUROC | AUPRC |
+|---|---|---|
+| **Geneformer** (baseline) | 0.8874 | 0.6225 |
+| **scGPT** | 0.8858 | 0.6225 |
+| **UCE** | 0.8839 | 0.6187 |
+
+Checkpoints/results: `out/GCN/scGPT/tf_500_hESC/best/ckpt/`,
+`out/GCN/UCE/tf_500_hESC/best/ckpt/`.
+
+**Reading:** all three cluster tightly (0.884–0.887 AUROC) despite very
+different architectures, pretraining data/scale, and embedding dimensions
+(896 / 512 / 1280). The specific scFM choice matters far less than *whether*
+one is used at all, or *how* auxiliary information (PPI vs. PANDA) is
+combined with it — consistent with the modality-ablation finding that scFM
+and GRN contribute comparably rather than one dominating.

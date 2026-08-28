@@ -25,4 +25,16 @@ scGPT (in place of Geneformer): AUC 0.8858171517687466  AUPR 0.622468339307352
 
 --- UCE: snap-stanford/UCE 4-layer checkpoint (mirrored on HF perturblab/uce-4-layer; official figshare host blocked by AWS WAF from this network), gene embeddings extracted via UCE's gene-identity projection (model.encoder: Linear(5120,1280)->GELU->LayerNorm) applied directly to each gene's precomputed ESM2 protein embedding -- no cell inference, same data-independent-lookup pattern as scGPT/Geneformer -- 1280-dim, 848/910 genes matched in the human ESM2 vocab ---
 UCE (in place of Geneformer): AUC 0.883870605760344  AUPR 0.6187186909235445
+
+--- PANDA Exp C hyperparameter tuning (50-trial QMC search, 4 GPUs, src/tuning/) ---
+Best trial (#40): AUC 0.8890  AUPR 0.6255 -- did NOT beat the untuned reused-hyperparameter result (0.8902/0.6333); reused hyperparameters already near-optimal, see work.md 2026-08-14 entry
+
+--- PANDA Exp C multi-seed validation (5 seeds, same reused hyperparameters, hESC TFs+500) ---
+seed 42: AUC 0.8902376819626836  AUPR 0.6332713726896156
+seed 43: AUC 0.8902992138334804  AUPR 0.6323290246066793
+seed 44: AUC 0.8890285884511343  AUPR 0.6303500487899517
+seed 45: AUC 0.8897210932338036  AUPR 0.6290227461529508
+seed 46: AUC 0.8901422068180722  AUPR 0.6286191951779018
+mean +/- std: AUC 0.8899 +/- 0.0005   AUPR 0.6307 +/- 0.0018
+all 5 seeds beat baseline (AUC 0.8874, AUPR 0.6225) on both metrics -- PANDA Exp C's gain is confirmed real, not single-seed noise
 (vs Geneformer baseline: AUC 0.8874168254173435  AUPR 0.6225032814400465; vs scGPT: AUC 0.8858171517687466  AUPR 0.622468339307352)
