@@ -1,0 +1,68 @@
+{
+  "macro_f1": 1.0,
+  "per_class": {
+    "conserved": {
+      "n_test": 0,
+      "f1": null
+    },
+    "A-specific": {
+      "n_test": 0,
+      "f1": null
+    },
+    "B-specific": {
+      "n_test": 0,
+      "f1": null
+    },
+    "neither": {
+      "n_test": 1363,
+      "f1": 1.0
+    }
+  },
+  "macro_f1_classes_included": [
+    "neither"
+  ],
+  "confusion_matrix": [
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1363
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "conserved",
+    "A-specific",
+    "B-specific",
+    "neither"
+  ],
+  "diff_train_class_counts": {
+    "conserved": 0,
+    "A-specific": 0,
+    "B-specific": 0,
+    "neither": 3182
+  },
+  "diff_test_class_counts": {
+    "conserved": 0,
+    "A-specific": 0,
+    "B-specific": 0,
+    "neither": 1363
+  }
+}

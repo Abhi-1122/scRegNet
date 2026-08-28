@@ -188,6 +188,184 @@ class scTransNet_GCN(nn.Module):
         return self.tf_ouput, self.target_output
 
 
+class scDiffTransNet_GCN(nn.Module):
+    """
+    Siamese, weight-tied differential/contrastive extension of scTransNet_GCN.
+    DIFFERENTIAL_GRN_PLAN.md Sec 4.2. Takes two conditions of the same cell type through
+    the SAME shared graph adjacency, condition-specific input projections (proj_A/proj_B,
+    not weight-tied since n_cells_A != n_cells_B in general), then weight-tied
+    GCNConv layers + cross-modal fusion + tf/target MLP (self.layers), followed by a
+    4-way differential-edge decoder (diff_head) and an auxiliary static link-prediction
+    head reusing the base model's decode().
+
+    args.diff_ablation controls which branches are active:
+      - 'full' / 'no_contrastive': complete architecture (no_contrastive only changes the
+        loss at the DiffTrainer level, not this module).
+      - 'no_scfm': drop the scFM branch -- fused representation is the GNN embedding alone.
+      - 'no_grn': drop the GCNConv branch -- "gnn embedding" is proj_A/proj_B's raw linear
+        projection of condition-specific expression, with no message passing, still fused
+        with the (condition-independent) scFM embedding as usual. Expected near-chance on
+        the differential task by construction (plan Sec 4.1) since this leaves almost no
+        condition-specific *structural* signal.
+    """
+    def __init__(self, input_dim_A, input_dim_B, args, gene_dim, device):
+        super(scDiffTransNet_GCN, self).__init__()
+        self.args = args
+        self.device = device
+        self.ablation = getattr(args, 'diff_ablation', 'full')
+
+        gnn_hidden0 = args.gnn_dim_hidden
+        self.proj_A = nn.Linear(input_dim_A, gnn_hidden0)
+        self.proj_B = nn.Linear(input_dim_B, gnn_hidden0)
+
+        self.convs = torch.nn.ModuleList()
+        conv_in = gnn_hidden0
+        for i in range(self.args.gnn_num_layers):
+            hidden_dim = self.args.gnn_hidden_dims[i]
+            self.convs.append(GCNConv(conv_in, hidden_dim))
+            conv_in = hidden_dim
+        self.gnn_output_dim = conv_in if self.ablation != 'no_grn' else gnn_hidden0
+
+        self.use_cross_attention = getattr(self.args, 'use_cross_attention', False)
+
+        if self.ablation == 'no_scfm':
+            fused_dim = self.gnn_output_dim
+        elif self.use_cross_attention:
+            self.cross_modal_fusion = IterativeCrossModalFusion(
+                scfm_dim=gene_dim,
+                gnn_dim=self.gnn_output_dim,
+                hidden_dim=getattr(self.args, 'cross_attention_hidden_dim', 256),
+                num_layers=getattr(self.args, 'cross_attention_layers', 2),
+                num_heads=getattr(self.args, 'cross_attention_heads', 4),
+                dropout=self.args.dropout,
+                fusion_mode=getattr(self.args, 'cross_attention_fusion_mode', 'concat')
+            )
+            fused_dim = self.cross_modal_fusion.get_output_dim()
+        else:
+            fused_dim = gene_dim + self.gnn_output_dim
+
+        self.layers = torch.nn.ModuleList()
+        mlp_in = fused_dim
+        for i in range(self.args.mlp_num_layers):
+            hidden_dim_mlp = self.args.mlp_hidden_dims[i]
+            self.layers.append(nn.Linear(mlp_in, hidden_dim_mlp))
+            mlp_in = hidden_dim_mlp
+        self.mlp_out_dim = mlp_in
+
+        if self.args.type == 'MLP':
+            self.linear = nn.Linear(2 * mlp_in, 2)
+
+        diff_head_hidden = getattr(args, 'diff_head_hidden', 128)
+        self.diff_head = nn.Sequential(
+            nn.Linear(6 * self.mlp_out_dim, diff_head_hidden),
+            nn.LeakyReLU(),
+            nn.Dropout(self.args.dropout),
+            nn.Linear(diff_head_hidden, 4),
+        )
+
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        self.proj_A.reset_parameters()
+        self.proj_B.reset_parameters()
+        for conv in self.convs:
+            conv.reset_parameters()
+        for layer in self.layers:
+            layer.reset_parameters()
+
+    def encode(self, x, adj):
+        for i, conv in enumerate(self.convs):
+            x = conv(x, adj)
+            if i < len(self.convs) - 1:
+                x = F.relu(x)
+                p = self.args.dropout
+                x = F.dropout(x, p, training=self.training)
+        return x
+
+    def decode(self, tf_embed, target_embed):
+        if self.args.type == 'dot':
+            prob = torch.mul(tf_embed, target_embed)
+            prob = torch.sum(prob, dim=1).view(-1, 1)
+            return prob
+        elif self.args.type == 'cosine':
+            prob = torch.cosine_similarity(tf_embed, target_embed, dim=1).view(-1, 1)
+            return prob
+        elif self.args.type == 'MLP':
+            h = torch.cat([tf_embed, target_embed], dim=1)
+            prob = self.linear(h)
+            return prob
+        else:
+            raise TypeError(r'{} is not available'.format(self.args.type))
+
+    def _branch_embed(self, x, proj, adj):
+        """Condition-specific GNN branch: proj (not tied) -> [GCNConv]* (tied), or just
+        proj alone for the no_grn ablation."""
+        h = proj(x)
+        if self.ablation == 'no_grn':
+            return h
+        return self.encode(h, adj)
+
+    def _fuse(self, llm_emb, gnn_embed):
+        if self.ablation == 'no_scfm':
+            return gnn_embed
+        if self.use_cross_attention:
+            return self.cross_modal_fusion(llm_emb, gnn_embed)
+        return torch.cat((llm_emb, gnn_embed), dim=1)
+
+    def _mlp_pass(self, fused):
+        h = fused
+        for i, layer in enumerate(self.layers):
+            h = layer(h)
+            h = F.leaky_relu(h)
+            if i < len(self.layers) - 1:
+                p = self.args.dropout
+                h = F.dropout(h, p, training=self.training)
+        return h
+
+    def forward_pair(self, x_A, x_B, adj, llm_emb, static_edges, diff_edges):
+        """
+        x_A: (num_genes, n_cells_A), x_B: (num_genes, n_cells_B) -- condition-specific
+            per-gene expression features.
+        adj: shared sparse adjacency (same graph structure for both conditions).
+        llm_emb: (num_genes, gene_dim) condition-independent scFM embedding.
+        static_edges: (num_static, 2) long tensor of (tf_idx, target_idx), same edge set
+            reused for both conditions' auxiliary static link-prediction loss.
+        diff_edges: (num_diff, 2) long tensor of (tf_idx, target_idx) candidate edges for
+            the 4-way differential head.
+        Returns: static_pred_A, static_pred_B, diff_logits, r_A, r_B
+        """
+        h_A = self._branch_embed(x_A, self.proj_A, adj)
+        h_B = self._branch_embed(x_B, self.proj_B, adj)
+
+        fused_A = self._fuse(llm_emb, h_A)
+        fused_B = self._fuse(llm_emb, h_B)
+
+        tf_A = self._mlp_pass(fused_A)
+        tgt_A = self._mlp_pass(fused_A)
+        tf_B = self._mlp_pass(fused_B)
+        tgt_B = self._mlp_pass(fused_B)
+
+        self.tf_A, self.tgt_A, self.tf_B, self.tgt_B = tf_A, tgt_A, tf_B, tgt_B
+
+        static_pred_A = self.decode(tf_A[static_edges[:, 0]], tgt_A[static_edges[:, 1]])
+        static_pred_B = self.decode(tf_B[static_edges[:, 0]], tgt_B[static_edges[:, 1]])
+
+        i, j = diff_edges[:, 0], diff_edges[:, 1]
+        diff_feat = torch.cat([
+            tf_A[i], tgt_A[j], tf_B[i], tgt_B[j],
+            (tf_A[i] - tf_B[i]).abs(), (tgt_A[j] - tgt_B[j]).abs(),
+        ], dim=1)
+        diff_logits = self.diff_head(diff_feat)
+
+        r_A = tf_A[i] * tgt_A[j]
+        r_B = tf_B[i] * tgt_B[j]
+
+        return static_pred_A, static_pred_B, diff_logits, r_A, r_B
+
+    def get_embedding(self):
+        return self.tf_A, self.tgt_A, self.tf_B, self.tgt_B
+
+
 class scTransNet_SAGE(nn.Module):
     def __init__(self,input_dim,args,gene_dim,device):
         super(scTransNet_SAGE, self).__init__()

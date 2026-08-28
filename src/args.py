@@ -104,6 +104,29 @@ def parse_args():
                        choices=["concat", "add", "gated"],
                        help="How to fuse scFM and GNN embeddings after attention")
 
+    # differential-GRN task (DIFFERENTIAL_GRN_PLAN.md Sec 4.4)
+    parser.add_argument("--condition_a", type=str, default=None,
+                       help="Condition A key into src/differential_data.py's registry")
+    parser.add_argument("--condition_b", type=str, default=None,
+                       help="Condition B key into src/differential_data.py's registry")
+    parser.add_argument("--diff_static_weight", type=float, default=1.0)
+    parser.add_argument("--diff_ce_weight", type=float, default=1.0)
+    parser.add_argument("--diff_contrastive_weight", type=float, default=0.5)
+    parser.add_argument("--contrastive_temperature", type=float, default=0.1)
+    parser.add_argument("--contrastive_margin", type=float, default=0.3)
+    parser.add_argument("--corr_method", type=str, default="spearman", choices=["pearson", "spearman"])
+    parser.add_argument("--corr_min_r", type=float, default=0.3)
+    parser.add_argument("--fdr_q", type=float, default=0.05)
+    parser.add_argument("--diff_label_mode", type=str, default="silver", choices=["silver", "groundgan"])
+    parser.add_argument("--diff_ablation", type=str, default="full",
+                       choices=["full", "no_scfm", "no_grn", "no_contrastive", "posthoc_baseline"])
+    parser.add_argument("--diff_head_hidden", type=int, default=128)
+    parser.add_argument("--diff_train_frac", type=float, default=0.7,
+                       help="Stratified train fraction of the diff-edge split (plan Sec 5.1)")
+    parser.add_argument("--diff_class_count_floor", type=int, default=20,
+                       help="Minimum per-class test-set count to report a per-class AUROC/AUPRC (plan Sec 5.1)")
+    parser.add_argument("--diff_patience", type=int, default=10)
+
     args = parser.parse_args()
     return args
 

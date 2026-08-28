@@ -216,6 +216,32 @@ def class_counts(labels_df: pd.DataFrame) -> dict:
     return labels_df["label"].value_counts().to_dict()
 
 
+def stratified_split(edges: np.ndarray, y: np.ndarray, train_frac: float, seed: int):
+    """
+    Deterministic stratified train/test split (plan Sec 5.1: "70/30, stratified by class").
+    Guards tiny classes: a class with a single example goes entirely to train (cannot be
+    split); a class with >=2 examples always keeps >=1 example in test. Deterministic given
+    (edges, y, seed) so every script (DiffTrainer, posthoc_baseline, naive_baseline) that
+    calls this with the same seed on the same cached labels gets an IDENTICAL split --
+    required for a fair same-test-set comparison across configs.
+    """
+    rng = np.random.RandomState(seed)
+    train_idx, test_idx = [], []
+    for c in np.unique(y):
+        idx = np.where(y == c)[0].copy()
+        rng.shuffle(idx)
+        if len(idx) == 1:
+            train_idx.extend(idx)
+        else:
+            n_train = int(round(len(idx) * train_frac))
+            n_train = min(max(n_train, 1), len(idx) - 1)
+            train_idx.extend(idx[:n_train])
+            test_idx.extend(idx[n_train:])
+    train_idx = np.array(sorted(train_idx))
+    test_idx = np.array(sorted(test_idx)) if test_idx else np.array([], dtype=int)
+    return edges[train_idx], y[train_idx], edges[test_idx], y[test_idx]
+
+
 if __name__ == "__main__":
     # Phase 0 dry run: labeling-yield check across all 9 condition pairs, CPU-only, no
     # model training (DIFFERENTIAL_GRN_PLAN.md Sec 7 "Phase 0").

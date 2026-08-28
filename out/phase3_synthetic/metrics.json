@@ -1,0 +1,125 @@
+{
+  "severity": 0.15,
+  "tf1_removed_from": "CDCA7L",
+  "tf2_added_to": "ANKRD6",
+  "n_removed_edges": 38,
+  "n_added_edges": 38,
+  "n_conserved_edges": 302,
+  "n_neither_edges": 120,
+  "silver_label_accuracy_vs_true_ALL_ROWS": 0.9016064257028112,
+  "silver_label_accuracy_vs_true_TRAINABLE_SUBSET": 0.9718614718614719,
+  "silver_confusion_matrix_labels_rows_true_cols_silver": [
+    "conserved",
+    "A-specific",
+    "B-specific",
+    "neither",
+    "ambiguous",
+    "inconsistent"
+  ],
+  "silver_confusion_matrix": [
+    [
+      267,
+      2,
+      0,
+      3,
+      18,
+      12
+    ],
+    [
+      0,
+      37,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      26,
+      6,
+      0,
+      6
+    ],
+    [
+      0,
+      1,
+      0,
+      119,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "model_metrics_vs_true_labels": {
+    "macro_f1": 0.7593582887700534,
+    "per_class_auroc": {
+      "conserved": 0.878931413414172,
+      "A-specific": 0.6409749670619236,
+      "B-specific": 1.0,
+      "neither": 1.0
+    },
+    "per_class_auprc": {
+      "conserved": 0.8495435177350341,
+      "A-specific": 0.11219664278802038,
+      "B-specific": 1.0,
+      "neither": 1.0
+    },
+    "macro_auroc_ovr": 0.8799765951190239,
+    "macro_auprc_ovr": 0.7404350401307636,
+    "epoch": 35,
+    "confusion_matrix": [
+      [
+        86,
+        5,
+        0,
+        0
+      ],
+      [
+        10,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        11,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        36
+      ]
+    ]
+  },
+  "diff_train_class_counts": {
+    "conserved": 211,
+    "A-specific": 27,
+    "B-specific": 27,
+    "neither": 84
+  },
+  "diff_test_class_counts": {
+    "conserved": 91,
+    "A-specific": 11,
+    "B-specific": 11,
+    "neither": 36
+  }
+}

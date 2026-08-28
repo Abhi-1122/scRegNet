@@ -119,3 +119,98 @@ finding is carried into Phase 1's biological-check interpretation below: the hES
 POU5F1/NANOG/SOX2/SOX17/GATA4/GATA6 check can only ever be evaluated against a
 handful of the model's most-confident predictions, not a well-powered A-specific/B-specific
 test split, and any resolution should be read with that caveat front and center.
+
+### Phase 1 results (architecture + trainer, hESC 00h vs 96h)
+
+Implemented `scDiffTransNet_GCN` in `src/models.py` (Sec 4.2, GCN backbone only per this
+pass's scoping) and `src/train_differential.py` (`DiffTrainer`, Sec 4.4), plus the new args
+in `src/args.py` (Sec 4.4's full list). Fixed hyperparameters used throughout Phase
+1/2/3 -- the SAME hyperparameters that produced this codebase's existing hESC/TFs+500
+static baseline (0.8874/0.6225 AUROC/AUPRC), found by the pre-existing Optuna search
+(`out/GCN/Geneformer/tf_500_hESC/best/ckpt/args.json`), reused as-is per the "no new HP
+search" instruction: `gnn_hidden_dims=[227,29,34]`, `mlp_hidden_dims=[198]`,
+`gnn_num_layers=3`, `mlp_num_layers=1`, `dropout=0.1748`, `gnn_lr=0.00144`,
+`gnn_weight_decay=1.04e-5`, `gnn_dim_hidden=256`, `batch_size=193`, `type=MLP`,
+`gnn_epochs=300` (early-stopped on macro-F1, patience=10 evals).
+
+**Architecture-sound verdict: YES.** Trained end-to-end without errors; converged in 64
+epochs (~2.5 min on the project GPU). The auxiliary static link-prediction heads (one per
+condition, sharing all GNN/fusion/MLP weights) reached AUROC 0.873/0.874, AUPRC
+0.613/0.616 on the shared static Test_set -- close to the existing single-condition
+baseline (0.8874/0.6225), confirming the Siamese shared-adjacency design does not break
+the base static task it is built on top of.
+
+**Biological check verdict: FAILS to resolve, and this is a direct, expected consequence
+of Phase 0's finding, not a separate architecture failure.** Ran
+`model.predict_all_candidates()` over the full 4,545-edge hESC candidate space.
+POU5F1 (87 out-edges), NANOG (346), SOX2 (254), SOX17 (23), GATA4 (45), GATA6 (22) are
+predicted **100% "neither"** -- zero A-specific, zero B-specific, zero conserved calls for
+any of the 6 named genes' out-edges. The model collapsed to predicting the majority
+("neither") class almost everywhere (4527/4545 candidate edges), because the 00h_vs_96h
+diff-train split had literally 0 conserved and 0 A-specific training examples and only 6
+B-specific examples out of 3134 trainable edges (Phase 0's finding) -- there was no
+A-specific training signal at all for the model to learn to call POU5F1/NANOG/SOX2's
+edges 00h-specific, and only 6 real B-specific examples anywhere for SOX17/GATA4/GATA6's
+expected 96h-specific pattern. Reported honestly per task instructions (Sec 5.4): this is
+a genuine negative result for hESC specifically, root-caused to labeling yield, not to the
+architecture -- Phase 3's synthetic check (below) independently confirms the architecture
+itself CAN learn real 4-way differential structure when given a less pathologically thin
+label distribution.
+
+### Phase 3 results (synthetic sanity check, parametric NB simulator, moderate/hESC only)
+
+Plan Sec 5.2's own documented fallback (GRouNdGAN out of scope, Sec 7). Implemented
+`src/phase3_synthetic.py`. First attempt (reusing the REAL hESC reference network's full
+multi-regulator topology to drive simulated co-expression, mean/dispersion NB-fit directly
+to `BL--ExpressionData.csv`'s values) produced a **degenerate, uninformative synthetic
+system** on inspection -- two bugs found and fixed before trusting any downstream number:
+
+1. `BL--ExpressionData.csv` is BEELINE-preprocessed **log2(count+1)** data (verified: floats
+   in [0, ~19.3], ~28% exact zeros), not raw counts. Fitting an NB distribution's
+   mean/variance directly to log-scale values collapses almost all real per-gene variance,
+   giving a near-degenerate dispersion fit. Fixed by inverting the log2(x+1) transform
+   before the NB method-of-moments fit.
+2. Even after fixing (1), simulating co-expression from the REAL network's full topology
+   gave **no detectable separation** between true "conserved" edges and true random
+   "neither" pairs (mean |r| 0.13 vs 0.14 at beta=6) -- root-caused to two real properties
+   of this specific reference network: (a) mean in-degree ~5.6 (most targets have several
+   independent regulators), which dilutes any *single* TF-target pair's marginal
+   correlation well below detectability at n~92-188 cells -- a real, honest echo of Phase
+   0's hESC finding, but one that makes a synthetic *calibration* check uninformative if
+   left in; (b) one mega-hub TF (TFAP2A, out-degree 722 = touches 79% of the 910-gene
+   panel) means most "random" gene pairs are not actually an independent negative control,
+   since they are likely to share it as a common regulator.
+   **Fix (documented simplification, not hidden):** replaced the real network's topology
+   with a simplified, single-regulator-per-target synthetic network for the *injected
+   correlation structure* only -- built from real TF identities (drawn from the real
+   `TF.csv`) and real target-gene identities (drawn from the real gene panel), one hub TF
+   (250 private targets) + 15 regular TFs (6 private targets each), with severity=0.15
+   rewiring applied to the hub TF (loses 38 out-edges) and a regular TF (gains 38 new
+   out-edges) -- and "neither" ground-truth pairs drawn only from genes never used as a
+   regulator or target anywhere in the construction, guaranteeing a clean negative control.
+   This trades away the real network's combinatorial-regulation realism specifically to
+   keep the calibration check meaningful, and is reported as such rather than silently
+   presented as "the real network's structure."
+
+**Result, one severity (moderate, ~15%) x one cell type (hESC), as scoped:**
+- **(a) Trained `full` model vs TRUE (by-construction) labels**: macro-F1 0.759,
+  macro AUROC (one-vs-rest, macro-averaged) **0.880**, macro AUPRC 0.740. Per-class AUROC:
+  conserved 0.879, A-specific 0.641, B-specific 1.000, neither 1.000. Clears the plan's own
+  Sec 6 stop-condition bar (target >=0.75) with room to spare -- the architecture DOES learn
+  genuine 4-way differential structure when trained against clean, non-degenerate labels.
+  Confusion matrix shows the one real weak spot: 10/11 true A-specific test edges were
+  misclassified as conserved (A-specific vs conserved is the harder distinction, as
+  expected -- both require significant within-condition correlation, differing only in
+  whether it's shared or not).
+- **(b) Sec 3 silver-labeling procedure vs TRUE labels (calibration check)**: 92.7%
+  accuracy across all candidate rows (counting the silver procedure's own
+  ambiguous/inconsistent calls as automatic non-matches, since the true-label space has no
+  such categories), **97.2% accuracy restricted to the trainable 4-class subset**. This is
+  a strong calibration result: the DiffCorr/Fisher-z silver-labeling statistic, run
+  completely unmodified through this synthetic pair, recovers the true construction labels
+  correctly the large majority of the time.
+- n_removed=n_added=38, n_conserved=302, n_neither=120 (before any train/test split);
+  A-specific/B-specific test sets are small (11 each after the 70/30 split) since this is
+  one moderate-severity run at modest edge counts -- reported as-is, not padded.
+- **Deferred**: mild/severe severities and mESC/mHSC-E synthetic variants, per work.md's
+  scoping entry above.

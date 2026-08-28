@@ -1,0 +1,75 @@
+/home/abhishekg/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+{
+  "macro_f1": 0.6087448892136063,
+  "per_class": {
+    "conserved": {
+      "n_test": 2,
+      "f1": null
+    },
+    "A-specific": {
+      "n_test": 0,
+      "f1": null
+    },
+    "B-specific": {
+      "n_test": 640,
+      "f1": 0.45048543689320386,
+      "auroc": 0.7646988272921108,
+      "auprc": 0.4478599572365509
+    },
+    "neither": {
+      "n_test": 2812,
+      "f1": 0.7670043415340086,
+      "auroc": 0.7878157916893775,
+      "auprc": 0.9373019096155258
+    }
+  },
+  "macro_f1_classes_included": [
+    "B-specific",
+    "neither"
+  ],
+  "confusion_matrix": [
+    [
+      2,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      6,
+      0,
+      464,
+      170
+    ],
+    [
+      1,
+      0,
+      956,
+      1855
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "conserved",
+    "A-specific",
+    "B-specific",
+    "neither"
+  ],
+  "diff_train_class_counts": {
+    "conserved": 5,
+    "A-specific": 0,
+    "B-specific": 1494,
+    "neither": 6561
+  },
+  "diff_test_class_counts": {
+    "conserved": 2,
+    "A-specific": 0,
+    "B-specific": 640,
+    "neither": 2812
+  }
+}

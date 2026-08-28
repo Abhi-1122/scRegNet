@@ -18,3 +18,13 @@ mHSC-E     LT_HSC_vs_Prog   primary    11557         279        15          810 
 mHSC-E     LT_HSC_vs_HSPC   secondary  11557         9          16          0           11153    0          379
 mHSC-E     HSPC_vs_Prog     secondary  11557         7          0           2134        9373     5          38
 Note: hESC yield is much thinner than mESC/mHSC-E (root-caused to condition-A's near-absent pairwise correlation signal at n=92, not a labeling bug -- see work.md). No pair dropped per task instructions; all 9 proceed to Phase 2, low-yield pairs flagged.
+
+--- Phase 1: architecture verification, hESC 00h vs 96h, full config, GCN backbone (fixed HPs: gnn_hidden_dims=[227,29,34] mlp_hidden_dims=[198] gnn_num_layers=3 mlp_num_layers=1 dropout=0.1748 gnn_lr=0.00144 gnn_wd=1.04e-5 gnn_dim_hidden=256 batch_size=193, early-stopped epoch 64/300) ---
+static AUROC_A(00h)=0.8733  AUPRC_A=0.6130 | static AUROC_B(96h)=0.8739  AUPRC_B=0.6156  (baseline reference: 0.8874/0.6225)
+diff macro-F1=0.9974 (only "neither" class clears the 20-example floor: n_test=1340, AUROC=0.8638, AUPRC=0.9996; B-specific n_test=3 <floor, not reported; conserved/A-specific n_test=0)
+Biological check (POU5F1/NANOG/SOX2 expect 00h-specific, SOX17/GATA4/GATA6 expect 96h-specific): FAILS TO RESOLVE -- model predicts "neither" for 100% of all 6 genes' out-edges (0/0/0/6/0/0 A-spec out of 87/346/254/23/45/22 out-edges respectively). Root cause: 0 conserved + 0 A-specific + only 6 B-specific training examples for this pair (Phase 0 finding), not an architecture defect.
+
+--- Phase 3: synthetic sanity check, parametric NB simulator seeded from real hESC/TFs+500 per-gene mean/dispersion + real TF/gene identities, moderate severity (~15%), one cell type ---
+Simplified single-regulator synthetic network (hub TF loses 38/253 out-edges, a regular TF gains 38 new out-edges; documented simplification vs real network topology -- see work.md for why). n_conserved=302 n_A-specific=38 n_B-specific=38 n_neither=120 (candidate space, pre-split).
+(a) trained `full` model vs TRUE labels: macro-F1=0.759  macro-AUROC(OVR)=0.880  macro-AUPRC(OVR)=0.740  [per-class AUROC: conserved=0.879 A-specific=0.641 B-specific=1.000 neither=1.000]  -- clears plan's Sec 6 stop-condition bar (target >=0.75)
+(b) silver-labeling procedure vs TRUE labels (calibration check): accuracy=0.9268 (all rows) / 0.9719 (trainable 4-class subset only)
