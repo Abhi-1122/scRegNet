@@ -5,3 +5,16 @@
 --- baseline reference numbers (hESC TFs+500, GCN + Geneformer, same hyperparameters used throughout) ---
 paper-reported (scregnet.pdf Table 2, scRegNet w/Geneformer, hESC): AUC 0.88  AUPR 0.62 (2-decimal precision, only what the paper reports)
 summer26 rerun (2026-07-19, same hyperparameters, before any PPI/PANDA additions): AUC 0.8874168254173435  AUPR 0.6225032814400465
+
+--- Phase 0: differential-label yield dry run (2026-08-28), all 9 condition pairs, CPU-only, DiffCorr/Fisher-z per plan Sec 3 (corr_method=spearman, corr_min_r=0.3, fdr_q=0.05) ---
+cell_type  pair             priority   n_candidates  conserved  A-specific  B-specific  neither  ambiguous  inconsistent
+hESC       00h_vs_96h       primary    4545          0          0           9           4468     0          68
+hESC       00h_vs_12h       secondary  4545          0          0           0           4545     0          0
+hESC       36h_vs_72h       secondary  4545          5          1           5           4484     0          50
+mESC       0h_vs_72h        primary    29613         32         71          175         28359    6          970
+mESC       0h_vs_12h        secondary  29613         46         20          129         28333    2          1083
+mESC       24h_vs_48h       secondary  29613         222        35          11          27281    2          2062
+mHSC-E     LT_HSC_vs_Prog   primary    11557         279        15          810         9277     18         1158
+mHSC-E     LT_HSC_vs_HSPC   secondary  11557         9          16          0           11153    0          379
+mHSC-E     HSPC_vs_Prog     secondary  11557         7          0           2134        9373     5          38
+Note: hESC yield is much thinner than mESC/mHSC-E (root-caused to condition-A's near-absent pairwise correlation signal at n=92, not a labeling bug -- see work.md). No pair dropped per task instructions; all 9 proceed to Phase 2, low-yield pairs flagged.
