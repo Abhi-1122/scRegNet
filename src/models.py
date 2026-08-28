@@ -2,7 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, SAGEConv
-from cross_modal_attention import IterativeCrossModalFusion
+try:
+    from cross_modal_attention import IterativeCrossModalFusion
+except ImportError:
+    from src.cross_modal_attention import IterativeCrossModalFusion
 
 
 class AttentionLayer(nn.Module):

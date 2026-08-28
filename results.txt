@@ -1,0 +1,7 @@
+--- branch: differential-grn (cut from summer26 commit 8a3f58a, "cross modal attention") ---
+--- this branch pursues a differential/contrastive GRN direction, separate from summer26's
+    PPI/PANDA/scFM-swap line (see summer26's results.txt/PPI_EXPERIMENTS_SUMMARY.md for that) ---
+
+--- baseline reference numbers (hESC TFs+500, GCN + Geneformer, same hyperparameters used throughout) ---
+paper-reported (scregnet.pdf Table 2, scRegNet w/Geneformer, hESC): AUC 0.88  AUPR 0.62 (2-decimal precision, only what the paper reports)
+summer26 rerun (2026-07-19, same hyperparameters, before any PPI/PANDA additions): AUC 0.8874168254173435  AUPR 0.6225032814400465
