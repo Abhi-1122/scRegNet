@@ -126,6 +126,8 @@ def parse_args():
     parser.add_argument("--diff_class_count_floor", type=int, default=20,
                        help="Minimum per-class test-set count to report a per-class AUROC/AUPRC (plan Sec 5.1)")
     parser.add_argument("--diff_patience", type=int, default=10)
+    parser.add_argument("--diff_batch_cap", type=int, default=4096,
+                       help="Max diff-edges scored per gradient step (re-sampled each step; bounds cost for large candidate spaces)")
 
     args = parser.parse_args()
     return args

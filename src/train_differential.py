@@ -229,6 +229,8 @@ class DiffTrainer:
         best_metrics = None
         patience = 0
         has_diff_train = len(y_train) > 0
+        diff_cap = getattr(self.args, 'diff_batch_cap', 4096)
+        n_diff_train = len(edges_train)
 
         for epoch in tqdm(range(self.args.gnn_epochs)):
             self.model.train()
@@ -239,8 +241,23 @@ class DiffTrainer:
                 else:
                     train_y = train_y.to(self.device).view(-1, 1)
 
+                # Mini-batch the differential edges too (bounds diff_head cost per step
+                # regardless of the total candidate-edge count, which otherwise made
+                # larger cell types like mESC (29,613 candidates) far slower per epoch
+                # than hESC (4,545) despite similar Train_set.csv sizes -- observed
+                # directly during Phase 2). Re-sampled every step, so the full training
+                # set is still visited stochastically over an epoch, same spirit as the
+                # static task's own mini-batching.
+                if has_diff_train and n_diff_train > diff_cap:
+                    idx = torch.randperm(n_diff_train, device=self.device)[:diff_cap]
+                    diff_batch_edges = edges_train_t[idx]
+                    diff_batch_y = y_train_t[idx]
+                else:
+                    diff_batch_edges = edges_train_t if has_diff_train else edges_test_t
+                    diff_batch_y = y_train_t if has_diff_train else y_test_t
+
                 static_pred_A, static_pred_B, diff_logits, r_A, r_B = self.model.forward_pair(
-                    feat2_a, feat2_b, adj, feat1, train_x, edges_train_t if has_diff_train else edges_test_t)
+                    feat2_a, feat2_b, adj, feat1, train_x, diff_batch_edges)
 
                 if self.args.flag:
                     pred_A = torch.softmax(static_pred_A, dim=1)
@@ -252,10 +269,10 @@ class DiffTrainer:
                 loss_static = F.binary_cross_entropy(pred_A, train_y) + F.binary_cross_entropy(pred_B, train_y)
 
                 if has_diff_train:
-                    loss_ce = F.cross_entropy(diff_logits, y_train_t, weight=ce_weight)
+                    loss_ce = F.cross_entropy(diff_logits, diff_batch_y, weight=ce_weight)
                     loss_con = torch.tensor(0.0, device=self.device)
                     if self.args.diff_ablation != 'no_contrastive':
-                        loss_con = self._contrastive_loss(r_A, r_B, y_train_t)
+                        loss_con = self._contrastive_loss(r_A, r_B, diff_batch_y)
                 else:
                     loss_ce = torch.tensor(0.0, device=self.device)
                     loss_con = torch.tensor(0.0, device=self.device)
