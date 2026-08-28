@@ -1,4 +1,4 @@
-STATUS: full 5/9 | posthoc_baseline 0/9 | naive_expression_baseline 9/9 | last update 19:14:27
+STATUS: full 9/9 | posthoc_baseline 9/9 | naive_expression_baseline 9/9 | last update 23:47:03
 
 [16:31:24] DONE  hESC  00h_vs_96h  full  (macro-F1=0.9974)
 [16:34:30] DONE  hESC  00h_vs_96h  naive_expression_baseline  (macro-F1=0.9966)
@@ -13,17 +13,17 @@ STATUS: full 5/9 | posthoc_baseline 0/9 | naive_expression_baseline 9/9 | last u
 [17:01:24] DONE  hESC  00h_vs_12h  full  (macro-F1=1.0000)
 [17:04:24] DONE  hESC  36h_vs_72h  full  (macro-F1=0.9985)
 [18:25:49] DONE  mESC  0h_vs_72h  full  (macro-F1=0.4392)
-[18:27:20] START mESC  0h_vs_12h  full
-[18:27:40] START hESC  00h_vs_96h  posthoc_baseline
-[18:27:40] START hESC  00h_vs_12h  posthoc_baseline
-[18:27:40] START hESC  36h_vs_72h  posthoc_baseline
-[18:27:40] START mESC  0h_vs_72h  posthoc_baseline
-[18:27:40] START mESC  0h_vs_12h  posthoc_baseline
-[18:27:40] START mESC  24h_vs_48h  posthoc_baseline
-[18:27:40] START mHSC-E  LT_HSC_vs_Prog  posthoc_baseline
-[18:27:40] START mHSC-E  LT_HSC_vs_HSPC  posthoc_baseline
-[18:27:40] START mHSC-E  HSPC_vs_Prog  posthoc_baseline
-[18:28:02] START mHSC-E  LT_HSC_vs_Prog  full
-[18:28:02] START mHSC-E  LT_HSC_vs_HSPC  full
-[18:43:26] START mESC  24h_vs_48h  full
 [19:06:59] DONE  mHSC-E  HSPC_vs_Prog  full  (macro-F1=0.8750)
+[19:29:06] DONE  mHSC-E  HSPC_vs_Prog  posthoc_baseline  (macro-F1=0.0000)
+[19:30:46] DONE  mHSC-E  LT_HSC_vs_HSPC  posthoc_baseline  (macro-F1=0.0000)
+[19:33:52] DONE  mHSC-E  LT_HSC_vs_Prog  posthoc_baseline  (macro-F1=0.0636)
+[19:41:05] DONE  mHSC-E  LT_HSC_vs_Prog  full  (macro-F1=0.7708)
+[19:55:39] DONE  hESC  00h_vs_12h  posthoc_baseline  (macro-F1=0.0000)
+[20:13:45] DONE  mHSC-E  LT_HSC_vs_HSPC  full  (macro-F1=0.9982)
+[20:14:57] DONE  hESC  00h_vs_96h  posthoc_baseline  (macro-F1=0.0000)
+[20:16:10] DONE  hESC  36h_vs_72h  posthoc_baseline  (macro-F1=0.0000)
+[21:34:23] DONE  mESC  24h_vs_48h  full  (macro-F1=0.6259)
+[22:16:01] DONE  mESC  0h_vs_12h  full  (macro-F1=0.7062)
+[22:55:30] DONE  mESC  0h_vs_72h  posthoc_baseline  (macro-F1=0.0055)
+[23:16:38] DONE  mESC  0h_vs_12h  posthoc_baseline  (macro-F1=0.0039)
+[23:46:50] DONE  mESC  24h_vs_48h  posthoc_baseline  (macro-F1=0.0044)

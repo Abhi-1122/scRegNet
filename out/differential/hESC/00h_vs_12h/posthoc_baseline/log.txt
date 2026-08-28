@@ -1,0 +1,214 @@
+[1;31m[__main__ 2026-08-28 18:27:59,301] posthoc_baseline: hESC 00h vs 12h[0m
+/home/abhishekg/Documents/Research/scRegNet/src/utils.py:104: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:278.)
+  i = torch.LongTensor([coo.row, coo.col])
+posthoc[00h]:   0%|          | 0/300 [00:00<?, ?it/s]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/utils/_spmm.py:71: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at ../aten/src/ATen/SparseCsrTensorImpl.cpp:53.)
+  src = src.to_sparse_csr()
+posthoc[00h]:   0%|          | 1/300 [00:23<1:55:38, 23.21s/it]posthoc[00h]:   1%|          | 2/300 [00:35<1:24:36, 17.03s/it]posthoc[00h]:   1%|          | 3/300 [00:48<1:14:21, 15.02s/it]posthoc[00h]:   1%|▏         | 4/300 [01:01<1:09:37, 14.11s/it]posthoc[00h]:   2%|▏         | 5/300 [01:15<1:09:45, 14.19s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:   2%|▏         | 6/300 [01:28<1:07:49, 13.84s/it]posthoc[00h]:   2%|▏         | 7/300 [01:44<1:10:54, 14.52s/it]posthoc[00h]:   3%|▎         | 8/300 [02:02<1:16:28, 15.71s/it]posthoc[00h]:   3%|▎         | 9/300 [02:21<1:19:58, 16.49s/it]posthoc[00h]:   3%|▎         | 10/300 [02:48<1:35:14, 19.70s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:   4%|▎         | 11/300 [03:22<1:56:39, 24.22s/it]posthoc[00h]:   4%|▍         | 12/300 [03:54<2:08:01, 26.67s/it]posthoc[00h]:   4%|▍         | 13/300 [04:25<2:14:01, 28.02s/it]posthoc[00h]:   5%|▍         | 14/300 [04:55<2:15:06, 28.35s/it]posthoc[00h]:   5%|▌         | 15/300 [05:24<2:16:57, 28.83s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:   5%|▌         | 16/300 [05:53<2:16:39, 28.87s/it]posthoc[00h]:   6%|▌         | 17/300 [06:23<2:16:49, 29.01s/it]posthoc[00h]:   6%|▌         | 18/300 [06:51<2:15:42, 28.88s/it]posthoc[00h]:   6%|▋         | 19/300 [07:19<2:13:53, 28.59s/it]posthoc[00h]:   7%|▋         | 20/300 [07:48<2:13:20, 28.57s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:   7%|▋         | 21/300 [08:15<2:11:26, 28.27s/it]posthoc[00h]:   7%|▋         | 22/300 [08:43<2:10:41, 28.21s/it]posthoc[00h]:   8%|▊         | 23/300 [09:13<2:12:10, 28.63s/it]posthoc[00h]:   8%|▊         | 24/300 [09:43<2:13:58, 29.12s/it]posthoc[00h]:   8%|▊         | 25/300 [10:13<2:14:46, 29.40s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:   9%|▊         | 26/300 [10:43<2:14:53, 29.54s/it]posthoc[00h]:   9%|▉         | 27/300 [11:12<2:13:13, 29.28s/it]posthoc[00h]:   9%|▉         | 28/300 [11:42<2:13:21, 29.42s/it]posthoc[00h]:  10%|▉         | 29/300 [12:12<2:14:07, 29.70s/it]posthoc[00h]:  10%|█         | 30/300 [12:43<2:14:58, 29.99s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  10%|█         | 31/300 [13:15<2:18:03, 30.79s/it]posthoc[00h]:  11%|█         | 32/300 [13:48<2:19:59, 31.34s/it]posthoc[00h]:  11%|█         | 33/300 [14:22<2:23:03, 32.15s/it]posthoc[00h]:  11%|█▏        | 34/300 [14:54<2:22:30, 32.15s/it]posthoc[00h]:  12%|█▏        | 35/300 [15:26<2:21:09, 31.96s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  12%|█▏        | 36/300 [15:58<2:21:24, 32.14s/it]posthoc[00h]:  12%|█▏        | 37/300 [16:30<2:20:38, 32.09s/it]posthoc[00h]:  13%|█▎        | 38/300 [17:04<2:22:00, 32.52s/it]posthoc[00h]:  13%|█▎        | 39/300 [17:33<2:17:53, 31.70s/it]posthoc[00h]:  13%|█▎        | 40/300 [18:07<2:20:19, 32.38s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  14%|█▎        | 41/300 [18:40<2:20:11, 32.48s/it]posthoc[00h]:  14%|█▍        | 42/300 [19:10<2:16:41, 31.79s/it]posthoc[00h]:  14%|█▍        | 43/300 [19:40<2:13:33, 31.18s/it]posthoc[00h]:  15%|█▍        | 44/300 [20:10<2:10:47, 30.65s/it]posthoc[00h]:  15%|█▌        | 45/300 [20:41<2:11:09, 30.86s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  15%|█▌        | 46/300 [21:14<2:13:23, 31.51s/it]posthoc[00h]:  16%|█▌        | 47/300 [21:43<2:09:50, 30.79s/it]posthoc[00h]:  16%|█▌        | 48/300 [22:13<2:08:51, 30.68s/it]posthoc[00h]:  16%|█▋        | 49/300 [22:43<2:07:31, 30.48s/it]posthoc[00h]:  17%|█▋        | 50/300 [23:14<2:07:27, 30.59s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  17%|█▋        | 51/300 [23:46<2:07:56, 30.83s/it]posthoc[00h]:  17%|█▋        | 52/300 [24:22<2:14:51, 32.63s/it]posthoc[00h]:  18%|█▊        | 53/300 [24:59<2:18:48, 33.72s/it]posthoc[00h]:  18%|█▊        | 54/300 [25:36<2:22:27, 34.75s/it]posthoc[00h]:  18%|█▊        | 55/300 [26:15<2:27:01, 36.01s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  19%|█▊        | 56/300 [26:57<2:33:27, 37.74s/it]posthoc[00h]:  19%|█▉        | 57/300 [27:38<2:37:02, 38.77s/it]posthoc[00h]:  19%|█▉        | 58/300 [28:22<2:42:54, 40.39s/it]posthoc[00h]:  20%|█▉        | 59/300 [29:03<2:42:27, 40.44s/it]posthoc[00h]:  20%|██        | 60/300 [29:43<2:42:19, 40.58s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  20%|██        | 61/300 [30:24<2:41:04, 40.44s/it]posthoc[00h]:  21%|██        | 62/300 [31:04<2:40:13, 40.39s/it]posthoc[00h]:  21%|██        | 63/300 [31:45<2:40:21, 40.60s/it]posthoc[00h]:  21%|██▏       | 64/300 [32:24<2:38:02, 40.18s/it]posthoc[00h]:  22%|██▏       | 65/300 [33:04<2:36:49, 40.04s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  22%|██▏       | 66/300 [33:43<2:35:18, 39.82s/it]posthoc[00h]:  22%|██▏       | 67/300 [34:21<2:32:29, 39.27s/it]posthoc[00h]:  23%|██▎       | 68/300 [35:00<2:31:56, 39.30s/it]posthoc[00h]:  23%|██▎       | 69/300 [35:40<2:31:19, 39.31s/it]posthoc[00h]:  23%|██▎       | 70/300 [36:17<2:28:45, 38.81s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  24%|██▎       | 71/300 [36:57<2:28:44, 38.97s/it]posthoc[00h]:  24%|██▍       | 72/300 [37:38<2:30:44, 39.67s/it]posthoc[00h]:  24%|██▍       | 73/300 [38:18<2:30:39, 39.82s/it]posthoc[00h]:  25%|██▍       | 74/300 [38:58<2:29:38, 39.73s/it]posthoc[00h]:  25%|██▌       | 75/300 [39:35<2:26:41, 39.12s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  25%|██▌       | 76/300 [40:13<2:24:25, 38.68s/it]posthoc[00h]:  26%|██▌       | 77/300 [40:50<2:21:29, 38.07s/it]posthoc[00h]:  26%|██▌       | 78/300 [41:26<2:18:47, 37.51s/it]posthoc[00h]:  26%|██▋       | 79/300 [42:02<2:16:35, 37.08s/it]posthoc[00h]:  27%|██▋       | 80/300 [42:38<2:15:12, 36.87s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  27%|██▋       | 81/300 [43:13<2:12:05, 36.19s/it]posthoc[00h]:  27%|██▋       | 82/300 [43:48<2:10:38, 35.96s/it]posthoc[00h]:  28%|██▊       | 83/300 [44:24<2:09:12, 35.73s/it]posthoc[00h]:  28%|██▊       | 84/300 [44:59<2:08:13, 35.62s/it]posthoc[00h]:  28%|██▊       | 85/300 [45:34<2:06:50, 35.40s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[00h]:  29%|██▊       | 86/300 [46:09<2:06:20, 35.42s/it]posthoc[00h]:  29%|██▉       | 87/300 [46:45<2:06:12, 35.55s/it]posthoc[00h]:  29%|██▉       | 88/300 [47:20<2:04:50, 35.33s/it]posthoc[00h]:  30%|██▉       | 89/300 [47:56<2:04:23, 35.37s/it]posthoc[00h]:  30%|██▉       | 89/300 [48:31<1:55:01, 32.71s/it]
+posthoc[12h]:   0%|          | 0/300 [00:00<?, ?it/s]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:   0%|          | 1/300 [00:34<2:50:58, 34.31s/it]posthoc[12h]:   1%|          | 2/300 [01:08<2:49:19, 34.09s/it]posthoc[12h]:   1%|          | 3/300 [01:42<2:49:38, 34.27s/it]posthoc[12h]:   1%|▏         | 4/300 [02:16<2:48:35, 34.17s/it]posthoc[12h]:   2%|▏         | 5/300 [02:50<2:47:10, 34.00s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:   2%|▏         | 6/300 [03:24<2:46:42, 34.02s/it]posthoc[12h]:   2%|▏         | 7/300 [03:58<2:46:24, 34.08s/it]posthoc[12h]:   3%|▎         | 8/300 [04:32<2:45:54, 34.09s/it]posthoc[12h]:   3%|▎         | 9/300 [05:06<2:45:12, 34.06s/it]posthoc[12h]:   3%|▎         | 10/300 [05:41<2:45:39, 34.27s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:   4%|▎         | 11/300 [06:16<2:46:39, 34.60s/it]posthoc[12h]:   4%|▍         | 12/300 [06:51<2:45:41, 34.52s/it]posthoc[12h]:   4%|▍         | 13/300 [07:25<2:44:37, 34.42s/it]posthoc[12h]:   5%|▍         | 14/300 [07:59<2:43:31, 34.31s/it]posthoc[12h]:   5%|▌         | 15/300 [08:33<2:42:22, 34.18s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:   5%|▌         | 16/300 [09:08<2:43:49, 34.61s/it]posthoc[12h]:   6%|▌         | 17/300 [09:44<2:45:13, 35.03s/it]posthoc[12h]:   6%|▌         | 18/300 [10:19<2:44:07, 34.92s/it]posthoc[12h]:   6%|▋         | 19/300 [10:54<2:43:49, 34.98s/it]posthoc[12h]:   7%|▋         | 20/300 [11:28<2:41:30, 34.61s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:   7%|▋         | 21/300 [12:03<2:41:15, 34.68s/it]posthoc[12h]:   7%|▋         | 22/300 [12:36<2:38:55, 34.30s/it]posthoc[12h]:   8%|▊         | 23/300 [13:07<2:34:03, 33.37s/it]posthoc[12h]:   8%|▊         | 24/300 [13:39<2:30:55, 32.81s/it]posthoc[12h]:   8%|▊         | 25/300 [14:11<2:28:42, 32.44s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:   9%|▊         | 26/300 [14:39<2:22:50, 31.28s/it]posthoc[12h]:   9%|▉         | 27/300 [15:08<2:18:52, 30.52s/it]posthoc[12h]:   9%|▉         | 28/300 [15:37<2:16:06, 30.02s/it]posthoc[12h]:  10%|▉         | 29/300 [16:05<2:13:52, 29.64s/it]posthoc[12h]:  10%|█         | 30/300 [16:35<2:12:59, 29.56s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  10%|█         | 31/300 [17:04<2:12:36, 29.58s/it]posthoc[12h]:  11%|█         | 32/300 [17:31<2:08:38, 28.80s/it]posthoc[12h]:  11%|█         | 33/300 [17:57<2:04:25, 27.96s/it]posthoc[12h]:  11%|█▏        | 34/300 [18:25<2:03:26, 27.84s/it]posthoc[12h]:  12%|█▏        | 35/300 [18:52<2:01:40, 27.55s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  12%|█▏        | 36/300 [19:18<1:59:12, 27.09s/it]posthoc[12h]:  12%|█▏        | 37/300 [19:44<1:57:06, 26.72s/it]posthoc[12h]:  13%|█▎        | 38/300 [20:11<1:57:25, 26.89s/it]posthoc[12h]:  13%|█▎        | 39/300 [20:39<1:58:14, 27.18s/it]posthoc[12h]:  13%|█▎        | 40/300 [21:06<1:57:04, 27.02s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  14%|█▎        | 41/300 [21:32<1:55:43, 26.81s/it]posthoc[12h]:  14%|█▍        | 42/300 [21:55<1:51:04, 25.83s/it]posthoc[12h]:  14%|█▍        | 43/300 [22:10<1:35:39, 22.33s/it]posthoc[12h]:  15%|█▍        | 44/300 [22:35<1:39:49, 23.40s/it]posthoc[12h]:  15%|█▌        | 45/300 [23:02<1:42:57, 24.23s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  15%|█▌        | 46/300 [23:28<1:44:52, 24.77s/it]posthoc[12h]:  16%|█▌        | 47/300 [23:56<1:48:56, 25.84s/it]posthoc[12h]:  16%|█▌        | 48/300 [24:23<1:49:26, 26.06s/it]posthoc[12h]:  16%|█▋        | 49/300 [24:48<1:48:30, 25.94s/it]posthoc[12h]:  17%|█▋        | 50/300 [25:12<1:44:52, 25.17s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  17%|█▋        | 51/300 [25:35<1:42:02, 24.59s/it]posthoc[12h]:  17%|█▋        | 52/300 [25:58<1:39:17, 24.02s/it]posthoc[12h]:  18%|█▊        | 53/300 [26:21<1:37:44, 23.74s/it]posthoc[12h]:  18%|█▊        | 54/300 [26:45<1:37:51, 23.87s/it]posthoc[12h]:  18%|█▊        | 55/300 [27:09<1:37:45, 23.94s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  19%|█▊        | 56/300 [27:33<1:37:42, 24.02s/it]posthoc[12h]:  19%|█▉        | 57/300 [27:56<1:36:04, 23.72s/it]posthoc[12h]:  19%|█▉        | 58/300 [28:20<1:36:23, 23.90s/it]posthoc[12h]:  20%|█▉        | 59/300 [28:45<1:36:44, 24.09s/it]posthoc[12h]:  20%|██        | 60/300 [29:09<1:36:49, 24.21s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  20%|██        | 61/300 [29:34<1:37:23, 24.45s/it]posthoc[12h]:  21%|██        | 62/300 [29:59<1:36:41, 24.38s/it]posthoc[12h]:  21%|██        | 63/300 [30:22<1:35:33, 24.19s/it]posthoc[12h]:  21%|██▏       | 64/300 [30:46<1:34:25, 24.01s/it]posthoc[12h]:  22%|██▏       | 65/300 [31:10<1:33:48, 23.95s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  22%|██▏       | 66/300 [31:34<1:33:03, 23.86s/it]posthoc[12h]:  22%|██▏       | 67/300 [31:57<1:32:27, 23.81s/it]posthoc[12h]:  23%|██▎       | 68/300 [32:22<1:32:48, 24.00s/it]posthoc[12h]:  23%|██▎       | 69/300 [32:46<1:33:11, 24.21s/it]posthoc[12h]:  23%|██▎       | 70/300 [33:12<1:34:50, 24.74s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  24%|██▎       | 71/300 [33:37<1:33:56, 24.61s/it]posthoc[12h]:  24%|██▍       | 72/300 [34:00<1:31:44, 24.14s/it]posthoc[12h]:  24%|██▍       | 73/300 [34:23<1:30:32, 23.93s/it]posthoc[12h]:  25%|██▍       | 74/300 [34:47<1:30:16, 23.97s/it]posthoc[12h]:  25%|██▌       | 75/300 [35:10<1:28:44, 23.67s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  25%|██▌       | 76/300 [35:33<1:27:23, 23.41s/it]posthoc[12h]:  26%|██▌       | 77/300 [35:56<1:26:48, 23.36s/it]posthoc[12h]:  26%|██▌       | 78/300 [36:19<1:25:29, 23.10s/it]posthoc[12h]:  26%|██▋       | 79/300 [36:42<1:25:11, 23.13s/it]posthoc[12h]:  27%|██▋       | 80/300 [37:06<1:25:22, 23.28s/it]/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+posthoc[12h]:  27%|██▋       | 81/300 [37:29<1:24:39, 23.19s/it]posthoc[12h]:  27%|██▋       | 82/300 [37:51<1:23:52, 23.09s/it]posthoc[12h]:  28%|██▊       | 83/300 [38:14<1:22:38, 22.85s/it]posthoc[12h]:  28%|██▊       | 84/300 [38:36<1:22:13, 22.84s/it]posthoc[12h]:  28%|██▊       | 84/300 [39:00<1:40:17, 27.86s/it]
+[1;31m[__main__ 2026-08-28 19:55:38,947] posthoc static models: 00h AUROC=0.8800 AUPRC=0.6209 | 12h AUROC=0.8785 AUPRC=0.6187[0m
+/home/abhishekg/.local/lib/python3.12/site-packages/torch_geometric/nn/conv/gcn_conv.py:274: UserWarning: Converting sparse tensor to CSR format for more efficient processing. Consider converting your sparse tensor to CSR format beforehand to avoid repeated conversion (got 'torch.sparse_coo')
+  return spmm(adj_t, x, reduce=self.aggr)
+[32m[__main__ 2026-08-28 19:55:39,483] {
+  "static_auc_A": 0.8799885181839078,
+  "static_aupr_A": 0.6208733993251714,
+  "static_auc_B": 0.8785405818187116,
+  "static_aupr_B": 0.6187450631559422,
+  "macro_f1": 0.0,
+  "per_class": {
+    "conserved": {
+      "n_test": 0,
+      "f1": null
+    },
+    "A-specific": {
+      "n_test": 0,
+      "f1": null
+    },
+    "B-specific": {
+      "n_test": 0,
+      "f1": null
+    },
+    "neither": {
+      "n_test": 1363,
+      "f1": 0.0
+    }
+  },
+  "per_class_macro_f1_classes_included": [
+    "neither"
+  ],
+  "confusion_matrix": [
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      323,
+      0,
+      1040,
+      0
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "conserved",
+    "A-specific",
+    "B-specific",
+    "neither"
+  ],
+  "n_TFs_tested": 34,
+  "diff_test_class_counts": {
+    "conserved": 0,
+    "A-specific": 0,
+    "B-specific": 0,
+    "neither": 1363
+  }
+}[0m
+{
+  "static_auc_A": 0.8799885181839078,
+  "static_aupr_A": 0.6208733993251714,
+  "static_auc_B": 0.8785405818187116,
+  "static_aupr_B": 0.6187450631559422,
+  "macro_f1": 0.0,
+  "per_class": {
+    "conserved": {
+      "n_test": 0,
+      "f1": null
+    },
+    "A-specific": {
+      "n_test": 0,
+      "f1": null
+    },
+    "B-specific": {
+      "n_test": 0,
+      "f1": null
+    },
+    "neither": {
+      "n_test": 1363,
+      "f1": 0.0
+    }
+  },
+  "per_class_macro_f1_classes_included": [
+    "neither"
+  ],
+  "confusion_matrix": [
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      323,
+      0,
+      1040,
+      0
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "conserved",
+    "A-specific",
+    "B-specific",
+    "neither"
+  ],
+  "n_TFs_tested": 34,
+  "diff_test_class_counts": {
+    "conserved": 0,
+    "A-specific": 0,
+    "B-specific": 0,
+    "neither": 1363
+  }
+}

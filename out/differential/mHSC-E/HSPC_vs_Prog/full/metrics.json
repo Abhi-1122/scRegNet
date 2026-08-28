@@ -1,0 +1,88 @@
+{
+  "static_auc_A": 0.9179384998331782,
+  "static_aupr_A": 0.9358046793729,
+  "static_auc_B": 0.9174941905046212,
+  "static_aupr_B": 0.9353744150112583,
+  "macro_f1": 0.8749693088852004,
+  "per_class": {
+    "conserved": {
+      "n_test": 2,
+      "auroc": null,
+      "auprc": null,
+      "f1": null
+    },
+    "A-specific": {
+      "n_test": 0,
+      "auroc": null,
+      "auprc": null,
+      "f1": null
+    },
+    "B-specific": {
+      "n_test": 640,
+      "auroc": 0.9703474813432835,
+      "auprc": 0.8875319283314937,
+      "f1": 0.7978642257818459
+    },
+    "neither": {
+      "n_test": 2812,
+      "auroc": 0.9699701546110794,
+      "auprc": 0.9930143722847502,
+      "f1": 0.952074391988555
+    },
+    "_macro_f1_classes_included": [
+      "B-specific",
+      "neither"
+    ]
+  },
+  "confusion_matrix": [
+    [
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      523,
+      117
+    ],
+    [
+      2,
+      0,
+      148,
+      2662
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "conserved",
+    "A-specific",
+    "B-specific",
+    "neither"
+  ],
+  "diagnostic_counts": {
+    "neither": 9373,
+    "B-specific": 2134,
+    "inconsistent": 38,
+    "conserved": 7,
+    "ambiguous": 5
+  },
+  "diff_train_class_counts": {
+    "conserved": 5,
+    "A-specific": 0,
+    "B-specific": 1494,
+    "neither": 6561
+  },
+  "diff_test_class_counts": {
+    "conserved": 2,
+    "A-specific": 0,
+    "B-specific": 640,
+    "neither": 2812
+  }
+}

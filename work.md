@@ -214,3 +214,149 @@ system** on inspection -- two bugs found and fixed before trusting any downstrea
   one moderate-severity run at modest edge counts -- reported as-is, not padded.
 - **Deferred**: mild/severe severities and mESC/mHSC-E synthetic variants, per work.md's
   scoping entry above.
+
+## 2026-08-28 (cont'd) -- mid-Phase-2 scope change (from coordinator) + perf fix
+
+**Perf fix**: found mid-Phase-2 that mESC's `full` runs were taking 40+ min each (vs
+hESC's ~2.5 min) -- root-caused to the training loop recomputing the diff-head forward
+pass over the ENTIRE diff-train edge set (up to ~20K edges for mESC) on every one of the
+~341 static mini-batch steps/epoch (mESC's `Train_set.csv` is 65,898 rows vs hESC's
+20,677, so ~3.2x more static steps/epoch too, compounding). Killed the in-flight mESC run
+(no completed metrics.json lost) and added `--diff_batch_cap` (default 4096, new arg in
+`src/args.py`) to `DiffTrainer.train()`: the diff edges are now mini-batched too (a fresh
+random subset up to the cap, resampled every step), same spirit as the existing static
+mini-batching. This changes ONLY the stochastic mini-batching granularity of an already-
+full-batch-equivalent training signal (every diff edge is still visited over the course of
+an epoch, just not all-at-once every single step) -- it does not touch any of the fixed
+architecture/loss hyperparameters carried over from the baseline, so it isn't a
+hyperparameter-search change. Re-launched the `full` stage from scratch (skip-logic
+correctly skipped hESC's 3 already-completed pairs).
+
+**Scope change from the user (relayed by coordinator), recorded verbatim as instructed**:
+skip the `no_scfm`/`no_grn`/`no_contrastive` ablation runs for this pass entirely -- to be
+run later only if the core results look promising. None of the 9 planned ablation runs (3
+primary pairs x 3 ablations) had been started yet at the time of this message, so nothing
+is reverted -- they simply do not run this pass. `run_phase2.sh ablations` stage is left
+in place in the script (for a later pass) but is not invoked.
+
+Remaining scope for this pass, per the coordinator's message: `full` (9 pairs) +
+`posthoc_baseline` (9 pairs) + `naive_expression_baseline` (9 pairs, already done) + the
+plan's Sec 5.3 named biological checks against `full`'s output for hESC, mESC, and
+mHSC-E -- prioritizing mHSC-E's GATA2->GATA1 flagship check and mESC's naive-circuit
+collapse check, since Phase 0's yield numbers suggest both are far better-powered than
+hESC's checks.
+
+### Phase 2 execution notes: concurrency, a perf fix, and a mid-run diagnostic
+
+Running all 27 GPU jobs (9 full + 9 posthoc_baseline; naive_expression_baseline is CPU-only
+and finished in 18s for all 9) took substantially longer wall-clock than Phase 1's single
+hESC run suggested, entirely because of `Train_set.csv` size differences across cell types
+(mESC: 65,898 rows / ~341 static mini-batches per epoch vs hESC's 20,677 rows / ~107
+batches) and, separately, GPU-contention effects from running too many concurrent
+processes on one 8GB GPU:
+
+- Fixed a real inefficiency: `DiffTrainer.train()` was recomputing the full diff-edge
+  forward pass (`forward_pair` over ALL training diff-edges, up to ~20K for mESC) on every
+  one of the ~341 static mini-batch steps per epoch. Added `--diff_batch_cap` (default
+  4096, new arg) to mini-batch the diff edges too (fresh random subset per step, same
+  spirit as the pre-existing static mini-batching) -- committed before any mESC/mHSC-E
+  `full` runs were (re-)launched.
+- Ran 5 mESC jobs concurrently at one point (2 `full` + 3 `posthoc_baseline`) to use spare
+  GPU headroom; this caused severe contention (observed 108s/epoch vs ~17.5s/epoch
+  uncontended, a ~6.2x slowdown) that more than erased the concurrency benefit. Coordinator
+  killed the 5 stuck processes and asked for a profiling check to rule out an O(n^2)
+  scaling bug in the loss (the 47x observed vs. 2.3s/epoch hESC baseline lined up
+  suspiciously with mESC's ~6.5x larger candidate-edge count, squared).
+- **Profiled directly** (isolated, uncontended reruns of mESC `0h_vs_12h`, 3-epoch and
+  10-epoch): consistently ~17.5-18.5s/epoch regardless of epoch count -- ruled out any
+  O(n^2)/growing-cost bug (`diff_batch_cap` was already correctly bounding the CE +
+  contrastive loss to <=4096 rows per step). The observed 47x factor decomposes as ~7.6x
+  legitimate (mESC's 3.2x larger `Train_set.csv` -> more static batches/epoch, plus some
+  residual overhead) x ~6.2x from the since-abandoned 5-way GPU contention -- not a single
+  bug, a combination of a real (now understood, not "fixed" since it isn't a bug) scaling
+  factor and an over-aggressive concurrency choice.
+- Relaunched the remaining mESC jobs at 2-way concurrency (per coordinator's guidance),
+  which gave a real, if modest, throughput gain (~1.9x slowdown per process vs ~6.2x at
+  5-way) with no further code changes. All 27 Phase 2 runs completed at that concurrency
+  level. `src/progress_watch.py` (backfilled + live-updated `PROGRESS.md`) was added
+  mid-run per the coordinator's request and used throughout to track status without
+  digging through logs.
+
+### Phase 2 results: core matrix (full vs posthoc_baseline vs naive_expression_baseline, macro-F1, all 9 pairs)
+
+| cell_type | pair | full | posthoc_baseline | naive_expression_baseline |
+|---|---|---|---|---|
+| hESC | 00h_vs_96h | 0.9974 | 0.0000 | 0.9966 |
+| hESC | 00h_vs_12h | 1.0000 | 0.0000 | 1.0000 |
+| hESC | 36h_vs_72h | 0.9985 | 0.0000 | 0.8176 |
+| mESC | 0h_vs_72h | 0.4392 | 0.0055 | 0.3541 |
+| mESC | 0h_vs_12h | 0.7062 | 0.0039 | 0.3917 |
+| mESC | 24h_vs_48h | 0.6259 | 0.0044 | 0.3884 |
+| mHSC-E | LT_HSC_vs_Prog | 0.7708 | 0.0636 | 0.3701 |
+| mHSC-E | LT_HSC_vs_HSPC | 0.9982 | 0.0000 | 0.8451 |
+| mHSC-E | HSPC_vs_Prog | 0.8750 | 0.0000 | 0.6087 |
+
+**`full` vs `posthoc_baseline`** (the central novelty claim, plan Sec 6): `full` wins on
+every single pair, usually by a huge margin. This is real but partly an artifact of
+`posthoc_baseline`'s documented structural limitation (no "neither" call at all -- see
+`src/posthoc_baseline.py`'s docstring -- so it can never score above ~0 macro-F1 whenever
+"neither" dominates the test set, which is true for all 9 pairs given the severe class
+imbalance Sec 7 predicted). This should be read as "the joint model handles the dominant
+`neither` class, which the post-hoc adaptation structurally cannot" rather than "the joint
+model is uniformly ~100x better at the differential task per se" -- an honest reading, not
+a rhetorical one, per the plan's own instruction not to reframe a mechanistic difference
+as a bigger win than it is.
+
+**`full` vs `naive_expression_baseline`** (is graph+scFM structure adding anything over
+gene-level statistics alone): `full` beats naive by >=5-10 macro-F1 points (the plan's own
+target) on **7 of 9 pairs** -- mESC's all three pairs (+31.5, +8.5, +23.7 pts) and
+mHSC-E's all three pairs (+40.1, +15.3, +26.6 pts) -- and ties naive on hESC's two
+~100%-"neither" pairs (00h_vs_96h, 00h_vs_12h) where there is no room to improve (both
+already near-ceiling). hESC's 36h_vs_72h pair is the one case where `full` clearly beats
+naive on a hESC pair (0.9985 vs 0.8176, +18.1 pts). This is a genuinely positive result
+against the plan's Sec 6 framing for `full` vs `naive_expression_baseline` specifically --
+the architecture is not just re-deriving the label statistic through a more expensive path.
+
+### Phase 2 results: named biological checks (plan Sec 5.3), `full` model, all 3 cell types
+
+**hESC** (00h_vs_96h, 00h_vs_12h, 36h_vs_72h): **ALL FAIL TO RESOLVE.** POU5F1 (87
+out-edges), NANOG (346), SOX2 (254) show 0% A-specific in 00h_vs_96h. SOX17 (23), GATA4
+(45), GATA6 (22) show 0% B-specific in 00h_vs_96h, and only 0-4.5% B-specific in
+36h_vs_72h (GATA4: 1/45, GATA6: 1/22, SOX17: 0/23). EOMES shows 0% B-specific in
+00h_vs_12h. The model predicts ~100% "neither" for essentially every named gene's
+out-edges across all 3 hESC pairs. This is a direct, expected consequence of Phase
+0/1's already-established finding (hESC's condition-A correlation signal is
+near-absent at n=92, so the silver labels themselves have almost no A-specific/conserved
+examples to train against) -- not a new or separate failure mode discovered here.
+
+**mESC naive-pluripotency-circuit collapse** (0h_vs_72h, 0h_vs_12h): **FAILS to cleanly
+resolve.** Every naive-circuit gene (NANOG, POU5F1, SOX2, KLF4, KLF2, ESRRB, TBX3, ZFP42,
+PRDM14) shows <3% A-specific out-edges in both pairs -- overwhelmingly "neither". Three
+genes (POU5F1: 65 B-specific vs 2 A-specific; ESRRB: 57 B-specific vs 16 A-specific; TBX3:
+7 B-specific vs 0 A-specific, all in 0h_vs_72h) show *more* B-specific (72h-specific) than
+A-specific (0h-specific) edges -- the opposite of the predicted direction, though absolute
+counts are a small fraction of each gene's total out-edges. OTX2 (predicted 72h-specific)
+shows 0% B-specific. Unlike hESC, mESC's silver-label yield for this pair is not thin
+(Phase 0: 32 conserved / 71 A-specific / 175 B-specific for 0h_vs_72h) -- so this is a
+genuine negative finding about what the trained model recovered for these specific named
+genes, not a labeling-yield artifact. Reported honestly as a failure, per plan Sec 5.4.
+
+**mHSC-E erythroid-commitment checks** -- the best-resolved cell type, with one clear
+positive result and several inconclusive/negative ones:
+
+| Check | Result |
+|---|---|
+| **GATA2->GATA1 flagship edge** | **PARTIAL PASS.** `LT_HSC_vs_Prog`: predicted "neither" (fail). `HSPC_vs_Prog`: predicted "**B-specific**" with 100% model confidence (pass) -- correctly flagged as strongly differential in exactly the pair the plan itself named as where the GATA-switch effect should be sharpest (the erythroid-commitment step). **This is the single most citable positive biological finding of Phase 2** -- a single trained model recovering the textbook GATA2->GATA1 switch direction with full confidence, in the mechanistically correct pair. |
+| GATA2 other out-edges (567) | FAIL to confirm predicted LT_HSC/HSPC+conserved enrichment. `LT_HSC_vs_Prog`: 40% B-specific, only 0.5% A-specific+conserved (opposite of predicted direction). `HSPC_vs_Prog`: 96% B-specific, 0% A-specific+conserved. |
+| SPI1 (PU.1) out-edges (672) | FAIL to confirm predicted LT_HSC/HSPC skew. `LT_HSC_vs_Prog`: 0% A-specific (30% B-specific, 69% neither). `HSPC_vs_Prog`: 96% B-specific. |
+| GFI1 vs GFI1B (604/257) | Mixed. `LT_HSC_vs_Prog`: GFI1 100% "neither" (uninformative, no signal at all); GFI1B 39% "conserved" -- loosely consistent with the predicted "conserved-active" pattern, the one partial confirmation in this row. `HSPC_vs_Prog`: both GFI1 (96%) and GFI1B (93%) predicted B-specific -- GFI1B's direction is plausible, GFI1's is not (predicted LT_HSC/HSPC-specific, i.e. NOT Prog-specific). |
+| EPOR in-edges (11 found of 12 named) | No clean myeloid-vs-erythroid convergence pattern. `LT_HSC_vs_Prog`: mixed B-specific/neither/conserved calls not obviously split by regulator identity (SPI1, a myeloid regulator predicted LT_HSC/HSPC-specific, is instead called B-specific). `HSPC_vs_Prog`: **all 11** in-edges called B-specific uniformly -- completely uninformative, reflects the pair's class skew rather than target-specific biology. |
+
+**Important confound for all `HSPC_vs_Prog` checks above**: Phase 0 found this pair has
+**zero** A-specific silver-training examples (conserved=7, A-specific=0, B-specific=2134,
+neither=9373) -- the model literally cannot learn to predict A-specific for this pair at
+all (no gradient signal ever pushes toward that class), so its near-uniform B-specific
+calls for GATA2/SPI1/GFI1/GFI1B/EPOR-regulator edges in this pair reflect that structural
+label gap at least as much as gene-specific biology. This should be stated explicitly in
+any writeup, not silently absorbed into "the model recovered X" or "the model failed to
+recover X" framing.

@@ -1,0 +1,67 @@
+{
+  "static_auc_A": 0.8808589539178986,
+  "static_aupr_A": 0.6186621287119624,
+  "static_auc_B": 0.8797433206534281,
+  "static_aupr_B": 0.6165479411926604,
+  "macro_f1": 0.0,
+  "per_class": {
+    "conserved": {
+      "n_test": 1,
+      "f1": null
+    },
+    "A-specific": {
+      "n_test": 0,
+      "f1": null
+    },
+    "B-specific": {
+      "n_test": 1,
+      "f1": null
+    },
+    "neither": {
+      "n_test": 1345,
+      "f1": 0.0
+    }
+  },
+  "per_class_macro_f1_classes_included": [
+    "neither"
+  ],
+  "confusion_matrix": [
+    [
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      704,
+      257,
+      384,
+      0
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "conserved",
+    "A-specific",
+    "B-specific",
+    "neither"
+  ],
+  "n_TFs_tested": 34,
+  "diff_test_class_counts": {
+    "conserved": 1,
+    "A-specific": 0,
+    "B-specific": 1,
+    "neither": 1345
+  }
+}
