@@ -33,3 +33,7 @@ wandb/
 *.csv
 optuna.db
 /tuning/
+analysis/data/
+analysis/out/*.npz
+analysis/out/*.out
+analysis/out/*.nohup

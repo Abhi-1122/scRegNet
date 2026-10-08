@@ -1,0 +1,26 @@
+(a) TF-TF target overlap, log2(observed / expected given set sizes); 0 = chance
+    STRING-connected TF pairs: n=114, median +0.645, mean +0.566
+    unconnected TF pairs:      n=430, median +0.350, mean +0.309
+    Mann-Whitney (connected > unconnected): p = 4.34e-05
+    all pairs above chance (log2 > 0): 0.72 of TF pairs
+    Spearman(STRING score, enrichment) among connected pairs: +0.169
+    core pluripotency trio:
+    A      B  string    na    nb  overlap  expected  log2_enrich
+ SOX2  NANOG   0.999 204.0 278.0    120.0    76.950        0.638
+ SOX2 POU5F1   0.999 209.0  71.0     46.0    20.162        1.170
+NANOG POU5F1   0.999 283.0  69.0     54.0    26.676        1.004
+    top 8 most-enriched connected pairs:
+     A      B  string  overlap  expected  log2_enrich
+ GATA2  GATA3   0.844      8.0     0.556        3.009
+CTNNB1   LEF1   0.999     17.0     2.515        2.537
+CTNNB1 POU5F1   0.999     30.0     6.358        2.153
+  LEF1 POU5F1   0.741     12.0     2.428        2.094
+ GATA4  SOX17   0.880      4.0     0.907        1.677
+  TCF4   LEF1   0.869      1.0     0.030        1.501
+ SOX17  GATA6   0.854      2.0     0.415        1.451
+ FOXH1  SMAD2   0.999     39.0    14.128        1.433
+
+(b) regulator-profile cosine similarity between linked genes (random gene pairs: 0.364)
+    STRING (score >= 0.7, used by PPI Methods 1/2)       pairs= 2256  cosine 0.421  degree-matched null 0.379  excess +0.042
+    co-expression top-10 neighbours (raw corr)           pairs= 6418  cosine 0.355  degree-matched null 0.357  excess -0.002
+    co-expression top-10 neighbours (z-scored corr)      pairs= 5962  cosine 0.361  degree-matched null 0.361  excess -0.000

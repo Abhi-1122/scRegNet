@@ -1,0 +1,75 @@
+/home/abhishekg/Documents/Research/scRegNet/analysis/item3_where_gain_lands.py:42: RuntimeWarning: Mean of empty slice.
+  coexp_contrast = np.array([C[b, Wtr[a] == 1].mean() - C[b, Wtr[a] == 0].mean() for a, b in zip(t, g)])
+/home/abhishekg/.local/lib/python3.12/site-packages/numpy/_core/_methods.py:145: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+mean percentile change, all positives: +0.0094, all negatives: +0.0016
+graph distance TF->target in the GCN training graph: {1.0: 30, 2.0: 4630, 3.0: 1444, 4.0: 71, 5.0: 3, inf: 964}
+
+-- by dist --
+stratum                n_pos n_neg  pos moved up neg moved down   withinTF AUROC base -> ExpC
+1 hop                      7    23       -0.0224        -0.0124  1.0000 -> 1.0000 (2 TFs)
+2 hops                   939  3691       +0.0110        +0.0053  0.6847 -> 0.7039 (31 TFs)
+3 hops                    89  1355       +0.0017        -0.0061  0.6540 -> 0.6690 (27 TFs)
+>3 / unreachable          26  1012       -0.0123        -0.0009  0.7880 -> 0.6787 (10 TFs)
+
+-- by tdeg --
+stratum                n_pos n_neg  pos moved up neg moved down   withinTF AUROC base -> ExpC
+target deg 0              26   938       -0.0123        -0.0005  0.7880 -> 0.6787 (10 TFs)
+target deg 1-2           223  1716       +0.0060        -0.0072  0.6420 -> 0.6487 (26 TFs)
+target deg 3-5           468  2258       +0.0167        +0.0030  0.5279 -> 0.5709 (28 TFs)
+target deg 6+            326  1106       +0.0045        +0.0151  0.6395 -> 0.6769 (31 TFs)
+
+-- by tfdeg --
+stratum                n_pos n_neg  pos moved up neg moved down   withinTF AUROC base -> ExpC
+TF with <=20 targets      49  2681       +0.0148        +0.0003  0.7312 -> 0.7528 (12 TFs)
+TF with 21-100           168  1933       +0.0294        +0.0026  0.6660 -> 0.6877 (10 TFs)
+TF with >100             844  1467       +0.0051        +0.0029  0.7575 -> 0.7659 (11 TFs)
+
+-- by ppi --
+stratum                n_pos n_neg  pos moved up neg moved down   withinTF AUROC base -> ExpC
+0 partners target it     501  3816       -0.0008        +0.0057  0.7276 -> 0.7381 (27 TFs)
+1 partner                301  1386       +0.0177        -0.0046  0.6201 -> 0.6305 (27 TFs)
+2+ partners              259   879       +0.0195        -0.0062  0.5923 -> 0.6344 (23 TFs)
+
+-- by coexp --
+stratum                n_pos n_neg  pos moved up neg moved down   withinTF AUROC base -> ExpC
+co-exp contrast < -0.02   385  2449       -0.0136        +0.0225  0.7387 -> 0.7502 (27 TFs)
+-0.02..0.02              291  1333       +0.0099        +0.0010  0.7264 -> 0.7836 (25 TFs)
+> +0.02                  383  1881       +0.0320        -0.0247  0.6918 -> 0.7062 (26 TFs)
+
+-- per TF: within-TF AUROC baseline -> Exp C (sorted by gain) --
+    TF  train_targets  STRING_TF_partners   base   expC   delta
+  EZH2             77                  37 0.4784 0.5922  0.1137
+  TCF4              0                  11 0.8756 0.9426  0.0670
+DNMT3B              2                  16 0.5789 0.6364  0.0574
+ SOX17             15                   9 0.8015 0.8513  0.0498
+POU5F1             58                  33 0.7486 0.7947  0.0461
+TRIM28             52                  23 0.7283 0.7737  0.0454
+BCL11A             10                   7 0.7816 0.8180  0.0364
+ FOXH1             71                   6 0.7005 0.7360  0.0355
+ HAND2              2                   6 0.6029 0.6268  0.0239
+  SOX2            170                  40 0.7604 0.7834  0.0230
+ GATA6             14                   8 0.8171 0.8398  0.0228
+ EOMES            201                  15 0.7333 0.7547  0.0214
+ GATA3             44                  15 0.6211 0.6398  0.0187
+ GATA4             30                  19 0.6268 0.6409  0.0142
+  LEF1             20                  28 0.7686 0.7809  0.0124
+  OTX2            227                   6 0.7045 0.7169  0.0123
+ GATA2              6                   7 0.6731 0.6844  0.0113
+ TEAD4            214                   7 0.7530 0.7626  0.0096
+TFAP2A            483                   7 0.8348 0.8434  0.0086
+  JUND            276                   3 0.7563 0.7649  0.0085
+ FOXP1            194                   8 0.7156 0.7210  0.0054
+ NANOG            231                  31 0.7925 0.7977  0.0052
+  MXI1            168                   0 0.7547 0.7592  0.0045
+  EGR1            177                   8 0.6996 0.7019  0.0023
+ MLLT3              0                  13 1.0000 1.0000  0.0000
+  TP53             16                  79 0.6422 0.6397 -0.0025
+ SNAI2             32                  13 0.5568 0.5513 -0.0055
+CTNNB1             55                  53 0.7658 0.7584 -0.0074
+ STAT3             20                  36 0.6801 0.6726 -0.0074
+ SMAD2            104                  34 0.8276 0.8191 -0.0085
+ PRDM1             10                   7 0.5534 0.5413 -0.0121
+  KLF5             28                   3 0.7605 0.7460 -0.0145
+ ZFP42             22                   4 0.6733 0.6442 -0.0291
+Spearman(delta, train_targets) = -0.136; Spearman(delta, STRING partners) = 0.130

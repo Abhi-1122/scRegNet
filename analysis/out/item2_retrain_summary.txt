@@ -1,0 +1,37 @@
+variant              seeds            AUROC           AUPRC   within-TF AUROC
+baseline (no PANDA)      3  0.8870±0.0009 0.6245±0.0018 0.7215±0.0017
+                           seed run tf_500_hESC_baseline_rerun: 0.8874 0.6225 0.7202
+                           seed run tf_500_hESC_pandavar_none_seed43: 0.8858 0.6240 0.7204
+                           seed run tf_500_hESC_pandavar_none_seed44: 0.8878 0.6269 0.7239
+full (Exp C)             3  0.8899±0.0006 0.6320±0.0012 0.7350±0.0020
+                           seed run tf_500_hESC_panda_edge: 0.8902 0.6333 0.7374
+                           seed run tf_500_hESC_panda_edge_seed43: 0.8903 0.6323 0.7348
+                           seed run tf_500_hESC_panda_edge_seed44: 0.8890 0.6304 0.7326
+no_coexpr                3  0.8874±0.0006 0.6275±0.0017 0.7255±0.0018
+                           seed run tf_500_hESC_pandavar_no_coexpr_seed42: 0.8879 0.6294 0.7279
+                           seed run tf_500_hESC_pandavar_no_coexpr_seed43: 0.8878 0.6278 0.7249
+                           seed run tf_500_hESC_pandavar_no_coexpr_seed44: 0.8866 0.6253 0.7236
+no_ppi                   3  0.8886±0.0006 0.6288±0.0013 0.7302±0.0016
+                           seed run tf_500_hESC_pandavar_no_ppi_seed42: 0.8890 0.6303 0.7325
+                           seed run tf_500_hESC_pandavar_no_ppi_seed43: 0.8890 0.6290 0.7286
+                           seed run tf_500_hESC_pandavar_no_ppi_seed44: 0.8877 0.6272 0.7295
+prior_only               3  0.8866±0.0005 0.6242±0.0015 0.7228±0.0011
+                           seed run tf_500_hESC_pandavar_prior_only_seed42: 0.8870 0.6261 0.7244
+                           seed run tf_500_hESC_pandavar_prior_only_seed43: 0.8869 0.6241 0.7218
+                           seed run tf_500_hESC_pandavar_prior_only_seed44: 0.8858 0.6223 0.7222
+raw_corr                 3  0.8864±0.0004 0.6252±0.0010 0.7242±0.0011
+                           seed run tf_500_hESC_pandavar_raw_corr_seed42: 0.8866 0.6264 0.7254
+                           seed run tf_500_hESC_pandavar_raw_corr_seed43: 0.8868 0.6253 0.7228
+                           seed run tf_500_hESC_pandavar_raw_corr_seed44: 0.8858 0.6240 0.7242
+full_symoof              3  0.8915±0.0004 0.6337±0.0009 0.7471±0.0009
+                           seed run tf_500_hESC_pandavar_full_symoof_seed42: 0.8918 0.6349 0.7483
+                           seed run tf_500_hESC_pandavar_full_symoof_seed43: 0.8919 0.6334 0.7469
+                           seed run tf_500_hESC_pandavar_full_symoof_seed44: 0.8910 0.6327 0.7462
+no_ppi_symoof            3  0.8904±0.0005 0.6301±0.0011 0.7425±0.0011
+                           seed run tf_500_hESC_pandavar_no_ppi_symoof_seed42: 0.8906 0.6314 0.7441
+                           seed run tf_500_hESC_pandavar_no_ppi_symoof_seed43: 0.8908 0.6300 0.7415
+                           seed run tf_500_hESC_pandavar_no_ppi_symoof_seed44: 0.8897 0.6288 0.7418
+no_coexpr_symoof         3  0.8892±0.0006 0.6346±0.0012 0.7357±0.0007
+                           seed run tf_500_hESC_pandavar_no_coexpr_symoof_seed42: 0.8897 0.6361 0.7364
+                           seed run tf_500_hESC_pandavar_no_coexpr_symoof_seed43: 0.8896 0.6345 0.7359
+                           seed run tf_500_hESC_pandavar_no_coexpr_symoof_seed44: 0.8884 0.6331 0.7348

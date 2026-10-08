@@ -1,0 +1,11 @@
+(a) within-TF Spearman(PPI-partner term, target degree): median 0.625 over 31 TFs with PPI partners; 1 TFs have no TF partner in STRING
+    within-TF Spearman(PANDA variant score, target degree): {'full': np.float64(0.539), 'no_coexpr': np.float64(0.718), 'no_ppi': np.float64(0.38), 'prior_only': np.float64(0.706)}
+
+(b) within-TF AUROC differences, 95% CI from 5000 bootstrap resamples of the 33 test TFs
+  full       - degree    : +0.0171  [+0.0100, +0.0256]  TFs improved: 27/33
+  no_coexpr  - degree    : +0.0073  [+0.0038, +0.0107]  TFs improved: 24/33
+  no_ppi     - degree    : +0.0137  [+0.0071, +0.0207]  TFs improved: 27/33
+  prior_only - degree    : -0.0033  [-0.0081, +0.0018]  TFs improved: 12/33
+  raw_corr   - degree    : -0.0004  [-0.0043, +0.0037]  TFs improved: 16/33
+  full       - no_coexpr : +0.0098  [+0.0038, +0.0174]  TFs improved: 22/33
+  full       - no_ppi    : +0.0034  [-0.0015, +0.0089]  TFs improved: 17/33

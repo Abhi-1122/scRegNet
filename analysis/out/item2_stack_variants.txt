@@ -1,0 +1,7 @@
+baseline score +     AUROC  AUPRC  within-TF
+none                 0.8872 0.6225 0.7202
+full                 0.8899 0.6290 0.7380
+no_coexpr            0.8853 0.6231 0.7305
+no_ppi               0.8893 0.6275 0.7333
+prior_only           0.8833 0.6178 0.7225
+raw_corr             0.8872 0.6220 0.7205

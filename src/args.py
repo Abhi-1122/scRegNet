@@ -137,6 +137,8 @@ def parse_args():
                          "of llm_emb. 'scfm' = Geneformer embeddings (default). 'panda' = "
                          "PANDA's per-gene regulatory profile (row=TF, no scFM at all), "
                          "loaded from data/<cell_type>/TFs+<num_TF>/PANDA/panda_full_matrix.npy.")
+    parser.add_argument("--panda_subdir", type=str, default="PANDA",
+                        help="dir under data/<cell>/TFs+<n>/ holding the PANDA matrices")
     parser.add_argument("--use_panda_edge", action="store_true", default=False,
                     help="Experiment C: concatenate PANDA's (TF,target) edge score as an "
                          "extra scalar feature onto the MLP head, on top of the existing "

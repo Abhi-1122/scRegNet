@@ -1,0 +1,7 @@
+OOF matrix of driver == original build_panda.py OOF matrix: exact match
+variant      alone: AUROC AUPRC withinTF  degree+variant LR: AUROC AUPRC withinTF
+full         0.7438 0.3572 0.6636        0.8797 0.6122 0.7239
+no_coexpr    0.7732 0.3824 0.6714        0.8728 0.6015 0.7141
+no_ppi       0.7419 0.3602 0.6212        0.8779 0.6092 0.7205
+prior_only   0.8059 0.4897 0.6318        0.8699 0.5956 0.7035
+raw_corr     0.4572 0.1349 0.4909        0.8714 0.6002 0.7064

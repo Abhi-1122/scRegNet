@@ -1,0 +1,13 @@
+tf_500_hESC_baseline_rerun       additive R2=1.000000   Spearman of gene ranking between TF pairs: min 1.0000 median 1.0000
+tf_500_hESC_ablation_no_grn      additive R2=1.000000   Spearman of gene ranking between TF pairs: min 1.0000 median 1.0000
+tf_500_hESC_ablation_no_scfm     additive R2=1.000000   Spearman of gene ranking between TF pairs: min 1.0000 median 1.0000
+tf_500_hESC_panda_edge           additive R2=0.931571   Spearman of gene ranking between TF pairs: min 0.4161 median 0.8669
+(a) Exp C decoder weight on PANDA (logit units per PANDA std): 0.277
+    PANDA term / total within-TF score variance: median 0.005 (IQR 0.002-0.012)
+(b) within-TF rank corr: label~PANDA 0.181, label~baseline 0.215, PANDA~baseline 0.311; partial corr(label, PANDA | baseline) = 0.123
+(c) metrics (AUROC, AUPRC, within-TF AUROC):
+    baseline                                 0.8874 0.6225 0.7202
+    baseline + PANDA, post-hoc stacked LR    0.8899 0.6290 0.7380
+    Exp C (PANDA as input feature)           0.8902 0.6333 0.7374
+(d) oracle TF-agnostic gene ordering (built from test labels): within-TF AUROC ceiling = 0.8427
+(e) share of PANDA within-TF variance that is one TF-agnostic gene effect: 0.073 (the rest is TF-specific)

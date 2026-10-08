@@ -1,0 +1,6 @@
+run                                      PANDA weight  PANDA share of within-TF var  between-TF ranking corr (min/median)
+tf_500_hESC_panda_edge                          0.277                         0.005              0.416 / 0.867
+tf_500_hESC_panda_edge_seed43                   0.267                         0.005              0.422 / 0.869
+tf_500_hESC_pandavar_full_symoof_seed42         0.689                         0.027              0.143 / 0.814
+tf_500_hESC_pandavar_full_symoof_seed43         0.692                         0.031              0.131 / 0.812
+tf_500_hESC_pandavar_full_symoof_seed44         0.658                         0.022              0.171 / 0.818

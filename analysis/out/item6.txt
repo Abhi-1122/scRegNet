@@ -1,0 +1,91 @@
+=== each method's network = its top 1061 test pairs (K = number of true test edges) ===
+network                precision  #TFs  TF-target-set overlap  edges/TF vs truth (Spearman)
+TRUE test edges            1.000    33                  0.024                         1.000
+baseline scRegNet          0.576    14                  0.088                         0.881
+Exp C (+PANDA)             0.580    14                  0.086                         0.897
+PANDA alone                0.403    28                  0.031                         0.796
+co-exp contrast alone      0.099    20                  0.033                        -0.346
+degree-only LR             0.567    12                  0.083                         0.861
+
+Jaccard overlap between networks:
+                       TRUE test   baseline s  Exp C (+PA  PANDA alon  co-exp con  degree-onl
+TRUE test edges              1.00        0.40        0.41        0.25        0.05        0.40
+baseline scRegNet            0.40        1.00        0.85        0.31        0.03        0.72
+Exp C (+PANDA)               0.41        0.85        1.00        0.33        0.04        0.71
+PANDA alone                  0.25        0.31        0.33        1.00        0.18        0.30
+co-exp contrast alone        0.05        0.03        0.04        0.18        1.00        0.03
+degree-only LR               0.40        0.72        0.71        0.30        0.03        1.00
+
+--- GO: baseline's 100 most "target-like" non-TF genes (same list for every TF) (100 genes) ---
+  4.16e-01      3/6  Actin Filament Organization (GO:0007015)
+  4.16e-01     5/18  Axon Guidance (GO:0007411)
+  4.16e-01     4/16  Axonogenesis (GO:0007409)
+  4.16e-01      3/3  COPII-coated Vesicle Budding (GO:0090114)
+  4.16e-01      3/8  Cell Cycle G1/S Phase Transition (GO:0044843)
+  4.16e-01      3/9  Cellular Response To Insulin Stimulus (GO:0032869)
+
+--- GO: baseline's 100 least "target-like" non-TF genes (100 genes) ---
+  3.87e-01      3/5  Negative Regulation Of Viral Genome Replication (GO:0045071)
+  3.92e-01      3/9  Anterograde Trans-Synaptic Signaling (GO:0098916)
+  3.92e-01      3/9  Defense Response To Symbiont (GO:0140546)
+  3.92e-01     4/10  Chemical Synaptic Transmission (GO:0007268)
+  3.92e-01      3/6  Negative Regulation Of Viral Process (GO:0048525)
+  3.92e-01      3/6  Regulation Of Viral Genome Replication (GO:0045069)
+
+--- GO: the 100 genes bound by the most TFs in the ground truth (100 genes) ---
+  4.68e-01     5/18  Axon Guidance (GO:0007411)
+  4.68e-01     4/16  Axonogenesis (GO:0007409)
+  4.68e-01      3/9  Cellular Response To Interleukin-1 (GO:0071347)
+  4.68e-01     3/10  Cellular Response To Tumor Necrosis Factor (GO:0071356)
+  4.68e-01     3/11  Cytokine-Mediated Signaling Pathway (GO:0019221)
+  4.68e-01      3/8  Glucose Homeostasis (GO:0042593)
+
+--- GO: EZH2 true targets (train+test) (104 genes) ---
+  4.00e-03     8/13  Aortic Valve Development (GO:0003176)
+  4.00e-03     8/12  Aortic Valve Morphogenesis (GO:0003180)
+  4.00e-03      6/7  Endoderm Development (GO:0007492)
+  4.00e-03     8/13  Positive Regulation Of ERK1 And ERK2 Cascade (GO:0070374)
+  4.00e-03    11/24  Regulation Of ERK1 And ERK2 Cascade (GO:0070372)
+  1.07e-02    12/31  Heart Development (GO:0007507)
+
+baseline: EZH2 top-60 new predictions contain 4/27 held-out EZH2 targets
+
+--- GO: baseline: EZH2 top-60 predicted new targets (60 genes) ---
+  3.08e-01     3/12  Cellular Response To Organic Substance (GO:0071310)
+  3.08e-01      3/8  Glucose Homeostasis (GO:0042593)
+  3.08e-01      3/6  Establishment Of Protein Localization To Organelle (GO:0072594)
+  3.08e-01     3/14  Epithelial To Mesenchymal Transition (GO:0001837)
+  3.08e-01      3/8  Mitotic DNA Damage Checkpoint Signaling (GO:0044773)
+  3.08e-01     3/14  Mesenchymal Cell Differentiation (GO:0048762)
+
+Exp C: EZH2 top-60 new predictions contain 4/27 held-out EZH2 targets
+
+--- GO: Exp C: EZH2 top-60 predicted new targets (60 genes) ---
+  3.27e-01     3/12  Cellular Response To Organic Substance (GO:0071310)
+  3.27e-01     5/21  Negative Regulation Of Cell Migration (GO:0030336)
+  3.27e-01     4/19  Negative Regulation Of Cell Motility (GO:2000146)
+  3.27e-01     4/12  Positive Regulation Of GTPase Activity (GO:0043547)
+  3.27e-01     4/17  Organelle Organization (GO:0006996)
+  3.27e-01     3/10  Protein Transport (GO:0015031)
+
+--- GO: PANDA alone: EZH2 top-60 predicted new targets (60 genes) ---
+  3.32e-01     3/11  Anterior/Posterior Pattern Specification (GO:0009952)
+  3.32e-01     3/18  Axon Guidance (GO:0007411)
+  3.32e-01      3/7  Determination Of Heart Left/Right Asymmetry (GO:0061371)
+  3.32e-01      3/5  Determination Of Left/Right Symmetry (GO:0007368)
+  3.32e-01     5/31  Heart Development (GO:0007507)
+  3.32e-01     3/12  Epithelium Development (GO:0060429)
+
+Exp C vs baseline network: 84 edges added (39 real), 84 removed (35 real)
+  TFs of added edges: {'EOMES': 11, 'NANOG': 10, 'OTX2': 10, 'FOXP1': 10, 'TEAD4': 9, 'MXI1': 8, 'SOX2': 7, 'TFAP2A': 6}
+
+HOT-region check: does a gene's popularity (fraction of TFs binding it) track its expression?
+  Spearman(popularity, mean expression (log2)): +0.107
+  Spearman(popularity, fraction of cells expressing it): +0.157
+  Spearman(popularity, expression variance): -0.122
+                mean_expr  frac_cells    pop
+q                                           
+Q1 least bound      3.971       0.690  0.024
+Q2                  3.707       0.692  0.101
+Q3                  4.062       0.736  0.175
+Q4 most bound       4.471       0.763  0.287

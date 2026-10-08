@@ -135,7 +135,7 @@ class Trainer:
         node_feature_source = getattr(self.args, 'node_feature_source', 'scfm')
         use_panda_edge = getattr(self.args, 'use_panda_edge', False)
         if node_feature_source == 'panda' or use_panda_edge:
-            panda_path = os.path.join(path, 'PANDA', 'panda_full_matrix.npy')
+            panda_path = os.path.join(path, getattr(self.args, 'panda_subdir', 'PANDA'), 'panda_full_matrix.npy')
             if not os.path.exists(panda_path):
                 raise FileNotFoundError(f"node_feature_source='panda' or --use_panda_edge set but "
                                          f"{panda_path} not found. Run src/build_panda.py first.")
@@ -146,7 +146,7 @@ class Trainer:
             # else). Use the leakage-safe, k-fold out-of-fold matrix for TRAIN-pair
             # lookups instead; test-pair lookups stay on panda_full_np (already
             # leakage-free, since test edges are never part of any prior).
-            oof_path = os.path.join(path, 'PANDA', 'panda_full_matrix_train_oof.npy')
+            oof_path = os.path.join(path, getattr(self.args, 'panda_subdir', 'PANDA'), 'panda_full_matrix_train_oof.npy')
             if not os.path.exists(oof_path):
                 raise FileNotFoundError(f"--use_panda_edge set but {oof_path} not found. "
                                          f"Run src/build_panda.py first.")

@@ -38,3 +38,88 @@ seed 46: AUC 0.8901422068180722  AUPR 0.6286191951779018
 mean +/- std: AUC 0.8899 +/- 0.0005   AUPR 0.6307 +/- 0.0018
 all 5 seeds beat baseline (AUC 0.8874, AUPR 0.6225) on both metrics -- PANDA Exp C's gain is confirmed real, not single-seed noise
 (vs Geneformer baseline: AUC 0.8874168254173435  AUPR 0.6225032814400465; vs scGPT: AUC 0.8858171517687466  AUPR 0.622468339307352)
+--- branch in-depth-analysis: Item 1, single signals on hESC TFs+500 test set (no training unless noted) ---
+--- withinTF = AUROC computed separately inside each of the 33 TFs' test pairs, then averaged (removes "which TF is it") ---
+signal                                         AUROC   AUPRC   withinTF_AUROC
+TF identity only (train positive rate)         0.8440  0.4816  0.5000
+target identity only (train degree)            0.6415  0.2102  0.7068
+raw corr(TF,target)                            0.4572  0.1349  0.4909
+|corr(TF,target)|                              0.5103  0.1517  0.4236
+guilt-by-assoc one-step (PANDA availability)   0.5209  0.1396  0.5231
+PPI partners targeting it (PANDA responsib.)   0.5875  0.1997  0.6423
+PANDA score (full prior)                       0.7438  0.3572  0.6636
+DEGREE-ONLY LR (TF rate + target degree)       0.8723  0.5970  0.7068
+DEGREE + PANDA LR (3 features)                 0.8797  0.6122  0.7239
+model no_grn (Geneformer only)                 0.8774  0.6064  0.7032
+model no_scfm (GNN only)                       0.8747  0.5916  0.6523
+model baseline (GNN+Geneformer)                0.8874  0.6225  0.7202
+model Exp D (Geneformer+PANDA scalar)          0.8829  0.6175  0.7246
+model Exp B (GNN+PANDA profile)                0.8799  0.6102  0.7115
+model Exp C (full+PANDA scalar, seed42)        0.8902  0.6333  0.7374
+
+--- in-depth-analysis Item 2: PANDA input ablation (own driver, reproduces build_panda.py exactly: max diff 0) ---
+variant      alone: AUROC AUPRC withinTF | +degree LR: AUROC AUPRC withinTF
+full         0.7438 0.3572 0.6636        | 0.8797 0.6122 0.7239
+no_coexpr    0.7732 0.3824 0.6714        | 0.8728 0.6015 0.7141
+no_ppi       0.7419 0.3602 0.6212        | 0.8779 0.6092 0.7205
+prior_only   0.8059 0.4897 0.6318        | 0.8699 0.5956 0.7035
+raw_corr     0.4572 0.1349 0.4909        | 0.8714 0.6002 0.7064
+(degree-only LR: 0.8723 0.5970 0.7068)
+bootstrap over 33 TFs, within-TF AUROC diff [95% CI]: full-degree +0.0171 [+0.0100,+0.0256]; no_coexpr-degree +0.0073 [+0.0038,+0.0107];
+  no_ppi-degree +0.0137 [+0.0071,+0.0207]; prior_only-degree -0.0033 [-0.0081,+0.0018]; raw_corr-degree -0.0004 [-0.0043,+0.0037];
+  full-no_coexpr +0.0098 [+0.0038,+0.0174]; full-no_ppi +0.0034 [-0.0015,+0.0089]
+within-TF Spearman with target degree: PPI-partner term 0.625; PANDA full 0.539, no_coexpr 0.718, no_ppi 0.380, prior_only 0.706
+one-step PANDA-normalized availability (co-expr) +degree: 0.8764 0.6060 withinTF 0.7226 (vs iterated full 0.7239)
+co-expression score forms, +degree withinTF: raw mean-with-targets 0.7169; raw targets-minus-nontargets 0.7229; z-scored mean 0.7234; z-scored contrast 0.7278
+
+--- in-depth-analysis Item 3: where Exp C's gain lands (within-TF AUROC baseline -> Exp C) ---
+target train degree 0: 0.7880->0.6787 (26 pos); 1-2: 0.6420->0.6487; 3-5: 0.5279->0.5709; 6+: 0.6395->0.6769
+STRING partners targeting gene 0: 0.7276->0.7381; 1: 0.6201->0.6305; 2+: 0.5923->0.6344
+co-exp contrast <-0.02: 0.7387->0.7502; -0.02..0.02: 0.7264->0.7836; >0.02: 0.6918->0.7062
+TF->target graph distance: 2 hops 4630 pairs, 3 hops 1444, unreachable 964 (= targets with no train edge)
+per-TF (>=8 test pos): EZH2 0.4784->0.5922; POU5F1 0.7486->0.7947; TRIM28 0.7283->0.7737; FOXH1 0.7005->0.7360; SOX2 0.7604->0.7834; ZFP42 0.6733->0.6442
+
+--- in-depth-analysis Item 4: redundancy ---
+additive fit R2 (logit = TF term + gene term): baseline 1.000000, no_grn 1.000000, no_scfm 1.000000, Exp C 0.9316
+Spearman of gene ranking between TF pairs: baseline/no_grn/no_scfm 1.0000 (identical ranking for every TF); Exp C min 0.416 median 0.867
+oracle TF-agnostic gene ordering (from test labels) within-TF ceiling: 0.8427
+Exp C decoder weight on PANDA 0.277; PANDA term share of within-TF score variance: median 0.005
+within-TF rank corr: label~PANDA 0.181, label~baseline 0.215, PANDA~baseline 0.311, partial(label,PANDA|baseline) 0.123
+post-hoc stack (baseline score + PANDA, LR, grouped CV over TFs): 0.8899 0.6290 withinTF 0.7380 (Exp C: 0.8902 0.6333 0.7374)
+PANDA within-TF variance that is a TF-agnostic gene effect: 7.3%
+
+--- in-depth-analysis Item 5: cooperativity & homophily (all labelled positives) ---
+TF-pair target overlap vs chance (median ratio): STRING-connected 1.56x (n=114), unconnected 1.27x (n=430); Mann-Whitney p=4.3e-5; 72% of all TF pairs above chance
+examples (obs vs expected shared targets): CTNNB1-LEF1 17 vs 2.5; CTNNB1-POU5F1 30 vs 6.4; FOXH1-SMAD2 39 vs 14.1; SOX2-POU5F1 46 vs 20.2; NANOG-POU5F1 54 vs 26.7; SOX2-NANOG 120 vs 77.0
+regulator-profile cosine of linked genes vs degree-matched null: STRING 0.421 vs 0.379 (+0.042); co-exp top10 raw 0.355 vs 0.357; co-exp top10 z 0.361 vs 0.361
+
+--- in-depth-analysis Item 6: predicted networks (top 1061 test pairs each) ---
+network            precision  #TFs  TF-TF target-set Jaccard  edges/TF Spearman vs truth
+truth              1.000      33    0.024                     1.000
+baseline           0.576      14    0.088                     0.881
+Exp C              0.580      14    0.086                     0.897
+degree-only LR     0.567      12    0.083                     0.861
+PANDA alone        0.403      28    0.031                     0.796
+coexp contrast     0.099      20    0.033                    -0.346
+Jaccard baseline vs degree-only 0.72, vs Exp C 0.85; Exp C swaps 84 edges (39 real added, 35 real removed)
+GO (bg = 910 panel): EZH2 true targets enriched endoderm dev (6/7, adj p 0.004), aortic valve dev (8/13), heart dev (12/31, 0.011);
+  baseline/Exp C EZH2 top-60 predictions: no enrichment, 4/27 held-out targets each; PANDA top-60: developmental terms, ns (0.33)
+popularity vs expression: Spearman +0.107 (mean expr), +0.157 (frac cells); no GO enrichment among most-bound genes
+
+--- in-depth-analysis Item 2 Result C: Exp C retrained per PANDA variant (3 seeds each, mean +/- std over seeds) ---
+--- "orig OOF" = build_panda.py's leakage fix (only train POSITIVES re-scored out-of-fold, train negatives on full prior)
+--- "symmetric OOF" = every train row (pos and neg) scored by a PANDA run whose prior excludes its fold's positives
+variant                          AUROC            AUPRC            withinTF AUROC
+full (Exp C, orig OOF)           0.8899+/-0.0006  0.6320+/-0.0012  0.7350+/-0.0020
+no_coexpr (orig OOF)             0.8874+/-0.0006  0.6275+/-0.0017  0.7255+/-0.0018
+no_ppi (orig OOF)                0.8886+/-0.0006  0.6288+/-0.0013  0.7302+/-0.0016
+prior_only (orig OOF)            0.8866+/-0.0005  0.6242+/-0.0015  0.7228+/-0.0011
+raw_corr control                 0.8864+/-0.0004  0.6252+/-0.0010  0.7242+/-0.0011
+full (symmetric OOF)             0.8915+/-0.0004  0.6337+/-0.0009  0.7471+/-0.0009
+no_ppi (symmetric OOF)           0.8904+/-0.0005  0.6301+/-0.0011  0.7425+/-0.0011
+no_coexpr (symmetric OOF)        0.8892+/-0.0006  0.6346+/-0.0012  0.7357+/-0.0007
+scalar's within-TF AUROC on train rows, orig OOF -> symmetric OOF (test rows): full 0.5796->0.6479 (0.6636); no_ppi 0.5104->0.5891 (0.6212); no_coexpr 0.5634->0.6543 (0.6714)
+learned decoder weight on PANDA: orig ~0.27, symmetric ~0.68; PANDA share of within-TF score variance 0.005 -> ~0.027; between-TF ranking Spearman median 0.867 -> 0.815, min 0.42 -> 0.13-0.17
+post-hoc stack baseline + variant PANDA (grouped CV), withinTF: full 0.7380, no_ppi 0.7333, no_coexpr 0.7305, prior_only 0.7225, raw_corr 0.7205
+baseline, no PANDA (3 seeds: 42 = summer26 rerun, 43, 44 retrained here): AUC 0.8870+/-0.0009  AUPR 0.6245+/-0.0018  withinTF 0.7215+/-0.0017
+  (seed 43: AUC 0.8858 AUPR 0.6240; seed 44: AUC 0.8878 AUPR 0.6269)
