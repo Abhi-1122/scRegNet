@@ -1,0 +1,63 @@
+m_hHEP_g01_add_sf_none_s42 --decoder add --scfm 1 --split none --cell_type hHEP --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g01_add_sf_none_s43 --decoder add --scfm 1 --split none --cell_type hHEP --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g01_add_sf_none_s44 --decoder add --scfm 1 --split none --cell_type hHEP --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g02_add_sf_batch_s42 --decoder add --scfm 1 --split batch --cell_type hHEP --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g02_add_sf_batch_s43 --decoder add --scfm 1 --split batch --cell_type hHEP --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g02_add_sf_batch_s44 --decoder add --scfm 1 --split batch --cell_type hHEP --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g08_had_nosf_batch_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type hHEP --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g08_had_nosf_batch_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type hHEP --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g08_had_nosf_batch_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type hHEP --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g09_mlp_nosf_batch_d256_s42 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type hHEP --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g09_mlp_nosf_batch_d256_s43 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type hHEP --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g09_mlp_nosf_batch_d256_s44 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type hHEP --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g11_had_sf_batch_d256_s42 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type hHEP --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g11_had_sf_batch_d256_s43 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type hHEP --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_g11_had_sf_batch_d256_s44 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type hHEP --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_e_sage_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type hHEP --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_e_sage_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type hHEP --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_e_sage_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type hHEP --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_k04_sage_had_nosf_d256_contrast_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type hHEP --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_k04_sage_had_nosf_d256_contrast_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type hHEP --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_hHEP_k04_sage_had_nosf_d256_contrast_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type hHEP --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g01_add_sf_none_s42 --decoder add --scfm 1 --split none --cell_type mHSC-E --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g01_add_sf_none_s43 --decoder add --scfm 1 --split none --cell_type mHSC-E --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g01_add_sf_none_s44 --decoder add --scfm 1 --split none --cell_type mHSC-E --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g02_add_sf_batch_s42 --decoder add --scfm 1 --split batch --cell_type mHSC-E --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g02_add_sf_batch_s43 --decoder add --scfm 1 --split batch --cell_type mHSC-E --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g02_add_sf_batch_s44 --decoder add --scfm 1 --split batch --cell_type mHSC-E --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g08_had_nosf_batch_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g08_had_nosf_batch_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g08_had_nosf_batch_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g09_mlp_nosf_batch_d256_s42 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g09_mlp_nosf_batch_d256_s43 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g09_mlp_nosf_batch_d256_s44 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g11_had_sf_batch_d256_s42 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g11_had_sf_batch_d256_s43 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_g11_had_sf_batch_d256_s44 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type mHSC-E --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_e_sage_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type mHSC-E --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_e_sage_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type mHSC-E --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_e_sage_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type mHSC-E --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_k04_sage_had_nosf_d256_contrast_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type mHSC-E --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_k04_sage_had_nosf_d256_contrast_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type mHSC-E --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mHSC-E_k04_sage_had_nosf_d256_contrast_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type mHSC-E --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g01_add_sf_none_s42 --decoder add --scfm 1 --split none --cell_type mESC --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g01_add_sf_none_s43 --decoder add --scfm 1 --split none --cell_type mESC --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g01_add_sf_none_s44 --decoder add --scfm 1 --split none --cell_type mESC --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g02_add_sf_batch_s42 --decoder add --scfm 1 --split batch --cell_type mESC --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g02_add_sf_batch_s43 --decoder add --scfm 1 --split batch --cell_type mESC --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g02_add_sf_batch_s44 --decoder add --scfm 1 --split batch --cell_type mESC --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g08_had_nosf_batch_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type mESC --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g08_had_nosf_batch_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type mESC --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g08_had_nosf_batch_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --cell_type mESC --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g09_mlp_nosf_batch_d256_s42 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type mESC --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g09_mlp_nosf_batch_d256_s43 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type mESC --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g09_mlp_nosf_batch_d256_s44 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --cell_type mESC --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g11_had_sf_batch_d256_s42 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type mESC --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g11_had_sf_batch_d256_s43 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type mESC --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_g11_had_sf_batch_d256_s44 --decoder had --scfm 1 --split batch --gnn_dims 256 --cell_type mESC --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_e_sage_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type mESC --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_e_sage_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type mESC --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_e_sage_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --cell_type mESC --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_k04_sage_had_nosf_d256_contrast_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type mESC --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_k04_sage_had_nosf_d256_contrast_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type mESC --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+m_mESC_k04_sage_had_nosf_d256_contrast_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --scalar contrast --cell_type mESC --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1

@@ -1,0 +1,36 @@
+k02_sage_mlp_nosf_d256_s42 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k02_sage_mlp_nosf_d256_s43 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k02_sage_mlp_nosf_d256_s44 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k03_sage_add_nosf_d256_s42 --decoder add --scfm 0 --split batch --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k03_sage_add_nosf_d256_s43 --decoder add --scfm 0 --split batch --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k03_sage_add_nosf_d256_s44 --decoder add --scfm 0 --split batch --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k04_sage_had_nosf_d256_contrast_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k04_sage_had_nosf_d256_contrast_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k04_sage_had_nosf_d256_contrast_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k05_sage_had_nosf_d256_panda_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k05_sage_had_nosf_d256_panda_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k05_sage_had_nosf_d256_panda_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k06_sage_mlp_nosf_d256_panda_s42 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k06_sage_mlp_nosf_d256_panda_s43 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k06_sage_mlp_nosf_d256_panda_s44 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k07_sage_had_sf_d256_s42 --decoder had --scfm 1 --split batch --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k07_sage_had_sf_d256_s43 --decoder had --scfm 1 --split batch --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k07_sage_had_sf_d256_s44 --decoder had --scfm 1 --split batch --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k08_sage_had_sf_d256_panda_s42 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k08_sage_had_sf_d256_panda_s43 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k08_sage_had_sf_d256_panda_s44 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k09_sage_had_nosf_none_d256_s42 --decoder had --scfm 0 --split none --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k09_sage_had_nosf_none_d256_s43 --decoder had --scfm 0 --split none --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k09_sage_had_nosf_none_d256_s44 --decoder had --scfm 0 --split none --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k10_sage_had_nosf_d128_s42 --decoder had --scfm 0 --split batch --gnn_dims 128 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k10_sage_had_nosf_d128_s43 --decoder had --scfm 0 --split batch --gnn_dims 128 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k10_sage_had_nosf_d128_s44 --decoder had --scfm 0 --split batch --gnn_dims 128 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k11_sage_had_nosf_d512_s42 --decoder had --scfm 0 --split batch --gnn_dims 512 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k11_sage_had_nosf_d512_s43 --decoder had --scfm 0 --split batch --gnn_dims 512 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k11_sage_had_nosf_d512_s44 --decoder had --scfm 0 --split batch --gnn_dims 512 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k12_sage_had_nosf_d256_128_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 128 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k12_sage_had_nosf_d256_128_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 128 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k12_sage_had_nosf_d256_128_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 128 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k13_sage_add_sf_none_3layer_s42 --decoder add --scfm 1 --split none --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k13_sage_add_sf_none_3layer_s43 --decoder add --scfm 1 --split none --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage
+k13_sage_add_sf_none_3layer_s44 --decoder add --scfm 1 --split none --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage

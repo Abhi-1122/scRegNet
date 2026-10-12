@@ -1,0 +1,6 @@
+p_add_sf_none --decoder add --scfm 1 --split none
+p_had_sf_none --decoder had --scfm 1 --split none
+p_had_sf_batch --decoder had --scfm 1 --split batch
+p_add_nosf_none --decoder add --scfm 0 --split none
+p_had_nosf_none --decoder had --scfm 0 --split none
+p_had_nosf_batch --decoder had --scfm 0 --split batch

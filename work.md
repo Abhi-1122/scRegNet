@@ -93,3 +93,38 @@ rows (within-TF AUROC 0.58 vs 0.66; for no_ppi 0.51 vs 0.62) and the network lea
 weight. A symmetric OOF (every train row scored out-of-fold) fixes this: Exp C within-TF AUROC
 0.7350 -> 0.7471, AUROC 0.8899 -> 0.8915 (3 seeds each), beating post-hoc stacking. Co-expression
 is the input that matters most in the trained model too (full 0.747 > no_ppi 0.743 > no_coexpr 0.736).
+
+## 2026-10-12 (branch in-depth-analysis, week 2)
+
+**Harness.** New `src/pair_gnn.py` (one file: data, model, training) replaces `src/train.py` for
+these studies (about 20x faster; the old code converted a sparse matrix every forward pass).
+Switches: final layer (add / had = linear on [u,v,u*v] / mlp), per-batch removal of the batch's own
+positive edges from the message-passing graph (split), Geneformer on/off, encoder (gcn, sage, gat,
+gin-mean, directed sage), PANDA / co-expression-contrast scalar or edge weights (always scored
+out-of-fold, symmetric), validation-based epoch choice, refit on all training rows, held-out-gene
+and held-out-TF protocols. Safe queue: `analysis/queue.sh` (cap 4 jobs, RAM guard; 20 parallel
+jobs froze the 15 GB machine once).
+
+**Findings.** (1) per-batch edge split helps additive models (+0.0045 AUROC, +0.026 withinTF) and
+is mandatory for interacting final layers (without it SAGE+had collapses to 0.8486 / 0.635).
+(2) Depth hurts: GCN withinTF 0.724 / 0.673 / 0.569 for 1 / 2 / 3 layers. (3) SAGE is the best
+encoder (1 layer: 0.8884 / 0.6252 / 0.7489); GAT, GIN(mean), directed SAGE, GCN are lower.
+(4) With SAGE the interacting final layer adds +0.033 withinTF over additive (0.7489 vs 0.7163).
+(5) PANDA / co-expression contrast numbers add nothing to the SAGE hero (0.7488), small gains on
+weaker GCN models; PANDA as GCN edge weights does not help. (6) A no-neural-network stacker
+(popularity + CF + 3-paths + contrast + PANDA, logistic regression) reaches 0.8867 / 0.6102 / 0.7399.
+(7) popularity-only models nearly match scRegNet on hHEP and mHSC-E too.
+
+**Week 2 final (2026-10-12).** Equal-budget validation tuning for three families (scRegNet design,
+SAGE hero, SAGE hero + Geneformer; 7-13 trials), 5-seed finals with paired tests over 33 TFs,
+held-out-gene and held-out-TF protocols, shuffled-Geneformer control, TF-level edge dropout,
+replication on hHEP / mHSC-E / mESC, and no-neural-network stackers (popularity + CF + 3-paths +
+co-expression number + PANDA).
+Results: edge split +0.078 withinTF (p=3e-6); hero beats scRegNet design/recipe by +0.04-0.05 withinTF
+(p<0.04); hero + Geneformer (default settings) 0.8910/0.6346/0.7517 ~ last week's PANDA model;
+PANDA/co-expression number adds nothing to the hero (branch can be removed); replicates on mESC
+(0.9389/0.8814/0.8249 vs 0.9260/0.8593/0.7660) and mHSC-E, not hHEP; SAGE-vs-GCN is dataset dependent;
+no model beats popularity on held-out TFs (hero -0.042, p=7e-4) and none ranks held-out genes well;
+TF dropout does not fix it; five-feature stacker statistically tied with hero on hESC.
+Validation AUROC is a poor tuning criterion for withinTF ranking. Not run: SEAL / NBFNet / NCN.
+Details and tables: PROGRESS.md sections 10-16.

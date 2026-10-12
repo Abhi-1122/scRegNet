@@ -9,9 +9,12 @@ train-positive scores average ~10 vs ~0 for everything else, while test
 scores show no such separation since test edges were never in any prior).
 Using that score as a training feature is target leakage. We fix it with
 K-fold out-of-fold scoring: for each fold, rerun PANDA with that fold's
-positives excluded from the prior, and use those held-out scores for the
-train-positive edges in that fold. Test-edge scoring is untouched (already
-leakage-free, since test edges are never part of any prior).
+positives excluded from the prior, and use those held-out scores for EVERY
+training row in that fold, positives AND negatives. (An earlier version re-scored
+only the positives, which made the feature weaker on training rows than on test
+rows and hid about half of PANDA's benefit; kept as
+panda_full_matrix_train_oof_legacy_asymmetric.npy.) Test-edge scoring is untouched
+(already leakage-free, since test edges are never part of any prior).
 """
 import os
 import numpy as np
@@ -103,21 +106,19 @@ def main():
     # each of the ~3030 train-positive edges, score it using a prior that EXCLUDES it
     # (and its fold-mates), so its own score can't be a direct echo of its own label. ---
     rng = np.random.RandomState(SEED)
-    pos_positions = train_pos.index.to_numpy()
-    shuffled = rng.permutation(pos_positions)
-    folds = np.array_split(shuffled, K_FOLDS)
+    folds = np.array_split(rng.permutation(train.index.to_numpy()), K_FOLDS)  # all training rows
 
-    panda_full_train = panda_full.copy()  # negatives (never in any prior) stay as-is
+    panda_full_train = panda_full.copy()
     for k, held_out in enumerate(folds):
         remaining = train_pos.loc[~train_pos.index.isin(held_out)]
         motif_df_fold = build_motif_df(remaining, idx_to_gene)
         raw_fold, tf_idx_fold = run_panda_raw(motif_df_fold, expression_df, ppi_df, tf_df, target_df, idx_to_gene, num_genes)
         full_fold = scatter_full(raw_fold, tf_idx_fold, num_genes, scale)  # reuse the SAME scale as the full run
 
-        held_out_rows = train_pos.loc[held_out]
-        panda_full_train[held_out_rows["TF"].values, held_out_rows["Target"].values] = \
-            full_fold[held_out_rows["TF"].values, held_out_rows["Target"].values]
-        print(f"fold {k+1}/{K_FOLDS}: {len(held_out)} held-out positive edges re-scored out-of-fold")
+        held_rows = train.loc[held_out]
+        panda_full_train[held_rows["TF"].values, held_rows["Target"].values] = \
+            full_fold[held_rows["TF"].values, held_rows["Target"].values]
+        print(f"fold {k+1}/{K_FOLDS}: {len(held_rows)} held-out training rows re-scored out-of-fold")
 
     np.save(os.path.join(OUT_DIR, "panda_full_matrix_train_oof.npy"), panda_full_train)
     print(f"Saved {OUT_DIR}/panda_full_matrix_train_oof.npy (leakage-safe; use for "

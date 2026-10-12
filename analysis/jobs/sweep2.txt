@@ -1,0 +1,13 @@
+s2_add_sf_none_sgd0.0014_ep800 --decoder add --scfm 1 --split none --optimizer SGD --lr 0.0014411386699467767 --wd 1.0449337997892844e-05 --eval_interval 5 --epochs 800
+s2_add_sf_none_sgd0.005 --decoder add --scfm 1 --split none --optimizer SGD --lr 0.005 --wd 1.0449337997892844e-05 --eval_interval 5 --epochs 600
+s2_add_sf_none_sgd0.02 --decoder add --scfm 1 --split none --optimizer SGD --lr 0.02 --wd 1.0449337997892844e-05 --eval_interval 5 --epochs 400
+s2_add_sf_none_adam3e-5 --decoder add --scfm 1 --split none --optimizer Adam --lr 3e-05 --wd 0.001 --eval_interval 1
+s2_had_sf_batch_sgd0.005 --decoder had --scfm 1 --split batch --optimizer SGD --lr 0.005 --wd 1.0449337997892844e-05 --eval_interval 5 --epochs 600
+s2_had_sf_batch_sgd0.02 --decoder had --scfm 1 --split batch --optimizer SGD --lr 0.02 --wd 1.0449337997892844e-05 --eval_interval 5 --epochs 400
+s2_had_sf_batch_adam3e-5 --decoder had --scfm 1 --split batch --optimizer Adam --lr 3e-05 --wd 0.001 --eval_interval 1
+s2_had_sf_none_adam1e-4 --decoder had --scfm 1 --split none --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s2_add_sf_batch_adam1e-4 --decoder add --scfm 1 --split batch --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s2_had_nosf_batch_d256 --decoder had --scfm 0 --split batch --gnn_dims 256 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s2_had_nosf_batch_d256_128 --decoder had --scfm 0 --split batch --gnn_dims 256 128 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s2_had_nosf_batch_d512_256 --decoder had --scfm 0 --split batch --gnn_dims 512 256 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s2_add_nosf_none_d256 --decoder add --scfm 0 --split none --gnn_dims 256 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1

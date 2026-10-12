@@ -45,7 +45,7 @@ tf_emb, tgt_emb = (x.detach().cpu().numpy() for x in model.get_embedding())
 W = model.linear.weight.detach().cpu().numpy()  # (2, 2*dim [+1 panda])
 
 os.makedirs('analysis/out', exist_ok=True)
-np.savez(f'analysis/out/scores_{run}.npz', test_pairs=test_data.cpu().numpy(), test_logits=test_logits,
+np.savez(f'analysis/out/scores_{run.replace("/", "_")}.npz', test_pairs=test_data.cpu().numpy(), test_logits=test_logits,
          all_pairs=allpairs, all_logits=all_logits, tf_emb=tf_emb, tgt_emb=tgt_emb, W=W,
          b=model.linear.bias.detach().cpu().numpy())
 

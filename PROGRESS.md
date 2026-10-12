@@ -1,5 +1,7 @@
 # In-depth analysis: why does PANDA help scRegNet?
 
+********* Oct 4th ********
+
 Branch: `in-depth-analysis` (cut from `summer26`). Dataset throughout: **hESC, TFs+500**
 (910 genes, 410 TFs; 3,030 train-positive edges, 1,061 test-positive edges, the rest
 negatives). Model: GCN + Geneformer, with the same hyperparameters as every `summer26` run.
@@ -1041,5 +1043,975 @@ doesn't correspond to a biological program.
 - Re-run Items 1, 2 and 4 on mESC and mHSC-E to check whether these findings hold in other
   cell types. Those cell types
   first need a STRING TF-TF file.
+
+---
+
+********* Oct 12th ********
+
+# Week 2: can a GNN absorb PANDA's information? (advisor's three asks, plus our own next steps)
+
+**Status:** experiments finished. Section 10 has the conclusions; Sections 11 to 16 hold the details.
+
+## 8. Plan for this week
+
+### What your advisor asked for (from `next-week.txt`)
+1. **Check link prediction tasks in computer science and apply them to biology.** A background
+   subagent wrote a literature review (`LINK_PREDICTION_REVIEW.md`). Applying its ideas comes
+   last, as agreed.
+2. **Remove the PANDA branch and add that to the GRN itself.** Your instruction: PANDA's useful
+   information is already identified, so fold it into the GNN and try to beat the scRegNet
+   baseline even without the Geneformer (scFM) branch.
+3. **Try new graph methods on the GRN branch.** I read this as new graph encoders for the GNN
+   branch: GraphSAGE, GAT, GIN and a directed version. This was not in my first plan, and I have
+   now added it. It runs after the final-layer fix, so each encoder is compared with a decoder that
+   can use it.
+
+### Our own next steps from last week
+1. Replace scRegNet's additive final layer with one that lets a TF and a gene interact.
+2. Fix the message-passing / supervision edge split (a training pair must not be scored through
+   its own edge).
+3. Make the symmetric leakage fix permanent in `src/build_panda.py`. **Done:** the script now
+   re-scores every training row (positive and negative) out-of-fold. It reproduces the matrix
+   from last week exactly (maximum difference 0). I kept the old file as
+   `panda_full_matrix_train_oof_legacy_asymmetric.npy`.
+4. Try the one-line co-expression comparison in place of PANDA.
+5. Choose epochs on a separate validation set instead of the test set.
+6. Repeat on the other cell types.
+
+### The tool I built for this: `src/pair_gnn.py`
+One training script with switches for everything above, so every comparison changes one thing.
+- **Decoder (the final layer):** `add` = linear layer on [TF, gene] (what scRegNet does);
+  `had` = linear layer on [TF, gene, TF × gene] (adds an interaction term; this is biased
+  matrix factorization from recommender systems); `mlp` = a hidden layer after joining TF and
+  gene.
+- **Edge split:** `batch` removes the current batch's own positive edges from the graph before
+  scoring them, so a pair is never scored through its own edge. `none` is how scRegNet trains.
+- **Foundation model:** Geneformer on or off. **Encoder:** GCN, SAGE, GAT, GIN or directed.
+- **Extra PANDA-style inputs:** a pair-level number (PANDA score or the co-expression
+  comparison) fed to the final layer, or used as GCN edge weights. The script scores both
+  out-of-fold and treats every training row (positive and negative) the same way.
+- **Epoch choice:** the script holds out 10% of the training rows as a validation set and keeps
+  the epoch with the best validation AUROC. It never uses the test set for any choice.
+- **Refit:** after choosing the epoch, the script retrains the model once on all training rows
+  for that many epochs, then scores it once on test. This makes numbers comparable with last
+  week's, which used all training rows. Last week's baseline numbers also chose the best epoch
+  *on the test set*, so they run a little high.
+- Metrics: AUROC, AUPRC and within-TF AUROC, as last week.
+
+The harness runs about 20 times faster than `src/train.py`. The old code spent most of its time
+converting a sparse matrix on every forward pass. One run now takes a minute or two.
+
+---
+
+## 9. The final layer, the edge split and GNN depth
+
+**Script:** `src/pair_gnn.py` (runner `analysis/queue.sh`, job list `analysis/jobs/grid1.txt`,
+results `analysis/out/pair/g*.json`, table from `analysis/agg.py`).
+
+### Why
+
+Last week showed that scRegNet's final layer adds a TF-only score to a gene-only score. I wanted
+to know what changes when the model can look at the specific TF-gene pair. I also wanted to
+check the training-edge problem from last week: the graph is built from all training positives,
+and the model is trained on those same pairs.
+
+### What I ran
+
+13 configurations on hESC (TFs+500), 3 seeds each, with one optimizer setting for all of them
+(Adam, learning rate 1e-4, weight decay 1e-3). All numbers below are the **refit** numbers:
+I choose the epoch on a validation slice, retrain the model on all training rows for that
+many epochs, and score the test set once. For reference, last week's baseline was
+**0.8870 AUROC / 0.6245 AUPRC / 0.7215 within-TF**. That baseline chose its epoch on the test
+set, so it runs a little high.
+
+"GNN layers" is the number of graph layers. scRegNet uses 3 layers with widths 227, 29 and 34.
+The "1 layer" models use one layer of width 256.
+
+| Run | Final layer | Edge split | Geneformer | GNN layers | AUROC | AUPRC | Within-TF |
+|---|---|---|---|---|---|---|---|
+| g01 | add (scRegNet's design) | none | yes | 3 | 0.8797 ± 0.0011 | 0.6094 ± 0.0013 | 0.6822 ± 0.0065 |
+| g02 | add | batch | yes | 3 | 0.8842 ± 0.0006 | 0.6161 ± 0.0018 | 0.7078 ± 0.0020 |
+| g03 | interacting (had) | none | yes | 3 | 0.8756 ± 0.0017 | 0.6053 ± 0.0041 | 0.6741 ± 0.0087 |
+| g04 | interacting (had) | batch | yes | 3 | 0.8867 ± 0.0012 | 0.6246 ± 0.0014 | 0.7217 ± 0.0066 |
+| g05 | hidden layer (mlp) | batch | yes | 3 | 0.8856 ± 0.0005 | 0.6212 ± 0.0015 | 0.7211 ± 0.0036 |
+| g06 | add | none | no | 1 | 0.8816 ± 0.0013 | 0.6160 ± 0.0005 | 0.7159 ± 0.0006 |
+| g10 | add | batch | no | 1 | 0.8834 ± 0.0003 | 0.6155 ± 0.0015 | 0.7063 ± 0.0027 |
+| g07 | interacting (had) | none | no | 1 | 0.8809 ± 0.0011 | 0.6049 ± 0.0091 | 0.7286 ± 0.0055 |
+| g08 | interacting (had) | batch | no | 1 | 0.8837 ± 0.0007 | 0.6013 ± 0.0050 | 0.7239 ± 0.0049 |
+| g09 | hidden layer (mlp) | batch | no | 1 | 0.8876 ± 0.0008 | 0.6244 ± 0.0013 | 0.7183 ± 0.0017 |
+| g11 | interacting (had) | batch | yes | 1 | **0.8893 ± 0.0015** | 0.6237 ± 0.0024 | **0.7365 ± 0.0048** |
+| g12 | interacting (had) | batch | no | 3 | 0.8679 ± 0.0018 | 0.5821 ± 0.0033 | 0.5685 ± 0.0095 |
+| g13 | interacting (had) | batch | no | 2 | 0.8837 ± 0.0009 | 0.6161 ± 0.0021 | 0.6727 ± 0.0092 |
+
+### Finding 1: the edge split helps, and it is required for the interacting layer
+
+- **Split alone, additive layer (g01 to g02):** AUROC +0.0045, within-TF +0.026. Scoring a training
+  pair through its own graph edge cost accuracy even for scRegNet's design.
+- **Interacting layer without the split (g01 to g03):** AUROC drops from 0.8797 to 0.8756 and
+  within-TF from 0.682 to 0.674. These runs stop after 3 or 4 epochs because validation accuracy
+  starts to fall.
+- **Interacting layer with the split (g02 to g04):** AUROC +0.0025 and within-TF +0.014.
+- **The likely reason (not measured directly):** without the split, every training positive is a
+  direct neighbour in the graph, so a layer that multiplies the TF and gene embeddings can learn
+  "these two are linked", which is true in training and false at test time. An additive layer
+  can't use that, so it does no harm there. The literature review reached the same prediction
+  for dot-product decoders.
+
+### Finding 2: graph depth matters most
+
+- With the interacting layer, no Geneformer and the edge split, within-TF AUROC falls from
+  **0.724 (1 layer) to 0.673 (2 layers) to 0.569 (3 layers)**.
+- A one-layer GNN-only model with scRegNet's additive layer (g06, within-TF 0.716) beats
+  the full scRegNet design in this harness (g01, 0.682).
+- **Likely reason:** the training graph is dominated by a few TFs. TFAP2A has about 480 targets
+  and JUND, NANOG, OTX2 and TEAD4 have 200 to 300 each, so nearly any gene reaches nearly any
+  other in two steps. Every extra layer averages a gene's features with a larger share of the
+  whole panel, which washes out what is specific to that gene or TF. scRegNet's second layer
+  also squeezes everything into 29 numbers.
+- **Biologically:** the most informative signal for a TF is its own list of known targets, one
+  step away. Three steps away, everything is connected through the same few hub TFs.
+
+### Finding 3: Geneformer is not needed to match scRegNet's original numbers
+
+- **g09** (GNN only, one layer, hidden-layer final layer, edge split) scores **0.8876 AUROC,
+  0.6244 AUPRC, 0.7183 within-TF**. The original scRegNet scored 0.8870, 0.6245 and 0.7215. The
+  two are equal within seed spread, with no foundation model.
+- Geneformer still helps the interacting layer: **g11** (same as g08 plus
+  Geneformer) reaches 0.8893 AUROC and **0.7365** within-TF, against 0.8837 and 0.7239 without it.
+- g11 is ahead of the original scRegNet baseline on AUROC (+0.0023) and within-TF (+0.015), and
+  level on AUPRC.
+
+### Finding 4: the two interacting layers trade off
+
+The multiplication layer (`had`) gives the better within-TF score; the hidden layer (`mlp`)
+gives the better AUROC and AUPRC. The gaps are small, and I did not tune either.
+
+### Cautions
+
+- I chose the Adam setting from small validation-set sweeps on four configurations, then used
+  it for all. Some families may do better with their own setting. My
+  baseline here (g01, 0.8797) is *below* the original scRegNet (0.8870). The original was trained
+  with slow SGD, and Adam stops at epoch 4 or 5 for that design. I checked this later: the
+  SGD recipe scores 0.8830 / 0.6155 / 0.7029 over 5 seeds in the same harness (Section 14),
+  so it is somewhat better than Adam for that design but still below the original checkpoint.
+- Differences smaller than about 0.002 AUROC or 0.005 within-TF are inside the seed spread.
+- Only hESC so far.
+
+---
+
+## 10. Summary and conclusions (final for this week)
+
+All numbers are hESC (TFs+500) unless a row names another cell type. They are mean ± standard
+deviation over seeds in the refit protocol (epoch chosen on a validation slice, retrained on all
+training rows, test scored once). Reference points: the original scRegNet checkpoint,
+**0.8870 AUROC / 0.6245 AUPRC / 0.7215 within-TF** (epoch chosen on the test set, so slightly
+optimistic), and last week's best model, scRegNet + PANDA with the symmetric fix,
+**0.8915 / 0.6337 / 0.7471**. "Hero" means: one GraphSAGE layer, an interacting final layer, the
+per-batch edge split, no PANDA.
+
+### 10.0 The answer in one paragraph
+
+scRegNet's score is a TF-only term plus a gene-only term, so on a benchmark where two
+popularity counts nearly match it, it adds little beyond popularity. PANDA helped because it was
+the only TF-specific input. A GNN with an interacting final layer and leak-free training finds
+the same information itself, so the PANDA branch can go: the hero with Geneformer scores
+**0.8910 / 0.6346 / 0.7517**, level with last week's PANDA-augmented model. The gain holds
+for completing partly known target lists (hESC, mESC, mHSC-E; not hHEP). It does **not** extend
+to new TFs or new genes, where nothing I tested beats popularity.
+
+### 10.1 Conclusions, each tied to the result behind it
+
+| # | Conclusion | Evidence (where) |
+|---|---|---|
+| 1 | The standard benchmark mostly rewards popularity, on every cell type. | Two counts per pair come within 0.003 to 0.008 AUROC of the original scRegNet on hESC, hHEP, mHSC-E and mESC (Section 16). On hESC alone they give 0.8797 against 0.8874. |
+| 2 | scRegNet's final layer cannot rank genes differently for different TFs. | Additive fit R² = 1.000 and identical gene ranking for all 34 TFs (last week, Section 4). |
+| 3 | Training a pair through its own graph edge is the largest single problem. Any interacting final layer needs the fix. | Edge split vs none: **+0.078 within-TF, better for 28 of 33 TFs, p = 3 × 10⁻⁶** (Section 14). SAGE with an interacting layer and no split falls to 0.8486 AUROC / 0.635 within-TF (Section 11). |
+| 4 | The hero beats the scRegNet design within TFs, significantly, and edges it on pooled scores. | Hero vs tuned scRegNet design **+0.051 within-TF (p = 0.016)**; vs the published recipe **+0.042 (p = 0.035)**; with default settings and Geneformer: **+0.049 (p = 0.001)**, AUROC 0.8910 against 0.8830 (Section 14). |
+| 5 | The gain replicates on 3 of 4 cell types and is largest on mESC. | mESC: 0.9389 / 0.8814 / 0.8249 against the original checkpoint's 0.9260 / 0.8593 / 0.7660. mHSC-E: within-TF 0.8081 against 0.7339. hHEP: no gain (Section 13). |
+| 6 | The PANDA branch can be removed. Its information is already in the hero. | Adding the PANDA or co-expression number to the hero: −0.0003 to +0.0005 within-TF, no interval excludes zero (Section 12). PANDA as graph edge weights: −0.007. |
+| 7 | Depth hurts, and no single graph encoder wins on all datasets. | GCN within-TF 0.724 / 0.673 / 0.569 for 1 / 2 / 3 layers (Section 9). SAGE best on hESC (0.7489) and mESC (0.8247); GCN + Geneformer best on mHSC-E (0.8081) and hHEP; GAT, GIN and directed SAGE are not better (Sections 11, 13). |
+| 8 | Geneformer's contribution is small and depends on the settings. | Shuffling its vectors across genes changes the scRegNet design by −0.003 within-TF. On the default hero it adds +0.005 within-TF (p = 0.07) and +0.009 AUPRC; on the validation-tuned hero it adds −0.008 (Section 14). |
+| 9 | A transparent model with five hand-built features is statistically tied with the GNN on hESC and beats the original scRegNet on mESC. | Hero minus stacker: +0.005 to +0.012 within-TF, p ≥ 0.58 (Section 14). mESC stacker 0.9312 / 0.8601 / 0.8142 against 0.9260 / 0.8593 / 0.7660 (Section 16). |
+| 10 | Nothing tested transfers to unseen TFs or genes. | Held-out TFs: hero is **0.042 below plain gene popularity (p = 0.0007)**. Held-out genes: within-TF 0.52 to 0.57. TF-level edge dropout did not fix it (Section 15). |
+| 11 | The hero's top predictions are better where a biologist looks. | Precision at 10 per TF: 0.480 against 0.415 (base rate 0.239). EZH2: 8 of 30 held-out targets in the top 30, against 3 for the scRegNet design (chance 3.9). GO enrichment of its top new predictions is suggestive, not significant (Section 16). |
+| 12 | Averaging seeds gives a clear gain. | 5-seed ensemble of the default hero + Geneformer: **0.8935 / 0.6410 / 0.7574** (Section 14). |
+
+### 10.2 What the evidence does not support
+
+- **No clear win on pooled AUROC or AUPRC for the GNN-only hero.** Its AUROC gain over the
+  published recipe is +0.003 to +0.005 and its AUPRC is level. The gain is in within-TF ranking
+  and, with Geneformer, in AUPRC.
+- **The baseline comparison is imperfect.** The original checkpoints are single seeds with the
+  epoch chosen on the test set (about +0.0015 AUROC and +0.01 within-TF of optimism in my
+  measurement). My reproduction of the published recipe scores 0.8830 / 0.6155 / 0.7029.
+- **Tuning did not help.** The validation-chosen hero was not better on test than the hand-set
+  default, so I report both. Search budgets were 7 to 13 trials per family.
+- **"SAGE beats GCN" is not general** (Section 13), and "interacting beats additive" is not
+  significant across TFs on hESC alone (p = 0.47), although it is positive on mESC and mHSC-E.
+- **Generalization to new TFs and genes failed** (Section 15), so I limit the claim to
+  completing known target lists.
+- I did not run the pair-aware graph networks from the literature review (SEAL, NBFNet, neural
+  common neighbours).
+
+### 10.3 Advisor's three asks: status
+
+| Ask | Status | Answer |
+|---|---|---|
+| 1. Check link prediction in computer science and apply it | Done for the review and for the simple methods | `LINK_PREDICTION_REVIEW.md`; collaborative filtering, Katz, resource allocation and stackers run (Section 16); the leak-free training and the biased interacting final layer came from it. Pair-aware GNNs not run. |
+| 2. Fold PANDA into the GRN, no separate branch | Done | The hero absorbs it; adding PANDA as a number or as edge weights does not help (Section 12). |
+| 3. Try new graph methods on the GRN branch | Done | SAGE, GAT, GIN and directed SAGE against GCN, at 1 and 3 layers (Sections 11, 13). |
+
+### 10.4 Where this could go as a paper
+
+**Framing that the evidence supports:** an analysis-and-fix paper. The evidence does not
+support a claim of a new state-of-the-art model. *Gene regulatory network link predictors reward popularity and leak training edges: a
+diagnosis, a leak-free interacting design, and a held-out evaluation.*
+
+1. The standard benchmark is mostly popularity (four cell types).
+2. Concatenation plus a linear layer cannot rank genes differently for different TFs.
+3. Training edges leak into the message-passing graph; the fix is required and has a large
+   effect.
+4. With the fix, a shallow GNN with an interacting layer improves within-TF ranking on three of
+   four cell types and absorbs PANDA's information.
+5. Simple feature stackers are strong baselines that every GRN paper should report.
+6. On unseen TFs and genes no tested method beats popularity.
+
+**Still to do before submission:**
+
+| Step | What |
+|---|---|
+| 1 | Per-cell-type tuning and 5 seeds for the other three cell types, with paired tests |
+| 2 | The other BEELINE ground truths (non-cell-type-specific ChIP-seq, STRING, perturbation) and the missing mHSC-GM and mHSC-L cell types |
+| 3 | Run at least one pair-aware model from the review (NBFNet-style, with the TF as source) |
+| 4 | Try to fix held-out TFs with TF-level information (motifs, binding-domain embeddings) |
+| 5 | A better tuning criterion than validation AUROC (for example validation within-TF AUROC) |
+| 6 | Figures and the written paper; I have not started a draft, as you asked |
+
+
+---
+
+## 11. New graph methods on the GRN branch (advisor ask 3)
+
+**Script:** `src/pair_gnn.py --encoder {gcn,sage,gat,gin,dir}` (jobs in `analysis/jobs/grid2.txt`
+and `grid3.txt`).
+
+### Why
+
+Your advisor asked to try new graph methods on the GRN branch. Last week showed that the
+final layer limits scRegNet more than the graph encoder does. I fixed the final layer and the
+edge leak, then swapped only the graph encoder and kept everything else the same.
+
+### What I ran
+
+Hold fixed: interacting final layer, per-batch edge split, no Geneformer, Adam with the same
+settings, 3 seeds, refit protocol. Vary: the encoder and the depth.
+- **GCN:** scRegNet's encoder. Averages a gene with its neighbours using symmetric weights.
+- **GraphSAGE (SAGE):** keeps a separate weight for the gene's own features and one for the
+  average of its neighbours.
+- **GAT:** learns an attention weight for each neighbour.
+- **GIN:** an MLP on the node plus its neighbours. I use the mean of neighbours, because summing
+  overflows on hub genes such as TFAP2A, which has about 480 neighbours.
+- **Directed SAGE (dir):** separate weights for messages that go from a TF to its target and
+  messages that go back.
+
+"1 layer" is one layer of width 256. "3 layers" is scRegNet's depth (widths 227, 29, 34).
+
+### Result (refit test numbers)
+
+| Encoder | Layers | AUROC | AUPRC | Within-TF |
+|---|---|---|---|---|
+| GCN | 1 | 0.8837 ± 0.0007 | 0.6013 ± 0.0050 | 0.7239 ± 0.0049 |
+| **SAGE** | 1 | **0.8884 ± 0.0013** | **0.6252 ± 0.0014** | **0.7489 ± 0.0022** |
+| GAT | 1 | 0.8825 ± 0.0012 | 0.6115 ± 0.0059 | 0.7039 ± 0.0057 |
+| GIN (mean) | 1 | 0.8851 ± 0.0012 | 0.6154 ± 0.0075 | 0.7294 ± 0.0018 |
+| Directed SAGE | 1 | 0.8864 ± 0.0007 | 0.6193 ± 0.0035 | 0.7368 ± 0.0015 |
+| GCN | 3 | 0.8679 ± 0.0018 | 0.5821 ± 0.0033 | 0.5685 ± 0.0095 |
+| SAGE | 3 | 0.8879 ± 0.0013 | 0.6293 ± 0.0018 | 0.7360 ± 0.0047 |
+| GAT | 3 | 0.8765 ± 0.0014 | 0.5962 ± 0.0033 | 0.6759 ± 0.0063 |
+| GIN (mean) | 3 | 0.8819 ± 0.0007 | 0.6154 ± 0.0038 | 0.6934 ± 0.0019 |
+| Directed SAGE | 3 | 0.8840 ± 0.0010 | 0.6202 ± 0.0036 | 0.7211 ± 0.0019 |
+
+(Directed SAGE with 1 layer has 2 finished seeds so far.)
+
+### Finding 1: SAGE is the best encoder at both depths
+
+- At 1 layer SAGE leads GCN by +0.0047 AUROC, +0.024 AUPRC and **+0.025 within-TF**.
+- At 3 layers the gap is large: SAGE keeps within-TF 0.736 while GCN falls to 0.569. SAGE is the
+  only encoder that tolerates scRegNet's depth.
+- **Why this is likely:** GCN averages a gene's own features with its neighbours' using a
+  symmetric weight, so in this hub-dominated graph the neighbours dilute a gene's own signal.
+  SAGE keeps a separate weight for the gene itself. This is a hypothesis; I did not test it in isolation.
+- **Biologically:** a TF's embedding should describe the TF's *program*, the typical expression
+  of its known targets. A gene's embedding should keep the gene's own expression. SAGE keeps
+  these two things apart, and the interacting final layer then asks whether the gene fits the
+  TF's program. This is the same question PANDA's co-expression term asks (Section 12).
+
+### Finding 2: attention and directions do not help
+
+- GAT is below GCN at 1 layer and at 3 layers. With only about 3 known regulators for a typical
+  gene and a few huge hubs, there is little for attention to choose between.
+- Separating the two edge directions (directed SAGE) is below plain SAGE at both depths
+  (0.7368 against 0.7489 at 1 layer). TF-target direction is already encoded by which side is a
+  TF, so the extra weights add parameters without adding information.
+
+### Finding 3: the edge leak hurts SAGE more than GCN
+
+SAGE with the interacting final layer and **no** edge split (k09) reaches
+**0.8486 AUROC and 0.6350 within-TF**. With the split, the same model reaches 0.8884 and 0.7489.
+Best epochs without the split are 1 to 3, so the model overfits in the first few passes.
+GCN showed the same direction with a smaller effect (g07 against g08). Because SAGE keeps the
+gene's own features and its neighbours' average in separate channels, a TF's embedding
+contains its target's features exactly when the pair is a training edge, and the interacting
+layer reads that out. The edge split is therefore the first fix for any pair-scoring GNN, and
+this matches the warnings in the literature review.
+
+### Cautions
+- One optimizer setting for all encoders; an encoder could do better with its own. The
+  equal-budget tuning in Section 14 checks this for the leading models.
+- Differences below about 0.002 AUROC or 0.005 within-TF are inside seed spread.
+
+---
+
+## 12. Folding PANDA's information into the GNN (advisor ask 2)
+
+**Scripts:** `src/pair_gnn.py` (`--scalar`, `--graph_w`), `analysis/scalars.py`,
+`analysis/panda_fold_table.py`, final runs in `analysis/jobs/finals.txt`.
+
+### Why
+
+Your advisor does not want PANDA as a separate branch. Last week showed what PANDA adds: a
+TF-specific number that compares a gene's co-expression with the TF's known targets against its
+co-expression with non-targets. The question here is whether the GNN can take that information
+in itself, so the PANDA branch can go.
+
+### What I tried
+
+1. **Let the GNN find it (no PANDA at all).** One graph layer averages each TF's known
+   targets into the TF's embedding (this is the TF's "program"). An interacting final layer then
+   multiplies the TF's program with the gene's own features. That product is the same
+   comparison PANDA computes, up to a learned weighting. This is the model called "hero".
+2. **Give the model the PANDA number as well**, at the final layer, as in last week's Exp C.
+3. **Give it the cheap co-expression number** (no PANDA algorithm) in the same place.
+4. **Put PANDA on the graph edges** as edge weights (the literal reading of "add PANDA to the
+   GRN"). Each training edge gets a weight from its out-of-fold PANDA score.
+
+I score every PANDA or co-expression number so that no row sees its own label: training rows
+use out-of-fold scores (symmetric fix), validation and test rows use scores built from the
+training edges only.
+
+### Result (hESC, refit protocol; change is within-TF AUROC relative to the model above it)
+
+| Model | Variant | Seeds | AUROC | AUPRC | Within-TF | Change in within-TF |
+|---|---|---|---|---|---|---|
+| GCN 1-layer, interacting, no Geneformer | none (control) | 3 | 0.8837 ± 0.0007 | 0.6013 ± 0.0050 | 0.7239 ± 0.0049 | - |
+| | + co-expression number | 3 | 0.8840 ± 0.0007 | 0.6031 ± 0.0049 | 0.7268 ± 0.0035 | +0.0029 |
+| | + PANDA number | 3 | 0.8846 ± 0.0005 | 0.6053 ± 0.0050 | 0.7277 ± 0.0043 | +0.0038 |
+| | PANDA as graph edge weights | 3 | 0.8835 ± 0.0007 | 0.6010 ± 0.0049 | 0.7169 ± 0.0087 | -0.0070 |
+| | edge weights + PANDA number | 3 | 0.8844 ± 0.0006 | 0.6052 ± 0.0054 | 0.7215 ± 0.0068 | -0.0024 |
+| GCN 1-layer, hidden-layer final, no Geneformer | none (control) | 3 | 0.8876 ± 0.0008 | 0.6244 ± 0.0013 | 0.7183 ± 0.0017 | - |
+| | + co-expression number | 3 | 0.8881 ± 0.0010 | 0.6231 ± 0.0025 | 0.7275 ± 0.0036 | +0.0091 |
+| | + PANDA number | 3 | 0.8904 ± 0.0004 | 0.6284 ± 0.0030 | 0.7329 ± 0.0051 | +0.0146 |
+| GCN 1-layer, interacting, Geneformer | none (control) | 3 | 0.8893 ± 0.0015 | 0.6237 ± 0.0024 | 0.7365 ± 0.0048 | - |
+| | + co-expression number | 3 | 0.8900 ± 0.0020 | 0.6230 ± 0.0011 | 0.7414 ± 0.0044 | +0.0049 |
+| | + PANDA number | 3 | 0.8903 ± 0.0019 | 0.6241 ± 0.0011 | 0.7418 ± 0.0046 | +0.0053 |
+| scRegNet's design | none (control) | 3 | 0.8797 ± 0.0011 | 0.6094 ± 0.0013 | 0.6822 ± 0.0065 | - |
+| | + PANDA number | 3 | 0.8805 ± 0.0004 | 0.6119 ± 0.0029 | 0.6842 ± 0.0030 | +0.0020 |
+| | + co-expression number | 3 | 0.8805 ± 0.0004 | 0.6118 ± 0.0028 | 0.6843 ± 0.0028 | +0.0021 |
+| scRegNet's design + edge split | none (control) | 3 | 0.8842 ± 0.0006 | 0.6161 ± 0.0018 | 0.7078 ± 0.0020 | - |
+| | + PANDA number | 3 | 0.8855 ± 0.0014 | 0.6202 ± 0.0039 | 0.7129 ± 0.0035 | +0.0051 |
+| GCN 1-layer, additive, no Geneformer | none (control) | 3 | 0.8816 ± 0.0013 | 0.6160 ± 0.0005 | 0.7159 ± 0.0006 | - |
+| | + PANDA number | 3 | 0.8829 ± 0.0014 | 0.6190 ± 0.0008 | 0.7195 ± 0.0010 | +0.0037 |
+| SAGE 1-layer, interacting, no Geneformer (default settings) | none (control) | 3 | 0.8884 ± 0.0013 | 0.6252 ± 0.0014 | 0.7489 ± 0.0022 | - |
+| | + co-expression number | 3 | 0.8885 ± 0.0013 | 0.6255 ± 0.0010 | 0.7488 ± 0.0019 | -0.0001 |
+| SAGE 1-layer, interacting, no Geneformer (tuned settings) | none (control) | 5 | 0.8862 ± 0.0026 | 0.6154 ± 0.0077 | 0.7449 ± 0.0109 | - |
+| | + co-expression number | 5 | 0.8857 ± 0.0040 | 0.6140 ± 0.0117 | 0.7446 ± 0.0117 | -0.0003 |
+| | + PANDA number | 5 | 0.8867 ± 0.0023 | 0.6161 ± 0.0087 | 0.7454 ± 0.0122 | +0.0005 |
+| SAGE 1-layer, interacting, Geneformer (tuned settings) | none (control) | 5 | 0.8871 ± 0.0018 | 0.6324 ± 0.0017 | 0.7367 ± 0.0084 | - |
+| | + PANDA number | 5 | 0.8877 ± 0.0015 | 0.6333 ± 0.0015 | 0.7378 ± 0.0068 | +0.0011 |
+
+Paired comparison of the hero with and without the extra number, per TF (33 test TFs, 5 seeds
+averaged, tuned settings, `analysis/final_report.py`):
+
+| Comparison | Within-TF change | 95% interval over TFs | TFs better | Wilcoxon p |
+|---|---|---|---|---|
+| hero + co-expression number vs hero | -0.0003 | [-0.0025, +0.0017] | 20/33 | 0.63 |
+| hero + PANDA number vs hero | +0.0005 | [-0.0019, +0.0027] | 21/33 | 0.21 |
+| hero + Geneformer + PANDA vs hero + Geneformer | +0.0011 | [-0.0003, +0.0023] | 22/33 | 0.038 |
+
+### Finding 1: the GNN already contains PANDA's information
+
+- Adding the PANDA or co-expression number to the SAGE hero changes within-TF AUROC by −0.0003 to
+  +0.0011, which is inside the seed spread, and no interval excludes zero. (The one signed-rank
+  p below 0.05, 0.038 for PANDA on hero + Geneformer, belongs to a +0.0011 change.) With the
+  default settings the co-expression number moves it from 0.7489 to 0.7488.
+- The hero with nothing extra scores within-TF 0.7471 ± 0.0047 (default settings, 5 seeds) and
+  0.7449 ± 0.0109 (validation-tuned settings, 5 seeds). Last week's best model, scRegNet
+  plus PANDA, scored 0.7471. So the hero matches it without PANDA and without Geneformer.
+- **So the PANDA branch can be removed.** The recipe that replaces it is: one graph layer
+  (SAGE), an interacting final layer, and leak-free training (Sections 9 and 11).
+
+### Finding 2: on weaker models the extra number helps a little
+
+For the GCN models and for scRegNet's own design, the PANDA number adds +0.002 to +0.015
+within-TF. The largest gain is for the hidden-layer final layer (+0.015). These models have not
+found the comparison on their own, so the explicit number fills part of the gap. This is the
+same pattern as last week, where PANDA helped a model that could not rank genes differently for
+different TFs.
+
+### Finding 3: PANDA on the graph edges hurts
+
+Edge weights lower within-TF AUROC by 0.007 (0.7169 against 0.7239; only the GCN model was
+tested this way, 3 seeds, so the change is inside the spread). I found no gain and have not
+tested why. The final layer is a better place for the PANDA number than the edges. For the SAGE
+hero, no placement is needed, because the GNN finds the information itself.
+
+### Why the GNN can find it (the mechanism)
+
+- A TF's embedding, after one SAGE layer, is a learned mix of the TF's own expression and the
+  **average expression of its known targets**.
+- A gene's embedding keeps the gene's own expression profile in a separate channel.
+- The interacting final layer multiplies the two. A product of the gene's profile with the
+  average profile of the TF's targets is a correlation between them. This is "does this gene
+  behave like this TF's targets?".
+- This is a hypothesis about what the trained network does. Two results support it: supplying
+  the explicit number adds nothing to the SAGE hero, and the same model with an
+  additive final layer (which cannot form this product) loses 0.033 within-TF (0.7163 against 0.7489, run k03 in Section 10).
+- **Biologically:** this is guilt by association. If a gene's expression moves with the genes a
+  TF already regulates, the gene likely sits in the same regulatory program.
+
+### Cautions
+
+- The result needs a TF that has known targets in the training data. A TF with none has no
+  program to average, and Section 15 shows the hero then performs below simple popularity.
+- One cell type here; Section 13 shows how well it carries over.
+
+---
+
+## 13. Do the findings hold on the other cell types?
+
+**Scripts:** `src/pair_gnn.py --cell_type {hHEP,mHSC-E,mESC}`, `analysis/replication_table.py`,
+jobs in `analysis/jobs/grid4.txt`.
+
+### Why
+
+Everything so far used hESC. A result from one dataset alone is weak. BEELINE
+ships three more cell types in this repository: human hepatocytes (hHEP), mouse blood
+progenitors (mHSC-E) and mouse embryonic stem cells (mESC).
+
+### What I ran
+
+The same models as the hESC grid, with the **hESC settings reused as they are** (no tuning per
+cell type), 3 seeds each, refit protocol. The reference rows are the original scRegNet
+checkpoint for that cell type (the paper's recipe, epoch chosen on test), the two-number
+popularity model, and the five-feature stacker without a neural network (Section 16).
+
+**hESC**
+
+| Model | Seeds | AUROC | AUPRC | Within-TF |
+|---|---|---|---|---|
+| original scRegNet checkpoint (paper recipe, epoch chosen on test) | 1 | 0.8874 | 0.6225 | 0.7202 |
+| popularity only (two counts, logistic regression) | - | 0.8797 | 0.5949 | 0.7068 |
+| no-neural-network stacker (popularity + CF + 3-paths + co-expression number) | - | 0.8863 | 0.6090 | 0.7375 |
+| scRegNet design (add, no split, Geneformer, 3-layer GCN) | 3 | 0.8797 ± 0.0011 | 0.6094 ± 0.0013 | 0.6822 ± 0.0065 |
+|   + edge split | 3 | 0.8842 ± 0.0006 | 0.6161 ± 0.0018 | 0.7078 ± 0.0020 |
+| GCN 1-layer, interacting, split, no Geneformer | 3 | 0.8837 ± 0.0007 | 0.6013 ± 0.0050 | 0.7239 ± 0.0049 |
+| GCN 1-layer, hidden-layer final, split, no Geneformer | 3 | 0.8876 ± 0.0008 | 0.6244 ± 0.0013 | 0.7183 ± 0.0017 |
+| GCN 1-layer, interacting, split, Geneformer | 3 | 0.8893 ± 0.0015 | 0.6237 ± 0.0024 | 0.7365 ± 0.0048 |
+| SAGE 1-layer, interacting, split, no Geneformer | 3 | 0.8884 ± 0.0013 | 0.6252 ± 0.0014 | 0.7489 ± 0.0022 |
+|   + co-expression number | 3 | 0.8885 ± 0.0013 | 0.6255 ± 0.0010 | 0.7488 ± 0.0019 |
+
+**hHEP**
+
+| Model | Seeds | AUROC | AUPRC | Within-TF |
+|---|---|---|---|---|
+| original scRegNet checkpoint (paper recipe, epoch chosen on test) | 1 | 0.9027 | 0.8419 | 0.7882 |
+| popularity only (two counts, logistic regression) | - | 0.8985 | 0.8270 | 0.7838 |
+| no-neural-network stacker (popularity + CF + 3-paths + co-expression number) | - | 0.8996 | 0.8302 | 0.7593 |
+| scRegNet design (add, no split, Geneformer, 3-layer GCN) | 3 | 0.9021 ± 0.0003 | 0.8409 ± 0.0006 | 0.7867 ± 0.0009 |
+|   + edge split | 3 | 0.9027 ± 0.0002 | 0.8413 ± 0.0005 | 0.7868 ± 0.0024 |
+| GCN 1-layer, interacting, split, no Geneformer | 3 | 0.8984 ± 0.0016 | 0.8318 ± 0.0026 | 0.7707 ± 0.0010 |
+| GCN 1-layer, hidden-layer final, split, no Geneformer | 3 | 0.9028 ± 0.0003 | 0.8399 ± 0.0010 | 0.7734 ± 0.0039 |
+| GCN 1-layer, interacting, split, Geneformer | 3 | 0.9038 ± 0.0006 | 0.8454 ± 0.0001 | 0.7891 ± 0.0006 |
+| SAGE 1-layer, interacting, split, no Geneformer | 3 | 0.8988 ± 0.0006 | 0.8377 ± 0.0006 | 0.7583 ± 0.0012 |
+|   + co-expression number | 3 | 0.8986 ± 0.0002 | 0.8379 ± 0.0007 | 0.7584 ± 0.0022 |
+
+**mHSC-E**
+
+| Model | Seeds | AUROC | AUPRC | Within-TF |
+|---|---|---|---|---|
+| original scRegNet checkpoint (paper recipe, epoch chosen on test) | 1 | 0.9223 | 0.9402 | 0.7339 |
+| popularity only (two counts, logistic regression) | - | 0.9147 | 0.9322 | 0.7132 |
+| no-neural-network stacker (popularity + CF + 3-paths + co-expression number) | - | 0.9139 | 0.9301 | 0.7420 |
+| scRegNet design (add, no split, Geneformer, 3-layer GCN) | 3 | 0.9213 ± 0.0004 | 0.9406 ± 0.0002 | 0.7299 ± 0.0011 |
+|   + edge split | 3 | 0.9207 ± 0.0003 | 0.9401 ± 0.0002 | 0.7279 ± 0.0011 |
+| GCN 1-layer, interacting, split, no Geneformer | 3 | 0.9195 ± 0.0057 | 0.9397 ± 0.0027 | 0.7751 ± 0.0031 |
+| GCN 1-layer, hidden-layer final, split, no Geneformer | 3 | 0.9240 ± 0.0003 | 0.9422 ± 0.0002 | 0.7456 ± 0.0049 |
+| GCN 1-layer, interacting, split, Geneformer | 3 | 0.9259 ± 0.0004 | 0.9445 ± 0.0001 | 0.8081 ± 0.0027 |
+| SAGE 1-layer, interacting, split, no Geneformer | 3 | 0.9239 ± 0.0006 | 0.9436 ± 0.0008 | 0.7642 ± 0.0076 |
+|   + co-expression number | 3 | 0.9228 ± 0.0019 | 0.9428 ± 0.0013 | 0.7659 ± 0.0108 |
+
+**mESC**
+
+| Model | Seeds | AUROC | AUPRC | Within-TF |
+|---|---|---|---|---|
+| original scRegNet checkpoint (paper recipe, epoch chosen on test) | 1 | 0.9260 | 0.8593 | 0.7660 |
+| popularity only (two counts, logistic regression) | - | 0.9232 | 0.8505 | 0.7612 |
+| no-neural-network stacker (popularity + CF + 3-paths + co-expression number) | - | 0.9312 | 0.8601 | 0.8142 |
+| scRegNet design (add, no split, Geneformer, 3-layer GCN) | 3 | 0.9238 ± 0.0007 | 0.8557 ± 0.0012 | 0.7616 ± 0.0010 |
+|   + edge split | 3 | 0.9235 ± 0.0005 | 0.8555 ± 0.0011 | 0.7614 ± 0.0019 |
+| GCN 1-layer, interacting, split, no Geneformer | 3 | 0.9269 ± 0.0008 | 0.8560 ± 0.0055 | 0.7875 ± 0.0021 |
+| GCN 1-layer, hidden-layer final, split, no Geneformer | 3 | 0.9375 ± 0.0003 | 0.8782 ± 0.0006 | 0.8164 ± 0.0025 |
+| GCN 1-layer, interacting, split, Geneformer | 3 | 0.9372 ± 0.0009 | 0.8788 ± 0.0012 | 0.8116 ± 0.0024 |
+| SAGE 1-layer, interacting, split, no Geneformer | 3 | 0.9389 ± 0.0010 | 0.8814 ± 0.0019 | 0.8249 ± 0.0021 |
+|   + co-expression number | 3 | 0.9392 ± 0.0010 | 0.8817 ± 0.0018 | 0.8277 ± 0.0017 |
+
+### Finding 1: three of four cell types show a clear within-TF gain
+
+Change from the scRegNet design (first model row) to the best model with the interacting final
+layer and edge split, with the encoder chosen on the table:
+
+| Cell type | Best new model | AUROC | AUPRC | Within-TF |
+|---|---|---|---|---|
+| hESC | SAGE, no Geneformer | +0.0087 | +0.0158 | **+0.0667** |
+| mESC | SAGE, no Geneformer | **+0.0151** | **+0.0257** | **+0.0633** |
+| mHSC-E | GCN, interacting, Geneformer | +0.0046 | +0.0039 | **+0.0782** |
+| hHEP | GCN, interacting, Geneformer | +0.0017 | +0.0045 | +0.0024 |
+
+- On mESC the best new model beats the original checkpoint on every measure
+  (0.9389 / 0.8814 / 0.8249 against 0.9260 / 0.8593 / 0.7660) and beats the
+  no-neural-network stacker (0.9312 / 0.8601 / 0.8142).
+- On mHSC-E, GCN with Geneformer reaches within-TF 0.8081 against 0.7339 for the original.
+
+### Finding 2: hHEP shows no gain, and nothing beats popularity there
+
+On hHEP, the two-number popularity model has within-TF 0.7838 and the original scRegNet has
+0.7882. No model with the interacting layer is above 0.7891. The co-expression number alone is
+weak on hHEP (within-TF 0.55, against 0.58 to 0.63 on the other cell types). I did not find out
+why. Possible reasons are that hHEP cells have no time or stage structure to give TF-target
+co-expression its signal (the cell names are plate wells), or that its ground truth is
+dominated by popular genes. I have not tested either.
+
+### Finding 3: the best encoder depends on the dataset
+
+SAGE was best on hESC and mESC. GCN with Geneformer was best on mHSC-E and hHEP. The
+"SAGE is better" statement from Section 11 applies only to hESC and mESC.
+The combination that replicates is of an interacting final layer, the edge split
+and a shallow graph.
+
+### Finding 4: the edge split matters less for the additive design
+
+For the scRegNet design the split changes the results by under 0.001 AUROC on hHEP, mHSC-E
+and mESC. The split matters with an interacting layer (Section 9), and this section's best models
+use that layer.
+
+### Cautions
+- 3 seeds and no per-cell-type tuning; the original rows are single checkpoints with the epoch
+  chosen on the test set.
+- Only hESC has a full 5-seed, tuned, paired-test treatment (Section 14).
+
+---
+
+## 14. The fair comparison on hESC: equal tuning, 5 seeds, paired tests
+
+**Scripts:** `analysis/hpo_jobs.py` and `analysis/hpo_pick.py` (tuning), `analysis/make_finals.py`
+(final job list), `analysis/final_report.py` (tables and paired tests; output
+`analysis/out/final_report.txt`).
+
+### Why
+
+The earlier tables used one hand-picked Adam setting for every model and 3 seeds. A reviewer
+would ask whether the baseline needed better settings, and whether small differences are
+real. This section gives every model family the same tuning effort, picks settings on the
+validation slice only, then runs 5 fresh seeds and tests differences across TFs.
+
+### Step 1: equal-budget tuning (validation only)
+
+Random search over optimizer (Adam or SGD for the scRegNet design; Adam for the new families),
+learning rate, weight decay, dropout, hidden width, batch size, and the graph-layer width.
+Tuning seed 0, no refit, judged on the validation AUROC. The test set played no part.
+
+| Family | Trials | Best validation AUROC | Median | Chosen settings |
+|---|---|---|---|---|
+| scRegNet design (additive, no split, Geneformer, 3-layer GCN) | 12 + the published recipe | 0.8786 | 0.8737 | Adam, lr 4.3e-5, weight decay 2e-3, dropout 0.48, batch 512 |
+| SAGE + interacting + split + Geneformer | 7 | 0.8916 | 0.8901 | Adam, lr 3.4e-5, weight decay 3.8e-3, dropout 0.47, width 64, batch 193 |
+| SAGE + interacting + split (GNN only) | 7 | 0.8906 | 0.8877 | Adam, lr 3.3e-4, weight decay 2.2e-5, dropout 0.43, width 256, batch 128 |
+
+The published SGD recipe scored a validation AUROC of 0.8757 as one of the scRegNet trials, below
+the best Adam trial. I also ran it as its own entry in the final table.
+
+### Step 2: final runs (5 seeds 42 to 46, refit protocol)
+
+| Model | AUROC | AUPRC | Within-TF | Within-TF (TFs with ≥ 8 positives) |
+|---|---|---|---|---|
+| scRegNet design, tuned settings | 0.8817 ± 0.0014 | 0.6159 ± 0.0025 | 0.6935 ± 0.0078 | 0.6963 ± 0.0038 |
+| scRegNet design, published SGD recipe | 0.8830 ± 0.0012 | 0.6155 ± 0.0029 | 0.7029 ± 0.0063 | 0.7004 ± 0.0030 |
+| **SAGE + interacting + split (GNN only)** | 0.8862 ± 0.0026 | 0.6154 ± 0.0077 | **0.7449 ± 0.0109** | 0.7267 ± 0.0054 |
+| SAGE + interacting + split + Geneformer | 0.8871 ± 0.0018 | **0.6324 ± 0.0017** | 0.7367 ± 0.0084 | 0.7163 ± 0.0074 |
+| &nbsp;&nbsp;hero + co-expression number | 0.8857 ± 0.0040 | 0.6140 ± 0.0117 | 0.7446 ± 0.0117 | 0.7262 ± 0.0046 |
+| &nbsp;&nbsp;hero + PANDA number | 0.8867 ± 0.0023 | 0.6161 ± 0.0087 | 0.7454 ± 0.0122 | 0.7284 ± 0.0060 |
+| &nbsp;&nbsp;hero + Geneformer + PANDA number | 0.8877 ± 0.0015 | 0.6333 ± 0.0015 | 0.7378 ± 0.0068 | 0.7184 ± 0.0062 |
+| ablation: GCN instead of SAGE | 0.8831 ± 0.0035 | 0.6036 ± 0.0074 | 0.7248 ± 0.0056 | 0.7195 ± 0.0087 |
+| ablation: additive final layer | 0.8825 ± 0.0024 | 0.6155 ± 0.0051 | 0.7144 ± 0.0043 | 0.7060 ± 0.0053 |
+| ablation: hidden-layer final layer | 0.8873 ± 0.0016 | 0.6229 ± 0.0019 | 0.7361 ± 0.0073 | 0.7161 ± 0.0078 |
+| ablation: **no edge split** | 0.8405 ± 0.0105 | 0.5277 ± 0.0223 | 0.6669 ± 0.0041 | 0.6509 ± 0.0050 |
+| control: scRegNet design, Geneformer vectors shuffled across genes | 0.8798 ± 0.0022 | 0.6051 ± 0.0067 | 0.6906 ± 0.0088 | 0.6822 ± 0.0084 |
+| control: hero + Geneformer, vectors shuffled across genes | 0.8823 ± 0.0009 | 0.6207 ± 0.0018 | 0.7074 ± 0.0054 | 0.6998 ± 0.0053 |
+| *original scRegNet checkpoint (1 seed, epoch chosen on test)* | *0.8870* | *0.6245* | *0.7215* | |
+| *last week, scRegNet + PANDA with symmetric fix (3 seeds)* | *0.8915 ± 0.0004* | *0.6337 ± 0.0009* | *0.7471 ± 0.0009* | |
+| *no-neural-network stacker (Section 16)* | *0.8867* | *0.6102* | *0.7399* | |
+
+**5-seed ensemble of the GNN-only hero** (average of each seed's scores, no fitting):
+**0.8930 AUROC, 0.6332 AUPRC, 0.7611 within-TF.** This is above last week's best model on AUROC
+and within-TF, and level on AUPRC.
+
+### Step 3: paired comparisons across the 33 test TFs
+
+For each TF I computed its AUROC in each model (averaged over the 5 seeds), took the difference
+between two models TF by TF, and bootstrapped the mean difference over TFs (5,000 resamples).
+"Wilcoxon p" is a signed-rank test on the 33 differences.
+
+| Comparison | Within-TF change | 95% interval | TFs better | Wilcoxon p |
+|---|---|---|---|---|
+| GNN-only hero vs tuned scRegNet design | **+0.0514** | [+0.0202, +0.0882] | 23/33 | 0.016 |
+| GNN-only hero vs published scRegNet recipe | **+0.0419** | [+0.0143, +0.0746] | 20/33 | 0.035 |
+| hero + Geneformer vs tuned scRegNet design | +0.0432 | [+0.0150, +0.0755] | 24/33 | 0.007 |
+| edge split vs none | **+0.0780** | [+0.0506, +0.1075] | 28/33 | 0.000003 |
+| interacting vs additive final layer | +0.0304 | [+0.0026, +0.0625] | 18/33 | 0.47 |
+| multiplication vs hidden-layer final layer | +0.0088 | [-0.0030, +0.0214] | 18/33 | 0.36 |
+| SAGE vs GCN | +0.0200 | [+0.0013, +0.0409] | 17/33 | 0.15 |
+| hero + co-expression number vs hero | -0.0003 | [-0.0025, +0.0017] | 20/33 | 0.63 |
+| hero + PANDA number vs hero | +0.0005 | [-0.0019, +0.0027] | 21/33 | 0.21 |
+| Geneformer added to the hero | -0.0082 | [-0.0244, +0.0072] | 16/33 | 0.53 |
+| hero vs no-neural-network stacker | +0.0050 | [-0.0191, +0.0331] | 15/33 | 0.58 |
+| hero vs original scRegNet checkpoint | +0.0247 | [+0.0003, +0.0532] | 19/33 | 0.38 |
+| tuned scRegNet design vs original checkpoint | -0.0267 | [-0.0406, -0.0140] | 10/33 | 0.0008 |
+
+### Finding 1: the clear wins are the edge split and the hero over the scRegNet design
+
+- **The edge split is the strongest effect**: +0.078 within-TF, better for 28 of 33 TFs
+  (p = 3 × 10⁻⁶). Without it AUROC falls to 0.8405.
+- The GNN-only hero beats the tuned scRegNet design by +0.051 within-TF and beats the published
+  recipe by +0.042, both significant. Pooled AUROC is higher by +0.0045 and +0.0032; AUPRC is
+  level (0.6154 against 0.6159 and 0.6155).
+- With Geneformer the hero gains AUPRC (0.6324, +0.017 over the scRegNet design) and keeps
+  most of the within-TF gain.
+
+### Finding 2: several things I expected to matter did not reach significance
+
+- **Interacting against additive final layer:** +0.030 within-TF on average, and the bootstrap
+  interval stays above zero, but the signed-rank test is not significant (p = 0.47). A few TFs
+  gain a lot and many barely change. The form of the interaction does not matter: a hidden layer
+  gives within-TF 0.7361 against 0.7449 for multiplication.
+- **SAGE against GCN:** +0.020, borderline (interval excludes zero, signed-rank p = 0.15). It
+  does not hold up on the other cell types (Section 13).
+- **PANDA or the co-expression number:** no change (Section 12).
+- **Geneformer on top of the hero:** within-TF is lower by 0.008 (not significant) while AUPRC
+  rises by 0.017.
+
+### Finding 3: Geneformer's content matters little for the scRegNet design
+
+Shuffling the Geneformer vectors across genes, so each gene gets another gene's embedding,
+changes the scRegNet design by −0.002 AUROC, −0.011 AUPRC and −0.003 within-TF. For the
+hero with Geneformer the real vectors help more: +0.005 AUROC, +0.012 AUPRC and +0.029
+within-TF over shuffled. So the foundation model's gene-specific content adds a small amount,
+mainly for precision, and most of the gain from having the extra input comes from the extra
+per-gene parameters.
+
+### Finding 4: my harness reproduces the published recipe, with a known bias in the original
+
+- Running the published SGD recipe in the harness gives 0.8830 / 0.6155 / 0.7029, against
+  0.8870 / 0.6245 / 0.7215 for the original checkpoint.
+- Choosing the best epoch on the test set, as the original code does, inflates results. On
+  my own runs the same models score about +0.0015 AUROC and +0.01 within-TF higher when the
+  epoch is chosen on test instead of validation. That accounts for a good part of the gap; the
+  original is also a single seed.
+- A tuned Adam version of the scRegNet design is not better than the published recipe
+  (0.6935 against 0.7029 within-TF).
+
+### Finding 5: ensembling seeds gives a clear gain
+
+The 5-seed ensemble of the hero scores 0.8930 / 0.6332 / 0.7611, against single runs at
+0.8862 / 0.6154 / 0.7449. Averaging also cancels the seed-to-seed noise, which is large for the
+validation-tuned hero (within-TF spread ± 0.011, against ± 0.002 for the default settings;
+see the addendum below).
+
+### Cautions
+- The validation-chosen setting for the hero (peak at epoch 4, learning rate 3.3e-4) is less
+  stable than the hand-set default. Validation AUROC is dominated by popularity and does not
+  reward within-TF ranking. This may explain the poor match.
+- The comparison to the original checkpoint rests on a single seed of the original.
+- Hyperparameter search budgets are small (7 to 13 trials per family).
+
+
+### Addendum: the hand-set default settings did better than the validation-tuned ones
+
+Before the tuning, I used one hand-set Adam setting for the hero (learning rate 1e-4, weight
+decay 1e-3, dropout 0.17, width 256, batch 193). It came from a small validation sweep on four
+configurations. I ran it for 5 fresh seeds (`d01`, `d02`), so the table above has both versions.
+
+| Model | AUROC | AUPRC | Within-TF | Within-TF (≥ 8 positives) |
+|---|---|---|---|---|
+| hero, default settings (GNN only) | 0.8884 ± 0.0018 | 0.6256 ± 0.0033 | 0.7471 ± 0.0047 | 0.7266 ± 0.0062 |
+| hero + Geneformer, default settings | **0.8910 ± 0.0015** | **0.6346 ± 0.0038** | **0.7517 ± 0.0027** | 0.7322 ± 0.0046 |
+| 5-seed ensemble, default hero | 0.8913 | 0.6335 | 0.7536 | |
+| 5-seed ensemble, default hero + Geneformer | 0.8935 | 0.6410 | 0.7574 | |
+| *original scRegNet checkpoint* | *0.8870* | *0.6245* | *0.7215* | |
+| *last week's scRegNet + PANDA, symmetric fix* | *0.8915 ± 0.0004* | *0.6337 ± 0.0009* | *0.7471 ± 0.0009* | |
+
+- **Default hero + Geneformer matches last week's best model with no PANDA**: AUROC 0.8910
+  against 0.8915, AUPRC 0.6346 against 0.6337, within-TF 0.7517 against 0.7471.
+- Paired over TFs: default hero beats the published recipe by +0.044 within-TF (p = 0.006).
+  Default hero + Geneformer beats it by +0.049 (p = 0.001) and beats the original checkpoint by
+  +0.032 (interval [+0.009, +0.060], p = 0.03). Default hero alone against the original
+  checkpoint: +0.027, p = 0.10. Against the five-feature stacker: +0.007 and +0.012, neither
+  significant (p = 0.69 and 0.65).
+- Default against validation-tuned hero: +0.002 within-TF, p = 0.50. The two are not reliably
+  different on test, but the tuned one is noisier from seed to seed (±0.011 against ±0.005).
+- **Geneformer on top of the default hero:** +0.005 within-TF, p = 0.07, and +0.009 AUPRC. With
+  the default settings Geneformer helps a little; with the tuned settings it did not. Geneformer's
+  contribution is small and depends on the settings.
+- **Why tuning did not help:** the search judged models by validation AUROC. That score is
+  dominated by popularity and does not reward within-TF ranking, and 7 trials is a small
+  search. I kept the pre-specified tuned results in the table above and report the default
+  results here, instead of choosing between them after seeing test numbers.
+
+---
+
+## 15. Held-out genes and held-out TFs: what happens when popularity cannot help
+
+**Scripts:** `src/pair_gnn.py --protocol {gene,tf} --fold k`, `analysis/heldout_report.py`
+(output `analysis/out/heldout_report.txt`), jobs in `analysis/jobs/heldout.txt`.
+
+### Why
+
+The literature review's most important evaluation advice (Park and Marcotte, *Nature Methods*
+2012) is to test on items the model never saw. In the standard split, every test gene and every
+test TF also appears in training with other labels, so a model can win by remembering how
+popular each one is. Two stricter tests remove that:
+
+- **Held-out genes:** 20% of target genes lose *all* their edges (from training and from the
+  graph). Five different random draws (folds). A held-out gene has no popularity to use.
+- **Held-out TFs:** about 7 of the 34 TFs lose all their edges, in 5 folds so each TF is held
+  out exactly once. A held-out TF has no known targets, so there is no "program" to average.
+
+In both tests the epoch is chosen on a validation slice built the same way (unseen genes or
+unseen TFs from inside the training data). Each model runs on 5 folds × 2 seeds with the settings
+chosen in Section 14, then is scored once on the held-out items.
+
+For reference I also scored popularity alone, using only what training could know: the TF's
+base rate (held-out genes) or the gene's degree (held-out TFs).
+
+### Result
+
+**Held-out genes** (mean ± spread over 5 folds):
+
+| Model | AUROC | AUPRC | Within-TF | Within-TF (≥ 8 positives) |
+|---|---|---|---|---|
+| popularity only: TF base rate | 0.8493 ± 0.0029 | 0.4920 ± 0.0164 | 0.5000 | 0.5000 |
+| scRegNet design, tuned | 0.8328 ± 0.0101 | 0.5275 ± 0.0179 | 0.5241 ± 0.0403 | 0.5591 ± 0.0259 |
+| GNN-only hero | 0.8360 ± 0.0074 | 0.5049 ± 0.0123 | 0.5477 ± 0.0341 | 0.5583 ± 0.0222 |
+| hero + co-expression number | 0.8343 ± 0.0083 | 0.5046 ± 0.0115 | 0.5456 ± 0.0333 | 0.5572 ± 0.0211 |
+| hero + Geneformer | 0.8465 ± 0.0086 | 0.5314 ± 0.0124 | 0.5521 ± 0.0301 | 0.5697 ± 0.0244 |
+
+**Held-out TFs** (mean ± spread over 5 folds):
+
+| Model | AUROC | AUPRC | Within-TF | Within-TF (≥ 8 positives) |
+|---|---|---|---|---|
+| popularity only: gene degree | 0.6689 ± 0.0168 | 0.2316 ± 0.0299 | 0.7244 ± 0.0643 | 0.7120 ± 0.0379 |
+| scRegNet design, tuned | 0.6009 ± 0.0913 | 0.2303 ± 0.0815 | 0.7163 ± 0.0609 | 0.7045 ± 0.0347 |
+| GNN-only hero | 0.6241 ± 0.0672 | 0.2070 ± 0.0589 | 0.6839 ± 0.0521 | 0.6691 ± 0.0281 |
+| hero + co-expression number | 0.6356 ± 0.0569 | 0.2083 ± 0.0543 | 0.6932 ± 0.0574 | 0.6823 ± 0.0379 |
+| hero + Geneformer | 0.6058 ± 0.0538 | 0.1846 ± 0.0516 | 0.6126 ± 0.0934 | 0.6025 ± 0.0772 |
+
+Paired over the 29 held-out TFs with at least 8 test positives (per-TF AUROC, averaged over the
+2 seeds):
+
+| Comparison | Mean difference | 95% interval | TFs better | Wilcoxon p |
+|---|---|---|---|---|
+| hero vs scRegNet design | -0.0348 | [-0.0573, -0.0089] | 8/29 | 0.006 |
+| hero vs popularity (gene degree) | -0.0422 | [-0.0613, -0.0209] | 7/29 | 0.0007 |
+| scRegNet design vs popularity | -0.0074 | [-0.0166, +0.0012] | 8/29 | 0.066 |
+| hero + co-expression number vs popularity | -0.0295 | [-0.0475, -0.0119] | 7/29 | 0.001 |
+| hero + Geneformer vs popularity | -0.1106 | [-0.1364, -0.0846] | 1/29 | 0.0000002 |
+
+### Finding 1: for a gene the model has never seen, none of the models ranks targets well
+
+Within-TF AUROC is 0.52 to 0.55, where 0.5 is chance. The pooled AUROC of 0.83 to 0.85 comes
+mostly from the TF's base rate. That alone gives 0.849, which is higher than every model,
+including the best one, hero + Geneformer (0.8465). Among the models, hero + Geneformer is best
+on every measure, which fits Geneformer being the one input that carries information about a
+gene from outside this dataset. Even so, 0.57 within-TF is weak.
+
+### Finding 2: for a TF with no known targets, the interacting hero is worse than popularity
+
+- Ranking genes by how many *other* TFs bind them gives within-TF 0.724 on held-out TFs. No
+  model beats it.
+- The scRegNet design is close to popularity (-0.007, not significant), which is what you would
+  expect from a model that gives every TF the same gene ranking.
+- The hero is significantly worse than both (-0.035 against the scRegNet design, -0.042 against
+  popularity). With no known targets, a TF's embedding reduces to its own expression. The product
+  with each gene then has nothing meaningful to compare, and the interaction term adds noise.
+- Hero + Geneformer is much worse (-0.111): the extra per-gene input lets the interaction
+  overfit to the training TFs.
+- The spreads between folds are large (±0.05 to ±0.09) because each fold has only about 7 TFs,
+  so only the paired tests above are reliable.
+
+### What this means
+
+- **The hero's gains are gains at completing partly known target lists.** That is what the
+  standard benchmark measures, and it is a real use: given a TF with some known targets, rank the
+  rest. The gains do not show that the model learned regulation that transfers to a new TF or
+  a new gene.
+- **No tested model beats popularity on new TFs, and none ranks new genes well.** A
+  paper needs to state this limit. It matches the biology of the ground truth:
+  ChIP-seq peaks concentrate on open, highly bound genes, and without anything TF-specific
+  to go on, "bound by many TFs" is the best guess.
+- A model should fall back on popularity when a TF has no known targets. One fix is to
+  train with whole TFs hidden from the graph. That test is in the addendum below.
+
+
+### Addendum: hiding whole TFs during training does not fix it
+
+I added one training trick aimed at the held-out-TF weakness: in every batch, with probability
+0.3 per TF, hide *all* of that TF's training edges from the graph (`--tf_drop 0.3`). The model
+then often has to score a TF whose program is empty and should learn to fall back on
+popularity. I ran it with the default hero settings, on the held-out-TF test and on the
+standard split, with a matched control of the same hero without it (5 folds × 2 seeds).
+
+| Setting | Model | AUROC | AUPRC | Within-TF | Within-TF (≥ 8 positives) |
+|---|---|---|---|---|---|
+| held-out TFs | default hero | 0.6308 ± 0.1085 | 0.2294 ± 0.0934 | 0.6840 ± 0.0630 | 0.6745 ± 0.0358 |
+| held-out TFs | default hero + TF dropout | 0.6488 ± 0.0518 | 0.2409 ± 0.0716 | 0.6598 ± 0.0323 | 0.6584 ± 0.0171 |
+| held-out TFs | *popularity only* | *0.6689 ± 0.0168* | *0.2316 ± 0.0299* | *0.7244 ± 0.0643* | *0.7120 ± 0.0379* |
+| standard split (5 seeds) | default hero | 0.8884 ± 0.0018 | 0.6256 ± 0.0033 | 0.7471 ± 0.0047 | |
+| standard split (5 seeds) | default hero + TF dropout | 0.8847 ± 0.0024 | 0.6203 ± 0.0048 | 0.7303 ± 0.0120 | |
+
+- On held-out TFs, TF dropout raises the pooled AUROC a little (0.631 to 0.649) and lowers the
+  within-TF AUROC (0.684 to 0.660). It still does not reach popularity (0.724). I count this as
+  no improvement.
+- On the standard split it costs 0.004 AUROC and 0.017 within-TF.
+- So this simple fix is a **negative result**. A model that handles unseen TFs well probably
+  needs different information about the TF, for example its DNA-binding domain or motif.
+
+---
+
+## 16. Ideas from computer-science link prediction (advisor ask 1), and a biology check
+
+**Scripts:** `analysis/cs_baselines.py` (outputs `analysis/out/cs_baselines_<cell>.json`),
+`analysis/topk_ezh2.py` (output `analysis/out/topk_ezh2.txt`). The literature review is
+`LINK_PREDICTION_REVIEW.md`.
+
+### Why
+
+Your advisor asked me to check link prediction in computer science and apply it here. The review
+found that our task is matrix completion on a 34 × 910 yes/no table, and that the field has
+strong, simple methods for it. Before using heavy models, the review's first recommendation was to
+run those simple methods, because "tuned simple baselines often match complex ones".
+
+### What I ran (no neural network, CPU only)
+
+I compute everything from the table of **training** edges. A test pair's own edge is not in
+the table, and for the training rows used to fit the small combiners, every score comes from
+5-fold out-of-fold tables that drop that fold's positives.
+
+- **Preferential attachment (popularity):** how many targets the TF has times how many TFs bind
+  the gene. This is the two-number model from Week 1.
+- **TF-based collaborative filtering:** do TFs that share targets with this TF also target the
+  gene? **Gene-based collaborative filtering:** does the gene look like the TF's known targets,
+  judged by which TFs bind each?
+- **Three-step paths and resource allocation:** counts of paths TF – gene' – TF' – gene, with
+  popular genes down-weighted. This is the bipartite version of Katz and Adamic-Adar.
+- **The co-expression number** from Sections 2 and 12, and the **PANDA number**.
+- **Stackers:** a logistic regression (and a small boosted-tree model) over the features above.
+
+### Result on hESC
+
+| Method | AUROC | AUPRC | Within-TF |
+|---|---|---|---|
+| preferential attachment (popularity only) | 0.8802 | 0.5898 | 0.7068 |
+| TF-based collaborative filtering | 0.6949 | 0.2412 | 0.6878 |
+| gene-based collaborative filtering | 0.6142 | 0.1806 | 0.6394 |
+| three-step path count | 0.8547 | 0.5351 | 0.6698 |
+| resource allocation over paths | 0.6749 | 0.2309 | 0.6639 |
+| stacker (logistic regression): popularity | 0.8797 | 0.5949 | 0.7068 |
+| &nbsp;&nbsp;+ both collaborative filters | 0.8804 | 0.5930 | 0.7181 |
+| &nbsp;&nbsp;+ three-step paths and resource allocation | 0.8837 | 0.6064 | 0.7253 |
+| &nbsp;&nbsp;+ co-expression number | 0.8863 | 0.6090 | 0.7375 |
+| &nbsp;&nbsp;+ PANDA number | 0.8867 | 0.6102 | 0.7399 |
+| stacker (boosted trees): + co-expression and PANDA numbers | 0.8871 | 0.6171 | 0.7279 |
+
+### Result on all four cell types: popularity versus the original scRegNet
+
+| Cell type | Original scRegNet checkpoint | Popularity only | Stacker with co-expression number |
+|---|---|---|---|
+| hESC | 0.8874 / 0.6225 / 0.7202 | 0.8797 / 0.5949 / 0.7068 | 0.8863 / 0.6090 / 0.7375 |
+| hHEP | 0.9027 / 0.8419 / 0.7882 | 0.8985 / 0.8270 / 0.7838 | 0.8996 / 0.8302 / 0.7593 |
+| mHSC-E | 0.9223 / 0.9402 / 0.7339 | 0.9147 / 0.9322 / 0.7132 | 0.9139 / 0.9301 / 0.7420 |
+| mESC | 0.9260 / 0.8593 / 0.7660 | 0.9232 / 0.8505 / 0.7612 | **0.9312 / 0.8601 / 0.8142** |
+
+(Each cell: AUROC / AUPRC / within-TF. Original checkpoints chose their epoch on the test set.)
+
+### Finding 1: the popularity result holds on all four cell types
+
+Two numbers per pair, with no expression data, come within 0.003 to 0.008 AUROC of the original
+scRegNet on all four cell types (0.0077 hESC, 0.0042 hHEP, 0.0076 mHSC-E, 0.0028 mESC). The
+benchmark rewards popularity everywhere we looked.
+
+### Finding 2: the useful extra ingredient is the co-expression number
+
+- Collaborative filtering and path counts add little, as the review predicted: +0.011 and then
+  +0.007 within-TF on hESC, in two steps.
+- The co-expression number adds the most: within-TF +0.012 on hESC, +0.012 on mESC, +0.028 on
+  mHSC-E. It *hurts* on hHEP (−0.023).
+- A stacker made of five hand-built features **beats the original scRegNet checkpoint** on mESC
+  on all three metrics (0.9312 / 0.8601 / 0.8142 against 0.9260 / 0.8593 / 0.7660), and on
+  within-TF on hESC and mHSC-E.
+
+### Finding 3: on hESC the GNN hero and the stacker are statistically tied
+
+The paired test over 33 TFs gives hero minus stacker = +0.005 within-TF, interval
+[-0.019, +0.033], p = 0.58. The hero is a little higher on average and the ensemble of 5 hero
+runs is higher again (0.7611 within-TF), but a transparent model built from five features
+carries most of the GNN's gain. The review warned about this outcome, and any write-up should
+report it.
+
+### Finding 4: what I did not run
+
+I did not implement the pair-aware graph networks from the review (SEAL, NBFNet, neural common
+neighbours). The path and collaborative-filtering signals they build on added at
+most +0.011 within-TF in the stacker, so I judged the expected return low. Whether they help
+is still untested.
+
+### A biology check on the hESC predictions: who is at the top of each TF's list?
+
+A biologist reads the top of one TF's candidate list. I measured precision at the top within each
+TF's test candidates (TFs with at least k test positives):
+
+| k | TFs | Base rate | scRegNet design | GNN-only hero | hero + Geneformer | hero + PANDA |
+|---|---|---|---|---|---|---|
+| 10 | 20 | 0.239 | 0.415 | 0.480 | 0.481 | 0.500 |
+| 20 | 15 | 0.297 | 0.510 | 0.571 | 0.562 | 0.569 |
+| 50 | 10 | 0.384 | 0.601 | 0.607 | 0.622 | 0.610 |
+
+The hero is better at the top of the list (+0.065 at k = 10, +0.061 at k = 20) and the gap
+closes by k = 50.
+
+**EZH2 again (Polycomb repressor).** EZH2 has 77 training targets and 27 held-out real targets
+among 210 test candidates. Among its top 30 test candidates:
+
+| Model | Held-out EZH2 targets recovered (chance level 3.9) |
+|---|---|
+| scRegNet design, tuned | 3 |
+| GNN-only hero | **8** |
+| hero + Geneformer | 8 |
+| hero + PANDA | 8 |
+
+The scRegNet design recovers EZH2's targets at chance level, as last week's finding that its
+ranking for EZH2 is below chance suggested. The hero recovers about twice as many. A GO test on
+each model's top 60 new predictions for EZH2 (the gene panel as background) finds no
+significant term for any model (best adjusted p between 0.22 and 0.32). The hero's top terms are
+developmental (anterior/posterior pattern specification, cardiac muscle tissue development,
+extracellular matrix organization). This fits what Polycomb silences, but it only suggests a
+link.
 
 ---

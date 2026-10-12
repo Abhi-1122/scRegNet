@@ -1,0 +1,6 @@
+a_add_sf_none --decoder add --scfm 1 --split none --optimizer Adam --lr 0.001
+a_had_sf_none --decoder had --scfm 1 --split none --optimizer Adam --lr 0.001
+a_had_sf_batch --decoder had --scfm 1 --split batch --optimizer Adam --lr 0.001
+a_add_nosf_none --decoder add --scfm 0 --split none --optimizer Adam --lr 0.001
+a_had_nosf_none --decoder had --scfm 0 --split none --optimizer Adam --lr 0.001
+a_had_nosf_batch --decoder had --scfm 0 --split batch --optimizer Adam --lr 0.001

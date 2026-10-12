@@ -1,0 +1,1 @@
+r01_add_sf_none_sgd_s42 --decoder add --scfm 1 --split none --seed 42 --optimizer SGD --lr 0.0014411386699467767 --wd 1.0449337997892844e-05 --eval_interval 5 --epochs 500 --refit 1

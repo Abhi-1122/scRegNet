@@ -1,0 +1,54 @@
+hESC, refit protocol, mean ± std over seeds (test set scored once)
+model                                                n             AUROC            AUPRC        within-TF within-TF(>=8 pos)
+scRegNet design, tuned (Adam)                        5   0.8817 ± 0.0014  0.6159 ± 0.0025  0.6935 ± 0.0078    0.6963 ± 0.0038
+scRegNet design, original SGD recipe                 5   0.8830 ± 0.0012  0.6155 ± 0.0029  0.7029 ± 0.0063    0.7004 ± 0.0030
+SAGE + interacting + split + Geneformer              5   0.8871 ± 0.0018  0.6324 ± 0.0017  0.7367 ± 0.0084    0.7163 ± 0.0074
+SAGE + interacting + split (GNN only)                5   0.8862 ± 0.0026  0.6154 ± 0.0077  0.7449 ± 0.0109    0.7267 ± 0.0054
+  + co-expression contrast number                    5   0.8857 ± 0.0040  0.6140 ± 0.0117  0.7446 ± 0.0117    0.7262 ± 0.0046
+  + PANDA number                                     5   0.8867 ± 0.0023  0.6161 ± 0.0087  0.7454 ± 0.0122    0.7284 ± 0.0060
+  ablation: GCN encoder                              5   0.8831 ± 0.0035  0.6036 ± 0.0074  0.7248 ± 0.0056    0.7195 ± 0.0087
+  ablation: additive final layer                     5   0.8825 ± 0.0024  0.6155 ± 0.0051  0.7144 ± 0.0043    0.7060 ± 0.0053
+  ablation: no edge split                            5   0.8405 ± 0.0105  0.5277 ± 0.0223  0.6669 ± 0.0041    0.6509 ± 0.0050
+  ablation: hidden-layer final layer                 5   0.8873 ± 0.0016  0.6229 ± 0.0019  0.7361 ± 0.0073    0.7161 ± 0.0078
+SAGE + interacting + split + Geneformer + PANDA      5   0.8877 ± 0.0015  0.6333 ± 0.0015  0.7378 ± 0.0068    0.7184 ± 0.0062
+hero, hand-set default settings (GNN only)           5   0.8884 ± 0.0018  0.6256 ± 0.0033  0.7471 ± 0.0047    0.7266 ± 0.0062
+hero + Geneformer, hand-set default settings         5   0.8910 ± 0.0015  0.6346 ± 0.0038  0.7517 ± 0.0027    0.7322 ± 0.0046
+hero (default) + whole-TF edge dropout 0.3           5   0.8847 ± 0.0024  0.6203 ± 0.0048  0.7303 ± 0.0120    0.7174 ± 0.0095
+control: scRegNet design, Geneformer vectors shuffled across genes 5   0.8798 ± 0.0022  0.6051 ± 0.0067  0.6906 ± 0.0088    0.6822 ± 0.0084
+control: hero + Geneformer, vectors shuffled across genes 5   0.8823 ± 0.0009  0.6207 ± 0.0018  0.7074 ± 0.0054    0.6998 ± 0.0053
+reference rows:
+  original scRegNet (epoch chosen on test; 1 seed)             0.8870           0.6245           0.7215
+  last week scRegNet + PANDA, symmetric fix (3 seeds)          0.8915 ± 0.0004 0.6337 ± 0.0009 0.7471 ± 0.0009
+stacker without any neural network (popularity + CF + 3-paths + co-expression contrast + PANDA, logistic regression):
+  AUROC 0.8867  AUPRC 0.6102  within-TF 0.7399
+
+paired comparisons across the test TFs (per-TF AUROC averaged over seeds):
+  GNN-only hero vs tuned scRegNet design       within-TF diff +0.0514  95% CI [+0.0202, +0.0882]  TFs better 23/33  Wilcoxon p=0.0161
+  GNN-only hero vs scRegNet original recipe    within-TF diff +0.0419  95% CI [+0.0143, +0.0746]  TFs better 20/33  Wilcoxon p=0.0353
+  hero + Geneformer vs tuned scRegNet design   within-TF diff +0.0432  95% CI [+0.0150, +0.0755]  TFs better 24/33  Wilcoxon p=0.00697
+  interacting vs additive final layer          within-TF diff +0.0304  95% CI [+0.0026, +0.0625]  TFs better 18/33  Wilcoxon p=0.469
+  edge split vs none                           within-TF diff +0.0780  95% CI [+0.0506, +0.1075]  TFs better 28/33  Wilcoxon p=3e-06
+  SAGE vs GCN                                  within-TF diff +0.0200  95% CI [+0.0013, +0.0409]  TFs better 17/33  Wilcoxon p=0.15
+  multiplication vs hidden-layer final layer   within-TF diff +0.0088  95% CI [-0.0030, +0.0214]  TFs better 18/33  Wilcoxon p=0.358
+  adding co-expression contrast to hero        within-TF diff -0.0003  95% CI [-0.0025, +0.0017]  TFs better 20/33  Wilcoxon p=0.627
+  adding PANDA to hero                         within-TF diff +0.0005  95% CI [-0.0019, +0.0027]  TFs better 21/33  Wilcoxon p=0.21
+  Geneformer on top of hero                    within-TF diff -0.0082  95% CI [-0.0244, +0.0072]  TFs better 16/33  Wilcoxon p=0.525
+  adding PANDA to hero + Geneformer            within-TF diff +0.0011  95% CI [-0.0003, +0.0023]  TFs better 22/33  Wilcoxon p=0.0379
+  default hero vs published scRegNet recipe    within-TF diff +0.0441  95% CI [+0.0185, +0.0739]  TFs better 24/33  Wilcoxon p=0.00583
+  default hero + Geneformer vs published recipe within-TF diff +0.0488  95% CI [+0.0221, +0.0802]  TFs better 25/33  Wilcoxon p=0.000952
+  Geneformer on top of default hero            within-TF diff +0.0047  95% CI [-0.0070, +0.0147]  TFs better 22/33  Wilcoxon p=0.0708
+  default hero vs validation-tuned hero        within-TF diff +0.0022  95% CI [-0.0059, +0.0103]  TFs better 19/33  Wilcoxon p=0.502
+  GNN-only hero vs no-neural-network stacker   within-TF diff +0.0050  95% CI [-0.0191, +0.0331]  TFs better 15/33  Wilcoxon p=0.584
+  default hero vs no-neural-network stacker    within-TF diff +0.0072  95% CI [-0.0211, +0.0398]  TFs better 15/33  Wilcoxon p=0.685
+  default hero + Geneformer vs stacker         within-TF diff +0.0118  95% CI [-0.0124, +0.0388]  TFs better 17/33  Wilcoxon p=0.646
+  default hero vs original scRegNet checkpoint within-TF diff +0.0268  95% CI [+0.0029, +0.0538]  TFs better 19/33  Wilcoxon p=0.097
+  default hero + Geneformer vs original checkpoint within-TF diff +0.0315  95% CI [+0.0087, +0.0595]  TFs better 19/33  Wilcoxon p=0.0301
+  GNN-only hero vs original scRegNet checkpoint within-TF diff +0.0247  95% CI [+0.0003, +0.0532]  TFs better 19/33  Wilcoxon p=0.376
+  tuned scRegNet design vs original checkpoint within-TF diff -0.0267  95% CI [-0.0406, -0.0140]  TFs better 10/33  Wilcoxon p=0.000759
+
+ensembles (no fitting; logits z-scored then averaged):
+  f04_C_tuned 5-seed ensemble: AUROC 0.8930 AUPRC 0.6332 within-TF 0.7611
+  f04_C_tuned ensemble averaged with the no-neural-network stacker: AUROC 0.8933 AUPRC 0.6356 within-TF 0.7655
+  f03_B_tuned 5-seed ensemble: AUROC 0.8884 AUPRC 0.6352 within-TF 0.7392
+  d01_C_default 5-seed ensemble: AUROC 0.8913 AUPRC 0.6335 within-TF 0.7536
+  d02_B_default 5-seed ensemble: AUROC 0.8935 AUPRC 0.6410 within-TF 0.7574

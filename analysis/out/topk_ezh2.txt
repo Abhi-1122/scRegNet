@@ -1,0 +1,11 @@
+precision@k inside each TF's test candidates (TFs with at least k test positives; base rate in brackets)
+  k=10 (20 TFs, base rate 0.239): scRegNet design, tuned: 0.415 | GNN-only hero (SAGE): 0.480 | hero + Geneformer: 0.481 | hero + PANDA: 0.500
+  k=20 (15 TFs, base rate 0.297): scRegNet design, tuned: 0.510 | GNN-only hero (SAGE): 0.571 | hero + Geneformer: 0.562 | hero + PANDA: 0.569
+  k=50 (10 TFs, base rate 0.384): scRegNet design, tuned: 0.601 | GNN-only hero (SAGE): 0.607 | hero + Geneformer: 0.622 | hero + PANDA: 0.610
+
+EZH2: 77 training targets, 27 held-out real targets among 210 test candidates
+top-30 of EZH2's TEST candidates: held-out targets recovered (chance level ~ 3.9)
+  scRegNet design, tuned     recovered 3/30 | GO of top-60 new predictions: Axon Guidance (p=0.32); DNA Damage Response (p=0.32); Mesenchymal Cell Differentiation (p=0.32)
+  GNN-only hero (SAGE)       recovered 8/30 | GO of top-60 new predictions: Extracellular Matrix Organization (p=0.22); Anterior/Posterior Pattern Specification (p=0.29); Cardiac Muscle Tissue Development (p=0.29)
+  hero + Geneformer          recovered 8/30 | GO of top-60 new predictions: Activation Of GTPase Activity (p=0.29); Extracellular Structure Organization (p=0.29); External Encapsulating Structure Organization (p=0.29)
+  hero + PANDA               recovered 8/30 | GO of top-60 new predictions: Extracellular Matrix Organization (p=0.22); Axon Guidance (p=0.31); Cardiac Muscle Tissue Development (p=0.31)

@@ -1,0 +1,61 @@
+{
+ "A_scregnet": {
+  "trial": "hpo_A_scregnet_t01",
+  "val_auc": 0.8785553342869699,
+  "best_epoch": 31,
+  "n_trials": 13,
+  "flags": {
+   "optimizer": "Adam",
+   "lr": 4.29028e-05,
+   "wd": 0.002,
+   "dropout": 0.481,
+   "mlp_dim": 198,
+   "batch_size": 512,
+   "gnn_dims": [
+    227,
+    29,
+    34
+   ],
+   "eval_interval": 1,
+   "epochs": 300
+  }
+ },
+ "B_hero_sf": {
+  "trial": "hpo_B_hero_sf_t01",
+  "val_auc": 0.891592105386176,
+  "best_epoch": 39,
+  "n_trials": 7,
+  "flags": {
+   "optimizer": "Adam",
+   "lr": 3.37105e-05,
+   "wd": 0.00376,
+   "dropout": 0.465,
+   "mlp_dim": 64,
+   "batch_size": 193,
+   "gnn_dims": [
+    64
+   ],
+   "eval_interval": 1,
+   "epochs": 300
+  }
+ },
+ "C_hero": {
+  "trial": "hpo_C_hero_t03",
+  "val_auc": 0.8905711534326237,
+  "best_epoch": 4,
+  "n_trials": 7,
+  "flags": {
+   "optimizer": "Adam",
+   "lr": 0.000330716,
+   "wd": 2.19e-05,
+   "dropout": 0.428,
+   "mlp_dim": 198,
+   "batch_size": 128,
+   "gnn_dims": [
+    256
+   ],
+   "eval_interval": 1,
+   "epochs": 300
+  }
+ }
+}

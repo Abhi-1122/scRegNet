@@ -1,0 +1,60 @@
+h01_had_nosf_batch_d256_contrast_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h01_had_nosf_batch_d256_contrast_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h01_had_nosf_batch_d256_contrast_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h02_had_nosf_batch_d256_panda_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h02_had_nosf_batch_d256_panda_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h02_had_nosf_batch_d256_panda_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h03_had_nosf_batch_d256_gwpanda_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --graph_w panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h03_had_nosf_batch_d256_gwpanda_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --graph_w panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h03_had_nosf_batch_d256_gwpanda_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --graph_w panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h04_had_nosf_batch_d256_gwpanda_panda_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --graph_w panda --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h04_had_nosf_batch_d256_gwpanda_panda_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --graph_w panda --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h04_had_nosf_batch_d256_gwpanda_panda_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --graph_w panda --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h05_mlp_nosf_batch_d256_contrast_s42 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h05_mlp_nosf_batch_d256_contrast_s43 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h05_mlp_nosf_batch_d256_contrast_s44 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar contrast --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h06_mlp_nosf_batch_d256_panda_s42 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h06_mlp_nosf_batch_d256_panda_s43 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h06_mlp_nosf_batch_d256_panda_s44 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h07_had_sf_batch_d256_contrast_s42 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar contrast --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h07_had_sf_batch_d256_contrast_s43 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar contrast --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h07_had_sf_batch_d256_contrast_s44 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar contrast --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h08_had_sf_batch_d256_panda_s42 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h08_had_sf_batch_d256_panda_s43 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h08_had_sf_batch_d256_panda_s44 --decoder had --scfm 1 --split batch --gnn_dims 256 --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h09_add_sf_none_panda_s42 --decoder add --scfm 1 --split none --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h09_add_sf_none_panda_s43 --decoder add --scfm 1 --split none --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h09_add_sf_none_panda_s44 --decoder add --scfm 1 --split none --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h10_add_sf_batch_panda_s42 --decoder add --scfm 1 --split batch --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h10_add_sf_batch_panda_s43 --decoder add --scfm 1 --split batch --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h10_add_sf_batch_panda_s44 --decoder add --scfm 1 --split batch --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h11_add_sf_none_contrast_s42 --decoder add --scfm 1 --split none --scalar contrast --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h11_add_sf_none_contrast_s43 --decoder add --scfm 1 --split none --scalar contrast --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h11_add_sf_none_contrast_s44 --decoder add --scfm 1 --split none --scalar contrast --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h12_add_nosf_none_d256_panda_s42 --decoder add --scfm 0 --split none --gnn_dims 256 --scalar panda --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h12_add_nosf_none_d256_panda_s43 --decoder add --scfm 0 --split none --gnn_dims 256 --scalar panda --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+h12_add_nosf_none_d256_panda_s44 --decoder add --scfm 0 --split none --gnn_dims 256 --scalar panda --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_sage_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_sage_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_sage_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder sage --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_sage_3layer_s42 --decoder had --scfm 0 --split batch --encoder sage --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_sage_3layer_s43 --decoder had --scfm 0 --split batch --encoder sage --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_sage_3layer_s44 --decoder had --scfm 0 --split batch --encoder sage --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gat_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder gat --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gat_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder gat --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gat_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder gat --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gat_3layer_s42 --decoder had --scfm 0 --split batch --encoder gat --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gat_3layer_s43 --decoder had --scfm 0 --split batch --encoder gat --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gat_3layer_s44 --decoder had --scfm 0 --split batch --encoder gat --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gin_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder gin --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gin_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder gin --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gin_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder gin --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gin_3layer_s42 --decoder had --scfm 0 --split batch --encoder gin --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gin_3layer_s43 --decoder had --scfm 0 --split batch --encoder gin --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_gin_3layer_s44 --decoder had --scfm 0 --split batch --encoder gin --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_dir_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder dir --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_dir_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder dir --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_dir_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --encoder dir --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_dir_3layer_s42 --decoder had --scfm 0 --split batch --encoder dir --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_dir_3layer_s43 --decoder had --scfm 0 --split batch --encoder dir --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+e_dir_3layer_s44 --decoder had --scfm 0 --split batch --encoder dir --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1

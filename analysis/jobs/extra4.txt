@@ -1,0 +1,35 @@
+td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --seed 42
+td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --seed 43
+td01_hero_tfdrop0.3_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --seed 44
+td01_hero_tfdrop0.3_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --seed 45
+td01_hero_tfdrop0.3_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --seed 46
+ho_tf0_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 0 --seed 42
+ho_tf0_d01_C_default_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 0 --seed 42
+ho_gene0_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 0 --seed 42
+ho_tf0_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 0 --seed 43
+ho_tf0_d01_C_default_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 0 --seed 43
+ho_gene0_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 0 --seed 43
+ho_tf1_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 1 --seed 42
+ho_tf1_d01_C_default_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 1 --seed 42
+ho_gene1_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 1 --seed 42
+ho_tf1_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 1 --seed 43
+ho_tf1_d01_C_default_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 1 --seed 43
+ho_gene1_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 1 --seed 43
+ho_tf2_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 2 --seed 42
+ho_tf2_d01_C_default_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 2 --seed 42
+ho_gene2_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 2 --seed 42
+ho_tf2_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 2 --seed 43
+ho_tf2_d01_C_default_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 2 --seed 43
+ho_gene2_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 2 --seed 43
+ho_tf3_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 3 --seed 42
+ho_tf3_d01_C_default_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 3 --seed 42
+ho_gene3_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 3 --seed 42
+ho_tf3_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 3 --seed 43
+ho_tf3_d01_C_default_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 3 --seed 43
+ho_gene3_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 3 --seed 43
+ho_tf4_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 4 --seed 42
+ho_tf4_d01_C_default_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 4 --seed 42
+ho_gene4_td01_hero_tfdrop0.3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 4 --seed 42
+ho_tf4_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol tf --fold 4 --seed 43
+ho_tf4_d01_C_default_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --protocol tf --fold 4 --seed 43
+ho_gene4_td01_hero_tfdrop0.3_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --scfm 0 --gnn_dims 256 --tf_drop 0.3 --protocol gene --fold 4 --seed 43

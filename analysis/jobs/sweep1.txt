@@ -1,0 +1,16 @@
+s1_add_sf_none_lr0.0001_wd0.00001 --decoder add --scfm 1 --split none --optimizer Adam --lr 0.0001 --wd 0.00001 --eval_interval 1
+s1_add_sf_none_lr0.0001_wd0.001 --decoder add --scfm 1 --split none --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s1_add_sf_none_lr0.0003_wd0.00001 --decoder add --scfm 1 --split none --optimizer Adam --lr 0.0003 --wd 0.00001 --eval_interval 1
+s1_add_sf_none_lr0.0003_wd0.001 --decoder add --scfm 1 --split none --optimizer Adam --lr 0.0003 --wd 0.001 --eval_interval 1
+s1_had_sf_batch_lr0.0001_wd0.00001 --decoder had --scfm 1 --split batch --optimizer Adam --lr 0.0001 --wd 0.00001 --eval_interval 1
+s1_had_sf_batch_lr0.0001_wd0.001 --decoder had --scfm 1 --split batch --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s1_had_sf_batch_lr0.0003_wd0.00001 --decoder had --scfm 1 --split batch --optimizer Adam --lr 0.0003 --wd 0.00001 --eval_interval 1
+s1_had_sf_batch_lr0.0003_wd0.001 --decoder had --scfm 1 --split batch --optimizer Adam --lr 0.0003 --wd 0.001 --eval_interval 1
+s1_had_nosf_batch_lr0.0001_wd0.00001 --decoder had --scfm 0 --split batch --optimizer Adam --lr 0.0001 --wd 0.00001 --eval_interval 1
+s1_had_nosf_batch_lr0.0001_wd0.001 --decoder had --scfm 0 --split batch --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s1_had_nosf_batch_lr0.0003_wd0.00001 --decoder had --scfm 0 --split batch --optimizer Adam --lr 0.0003 --wd 0.00001 --eval_interval 1
+s1_had_nosf_batch_lr0.0003_wd0.001 --decoder had --scfm 0 --split batch --optimizer Adam --lr 0.0003 --wd 0.001 --eval_interval 1
+s1_add_nosf_none_lr0.0001_wd0.00001 --decoder add --scfm 0 --split none --optimizer Adam --lr 0.0001 --wd 0.00001 --eval_interval 1
+s1_add_nosf_none_lr0.0001_wd0.001 --decoder add --scfm 0 --split none --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1
+s1_add_nosf_none_lr0.0003_wd0.00001 --decoder add --scfm 0 --split none --optimizer Adam --lr 0.0003 --wd 0.00001 --eval_interval 1
+s1_add_nosf_none_lr0.0003_wd0.001 --decoder add --scfm 0 --split none --optimizer Adam --lr 0.0003 --wd 0.001 --eval_interval 1

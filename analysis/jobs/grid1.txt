@@ -1,0 +1,39 @@
+g01_add_sf_none_s42 --decoder add --scfm 1 --split none --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g01_add_sf_none_s43 --decoder add --scfm 1 --split none --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g01_add_sf_none_s44 --decoder add --scfm 1 --split none --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g02_add_sf_batch_s42 --decoder add --scfm 1 --split batch --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g02_add_sf_batch_s43 --decoder add --scfm 1 --split batch --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g02_add_sf_batch_s44 --decoder add --scfm 1 --split batch --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g03_had_sf_none_s42 --decoder had --scfm 1 --split none --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g03_had_sf_none_s43 --decoder had --scfm 1 --split none --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g03_had_sf_none_s44 --decoder had --scfm 1 --split none --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g04_had_sf_batch_s42 --decoder had --scfm 1 --split batch --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g04_had_sf_batch_s43 --decoder had --scfm 1 --split batch --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g04_had_sf_batch_s44 --decoder had --scfm 1 --split batch --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g05_mlp_sf_batch_s42 --decoder mlp --scfm 1 --split batch --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g05_mlp_sf_batch_s43 --decoder mlp --scfm 1 --split batch --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g05_mlp_sf_batch_s44 --decoder mlp --scfm 1 --split batch --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g06_add_nosf_none_d256_s42 --decoder add --scfm 0 --split none --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g06_add_nosf_none_d256_s43 --decoder add --scfm 0 --split none --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g06_add_nosf_none_d256_s44 --decoder add --scfm 0 --split none --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g07_had_nosf_none_d256_s42 --decoder had --scfm 0 --split none --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g07_had_nosf_none_d256_s43 --decoder had --scfm 0 --split none --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g07_had_nosf_none_d256_s44 --decoder had --scfm 0 --split none --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g08_had_nosf_batch_d256_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g08_had_nosf_batch_d256_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g08_had_nosf_batch_d256_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g09_mlp_nosf_batch_d256_s42 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g09_mlp_nosf_batch_d256_s43 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g09_mlp_nosf_batch_d256_s44 --decoder mlp --scfm 0 --split batch --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g10_add_nosf_batch_d256_s42 --decoder add --scfm 0 --split batch --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g10_add_nosf_batch_d256_s43 --decoder add --scfm 0 --split batch --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g10_add_nosf_batch_d256_s44 --decoder add --scfm 0 --split batch --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g11_had_sf_batch_d256_s42 --decoder had --scfm 1 --split batch --gnn_dims 256 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g11_had_sf_batch_d256_s43 --decoder had --scfm 1 --split batch --gnn_dims 256 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g11_had_sf_batch_d256_s44 --decoder had --scfm 1 --split batch --gnn_dims 256 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g12_had_nosf_batch_3layer_s42 --decoder had --scfm 0 --split batch --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g12_had_nosf_batch_3layer_s43 --decoder had --scfm 0 --split batch --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g12_had_nosf_batch_3layer_s44 --decoder had --scfm 0 --split batch --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g13_had_nosf_batch_d256_128_s42 --decoder had --scfm 0 --split batch --gnn_dims 256 128 --seed 42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g13_had_nosf_batch_d256_128_s43 --decoder had --scfm 0 --split batch --gnn_dims 256 128 --seed 43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1
+g13_had_nosf_batch_d256_128_s44 --decoder had --scfm 0 --split batch --gnn_dims 256 128 --seed 44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1

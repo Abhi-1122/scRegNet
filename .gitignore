@@ -37,3 +37,6 @@ analysis/data/
 analysis/out/*.npz
 analysis/out/*.out
 analysis/out/*.nohup
+analysis/out/pair/*.npz
+analysis/out/pair/*.out
+analysis/out/slots/

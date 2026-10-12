@@ -1,0 +1,489 @@
+p_had_nosf_none	epoch 80	val AUROC 0.8568	TEST AUROC 0.8578 AUPRC 0.5507 withinTF 0.5376	1.9 min
+p_had_sf_none	epoch 220	val AUROC 0.8727	TEST AUROC 0.8776 AUPRC 0.6052 withinTF 0.6896	3.8 min
+p_add_nosf_none	epoch 265	val AUROC 0.8519	TEST AUROC 0.8641 AUPRC 0.5764 withinTF 0.6206	4.1 min
+p_add_sf_none	epoch 295	val AUROC 0.8754	TEST AUROC 0.8800 AUPRC 0.6092 withinTF 0.6863	4.1 min
+p_had_nosf_batch	epoch 295	val AUROC 0.8729	TEST AUROC 0.8675 AUPRC 0.5639 withinTF 0.5658	4.7 min
+p_had_sf_batch	epoch 300	val AUROC 0.8810	TEST AUROC 0.8802 AUPRC 0.6091 withinTF 0.7014	4.7 min
+a_had_sf_none	epoch 5	val AUROC 0.8414	TEST AUROC 0.8634 AUPRC 0.5918 withinTF 0.7521	0.9 min
+a_had_nosf_none	epoch 10	val AUROC 0.8454	TEST AUROC 0.8616 AUPRC 0.5718 withinTF 0.7053	1.0 min
+a_had_nosf_batch	epoch 5	val AUROC 0.8651	TEST AUROC 0.8637 AUPRC 0.5711 withinTF 0.5676	1.2 min
+a_had_sf_batch	epoch 5	val AUROC 0.8629	TEST AUROC 0.8690 AUPRC 0.6028 withinTF 0.7362	1.2 min
+a_add_nosf_none	epoch 45	val AUROC 0.8594	TEST AUROC 0.8719 AUPRC 0.6091 withinTF 0.7020	1.3 min
+a_add_sf_none	epoch 45	val AUROC 0.8575	TEST AUROC 0.8723 AUPRC 0.6090 withinTF 0.7120	1.3 min
+)
+pair_gnn.py: error: argument --split: invalid choice: 'none_lr0.0003_wd0.00001' (choose from none, batch)
+)
+)
+pair_gnn.py: error: argument --split: invalid choice: 'none_lr0.0003_wd0.00001' (choose from none, batch)
+)
+pair_gnn.py: error: argument --split: invalid choice: 'none_lr0.0003_wd0.00001' (choose from none, batch)
+pair_gnn.py: error: argument --split: invalid choice: 'none_lr0.0003_wd0.00001' (choose from none, batch)
+)
+)
+)
+)
+)
+)
+)
+)
+s1_add_sf_none_lr0.0003_wd0.001	epoch 1	val AUROC 0.8725	TEST AUROC 0.8704 AUPRC 0.5929 withinTF 0.6304	0.2 min
+s1_add_sf_none_lr0.0003_wd0.00001	epoch 1	val AUROC 0.8716	TEST AUROC 0.8732 AUPRC 0.5975 withinTF 0.6355	0.2 min
+s1_add_sf_none_lr0.0001_wd0.00001	epoch 3	val AUROC 0.8719	TEST AUROC 0.8732 AUPRC 0.5994 withinTF 0.6462	0.3 min
+s1_add_sf_none_lr0.0001_wd0.001	epoch 4	val AUROC 0.8753	TEST AUROC 0.8760 AUPRC 0.6036 withinTF 0.6579	0.3 min
+s1_had_sf_batch_lr0.0003_wd0.00001	epoch 5	val AUROC 0.8873	TEST AUROC 0.8841 AUPRC 0.6173 withinTF 0.7256	0.3 min
+s1_had_sf_batch_lr0.0003_wd0.001	epoch 5	val AUROC 0.8921	TEST AUROC 0.8855 AUPRC 0.6223 withinTF 0.7192	0.3 min
+s1_had_sf_batch_lr0.0001_wd0.00001	epoch 10	val AUROC 0.8862	TEST AUROC 0.8831 AUPRC 0.6110 withinTF 0.7168	0.4 min
+s1_had_sf_batch_lr0.0001_wd0.001	epoch 15	val AUROC 0.8905	TEST AUROC 0.8862 AUPRC 0.6165 withinTF 0.7238	0.5 min
+s1_had_nosf_batch_lr0.0003_wd0.00001	epoch 10	val AUROC 0.8720	TEST AUROC 0.8684 AUPRC 0.5571 withinTF 0.5831	0.5 min
+s1_had_nosf_batch_lr0.0003_wd0.001	epoch 10	val AUROC 0.8708	TEST AUROC 0.8680 AUPRC 0.5564 withinTF 0.5758	0.5 min
+s1_had_nosf_batch_lr0.0001_wd0.001	epoch 20	val AUROC 0.8691	TEST AUROC 0.8664 AUPRC 0.5670 withinTF 0.5805	0.7 min
+s1_had_nosf_batch_lr0.0001_wd0.00001	epoch 20	val AUROC 0.8677	TEST AUROC 0.8669 AUPRC 0.5759 withinTF 0.5853	0.7 min
+s1_add_nosf_none_lr0.0003_wd0.00001	epoch 32	val AUROC 0.8535	TEST AUROC 0.8683 AUPRC 0.6047 withinTF 0.7032	0.8 min
+s1_add_nosf_none_lr0.0001_wd0.001	epoch 37	val AUROC 0.8470	TEST AUROC 0.8642 AUPRC 0.6049 withinTF 0.7014	0.8 min
+s1_add_nosf_none_lr0.0003_wd0.001	epoch 32	val AUROC 0.8600	TEST AUROC 0.8714 AUPRC 0.5985 withinTF 0.7044	0.7 min
+s1_add_nosf_none_lr0.0001_wd0.00001	epoch 76	val AUROC 0.8510	TEST AUROC 0.8683 AUPRC 0.6031 withinTF 0.7017	1.1 min
+s2_had_sf_none_adam1e-4	epoch 4	val AUROC 0.8776	TEST AUROC 0.8762 AUPRC 0.6042 withinTF 0.6761	0.3 min
+s2_add_sf_none_adam3e-5	epoch 14	val AUROC 0.8765	TEST AUROC 0.8777 AUPRC 0.6094 withinTF 0.6677	0.5 min
+s2_add_sf_batch_adam1e-4	epoch 10	val AUROC 0.8846	TEST AUROC 0.8829 AUPRC 0.6157 withinTF 0.7013	0.7 min
+s2_had_sf_batch_adam3e-5	epoch 32	val AUROC 0.8873	TEST AUROC 0.8840 AUPRC 0.6167 withinTF 0.7098	1.3 min
+s2_had_nosf_batch_d256	epoch 18	val AUROC 0.8858	TEST AUROC 0.8805 AUPRC 0.5919 withinTF 0.7186	0.7 min
+s2_add_sf_none_sgd0.02	epoch 20	val AUROC 0.8751	TEST AUROC 0.8789 AUPRC 0.6070 withinTF 0.6808	1.5 min
+s2_had_nosf_batch_d256_128	epoch 17	val AUROC 0.8831	TEST AUROC 0.8799 AUPRC 0.5912 withinTF 0.6696	0.7 min
+s2_add_nosf_none_d256	epoch 24	val AUROC 0.8714	TEST AUROC 0.8799 AUPRC 0.6135 withinTF 0.7081	0.5 min
+s2_had_nosf_batch_d512_256	epoch 14	val AUROC 0.8819	TEST AUROC 0.8806 AUPRC 0.6074 withinTF 0.6456	0.6 min
+s2_had_sf_batch_sgd0.02	epoch 45	val AUROC 0.8917	TEST AUROC 0.8827 AUPRC 0.6157 withinTF 0.7154	2.5 min
+s2_add_sf_none_sgd0.005	epoch 85	val AUROC 0.8753	TEST AUROC 0.8799 AUPRC 0.6089 withinTF 0.6853	2.5 min
+s2_had_sf_batch_sgd0.005	epoch 195	val AUROC 0.8920	TEST AUROC 0.8816 AUPRC 0.6132 withinTF 0.7154	3.9 min
+s2_add_sf_none_sgd0.0014_ep800	epoch 295	val AUROC 0.8754	TEST AUROC 0.8800 AUPRC 0.6092 withinTF 0.6863	4.1 min
+g03_had_sf_none_s43	epoch 3	val AUROC 0.8790	REFIT TEST AUROC 0.8735 AUPRC 0.6041 withinTF 0.6630	0.4 min
+g01_add_sf_none_s42	epoch 4	val AUROC 0.8754	REFIT TEST AUROC 0.8782 AUPRC 0.6078 withinTF 0.6751	0.4 min
+g03_had_sf_none_s42	epoch 4	val AUROC 0.8776	REFIT TEST AUROC 0.8777 AUPRC 0.6109 withinTF 0.6841	0.5 min
+g01_add_sf_none_s44	epoch 4	val AUROC 0.8745	REFIT TEST AUROC 0.8799 AUPRC 0.6097 withinTF 0.6807	0.5 min
+g01_add_sf_none_s43	epoch 5	val AUROC 0.8747	REFIT TEST AUROC 0.8810 AUPRC 0.6108 withinTF 0.6909	0.5 min
+g02_add_sf_batch_s44	epoch 9	val AUROC 0.8838	REFIT TEST AUROC 0.8833 AUPRC 0.6141 withinTF 0.7071	0.8 min
+g02_add_sf_batch_s43	epoch 11	val AUROC 0.8854	REFIT TEST AUROC 0.8847 AUPRC 0.6185 withinTF 0.7106	1.0 min
+g02_add_sf_batch_s42	epoch 10	val AUROC 0.8845	REFIT TEST AUROC 0.8845 AUPRC 0.6158 withinTF 0.7059	1.2 min
+g03_had_sf_none_s44	epoch 3	val AUROC 0.8755	REFIT TEST AUROC 0.8755 AUPRC 0.6011 withinTF 0.6751	0.6 min
+g05_mlp_sf_batch_s42	epoch 8	val AUROC 0.8859	REFIT TEST AUROC 0.8863 AUPRC 0.6193 withinTF 0.7172	1.1 min
+g04_had_sf_batch_s43	epoch 9	val AUROC 0.8900	REFIT TEST AUROC 0.8863 AUPRC 0.6235 withinTF 0.7133	1.2 min
+g04_had_sf_batch_s44	epoch 11	val AUROC 0.8881	REFIT TEST AUROC 0.8854 AUPRC 0.6265 withinTF 0.7225	1.2 min
+g06_add_nosf_none_d256_s43	epoch 14	val AUROC 0.8686	REFIT TEST AUROC 0.8800 AUPRC 0.6153 withinTF 0.7151	0.8 min
+g04_had_sf_batch_s42	epoch 15	val AUROC 0.8900	REFIT TEST AUROC 0.8883 AUPRC 0.6239 withinTF 0.7293	1.7 min
+g05_mlp_sf_batch_s43	epoch 11	val AUROC 0.8833	REFIT TEST AUROC 0.8852 AUPRC 0.6230 withinTF 0.7202	1.4 min
+g05_mlp_sf_batch_s44	epoch 9	val AUROC 0.8831	REFIT TEST AUROC 0.8853 AUPRC 0.6212 withinTF 0.7258	1.2 min
+g06_add_nosf_none_d256_s42	epoch 24	val AUROC 0.8714	REFIT TEST AUROC 0.8831 AUPRC 0.6165 withinTF 0.7161	1.3 min
+g07_had_nosf_none_d256_s43	epoch 14	val AUROC 0.8658	REFIT TEST AUROC 0.8809 AUPRC 0.5926 withinTF 0.7222	1.0 min
+g07_had_nosf_none_d256_s44	epoch 16	val AUROC 0.8652	REFIT TEST AUROC 0.8795 AUPRC 0.6078 withinTF 0.7282	1.1 min
+g07_had_nosf_none_d256_s42	epoch 24	val AUROC 0.8669	REFIT TEST AUROC 0.8822 AUPRC 0.6143 withinTF 0.7355	1.5 min
+g06_add_nosf_none_d256_s44	epoch 25	val AUROC 0.8674	REFIT TEST AUROC 0.8817 AUPRC 0.6161 withinTF 0.7165	1.5 min
+g08_had_nosf_batch_d256_s43	epoch 15	val AUROC 0.8843	REFIT TEST AUROC 0.8845 AUPRC 0.5950 withinTF 0.7182	1.5 min
+g08_had_nosf_batch_d256_s44	epoch 16	val AUROC 0.8828	REFIT TEST AUROC 0.8839 AUPRC 0.6072 withinTF 0.7233	1.6 min
+g08_had_nosf_batch_d256_s42	epoch 18	val AUROC 0.8858	REFIT TEST AUROC 0.8828 AUPRC 0.6019 withinTF 0.7302	1.7 min
+g09_mlp_nosf_batch_d256_s42	epoch 18	val AUROC 0.8849	REFIT TEST AUROC 0.8887 AUPRC 0.6262 withinTF 0.7184	1.7 min
+g10_add_nosf_batch_d256_s43	epoch 14	val AUROC 0.8800	REFIT TEST AUROC 0.8830 AUPRC 0.6135 withinTF 0.7098	1.4 min
+g11_had_sf_batch_d256_s42	epoch 5	val AUROC 0.8929	REFIT TEST AUROC 0.8873 AUPRC 0.6206 withinTF 0.7341	0.8 min
+g09_mlp_nosf_batch_d256_s44	epoch 16	val AUROC 0.8814	REFIT TEST AUROC 0.8874 AUPRC 0.6238 withinTF 0.7203	1.5 min
+g09_mlp_nosf_batch_d256_s43	epoch 22	val AUROC 0.8834	REFIT TEST AUROC 0.8869 AUPRC 0.6232 withinTF 0.7162	1.9 min
+g10_add_nosf_batch_d256_s42	epoch 18	val AUROC 0.8820	REFIT TEST AUROC 0.8838 AUPRC 0.6170 withinTF 0.7060	1.6 min
+g11_had_sf_batch_d256_s44	epoch 6	val AUROC 0.8935	REFIT TEST AUROC 0.8895 AUPRC 0.6265 withinTF 0.7321	0.8 min
+g11_had_sf_batch_d256_s43	epoch 15	val AUROC 0.8946	REFIT TEST AUROC 0.8910 AUPRC 0.6239 withinTF 0.7432	1.5 min
+g10_add_nosf_batch_d256_s44	epoch 32	val AUROC 0.8800	REFIT TEST AUROC 0.8835 AUPRC 0.6158 withinTF 0.7032	2.6 min
+g13_had_nosf_batch_d256_128_s42	epoch 17	val AUROC 0.8829	REFIT TEST AUROC 0.8833 AUPRC 0.6141 withinTF 0.6603	2.0 min
+g12_had_nosf_batch_3layer_s44	epoch 17	val AUROC 0.8680	REFIT TEST AUROC 0.8684 AUPRC 0.5782 withinTF 0.5637	2.5 min
+g12_had_nosf_batch_3layer_s42	epoch 20	val AUROC 0.8689	REFIT TEST AUROC 0.8656 AUPRC 0.5818 withinTF 0.5601	2.8 min
+g13_had_nosf_batch_d256_128_s43	epoch 25	val AUROC 0.8804	REFIT TEST AUROC 0.8828 AUPRC 0.6152 withinTF 0.6755	2.9 min
+g13_had_nosf_batch_d256_128_s44	epoch 25	val AUROC 0.8846	REFIT TEST AUROC 0.8850 AUPRC 0.6190 withinTF 0.6824	2.9 min
+h02_had_nosf_batch_d256_panda_s43	epoch 15	val AUROC 0.8847	REFIT TEST AUROC 0.8852 AUPRC 0.5984 withinTF 0.7229	1.9 min
+h01_had_nosf_batch_d256_contrast_s43	epoch 15	val AUROC 0.8844	REFIT TEST AUROC 0.8847 AUPRC 0.5965 withinTF 0.7242	1.9 min
+h01_had_nosf_batch_d256_contrast_s44	epoch 16	val AUROC 0.8828	REFIT TEST AUROC 0.8843 AUPRC 0.6082 withinTF 0.7245	2.0 min
+h02_had_nosf_batch_d256_panda_s44	epoch 16	val AUROC 0.8831	REFIT TEST AUROC 0.8847 AUPRC 0.6100 withinTF 0.7268	2.0 min
+g12_had_nosf_batch_3layer_s43	epoch 26	val AUROC 0.8693	REFIT TEST AUROC 0.8699 AUPRC 0.5862 withinTF 0.5817	3.5 min
+h02_had_nosf_batch_d256_panda_s42	epoch 18	val AUROC 0.8868	REFIT TEST AUROC 0.8839 AUPRC 0.6074 withinTF 0.7334	2.1 min
+h01_had_nosf_batch_d256_contrast_s42	epoch 18	val AUROC 0.8866	REFIT TEST AUROC 0.8831 AUPRC 0.6047 withinTF 0.7318	2.0 min
+h03_had_nosf_batch_d256_gwpanda_s43	epoch 15	val AUROC 0.8829	REFIT TEST AUROC 0.8842 AUPRC 0.5951 withinTF 0.7059	1.8 min
+h03_had_nosf_batch_d256_gwpanda_s44	epoch 16	val AUROC 0.8819	REFIT TEST AUROC 0.8840 AUPRC 0.6071 withinTF 0.7178	1.9 min
+h04_had_nosf_batch_d256_gwpanda_panda_s43	epoch 15	val AUROC 0.8837	REFIT TEST AUROC 0.8850 AUPRC 0.5989 withinTF 0.7137	1.8 min
+h04_had_nosf_batch_d256_gwpanda_panda_s44	epoch 16	val AUROC 0.8826	REFIT TEST AUROC 0.8847 AUPRC 0.6120 withinTF 0.7205	1.9 min
+h03_had_nosf_batch_d256_gwpanda_s42	epoch 18	val AUROC 0.8858	REFIT TEST AUROC 0.8825 AUPRC 0.6010 withinTF 0.7271	2.0 min
+h04_had_nosf_batch_d256_gwpanda_panda_s42	epoch 18	val AUROC 0.8867	REFIT TEST AUROC 0.8836 AUPRC 0.6045 withinTF 0.7303	2.0 min
+h05_mlp_nosf_batch_d256_contrast_s42	epoch 18	val AUROC 0.8852	REFIT TEST AUROC 0.8884 AUPRC 0.6215 withinTF 0.7238	1.3 min
+h06_mlp_nosf_batch_d256_panda_s43	epoch 15	val AUROC 0.8851	REFIT TEST AUROC 0.8899 AUPRC 0.6246 withinTF 0.7300	1.2 min
+h06_mlp_nosf_batch_d256_panda_s42	epoch 18	val AUROC 0.8865	REFIT TEST AUROC 0.8907 AUPRC 0.6288 withinTF 0.7287	1.4 min
+h05_mlp_nosf_batch_d256_contrast_s43	epoch 22	val AUROC 0.8845	REFIT TEST AUROC 0.8868 AUPRC 0.6212 withinTF 0.7262	1.5 min
+h05_mlp_nosf_batch_d256_contrast_s44	epoch 25	val AUROC 0.8833	REFIT TEST AUROC 0.8891 AUPRC 0.6267 withinTF 0.7324	1.7 min
+h06_mlp_nosf_batch_d256_panda_s44	epoch 25	val AUROC 0.8837	REFIT TEST AUROC 0.8906 AUPRC 0.6319 withinTF 0.7401	1.8 min
+h07_had_sf_batch_d256_contrast_s42	epoch 5	val AUROC 0.8932	REFIT TEST AUROC 0.8873 AUPRC 0.6215 withinTF 0.7352	0.6 min
+h08_had_sf_batch_d256_panda_s42	epoch 5	val AUROC 0.8933	REFIT TEST AUROC 0.8877 AUPRC 0.6227 withinTF 0.7353	0.7 min
+h07_had_sf_batch_d256_contrast_s43	epoch 15	val AUROC 0.8946	REFIT TEST AUROC 0.8911 AUPRC 0.6242 withinTF 0.7438	1.3 min
+h07_had_sf_batch_d256_contrast_s44	epoch 13	val AUROC 0.8936	REFIT TEST AUROC 0.8918 AUPRC 0.6235 withinTF 0.7451	1.2 min
+h09_add_sf_none_panda_s42	epoch 5	val AUROC 0.8751	REFIT TEST AUROC 0.8810 AUPRC 0.6160 withinTF 0.6838	0.8 min
+h09_add_sf_none_panda_s43	epoch 5	val AUROC 0.8745	REFIT TEST AUROC 0.8805 AUPRC 0.6097 withinTF 0.6881	0.7 min
+h08_had_sf_batch_d256_panda_s44	epoch 13	val AUROC 0.8936	REFIT TEST AUROC 0.8918 AUPRC 0.6240 withinTF 0.7460	1.2 min
+h08_had_sf_batch_d256_panda_s43	epoch 15	val AUROC 0.8946	REFIT TEST AUROC 0.8915 AUPRC 0.6254 withinTF 0.7440	1.4 min
+h09_add_sf_none_panda_s44	epoch 4	val AUROC 0.8744	REFIT TEST AUROC 0.8800 AUPRC 0.6101 withinTF 0.6808	0.6 min
+h11_add_sf_none_contrast_s42	epoch 5	val AUROC 0.8751	REFIT TEST AUROC 0.8809 AUPRC 0.6157 withinTF 0.6840	0.7 min
+h11_add_sf_none_contrast_s43	epoch 5	val AUROC 0.8746	REFIT TEST AUROC 0.8805 AUPRC 0.6097 withinTF 0.6879	0.7 min
+h11_add_sf_none_contrast_s44	epoch 4	val AUROC 0.8743	REFIT TEST AUROC 0.8800 AUPRC 0.6099 withinTF 0.6810	0.6 min
+h10_add_sf_batch_panda_s43	epoch 11	val AUROC 0.8858	REFIT TEST AUROC 0.8851 AUPRC 0.6196 withinTF 0.7114	1.3 min
+h10_add_sf_batch_panda_s44	epoch 9	val AUROC 0.8841	REFIT TEST AUROC 0.8840 AUPRC 0.6157 withinTF 0.7097	1.2 min
+h10_add_sf_batch_panda_s42	epoch 15	val AUROC 0.8855	REFIT TEST AUROC 0.8874 AUPRC 0.6253 withinTF 0.7177	1.7 min
+h12_add_nosf_none_d256_panda_s43	epoch 14	val AUROC 0.8689	REFIT TEST AUROC 0.8812 AUPRC 0.6182 withinTF 0.7182	0.8 min
+e_sage_d256_s42	epoch 10	val AUROC 0.8887	REFIT TEST AUROC 0.8890 AUPRC 0.6264 withinTF 0.7505	0.8 min
+e_sage_d256_s44	epoch 7	val AUROC 0.8892	REFIT TEST AUROC 0.8866 AUPRC 0.6232 withinTF 0.7504	0.7 min
+h12_add_nosf_none_d256_panda_s42	epoch 24	val AUROC 0.8728	REFIT TEST AUROC 0.8846 AUPRC 0.6201 withinTF 0.7200	1.2 min
+e_sage_d256_s43	epoch 11	val AUROC 0.8872	REFIT TEST AUROC 0.8896 AUPRC 0.6261 withinTF 0.7457	0.8 min
+h12_add_nosf_none_d256_panda_s44	epoch 25	val AUROC 0.8686	REFIT TEST AUROC 0.8829 AUPRC 0.6187 withinTF 0.7205	1.2 min
+e_sage_3layer_s42	epoch 11	val AUROC 0.8863	REFIT TEST AUROC 0.8869 AUPRC 0.6267 withinTF 0.7299	1.0 min
+e_sage_3layer_s43	epoch 14	val AUROC 0.8861	REFIT TEST AUROC 0.8871 AUPRC 0.6305 withinTF 0.7365	1.4 min
+e_sage_3layer_s44	epoch 15	val AUROC 0.8856	REFIT TEST AUROC 0.8897 AUPRC 0.6307 withinTF 0.7415	1.5 min
+e_gat_d256_s42	epoch 10	val AUROC 0.8852	REFIT TEST AUROC 0.8834 AUPRC 0.6053 withinTF 0.7111	1.5 min
+e_gat_d256_s44	epoch 11	val AUROC 0.8850	REFIT TEST AUROC 0.8809 AUPRC 0.6098 withinTF 0.6972	1.7 min
+e_gat_d256_s43	epoch 14	val AUROC 0.8854	REFIT TEST AUROC 0.8833 AUPRC 0.6194 withinTF 0.7033	1.9 min
+e_gin_d256_s42	epoch 10	val AUROC 0.8842	REFIT TEST AUROC 0.8838 AUPRC 0.6052 withinTF 0.7317	1.0 min
+e_gin_d256_s43	epoch 8	val AUROC 0.8861	REFIT TEST AUROC 0.8866 AUPRC 0.6231 withinTF 0.7273	0.8 min
+e_gin_d256_s44	epoch 7	val AUROC 0.8865	REFIT TEST AUROC 0.8848 AUPRC 0.6178 withinTF 0.7292	0.8 min
+k02_sage_mlp_nosf_d256_s44	epoch 7	val AUROC 0.8863	REFIT TEST AUROC 0.8857 AUPRC 0.6246 withinTF 0.7288	1.3 min
+k03_sage_add_nosf_d256_s42	epoch 10	val AUROC 0.8854	REFIT TEST AUROC 0.8838 AUPRC 0.6217 withinTF 0.7173	1.6 min
+k02_sage_mlp_nosf_d256_s42	epoch 10	val AUROC 0.8900	REFIT TEST AUROC 0.8891 AUPRC 0.6310 withinTF 0.7370	1.6 min
+k02_sage_mlp_nosf_d256_s43	epoch 18	val AUROC 0.8857	REFIT TEST AUROC 0.8886 AUPRC 0.6254 withinTF 0.7419	2.6 min
+e_gin_3layer_s43	epoch 23	val AUROC 0.8833	REFIT TEST AUROC 0.8827 AUPRC 0.6160 withinTF 0.6948	3.2 min
+e_gin_3layer_s42	epoch 28	val AUROC 0.8833	REFIT TEST AUROC 0.8818 AUPRC 0.6197 withinTF 0.6908	3.7 min
+k04_sage_had_nosf_d256_contrast_s42	epoch 10	val AUROC 0.8890	REFIT TEST AUROC 0.8890 AUPRC 0.6264 withinTF 0.7500	1.8 min
+k03_sage_add_nosf_d256_s43	epoch 15	val AUROC 0.8837	REFIT TEST AUROC 0.8833 AUPRC 0.6152 withinTF 0.7174	2.4 min
+k03_sage_add_nosf_d256_s44	epoch 13	val AUROC 0.8834	REFIT TEST AUROC 0.8840 AUPRC 0.6228 withinTF 0.7143	2.2 min
+e_gin_3layer_s44	epoch 29	val AUROC 0.8840	REFIT TEST AUROC 0.8810 AUPRC 0.6105 withinTF 0.6947	4.1 min
+k04_sage_had_nosf_d256_contrast_s43	epoch 11	val AUROC 0.8871	REFIT TEST AUROC 0.8897 AUPRC 0.6258 withinTF 0.7462	2.0 min
+m_hHEP_g01_add_sf_none_s43	epoch 23	val AUROC 0.8971	REFIT TEST AUROC 0.9025 AUPRC 0.8418 withinTF 0.7861	4.0 min
+e_gat_3layer_s44	epoch 30	val AUROC 0.8777	REFIT TEST AUROC 0.8746 AUPRC 0.5979 withinTF 0.6670	6.7 min
+k04_sage_had_nosf_d256_contrast_s44	epoch 7	val AUROC 0.8892	REFIT TEST AUROC 0.8867 AUPRC 0.6242 withinTF 0.7503	1.5 min
+e_dir_d256_s42	epoch 10	val AUROC 0.8871	REFIT TEST AUROC 0.8857 AUPRC 0.6158 withinTF 0.7384	0.6 min
+e_dir_d256_s43	epoch 11	val AUROC 0.8865	REFIT TEST AUROC 0.8870 AUPRC 0.6229 withinTF 0.7353	0.6 min
+hpo_A_scregnet_t02	epoch 3	val AUROC 0.8746	TEST AUROC 0.8779 AUPRC 0.6093 withinTF 0.6773	0.2 min
+hpo_A_scregnet_t01	epoch 31	val AUROC 0.8786	TEST AUROC 0.8802 AUPRC 0.6124 withinTF 0.6845	0.3 min
+e_gat_3layer_s43	epoch 23	val AUROC 0.8754	REFIT TEST AUROC 0.8769 AUPRC 0.5916 withinTF 0.6808	1.1 min
+hpo_A_scregnet_t04	epoch 30	val AUROC 0.8737	TEST AUROC 0.8787 AUPRC 0.6068 withinTF 0.6799	0.5 min
+e_gat_3layer_s42	epoch 37	val AUROC 0.8812	REFIT TEST AUROC 0.8779 AUPRC 0.5992 withinTF 0.6798	1.7 min
+hpo_A_scregnet_t03	epoch 10	val AUROC 0.8734	TEST AUROC 0.8782 AUPRC 0.6073 withinTF 0.6744	0.8 min
+hpo_A_scregnet_t07	epoch 13	val AUROC 0.8726	TEST AUROC 0.8776 AUPRC 0.6098 withinTF 0.6805	0.2 min
+hpo_A_scregnet_t08	epoch 1	val AUROC 0.8744	TEST AUROC 0.8741 AUPRC 0.6004 withinTF 0.6666	0.2 min
+hpo_A_scregnet_t09	epoch 10	val AUROC 0.8717	TEST AUROC 0.8731 AUPRC 0.5963 withinTF 0.6480	0.1 min
+hpo_A_scregnet_t05	epoch 10	val AUROC 0.8731	TEST AUROC 0.8790 AUPRC 0.6078 withinTF 0.6870	1.0 min
+hpo_A_scregnet_t06	epoch 5	val AUROC 0.8727	TEST AUROC 0.8746 AUPRC 0.6008 withinTF 0.6613	0.9 min
+e_dir_3layer_s42	epoch 19	val AUROC 0.8837	REFIT TEST AUROC 0.8844 AUPRC 0.6234 withinTF 0.7234	1.0 min
+e_dir_3layer_s43	epoch 19	val AUROC 0.8828	REFIT TEST AUROC 0.8827 AUPRC 0.6150 withinTF 0.7190	1.0 min
+e_dir_3layer_s44	epoch 18	val AUROC 0.8837	REFIT TEST AUROC 0.8848 AUPRC 0.6221 withinTF 0.7213	1.0 min
+k09_sage_had_nosf_none_d256_s42	epoch 1	val AUROC 0.8512	REFIT TEST AUROC 0.8421 AUPRC 0.5318 withinTF 0.5826	0.1 min
+k09_sage_had_nosf_none_d256_s43	epoch 2	val AUROC 0.8628	REFIT TEST AUROC 0.8542 AUPRC 0.5606 withinTF 0.6559	0.1 min
+k09_sage_had_nosf_none_d256_s44	epoch 3	val AUROC 0.8513	REFIT TEST AUROC 0.8495 AUPRC 0.5582 withinTF 0.6665	0.1 min
+k10_sage_had_nosf_d128_s42	epoch 14	val AUROC 0.8869	REFIT TEST AUROC 0.8882 AUPRC 0.6237 withinTF 0.7386	0.4 min
+e_dir_3layer_s43	epoch 19	val AUROC 0.8832	REFIT TEST AUROC 0.8826 AUPRC 0.6152 withinTF 0.7187	1.0 min
+k10_sage_had_nosf_d128_s43	epoch 14	val AUROC 0.8873	REFIT TEST AUROC 0.8900 AUPRC 0.6293 withinTF 0.7509	0.4 min
+k10_sage_had_nosf_d128_s44	epoch 13	val AUROC 0.8881	REFIT TEST AUROC 0.8896 AUPRC 0.6231 withinTF 0.7501	0.4 min
+k11_sage_had_nosf_d512_s43	epoch 6	val AUROC 0.8866	REFIT TEST AUROC 0.8879 AUPRC 0.6288 withinTF 0.7466	0.3 min
+k11_sage_had_nosf_d512_s42	epoch 10	val AUROC 0.8893	REFIT TEST AUROC 0.8861 AUPRC 0.6133 withinTF 0.7397	0.4 min
+k11_sage_had_nosf_d512_s44	epoch 7	val AUROC 0.8876	REFIT TEST AUROC 0.8861 AUPRC 0.6242 withinTF 0.7529	0.3 min
+k12_sage_had_nosf_d256_128_s42	epoch 6	val AUROC 0.8878	REFIT TEST AUROC 0.8879 AUPRC 0.6318 withinTF 0.7347	0.3 min
+k12_sage_had_nosf_d256_128_s43	epoch 6	val AUROC 0.8866	REFIT TEST AUROC 0.8864 AUPRC 0.6258 withinTF 0.7287	0.4 min
+k12_sage_had_nosf_d256_128_s44	epoch 9	val AUROC 0.8870	REFIT TEST AUROC 0.8864 AUPRC 0.6216 withinTF 0.7383	0.4 min
+k13_sage_add_sf_none_3layer_s42	epoch 5	val AUROC 0.8763	REFIT TEST AUROC 0.8848 AUPRC 0.6262 withinTF 0.7130	0.3 min
+k13_sage_add_sf_none_3layer_s43	epoch 2	val AUROC 0.8756	REFIT TEST AUROC 0.8703 AUPRC 0.5991 withinTF 0.6420	0.2 min
+k13_sage_add_sf_none_3layer_s44	epoch 3	val AUROC 0.8775	REFIT TEST AUROC 0.8815 AUPRC 0.6181 withinTF 0.6894	0.2 min
+hpo_A_scregnet_paper	epoch 265	val AUROC 0.8757	TEST AUROC 0.8804 AUPRC 0.6112 withinTF 0.6847	4.6 min
+hpo_A_scregnet_t00	epoch 150	val AUROC 0.8760	TEST AUROC 0.8821 AUPRC 0.6133 withinTF 0.6956	4.4 min
+hpo_A_scregnet_t10	epoch 15	val AUROC 0.8773	TEST AUROC 0.8797 AUPRC 0.6124 withinTF 0.6903	0.2 min
+hpo_A_scregnet_t11	epoch 10	val AUROC 0.8717	TEST AUROC 0.8762 AUPRC 0.6057 withinTF 0.7038	0.2 min
+hpo_B_hero_sf_t00	epoch 4	val AUROC 0.8902	TEST AUROC 0.8884 AUPRC 0.6270 withinTF 0.7466	0.2 min
+hpo_B_hero_sf_t01	epoch 39	val AUROC 0.8916	TEST AUROC 0.8865 AUPRC 0.6272 withinTF 0.7340	0.6 min
+hpo_B_hero_sf_t02	epoch 10	val AUROC 0.8906	TEST AUROC 0.8871 AUPRC 0.6284 withinTF 0.7343	0.4 min
+hpo_B_hero_sf_t06	epoch 6	val AUROC 0.8901	TEST AUROC 0.8862 AUPRC 0.6243 withinTF 0.7436	0.1 min
+hpo_B_hero_sf_t03	epoch 1	val AUROC 0.8846	TEST AUROC 0.8739 AUPRC 0.6009 withinTF 0.7012	0.2 min
+hpo_B_hero_sf_t10	epoch 3	val AUROC 0.8863	TEST AUROC 0.8764 AUPRC 0.6047 withinTF 0.7060	0.1 min
+hpo_B_hero_sf_t08	epoch 4	val AUROC 0.8889	TEST AUROC 0.8887 AUPRC 0.6282 withinTF 0.7482	0.2 min
+hpo_C_hero_t00	epoch 27	val AUROC 0.8887	TEST AUROC 0.8850 AUPRC 0.6172 withinTF 0.7250	0.2 min
+hpo_C_hero_t02	epoch 10	val AUROC 0.8897	TEST AUROC 0.8860 AUPRC 0.6220 withinTF 0.7355	0.3 min
+hpo_C_hero_t03	epoch 4	val AUROC 0.8906	TEST AUROC 0.8860 AUPRC 0.6149 withinTF 0.7205	0.2 min
+hpo_C_hero_t04	epoch 17	val AUROC 0.8867	TEST AUROC 0.8812 AUPRC 0.6166 withinTF 0.7120	0.1 min
+hpo_C_hero_t06	epoch 6	val AUROC 0.8845	TEST AUROC 0.8795 AUPRC 0.6082 withinTF 0.7073	0.1 min
+hpo_C_hero_t05	epoch 4	val AUROC 0.8877	TEST AUROC 0.8860 AUPRC 0.6168 withinTF 0.7170	0.2 min
+hpo_C_hero_t09	epoch 1	val AUROC 0.8824	TEST AUROC 0.8772 AUPRC 0.6034 withinTF 0.6915	0.1 min
+m_hHEP_g02_add_sf_batch_s42	epoch 23	val AUROC 0.8960	REFIT TEST AUROC 0.9030 AUPRC 0.8416 withinTF 0.7899	1.1 min
+m_hHEP_g01_add_sf_none_s42	epoch 36	val AUROC 0.8974	REFIT TEST AUROC 0.9019 AUPRC 0.8406 withinTF 0.7880	1.4 min
+m_hHEP_g02_add_sf_batch_s44	epoch 28	val AUROC 0.8966	REFIT TEST AUROC 0.9025 AUPRC 0.8407 withinTF 0.7864	1.3 min
+m_hHEP_g02_add_sf_batch_s43	epoch 37	val AUROC 0.8968	REFIT TEST AUROC 0.9025 AUPRC 0.8417 withinTF 0.7841	1.6 min
+m_hHEP_g08_had_nosf_batch_d256_s42	epoch 89	val AUROC 0.9017	REFIT TEST AUROC 0.8963 AUPRC 0.8307 withinTF 0.7694	2.6 min
+m_hHEP_g08_had_nosf_batch_d256_s43	epoch 90	val AUROC 0.9033	REFIT TEST AUROC 0.8988 AUPRC 0.8293 withinTF 0.7710	2.7 min
+r02_had_sf_batch_sgd_s42	epoch 500	val AUROC 0.8885	REFIT TEST AUROC 0.8858 AUPRC 0.6232 withinTF 0.7166	17.5 min
+r02_had_sf_batch_sgd_s44	epoch 490	val AUROC 0.8909	REFIT TEST AUROC 0.8863 AUPRC 0.6214 withinTF 0.7190	17.5 min
+e_dir_3layer_s44	epoch 18	val AUROC 0.8838	REFIT TEST AUROC 0.8849 AUPRC 0.6219 withinTF 0.7207	1.1 min
+e_dir_d256_s44	epoch 7	val AUROC 0.8851	REFIT TEST AUROC 0.8827 AUPRC 0.6127 withinTF 0.7324	0.5 min
+m_hHEP_g09_mlp_nosf_batch_d256_s42	epoch 76	val AUROC 0.9013	REFIT TEST AUROC 0.9032 AUPRC 0.8412 withinTF 0.7789	1.9 min
+m_hHEP_g08_had_nosf_batch_d256_s44	epoch 104	val AUROC 0.9030	REFIT TEST AUROC 0.9001 AUPRC 0.8353 withinTF 0.7717	2.6 min
+m_hHEP_g11_had_sf_batch_d256_s42	epoch 25	val AUROC 0.9030	REFIT TEST AUROC 0.9039 AUPRC 0.8455 withinTF 0.7895	0.9 min
+m_hHEP_g09_mlp_nosf_batch_d256_s44	epoch 55	val AUROC 0.8997	REFIT TEST AUROC 0.9027 AUPRC 0.8387 withinTF 0.7711	1.6 min
+m_hHEP_g11_had_sf_batch_d256_s43	epoch 23	val AUROC 0.9043	REFIT TEST AUROC 0.9045 AUPRC 0.8456 withinTF 0.7883	0.9 min
+m_hHEP_g09_mlp_nosf_batch_d256_s43	epoch 70	val AUROC 0.9014	REFIT TEST AUROC 0.9025 AUPRC 0.8399 withinTF 0.7702	2.0 min
+m_hHEP_e_sage_d256_s42	epoch 23	val AUROC 0.8994	REFIT TEST AUROC 0.8984 AUPRC 0.8376 withinTF 0.7590	0.7 min
+m_hHEP_g11_had_sf_batch_d256_s44	epoch 27	val AUROC 0.9045	REFIT TEST AUROC 0.9030 AUPRC 0.8453 withinTF 0.7894	0.9 min
+m_hHEP_e_sage_d256_s44	epoch 15	val AUROC 0.8978	REFIT TEST AUROC 0.8997 AUPRC 0.8370 withinTF 0.7594	0.5 min
+m_hHEP_e_sage_d256_s43	epoch 25	val AUROC 0.8977	REFIT TEST AUROC 0.8982 AUPRC 0.8386 withinTF 0.7566	0.7 min
+m_hHEP_k04_sage_had_nosf_d256_contrast_s42	epoch 23	val AUROC 0.8995	REFIT TEST AUROC 0.8985 AUPRC 0.8377 withinTF 0.7582	0.7 min
+m_hHEP_k04_sage_had_nosf_d256_contrast_s44	epoch 20	val AUROC 0.8982	REFIT TEST AUROC 0.8989 AUPRC 0.8370 withinTF 0.7611	0.7 min
+m_hHEP_k04_sage_had_nosf_d256_contrast_s43	epoch 25	val AUROC 0.8979	REFIT TEST AUROC 0.8985 AUPRC 0.8388 withinTF 0.7558	0.7 min
+m_mHSC-E_g01_add_sf_none_s42	epoch 36	val AUROC 0.9167	REFIT TEST AUROC 0.9217 AUPRC 0.9406 withinTF 0.7305	1.0 min
+m_mHSC-E_g01_add_sf_none_s44	epoch 31	val AUROC 0.9172	REFIT TEST AUROC 0.9208 AUPRC 0.9404 withinTF 0.7284	1.0 min
+m_mHSC-E_g01_add_sf_none_s43	epoch 35	val AUROC 0.9170	REFIT TEST AUROC 0.9215 AUPRC 0.9409 withinTF 0.7308	1.0 min
+m_mHSC-E_g02_add_sf_batch_s42	epoch 36	val AUROC 0.9160	REFIT TEST AUROC 0.9211 AUPRC 0.9401 withinTF 0.7280	1.3 min
+m_mHSC-E_g02_add_sf_batch_s43	epoch 35	val AUROC 0.9162	REFIT TEST AUROC 0.9208 AUPRC 0.9403 withinTF 0.7292	1.2 min
+m_mHSC-E_g02_add_sf_batch_s44	epoch 31	val AUROC 0.9165	REFIT TEST AUROC 0.9202 AUPRC 0.9398 withinTF 0.7265	1.0 min
+m_mHSC-E_g08_had_nosf_batch_d256_s42	epoch 56	val AUROC 0.9192	REFIT TEST AUROC 0.9237 AUPRC 0.9407 withinTF 0.7715	1.2 min
+m_mHSC-E_g08_had_nosf_batch_d256_s43	epoch 63	val AUROC 0.9204	REFIT TEST AUROC 0.9115 AUPRC 0.9359 withinTF 0.7791	1.3 min
+m_mHSC-E_g08_had_nosf_batch_d256_s44	epoch 49	val AUROC 0.9198	REFIT TEST AUROC 0.9233 AUPRC 0.9424 withinTF 0.7748	1.0 min
+m_mHSC-E_g09_mlp_nosf_batch_d256_s42	epoch 39	val AUROC 0.9212	REFIT TEST AUROC 0.9243 AUPRC 0.9424 withinTF 0.7387	0.7 min
+m_mHSC-E_g11_had_sf_batch_d256_s42	epoch 25	val AUROC 0.9249	REFIT TEST AUROC 0.9264 AUPRC 0.9444 withinTF 0.8108	0.6 min
+m_mHSC-E_g09_mlp_nosf_batch_d256_s43	epoch 57	val AUROC 0.9227	REFIT TEST AUROC 0.9237 AUPRC 0.9420 withinTF 0.7488	1.1 min
+m_mHSC-E_g11_had_sf_batch_d256_s43	epoch 34	val AUROC 0.9271	REFIT TEST AUROC 0.9255 AUPRC 0.9445 withinTF 0.8044	0.8 min
+m_mHSC-E_g09_mlp_nosf_batch_d256_s44	epoch 57	val AUROC 0.9230	REFIT TEST AUROC 0.9240 AUPRC 0.9422 withinTF 0.7493	1.1 min
+m_mHSC-E_e_sage_d256_s42	epoch 17	val AUROC 0.9244	REFIT TEST AUROC 0.9235 AUPRC 0.9435 withinTF 0.7734	0.4 min
+m_mHSC-E_g11_had_sf_batch_d256_s44	epoch 28	val AUROC 0.9266	REFIT TEST AUROC 0.9258 AUPRC 0.9447 withinTF 0.8091	0.7 min
+m_mHSC-E_e_sage_d256_s43	epoch 14	val AUROC 0.9260	REFIT TEST AUROC 0.9234 AUPRC 0.9426 withinTF 0.7548	0.4 min
+m_mHSC-E_e_sage_d256_s44	epoch 15	val AUROC 0.9268	REFIT TEST AUROC 0.9248 AUPRC 0.9446 withinTF 0.7643	0.4 min
+m_mHSC-E_k04_sage_had_nosf_d256_contrast_s42	epoch 20	val AUROC 0.9245	REFIT TEST AUROC 0.9202 AUPRC 0.9413 withinTF 0.7804	0.6 min
+m_mHSC-E_k04_sage_had_nosf_d256_contrast_s43	epoch 14	val AUROC 0.9257	REFIT TEST AUROC 0.9235 AUPRC 0.9428 withinTF 0.7544	0.5 min
+m_mHSC-E_k04_sage_had_nosf_d256_contrast_s44	epoch 15	val AUROC 0.9267	REFIT TEST AUROC 0.9246 AUPRC 0.9444 withinTF 0.7629	0.5 min
+m_mESC_g01_add_sf_none_s43	epoch 9	val AUROC 0.9265	REFIT TEST AUROC 0.9235 AUPRC 0.8545 withinTF 0.7610	2.3 min
+m_mESC_g01_add_sf_none_s44	epoch 14	val AUROC 0.9265	REFIT TEST AUROC 0.9247 AUPRC 0.8573 withinTF 0.7630	3.1 min
+m_mESC_g01_add_sf_none_s42	epoch 19	val AUROC 0.9267	REFIT TEST AUROC 0.9231 AUPRC 0.8553 withinTF 0.7607	3.8 min
+m_mESC_g02_add_sf_batch_s42	epoch 19	val AUROC 0.9262	REFIT TEST AUROC 0.9234 AUPRC 0.8555 withinTF 0.7622	4.9 min
+m_mESC_g02_add_sf_batch_s43	epoch 9	val AUROC 0.9257	REFIT TEST AUROC 0.9229 AUPRC 0.8542 withinTF 0.7588	2.7 min
+m_mESC_g08_had_nosf_batch_d256_s42	epoch 40	val AUROC 0.9292	REFIT TEST AUROC 0.9259 AUPRC 0.8483 withinTF 0.7849	6.1 min
+m_mESC_g02_add_sf_batch_s44	epoch 33	val AUROC 0.9262	REFIT TEST AUROC 0.9242 AUPRC 0.8569 withinTF 0.7632	6.8 min
+m_mESC_g08_had_nosf_batch_d256_s44	epoch 32	val AUROC 0.9288	REFIT TEST AUROC 0.9274 AUPRC 0.8607 withinTF 0.7902	5.0 min
+m_mESC_g08_had_nosf_batch_d256_s43	epoch 49	val AUROC 0.9295	REFIT TEST AUROC 0.9276 AUPRC 0.8590 withinTF 0.7873	7.4 min
+m_mESC_g11_had_sf_batch_d256_s42	epoch 27	val AUROC 0.9375	REFIT TEST AUROC 0.9373 AUPRC 0.8774 withinTF 0.8117	4.7 min
+m_mESC_g11_had_sf_batch_d256_s43	epoch 25	val AUROC 0.9375	REFIT TEST AUROC 0.9382 AUPRC 0.8804 withinTF 0.8145	4.4 min
+m_mESC_g11_had_sf_batch_d256_s44	epoch 18	val AUROC 0.9377	REFIT TEST AUROC 0.9360 AUPRC 0.8785 withinTF 0.8086	3.6 min
+m_mESC_g09_mlp_nosf_batch_d256_s42	epoch 133	val AUROC 0.9356	REFIT TEST AUROC 0.9374 AUPRC 0.8778 withinTF 0.8137	20.4 min
+m_mESC_g09_mlp_nosf_batch_d256_s43	epoch 131	val AUROC 0.9360	REFIT TEST AUROC 0.9380 AUPRC 0.8790 withinTF 0.8198	20.1 min
+m_mESC_e_sage_d256_s42	epoch 40	val AUROC 0.9381	REFIT TEST AUROC 0.9380 AUPRC 0.8797 withinTF 0.8245	5.2 min
+k07_sage_had_sf_d256_s44	epoch 7	val AUROC 0.8918	REFIT TEST AUROC 0.8885 AUPRC 0.6311 withinTF 0.7471	0.4 min
+m_mESC_g09_mlp_nosf_batch_d256_s44	epoch 140	val AUROC 0.9361	REFIT TEST AUROC 0.9371 AUPRC 0.8778 withinTF 0.8156	21.1 min
+f12_A_shuffled_s43	epoch 30	val AUROC 0.8721	REFIT TEST AUROC 0.8794 AUPRC 0.6034 withinTF 0.6915	0.4 min
+f13_B_shuffled_s43	epoch 48	val AUROC 0.8826	REFIT TEST AUROC 0.8829 AUPRC 0.6237 withinTF 0.7046	1.4 min
+k06_sage_mlp_nosf_d256_panda_s43	epoch 14	val AUROC 0.8868	REFIT TEST AUROC 0.8915 AUPRC 0.6321 withinTF 0.7461	0.5 min
+e_dir_d256_s44	epoch 7	val AUROC 0.8851	REFIT TEST AUROC 0.8827 AUPRC 0.6127 withinTF 0.7324	0.5 min
+f01_A_tuned_s44	epoch 26	val AUROC 0.8775	REFIT TEST AUROC 0.8810 AUPRC 0.6127 withinTF 0.6882	0.4 min
+f04_C_tuned_s43	epoch 3	val AUROC 0.8857	REFIT TEST AUROC 0.8886 AUPRC 0.6242 withinTF 0.7407	0.3 min
+f03_B_tuned_s45	epoch 37	val AUROC 0.8929	REFIT TEST AUROC 0.8898 AUPRC 0.6348 withinTF 0.7447	1.0 min
+f04_C_tuned_s44	epoch 3	val AUROC 0.8882	REFIT TEST AUROC 0.8887 AUPRC 0.6113 withinTF 0.7603	0.3 min
+f04_C_tuned_s45	epoch 3	val AUROC 0.8835	REFIT TEST AUROC 0.8853 AUPRC 0.6165 withinTF 0.7355	0.3 min
+f04_C_tuned_s46	epoch 2	val AUROC 0.8852	REFIT TEST AUROC 0.8868 AUPRC 0.6221 withinTF 0.7329	0.2 min
+f05_C_contrast_s42	epoch 5	val AUROC 0.8872	REFIT TEST AUROC 0.8782 AUPRC 0.5932 withinTF 0.7569	0.4 min
+f05_C_contrast_s43	epoch 3	val AUROC 0.8857	REFIT TEST AUROC 0.8881 AUPRC 0.6250 withinTF 0.7399	0.3 min
+f05_C_contrast_s44	epoch 3	val AUROC 0.8894	REFIT TEST AUROC 0.8891 AUPRC 0.6111 withinTF 0.7602	0.3 min
+f05_C_contrast_s45	epoch 3	val AUROC 0.8843	REFIT TEST AUROC 0.8853 AUPRC 0.6154 withinTF 0.7325	0.3 min
+f05_C_contrast_s46	epoch 2	val AUROC 0.8842	REFIT TEST AUROC 0.8878 AUPRC 0.6252 withinTF 0.7334	0.3 min
+hpo_A_scregnet_paper	epoch 265	val AUROC 0.8757	TEST AUROC 0.8804 AUPRC 0.6112 withinTF 0.6846	3.7 min
+f06_C_panda_s42	epoch 5	val AUROC 0.8852	REFIT TEST AUROC 0.8828 AUPRC 0.6022 withinTF 0.7619	0.3 min
+f06_C_panda_s43	epoch 3	val AUROC 0.8868	REFIT TEST AUROC 0.8882 AUPRC 0.6254 withinTF 0.7379	0.3 min
+f06_C_panda_s44	epoch 3	val AUROC 0.8888	REFIT TEST AUROC 0.8892 AUPRC 0.6112 withinTF 0.7581	0.3 min
+f01_A_tuned_s45	epoch 34	val AUROC 0.8780	REFIT TEST AUROC 0.8833 AUPRC 0.6180 withinTF 0.7009	0.5 min
+f06_C_panda_s45	epoch 3	val AUROC 0.8844	REFIT TEST AUROC 0.8855 AUPRC 0.6173 withinTF 0.7370	0.3 min
+f06_C_panda_s46	epoch 2	val AUROC 0.8853	REFIT TEST AUROC 0.8878 AUPRC 0.6246 withinTF 0.7318	0.2 min
+f07_C_gcn_s42	epoch 4	val AUROC 0.8830	REFIT TEST AUROC 0.8847 AUPRC 0.6158 withinTF 0.7311	0.3 min
+f07_C_gcn_s43	epoch 4	val AUROC 0.8815	REFIT TEST AUROC 0.8873 AUPRC 0.5993 withinTF 0.7304	0.3 min
+f07_C_gcn_s44	epoch 6	val AUROC 0.8767	REFIT TEST AUROC 0.8845 AUPRC 0.5985 withinTF 0.7252	0.4 min
+f07_C_gcn_s45	epoch 3	val AUROC 0.8820	REFIT TEST AUROC 0.8820 AUPRC 0.5962 withinTF 0.7165	0.3 min
+f07_C_gcn_s46	epoch 3	val AUROC 0.8815	REFIT TEST AUROC 0.8771 AUPRC 0.6085 withinTF 0.7209	0.3 min
+f08_C_add_s42	epoch 5	val AUROC 0.8829	REFIT TEST AUROC 0.8802 AUPRC 0.6090 withinTF 0.7174	0.3 min
+f08_C_add_s43	epoch 6	val AUROC 0.8832	REFIT TEST AUROC 0.8801 AUPRC 0.6154 withinTF 0.7122	0.3 min
+f08_C_add_s44	epoch 3	val AUROC 0.8857	REFIT TEST AUROC 0.8862 AUPRC 0.6184 withinTF 0.7202	0.3 min
+f08_C_add_s45	epoch 3	val AUROC 0.8841	REFIT TEST AUROC 0.8815 AUPRC 0.6112 withinTF 0.7148	0.2 min
+f09_C_nosplit_s42	epoch 1	val AUROC 0.8233	REFIT TEST AUROC 0.8356 AUPRC 0.4978 withinTF 0.6667	0.1 min
+f09_C_nosplit_s43	epoch 1	val AUROC 0.8154	REFIT TEST AUROC 0.8454 AUPRC 0.5524 withinTF 0.6734	0.1 min
+f09_C_nosplit_s44	epoch 1	val AUROC 0.8318	REFIT TEST AUROC 0.8222 AUPRC 0.5042 withinTF 0.6605	0.1 min
+f09_C_nosplit_s45	epoch 1	val AUROC 0.8491	REFIT TEST AUROC 0.8491 AUPRC 0.5404 withinTF 0.6662	0.1 min
+f09_C_nosplit_s46	epoch 1	val AUROC 0.8398	REFIT TEST AUROC 0.8500 AUPRC 0.5439 withinTF 0.6678	0.1 min
+f03_B_tuned_s42	epoch 28	val AUROC 0.8929	REFIT TEST AUROC 0.8857 AUPRC 0.6324 withinTF 0.7325	0.7 min
+f10_C_mlp_s42	epoch 4	val AUROC 0.8861	REFIT TEST AUROC 0.8858 AUPRC 0.6204 withinTF 0.7449	0.3 min
+f10_C_mlp_s43	epoch 3	val AUROC 0.8845	REFIT TEST AUROC 0.8859 AUPRC 0.6221 withinTF 0.7294	0.3 min
+f10_C_mlp_s44	epoch 3	val AUROC 0.8857	REFIT TEST AUROC 0.8903 AUPRC 0.6218 withinTF 0.7434	0.3 min
+f10_C_mlp_s45	epoch 3	val AUROC 0.8821	REFIT TEST AUROC 0.8876 AUPRC 0.6253 withinTF 0.7362	0.2 min
+f10_C_mlp_s46	epoch 2	val AUROC 0.8819	REFIT TEST AUROC 0.8872 AUPRC 0.6250 withinTF 0.7265	0.2 min
+f02_A_paper_s46	epoch 335	val AUROC 0.8751	REFIT TEST AUROC 0.8845 AUPRC 0.6199 withinTF 0.7105	8.6 min
+f11_B_panda_s42	epoch 28	val AUROC 0.8930	REFIT TEST AUROC 0.8858 AUPRC 0.6321 withinTF 0.7320	0.7 min
+f11_B_panda_s44	epoch 29	val AUROC 0.8927	REFIT TEST AUROC 0.8877 AUPRC 0.6313 withinTF 0.7448	0.7 min
+f11_B_panda_s43	epoch 49	val AUROC 0.8918	REFIT TEST AUROC 0.8866 AUPRC 0.6341 withinTF 0.7278	1.0 min
+ho_gene0_f01_A_tuned_s42	epoch 7	val AUROC 0.8085	REFIT TEST AUROC 0.8364 AUPRC 0.5353 withinTF 0.4962	0.2 min
+ho_gene0_f01_A_tuned_s43	epoch 9	val AUROC 0.8045	REFIT TEST AUROC 0.8317 AUPRC 0.5319 withinTF 0.5002	0.2 min
+f11_B_panda_s45	epoch 37	val AUROC 0.8929	REFIT TEST AUROC 0.8900 AUPRC 0.6354 withinTF 0.7444	0.8 min
+f11_B_panda_s46	epoch 39	val AUROC 0.8917	REFIT TEST AUROC 0.8887 AUPRC 0.6338 withinTF 0.7400	0.8 min
+ho_gene0_f04_C_tuned_s42	epoch 1	val AUROC 0.8274	REFIT TEST AUROC 0.8395 AUPRC 0.5163 withinTF 0.5059	0.2 min
+ho_gene0_f03_B_tuned_s42	epoch 20	val AUROC 0.8333	REFIT TEST AUROC 0.8536 AUPRC 0.5361 withinTF 0.5387	0.5 min
+ho_gene0_f04_C_tuned_s43	epoch 1	val AUROC 0.8279	REFIT TEST AUROC 0.8367 AUPRC 0.5108 withinTF 0.5272	0.2 min
+f01_A_tuned_s42	epoch 25	val AUROC 0.8777	REFIT TEST AUROC 0.8795 AUPRC 0.6131 withinTF 0.6808	0.3 min
+ho_gene0_f05_C_contrast_s42	epoch 1	val AUROC 0.8267	REFIT TEST AUROC 0.8395 AUPRC 0.5162 withinTF 0.5057	0.2 min
+ho_gene0_f05_C_contrast_s43	epoch 1	val AUROC 0.8276	REFIT TEST AUROC 0.8371 AUPRC 0.5110 withinTF 0.5279	0.2 min
+ho_gene1_f01_A_tuned_s42	epoch 8	val AUROC 0.8365	REFIT TEST AUROC 0.8501 AUPRC 0.5578 withinTF 0.5722	0.2 min
+ho_gene1_f01_A_tuned_s43	epoch 10	val AUROC 0.8339	REFIT TEST AUROC 0.8478 AUPRC 0.5603 withinTF 0.5799	0.2 min
+k07_sage_had_sf_d256_s43	epoch 11	val AUROC 0.8915	REFIT TEST AUROC 0.8909 AUPRC 0.6308 withinTF 0.7507	0.4 min
+ho_gene1_f04_C_tuned_s43	epoch 2	val AUROC 0.8480	REFIT TEST AUROC 0.8325 AUPRC 0.4835 withinTF 0.5807	0.3 min
+ho_gene1_f04_C_tuned_s42	epoch 4	val AUROC 0.8558	REFIT TEST AUROC 0.8292 AUPRC 0.4892 withinTF 0.5858	0.3 min
+ho_gene1_f03_B_tuned_s43	epoch 10	val AUROC 0.8568	REFIT TEST AUROC 0.8587 AUPRC 0.5536 withinTF 0.5927	0.4 min
+k05_sage_had_nosf_d256_panda_s44	epoch 7	val AUROC 0.8890	REFIT TEST AUROC 0.8872 AUPRC 0.6253 withinTF 0.7523	0.3 min
+ho_gene2_f01_A_tuned_s42	epoch 12	val AUROC 0.8711	REFIT TEST AUROC 0.8353 AUPRC 0.5220 withinTF 0.5544	0.3 min
+ho_gene1_f05_C_contrast_s42	epoch 4	val AUROC 0.8542	REFIT TEST AUROC 0.8269 AUPRC 0.4920 withinTF 0.5899	0.3 min
+ho_gene1_f05_C_contrast_s43	epoch 5	val AUROC 0.8495	REFIT TEST AUROC 0.8195 AUPRC 0.4828 withinTF 0.5663	0.3 min
+ho_gene2_f01_A_tuned_s43	epoch 13	val AUROC 0.8694	REFIT TEST AUROC 0.8330 AUPRC 0.5200 withinTF 0.5650	0.2 min
+f12_A_shuffled_s46	epoch 31	val AUROC 0.8715	REFIT TEST AUROC 0.8807 AUPRC 0.6087 withinTF 0.6923	0.4 min
+ho_gene2_f04_C_tuned_s42	epoch 2	val AUROC 0.8660	REFIT TEST AUROC 0.8318 AUPRC 0.5104 withinTF 0.5580	0.2 min
+ho_gene2_f03_B_tuned_s42	epoch 23	val AUROC 0.8845	REFIT TEST AUROC 0.8436 AUPRC 0.5276 withinTF 0.5569	0.6 min
+ho_gene2_f03_B_tuned_s43	epoch 23	val AUROC 0.8831	REFIT TEST AUROC 0.8446 AUPRC 0.5295 withinTF 0.5487	0.6 min
+ho_gene2_f04_C_tuned_s43	epoch 2	val AUROC 0.8672	REFIT TEST AUROC 0.8314 AUPRC 0.4791 withinTF 0.5463	0.2 min
+ho_gene2_f05_C_contrast_s42	epoch 2	val AUROC 0.8667	REFIT TEST AUROC 0.8331 AUPRC 0.5120 withinTF 0.5614	0.3 min
+ho_gene2_f05_C_contrast_s43	epoch 2	val AUROC 0.8663	REFIT TEST AUROC 0.8307 AUPRC 0.4764 withinTF 0.5469	0.3 min
+ho_gene3_f01_A_tuned_s42	epoch 8	val AUROC 0.8400	REFIT TEST AUROC 0.8180 AUPRC 0.5211 withinTF 0.4620	0.2 min
+ho_gene3_f01_A_tuned_s43	epoch 7	val AUROC 0.8391	REFIT TEST AUROC 0.8168 AUPRC 0.5116 withinTF 0.4681	0.2 min
+ho_gene3_f04_C_tuned_s42	epoch 1	val AUROC 0.8550	REFIT TEST AUROC 0.8235 AUPRC 0.5014 withinTF 0.5052	0.2 min
+ho_gene3_f03_B_tuned_s42	epoch 20	val AUROC 0.8570	REFIT TEST AUROC 0.8325 AUPRC 0.5286 withinTF 0.5067	0.5 min
+ho_gene3_f03_B_tuned_s43	epoch 19	val AUROC 0.8507	REFIT TEST AUROC 0.8355 AUPRC 0.5345 withinTF 0.5039	0.5 min
+ho_gene3_f04_C_tuned_s43	epoch 1	val AUROC 0.8571	REFIT TEST AUROC 0.8361 AUPRC 0.5206 withinTF 0.4972	0.2 min
+ho_gene3_f05_C_contrast_s42	epoch 1	val AUROC 0.8563	REFIT TEST AUROC 0.8246 AUPRC 0.5035 withinTF 0.5055	0.2 min
+ho_gene3_f05_C_contrast_s43	epoch 1	val AUROC 0.8566	REFIT TEST AUROC 0.8357 AUPRC 0.5207 withinTF 0.4897	0.2 min
+ho_gene4_f01_A_tuned_s42	epoch 11	val AUROC 0.8646	REFIT TEST AUROC 0.8311 AUPRC 0.5085 withinTF 0.5188	0.2 min
+ho_gene4_f01_A_tuned_s43	epoch 14	val AUROC 0.8636	REFIT TEST AUROC 0.8277 AUPRC 0.5064 withinTF 0.5240	0.2 min
+ho_gene4_f04_C_tuned_s42	epoch 2	val AUROC 0.8587	REFIT TEST AUROC 0.8489 AUPRC 0.5209 withinTF 0.5822	0.3 min
+ho_gene4_f03_B_tuned_s42	epoch 18	val AUROC 0.8776	REFIT TEST AUROC 0.8440 AUPRC 0.5131 withinTF 0.5769	0.5 min
+ho_gene4_f03_B_tuned_s43	epoch 23	val AUROC 0.8777	REFIT TEST AUROC 0.8404 AUPRC 0.5075 withinTF 0.5644	0.6 min
+ho_gene4_f04_C_tuned_s43	epoch 1	val AUROC 0.8612	REFIT TEST AUROC 0.8503 AUPRC 0.5173 withinTF 0.5881	0.2 min
+ho_gene4_f05_C_contrast_s42	epoch 2	val AUROC 0.8583	REFIT TEST AUROC 0.8458 AUPRC 0.5155 withinTF 0.5813	0.2 min
+ho_gene4_f05_C_contrast_s43	epoch 1	val AUROC 0.8619	REFIT TEST AUROC 0.8499 AUPRC 0.5160 withinTF 0.5819	0.2 min
+ho_tf0_f01_A_tuned_s43	epoch 51	val AUROC 0.8301	REFIT TEST AUROC 0.6452 AUPRC 0.2888 withinTF 0.6866	0.7 min
+ho_tf0_f01_A_tuned_s42	epoch 59	val AUROC 0.8255	REFIT TEST AUROC 0.6633 AUPRC 0.2996 withinTF 0.6878	0.7 min
+ho_tf0_f03_B_tuned_s42	epoch 27	val AUROC 0.6417	REFIT TEST AUROC 0.6240 AUPRC 0.1978 withinTF 0.6715	0.7 min
+ho_tf0_f03_B_tuned_s43	epoch 20	val AUROC 0.6916	REFIT TEST AUROC 0.6736 AUPRC 0.2245 withinTF 0.6602	0.6 min
+ho_tf0_f04_C_tuned_s42	epoch 24	val AUROC 0.7775	REFIT TEST AUROC 0.6559 AUPRC 0.2396 withinTF 0.6453	1.0 min
+ho_tf0_f05_C_contrast_s42	epoch 4	val AUROC 0.7633	REFIT TEST AUROC 0.6186 AUPRC 0.2180 withinTF 0.6836	0.4 min
+ho_tf0_f04_C_tuned_s43	epoch 31	val AUROC 0.6979	REFIT TEST AUROC 0.6211 AUPRC 0.2125 withinTF 0.6668	1.2 min
+ho_tf0_f05_C_contrast_s43	epoch 4	val AUROC 0.6699	REFIT TEST AUROC 0.6462 AUPRC 0.2266 withinTF 0.6925	0.4 min
+ho_tf1_f01_A_tuned_s42	epoch 74	val AUROC 0.6299	REFIT TEST AUROC 0.4492 AUPRC 0.1681 withinTF 0.8380	0.9 min
+ho_tf1_f03_B_tuned_s42	epoch 15	val AUROC 0.7380	REFIT TEST AUROC 0.6592 AUPRC 0.2252 withinTF 0.7841	0.5 min
+ho_tf1_f01_A_tuned_s43	epoch 46	val AUROC 0.6329	REFIT TEST AUROC 0.4268 AUPRC 0.1593 withinTF 0.8271	0.6 min
+ho_tf1_f04_C_tuned_s42	epoch 1	val AUROC 0.8380	REFIT TEST AUROC 0.7065 AUPRC 0.2627 withinTF 0.7841	0.2 min
+ho_tf1_f03_B_tuned_s43	epoch 13	val AUROC 0.7484	REFIT TEST AUROC 0.6642 AUPRC 0.2236 withinTF 0.7283	0.4 min
+ho_tf1_f05_C_contrast_s42	epoch 1	val AUROC 0.8304	REFIT TEST AUROC 0.7115 AUPRC 0.2692 withinTF 0.7836	0.2 min
+ho_tf1_f04_C_tuned_s43	epoch 12	val AUROC 0.7441	REFIT TEST AUROC 0.6498 AUPRC 0.2551 withinTF 0.7687	0.5 min
+ho_tf1_f05_C_contrast_s43	epoch 10	val AUROC 0.7567	REFIT TEST AUROC 0.6545 AUPRC 0.2494 withinTF 0.8172	0.5 min
+ho_tf2_f01_A_tuned_s42	epoch 54	val AUROC 0.8096	REFIT TEST AUROC 0.5987 AUPRC 0.1559 withinTF 0.6612	0.7 min
+ho_tf2_f01_A_tuned_s43	epoch 68	val AUROC 0.8078	REFIT TEST AUROC 0.6073 AUPRC 0.1607 withinTF 0.6587	0.9 min
+ho_gene1_f03_B_tuned_s42	epoch 14	val AUROC 0.8630	REFIT TEST AUROC 0.8566 AUPRC 0.5403 withinTF 0.5961	0.5 min
+ho_tf2_f04_C_tuned_s42	epoch 15	val AUROC 0.5797	REFIT TEST AUROC 0.5264 AUPRC 0.1395 withinTF 0.6153	0.7 min
+ho_tf2_f04_C_tuned_s43	epoch 7	val AUROC 0.5771	REFIT TEST AUROC 0.5176 AUPRC 0.1409 withinTF 0.6235	0.4 min
+ho_tf2_f05_C_contrast_s42	epoch 3	val AUROC 0.5689	REFIT TEST AUROC 0.5571 AUPRC 0.1467 withinTF 0.6422	0.3 min
+ho_tf3_f01_A_tuned_s42	epoch 22	val AUROC 0.8048	REFIT TEST AUROC 0.5852 AUPRC 0.1954 withinTF 0.6847	0.4 min
+f02_A_paper_s43	epoch 345	val AUROC 0.8748	REFIT TEST AUROC 0.8818 AUPRC 0.6117 withinTF 0.6961	9.0 min
+ho_tf2_f05_C_contrast_s43	epoch 26	val AUROC 0.6189	REFIT TEST AUROC 0.5283 AUPRC 0.1384 withinTF 0.6137	1.1 min
+ho_tf3_f03_B_tuned_s42	epoch 4	val AUROC 0.4062	REFIT TEST AUROC 0.5579 AUPRC 0.1116 withinTF 0.6287	0.2 min
+ho_tf3_f03_B_tuned_s43	epoch 3	val AUROC 0.5938	REFIT TEST AUROC 0.5780 AUPRC 0.1187 withinTF 0.5999	0.2 min
+ho_tf3_f01_A_tuned_s43	epoch 95	val AUROC 0.8059	REFIT TEST AUROC 0.6099 AUPRC 0.1570 withinTF 0.7493	1.2 min
+ho_tf3_f04_C_tuned_s42	epoch 24	val AUROC 0.5014	REFIT TEST AUROC 0.5283 AUPRC 0.1180 withinTF 0.6964	1.0 min
+hpo_A_scregnet_t00	epoch 150	val AUROC 0.8760	TEST AUROC 0.8821 AUPRC 0.6133 withinTF 0.6955	3.9 min
+ho_tf3_f04_C_tuned_s43	epoch 23	val AUROC 0.5347	REFIT TEST AUROC 0.6234 AUPRC 0.1514 withinTF 0.6844	1.0 min
+ho_tf3_f05_C_contrast_s42	epoch 21	val AUROC 0.5783	REFIT TEST AUROC 0.6051 AUPRC 0.1458 withinTF 0.6884	0.8 min
+ho_tf3_f05_C_contrast_s43	epoch 16	val AUROC 0.5935	REFIT TEST AUROC 0.6238 AUPRC 0.1480 withinTF 0.6639	0.7 min
+ho_tf4_f01_A_tuned_s42	epoch 42	val AUROC 0.7741	REFIT TEST AUROC 0.7170 AUPRC 0.3676 withinTF 0.6806	0.6 min
+ho_tf4_f03_B_tuned_s42	epoch 1	val AUROC 0.4616	REFIT TEST AUROC 0.5755 AUPRC 0.2006 withinTF 0.5460	0.2 min
+ho_tf4_f03_B_tuned_s43	epoch 1	val AUROC 0.4925	REFIT TEST AUROC 0.6861 AUPRC 0.2831 withinTF 0.5100	0.2 min
+f03_B_tuned_s43	epoch 41	val AUROC 0.8908	REFIT TEST AUROC 0.8849 AUPRC 0.6319 withinTF 0.7225	0.9 min
+ho_tf4_f01_A_tuned_s43	epoch 49	val AUROC 0.7462	REFIT TEST AUROC 0.7067 AUPRC 0.3503 withinTF 0.6893	0.6 min
+ho_tf4_f04_C_tuned_s42	epoch 5	val AUROC 0.5831	REFIT TEST AUROC 0.6830 AUPRC 0.2414 withinTF 0.6798	0.3 min
+ho_tf4_f05_C_contrast_s42	epoch 5	val AUROC 0.5896	REFIT TEST AUROC 0.6733 AUPRC 0.2289 withinTF 0.6685	0.4 min
+ho_tf4_f04_C_tuned_s43	epoch 7	val AUROC 0.5648	REFIT TEST AUROC 0.7286 AUPRC 0.3085 withinTF 0.6746	0.4 min
+ho_tf4_f05_C_contrast_s43	epoch 7	val AUROC 0.5691	REFIT TEST AUROC 0.7376 AUPRC 0.3117 withinTF 0.6784	0.4 min
+d01_C_default_s44	epoch 7	val AUROC 0.8892	REFIT TEST AUROC 0.8865 AUPRC 0.6235 withinTF 0.7499	0.2 min
+ho_tf2_f03_B_tuned_s43	epoch 1	val AUROC 0.6850	REFIT TEST AUROC 0.4991 AUPRC 0.1244 withinTF 0.4816	0.1 min
+f13_B_shuffled_s42	epoch 28	val AUROC 0.8853	REFIT TEST AUROC 0.8817 AUPRC 0.6194 withinTF 0.7042	0.6 min
+f13_B_shuffled_s44	epoch 29	val AUROC 0.8841	REFIT TEST AUROC 0.8818 AUPRC 0.6200 withinTF 0.7069	0.6 min
+f08_C_add_s46	epoch 2	val AUROC 0.8819	REFIT TEST AUROC 0.8843 AUPRC 0.6233 withinTF 0.7076	0.3 min
+f03_B_tuned_s46	epoch 39	val AUROC 0.8916	REFIT TEST AUROC 0.8883 AUPRC 0.6331 withinTF 0.7392	0.8 min
+d02_B_default_s46	epoch 12	val AUROC 0.8923	REFIT TEST AUROC 0.8924 AUPRC 0.6413 withinTF 0.7546	0.4 min
+ho_tf2_f03_B_tuned_s42	epoch 2	val AUROC 0.6332	REFIT TEST AUROC 0.5399 AUPRC 0.1368 withinTF 0.5158	0.1 min
+f12_A_shuffled_s44	epoch 21	val AUROC 0.8711	REFIT TEST AUROC 0.8760 AUPRC 0.5933 withinTF 0.6744	0.4 min
+ho_gene0_f03_B_tuned_s43	epoch 21	val AUROC 0.8353	REFIT TEST AUROC 0.8550 AUPRC 0.5433 withinTF 0.5362	0.6 min
+f03_B_tuned_s44	epoch 29	val AUROC 0.8922	REFIT TEST AUROC 0.8870 AUPRC 0.6296 withinTF 0.7447	0.7 min
+d02_B_default_s43	epoch 13	val AUROC 0.8913	REFIT TEST AUROC 0.8923 AUPRC 0.6314 withinTF 0.7539	0.5 min
+k08_sage_had_sf_d256_panda_s44	epoch 7	val AUROC 0.8921	REFIT TEST AUROC 0.8884 AUPRC 0.6312 withinTF 0.7459	0.4 min
+f01_A_tuned_s46	epoch 30	val AUROC 0.8786	REFIT TEST AUROC 0.8827 AUPRC 0.6184 withinTF 0.7005	0.5 min
+f04_C_tuned_s42	epoch 5	val AUROC 0.8859	REFIT TEST AUROC 0.8818 AUPRC 0.6028 withinTF 0.7550	0.4 min
+d01_C_default_s43	epoch 11	val AUROC 0.8872	REFIT TEST AUROC 0.8898 AUPRC 0.6263 withinTF 0.7467	0.4 min
+f02_A_paper_s42	epoch 295	val AUROC 0.8754	REFIT TEST AUROC 0.8827 AUPRC 0.6152 withinTF 0.6992	9.9 min
+r01_add_sf_none_sgd_s43	epoch 345	val AUROC 0.8748	REFIT TEST AUROC 0.8818 AUPRC 0.6117 withinTF 0.6961	11.5 min
+d02_B_default_s45	epoch 7	val AUROC 0.8901	REFIT TEST AUROC 0.8899 AUPRC 0.6328 withinTF 0.7522	0.4 min
+e_dir_3layer_s42	epoch 19	val AUROC 0.8837	REFIT TEST AUROC 0.8843 AUPRC 0.6239 withinTF 0.7230	1.2 min
+r01_add_sf_none_sgd_s44	epoch 355	val AUROC 0.8760	REFIT TEST AUROC 0.8849 AUPRC 0.6181 withinTF 0.7139	11.8 min
+d01_C_default_s45	epoch 7	val AUROC 0.8879	REFIT TEST AUROC 0.8861 AUPRC 0.6210 withinTF 0.7380	0.3 min
+k06_sage_mlp_nosf_d256_panda_s44	epoch 7	val AUROC 0.8877	REFIT TEST AUROC 0.8880 AUPRC 0.6301 withinTF 0.7348	0.4 min
+r02_had_sf_batch_sgd_s43	epoch 500	val AUROC 0.8884	REFIT TEST AUROC 0.8884 AUPRC 0.6218 withinTF 0.7229	19.9 min
+r01_add_sf_none_sgd_s42	epoch 295	val AUROC 0.8754	REFIT TEST AUROC 0.8827 AUPRC 0.6152 withinTF 0.6992	10.5 min
+r01_add_sf_none_sgd_s42	epoch 295	val AUROC 0.8754	REFIT TEST AUROC 0.8827 AUPRC 0.6152 withinTF 0.6992	10.6 min
+td01_hero_tfdrop0.3_s44	epoch 13	val AUROC 0.8890	REFIT TEST AUROC 0.8873 AUPRC 0.6251 withinTF 0.7444	0.6 min
+k07_sage_had_sf_d256_s42	epoch 10	val AUROC 0.8928	REFIT TEST AUROC 0.8917 AUPRC 0.6364 withinTF 0.7511	0.5 min
+ho_gene1_td01_hero_tfdrop0.3_s43	epoch 3	val AUROC 0.8631	REFIT TEST AUROC 0.8504 AUPRC 0.5120 withinTF 0.5854	0.3 min
+f13_B_shuffled_s46	epoch 27	val AUROC 0.8836	REFIT TEST AUROC 0.8815 AUPRC 0.6188 withinTF 0.7031	0.9 min
+f02_A_paper_s44	epoch 330	val AUROC 0.8760	REFIT TEST AUROC 0.8843 AUPRC 0.6171 withinTF 0.7106	11.6 min
+k08_sage_had_sf_d256_panda_s43	epoch 11	val AUROC 0.8916	REFIT TEST AUROC 0.8912 AUPRC 0.6310 withinTF 0.7528	0.5 min
+f12_A_shuffled_s42	epoch 31	val AUROC 0.8711	REFIT TEST AUROC 0.8803 AUPRC 0.6068 withinTF 0.6933	0.6 min
+k05_sage_had_nosf_d256_panda_s42	epoch 10	val AUROC 0.8889	REFIT TEST AUROC 0.8889 AUPRC 0.6267 withinTF 0.7493	0.5 min
+ho_tf2_td01_hero_tfdrop0.3_s42	epoch 54	val AUROC 0.6891	REFIT TEST AUROC 0.6553 AUPRC 0.2403 withinTF 0.6135	2.0 min
+k06_sage_mlp_nosf_d256_panda_s42	epoch 10	val AUROC 0.8899	REFIT TEST AUROC 0.8905 AUPRC 0.6333 withinTF 0.7428	0.5 min
+ho_tf2_d01_C_default_s42	epoch 14	val AUROC 0.4951	REFIT TEST AUROC 0.5483 AUPRC 0.1614 withinTF 0.6118	0.6 min
+ho_gene2_td01_hero_tfdrop0.3_s42	epoch 4	val AUROC 0.8671	REFIT TEST AUROC 0.8461 AUPRC 0.5154 withinTF 0.5501	0.4 min
+ho_tf2_td01_hero_tfdrop0.3_s43	epoch 13	val AUROC 0.6248	REFIT TEST AUROC 0.5574 AUPRC 0.1638 withinTF 0.6206	0.7 min
+r01_add_sf_none_sgd_s42	epoch 295	val AUROC 0.8754	REFIT TEST AUROC 0.8826 AUPRC 0.6152 withinTF 0.6992	10.3 min
+ho_tf2_d01_C_default_s43	epoch 12	val AUROC 0.5213	REFIT TEST AUROC 0.5180 AUPRC 0.1424 withinTF 0.6080	0.5 min
+k05_sage_had_nosf_d256_panda_s43	epoch 11	val AUROC 0.8874	REFIT TEST AUROC 0.8896 AUPRC 0.6259 withinTF 0.7465	0.5 min
+ho_gene2_td01_hero_tfdrop0.3_s43	epoch 5	val AUROC 0.8687	REFIT TEST AUROC 0.8468 AUPRC 0.5159 withinTF 0.5488	0.4 min
+f01_A_tuned_s43	epoch 28	val AUROC 0.8790	REFIT TEST AUROC 0.8821 AUPRC 0.6171 withinTF 0.6971	0.5 min
+ho_tf3_td01_hero_tfdrop0.3_s42	epoch 45	val AUROC 0.4836	REFIT TEST AUROC 0.6110 AUPRC 0.1487 withinTF 0.6962	2.0 min
+ho_tf3_d01_C_default_s42	epoch 5	val AUROC 0.3594	REFIT TEST AUROC 0.5256 AUPRC 0.1059 withinTF 0.7072	0.3 min
+ho_gene3_td01_hero_tfdrop0.3_s42	epoch 4	val AUROC 0.8575	REFIT TEST AUROC 0.8390 AUPRC 0.5334 withinTF 0.5005	0.4 min
+m_mESC_e_sage_d256_s43	epoch 34	val AUROC 0.9375	REFIT TEST AUROC 0.9384 AUPRC 0.8805 withinTF 0.8225	3.5 min
+ho_tf3_td01_hero_tfdrop0.3_s43	epoch 23	val AUROC 0.3797	REFIT TEST AUROC 0.6432 AUPRC 0.1464 withinTF 0.7285	1.2 min
+ho_tf3_d01_C_default_s43	epoch 48	val AUROC 0.5591	REFIT TEST AUROC 0.4698 AUPRC 0.0971 withinTF 0.6772	1.6 min
+ho_gene3_td01_hero_tfdrop0.3_s43	epoch 5	val AUROC 0.8587	REFIT TEST AUROC 0.8420 AUPRC 0.5400 withinTF 0.5174	0.4 min
+f02_A_paper_s45	epoch 290	val AUROC 0.8737	REFIT TEST AUROC 0.8819 AUPRC 0.6135 withinTF 0.6984	10.4 min
+k08_sage_had_sf_d256_panda_s42	epoch 10	val AUROC 0.8927	REFIT TEST AUROC 0.8917 AUPRC 0.6364 withinTF 0.7512	0.5 min
+ho_tf4_td01_hero_tfdrop0.3_s42	epoch 30	val AUROC 0.6137	REFIT TEST AUROC 0.6830 AUPRC 0.2648 withinTF 0.6457	1.2 min
+ho_tf4_d01_C_default_s42	epoch 21	val AUROC 0.5460	REFIT TEST AUROC 0.7654 AUPRC 0.3789 withinTF 0.6583	0.8 min
+ho_gene4_td01_hero_tfdrop0.3_s42	epoch 3	val AUROC 0.8623	REFIT TEST AUROC 0.8486 AUPRC 0.5184 withinTF 0.5487	0.3 min
+ho_tf4_td01_hero_tfdrop0.3_s43	epoch 33	val AUROC 0.5996	REFIT TEST AUROC 0.6480 AUPRC 0.2325 withinTF 0.6277	1.3 min
+ho_tf4_d01_C_default_s43	epoch 29	val AUROC 0.5284	REFIT TEST AUROC 0.7248 AUPRC 0.3195 withinTF 0.6314	0.9 min
+ho_gene4_td01_hero_tfdrop0.3_s43	epoch 5	val AUROC 0.8695	REFIT TEST AUROC 0.8501 AUPRC 0.5229 withinTF 0.5518	0.3 min
+f12_A_shuffled_s45	epoch 39	val AUROC 0.8727	REFIT TEST AUROC 0.8825 AUPRC 0.6131 withinTF 0.7014	0.6 min
+f13_B_shuffled_s45	epoch 37	val AUROC 0.8849	REFIT TEST AUROC 0.8838 AUPRC 0.6219 withinTF 0.7179	1.0 min
+ho_gene1_td01_hero_tfdrop0.3_s42	epoch 4	val AUROC 0.8622	REFIT TEST AUROC 0.8549 AUPRC 0.5288 withinTF 0.5868	0.3 min
+r01_add_sf_none_sgd_s44	epoch 355	val AUROC 0.8760	REFIT TEST AUROC 0.8849 AUPRC 0.6181 withinTF 0.7139	11.1 min
+r02_had_sf_batch_sgd_s43	epoch 500	val AUROC 0.8884	REFIT TEST AUROC 0.8884 AUPRC 0.6221 withinTF 0.7230	20.3 min
+r01_add_sf_none_sgd_s43	epoch 345	val AUROC 0.8748	REFIT TEST AUROC 0.8817 AUPRC 0.6117 withinTF 0.6961	11.2 min
+m_mESC_k04_sage_had_nosf_d256_contrast_s42	epoch 40	val AUROC 0.9383	REFIT TEST AUROC 0.9382 AUPRC 0.8799 withinTF 0.8266	4.4 min
+d01_C_default_s42	epoch 10	val AUROC 0.8888	REFIT TEST AUROC 0.8890 AUPRC 0.6264 withinTF 0.7505	0.5 min
+d02_B_default_s42	epoch 10	val AUROC 0.8928	REFIT TEST AUROC 0.8916 AUPRC 0.6361 withinTF 0.7510	0.6 min
+m_mESC_k04_sage_had_nosf_d256_contrast_s44	epoch 67	val AUROC 0.9392	REFIT TEST AUROC 0.9405 AUPRC 0.8842 withinTF 0.8301	7.0 min
+d01_C_default_s46	epoch 12	val AUROC 0.8880	REFIT TEST AUROC 0.8907 AUPRC 0.6310 withinTF 0.7501	0.5 min
+d02_B_default_s44	epoch 7	val AUROC 0.8919	REFIT TEST AUROC 0.8885 AUPRC 0.6312 withinTF 0.7469	0.4 min
+m_mESC_k04_sage_had_nosf_d256_contrast_s43	epoch 34	val AUROC 0.9377	REFIT TEST AUROC 0.9389 AUPRC 0.8810 withinTF 0.8264	4.1 min
+ho_gene0_td01_hero_tfdrop0.3_s42	epoch 3	val AUROC 0.8283	REFIT TEST AUROC 0.8491 AUPRC 0.5285 withinTF 0.5001	0.3 min
+td01_hero_tfdrop0.3_s46	epoch 9	val AUROC 0.8876	REFIT TEST AUROC 0.8858 AUPRC 0.6211 withinTF 0.7359	0.4 min
+td01_hero_tfdrop0.3_s43	epoch 8	val AUROC 0.8864	REFIT TEST AUROC 0.8857 AUPRC 0.6254 withinTF 0.7337	0.3 min
+ho_tf1_d01_C_default_s43	epoch 3	val AUROC 0.7596	REFIT TEST AUROC 0.7634 AUPRC 0.3044 withinTF 0.7727	0.2 min
+ho_tf1_d01_C_default_s42	epoch 5	val AUROC 0.8282	REFIT TEST AUROC 0.7685 AUPRC 0.3210 withinTF 0.8205	0.2 min
+ho_gene0_td01_hero_tfdrop0.3_s43	epoch 13	val AUROC 0.8280	REFIT TEST AUROC 0.8424 AUPRC 0.5095 withinTF 0.5411	0.7 min
+td01_hero_tfdrop0.3_s42	epoch 6	val AUROC 0.8863	REFIT TEST AUROC 0.8843 AUPRC 0.6163 withinTF 0.7290	0.4 min
+ho_tf1_td01_hero_tfdrop0.3_s42	epoch 2	val AUROC 0.8150	REFIT TEST AUROC 0.7053 AUPRC 0.3045 withinTF 0.6386	0.3 min
+ho_tf0_td01_hero_tfdrop0.3_s42	epoch 24	val AUROC 0.6591	REFIT TEST AUROC 0.5944 AUPRC 0.2238 withinTF 0.6560	1.0 min
+ho_tf1_td01_hero_tfdrop0.3_s43	epoch 2	val AUROC 0.7509	REFIT TEST AUROC 0.7792 AUPRC 0.4252 withinTF 0.6963	0.3 min
+ho_tf0_d01_C_default_s43	epoch 15	val AUROC 0.6465	REFIT TEST AUROC 0.6341 AUPRC 0.2413 withinTF 0.6760	0.5 min
+ho_tf0_d01_C_default_s42	epoch 17	val AUROC 0.6749	REFIT TEST AUROC 0.5898 AUPRC 0.2219 withinTF 0.6772	0.5 min
+m_mESC_e_sage_d256_s44	epoch 67	val AUROC 0.9387	REFIT TEST AUROC 0.9404 AUPRC 0.8841 withinTF 0.8269	5.7 min
+ho_tf0_td01_hero_tfdrop0.3_s43	epoch 16	val AUROC 0.5854	REFIT TEST AUROC 0.6109 AUPRC 0.2588 withinTF 0.6746	0.8 min
+td01_hero_tfdrop0.3_s45	epoch 5	val AUROC 0.8867	REFIT TEST AUROC 0.8803 AUPRC 0.6133 withinTF 0.7084	0.2 min
+m_mESC_e_sage_d256_s44	epoch 67	val AUROC 0.9389	REFIT TEST AUROC 0.9403 AUPRC 0.8842 withinTF 0.8277	2.3 min
