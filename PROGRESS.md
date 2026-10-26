@@ -1228,7 +1228,7 @@ to new TFs or new genes, where nothing I tested beats popularity.
 | 3 | Training a pair through its own graph edge is the largest single problem. Any interacting final layer needs the fix. | Edge split vs none: **+0.078 within-TF, better for 28 of 33 TFs, p = 3 × 10⁻⁶** (Section 14). SAGE with an interacting layer and no split falls to 0.8486 AUROC / 0.635 within-TF (Section 11). |
 | 4 | The hero beats the scRegNet design within TFs, significantly, and edges it on pooled scores. | Hero vs tuned scRegNet design **+0.051 within-TF (p = 0.016)**; vs the published recipe **+0.042 (p = 0.035)**; with default settings and Geneformer: **+0.049 (p = 0.001)**, AUROC 0.8910 against 0.8830 (Section 14). |
 | 5 | The gain replicates on 3 of 4 cell types and is largest on mESC. | mESC: 0.9389 / 0.8814 / 0.8249 against the original checkpoint's 0.9260 / 0.8593 / 0.7660. mHSC-E: within-TF 0.8081 against 0.7339. hHEP: no gain (Section 13). |
-| 6 | The PANDA branch can be removed. Its information is already in the hero. | Adding the PANDA or co-expression number to the hero: −0.0003 to +0.0005 within-TF, no interval excludes zero (Section 12). PANDA as graph edge weights: −0.007. |
+| 6 | The PANDA branch can be removed. Its information is already in the hero. | Adding the PANDA or co-expression number to the hero: −0.0003 to +0.0005 within-TF, no interval excludes zero (Section 12). PANDA as graph edge weights: −0.007. Direct check: the hero's scores correlate with the co-expression number beyond popularity (partial ρ 0.31, against 0.07 for the additive model; moderate, Section 12). |
 | 7 | Depth hurts, and no single graph encoder wins on all datasets. | GCN within-TF 0.724 / 0.673 / 0.569 for 1 / 2 / 3 layers (Section 9). SAGE best on hESC (0.7489) and mESC (0.8247); GCN + Geneformer best on mHSC-E (0.8081) and hHEP; GAT, GIN and directed SAGE are not better (Sections 11, 13). |
 | 8 | Geneformer's contribution is small and depends on the settings. | Shuffling its vectors across genes changes the scRegNet design by −0.003 within-TF. On the default hero it adds +0.005 within-TF (p = 0.07) and +0.009 AUPRC; on the validation-tuned hero it adds −0.008 (Section 14). |
 | 9 | A transparent model with five hand-built features is statistically tied with the GNN on hESC and beats the original scRegNet on mESC. | Hero minus stacker: +0.005 to +0.012 within-TF, p ≥ 0.58 (Section 14). mESC stacker 0.9312 / 0.8601 / 0.8142 against 0.9260 / 0.8593 / 0.7660 (Section 16). |
@@ -1473,11 +1473,52 @@ hero, no placement is needed, because the GNN finds the information itself.
 - The interacting final layer multiplies the two. A product of the gene's profile with the
   average profile of the TF's targets is a correlation between them. This is "does this gene
   behave like this TF's targets?".
-- This is a hypothesis about what the trained network does. Two results support it: supplying
-  the explicit number adds nothing to the SAGE hero, and the same model with an
-  additive final layer (which cannot form this product) loses 0.033 within-TF (0.7163 against 0.7489, run k03 in Section 10).
+- This is a hypothesis about what the trained network does. Three results support it: supplying
+  the explicit number adds nothing to the SAGE hero, the same model with an
+  additive final layer (which cannot form this product) loses 0.033 within-TF (0.7163 against 0.7489, run k03 in Section 10),
+  and the direct check below shows the hero's scores agree with the co-expression number much more than the additive model's.
+  The agreement is moderate (partial ρ about 0.3), so the hero picks up part of this signal. It does not reproduce it.
 - **Biologically:** this is guilt by association. If a gene's expression moves with the genes a
   TF already regulates, the gene likely sits in the same regulatory program.
+
+**Direct check.** Script: `analysis/hero_vs_contrast.py`. Output: `analysis/out/hero_vs_contrast.txt`.
+
+- For each of 33 test TFs (at least 8 test rows, both classes), I took the model's test scores
+  and the co-expression contrast number (and the PANDA number) for that TF's candidate genes.
+- I measured the Spearman correlation between them, then a **partial** correlation that removes
+  gene popularity (log of the number of training positives of the target). Both scores could
+  track popularity alone.
+- I averaged over TFs, then took mean ± std over 5 seeds.
+
+| Model | ρ with contrast | partial ρ with contrast | partial ρ with PANDA |
+|---|---|---|---|
+| hero, default (GNN only) | 0.269 ± 0.026 | **0.309 ± 0.045** | 0.289 ± 0.035 |
+| hero, validation-tuned | 0.261 ± 0.033 | 0.294 ± 0.047 | 0.279 ± 0.042 |
+| hero + Geneformer | 0.284 ± 0.022 | 0.338 ± 0.034 | 0.326 ± 0.023 |
+| hero with GCN encoder | 0.245 ± 0.036 | 0.303 ± 0.050 | 0.239 ± 0.045 |
+| hero with additive final layer | 0.097 ± 0.025 | 0.074 ± 0.050 | 0.079 ± 0.023 |
+| scRegNet design, tuned | 0.097 ± 0.001 | 0.071 ± 0.001 | 0.062 ± 0.003 |
+| scRegNet design, original recipe | 0.094 ± 0.003 | 0.067 ± 0.005 | 0.065 ± 0.001 |
+
+Paired over the 33 TFs (partial ρ with contrast, seed-averaged), default hero minus:
+
+- additive-final-layer hero: **+0.234**, 95% CI [+0.147, +0.327], hero higher for 26 of 33 TFs, Wilcoxon p = 2 × 10⁻⁵.
+- scRegNet original recipe: **+0.242**, 95% CI [+0.162, +0.326], hero higher for 27 of 33 TFs, p = 3 × 10⁻⁶.
+- Against PANDA the partial gaps are +0.210 (additive hero, p = 3 × 10⁻⁶) and +0.225 (scRegNet recipe, p = 6 × 10⁻⁶).
+
+What this shows:
+
+- The hero's ranking agrees with the co-expression number beyond popularity. A partial ρ of 0.3 is moderate.
+- Models that cannot form the TF × gene product sit near 0.07. Only the interacting layers show the agreement.
+- The GCN hero agrees too (0.303), so SAGE is not required.
+- The hero agrees with PANDA at a similar level (0.289). PANDA is built from the same co-expression and known-target signal, so this is expected.
+- Correlation shows agreement. It does not show that the network computes this product. The hero may use
+  the same information another way.
+- Context: within-TF AUROC of the co-expression number alone is 0.574, below the 0.58 to 0.63
+  I expected. PANDA alone is 0.664. Within a TF, the contrast number has almost no link to
+  popularity (ρ = 0.07); PANDA has a clear one (ρ = 0.37).
+- Not checked: whether the agreement survives when I also remove the test label. A good
+  model and a weakly informative number both lean toward positives.
 
 ### Cautions
 
@@ -2015,3 +2056,472 @@ extracellular matrix organization). This fits what Polycomb silences, but it onl
 link.
 
 ---
+
+****** 18 Oct ******
+
+
+## 17. Week 3 (23 Oct, hESC): PANDA as the graph, a neural PANDA encoder, and a context-specific stacker
+
+### Setup
+
+Three questions were tested on hESC. First: what happens when the PANDA network replaces the
+ChIP-seq GRN as the graph that the GNN passes messages over? Second: does a GNN built from the three
+PANDA ingredients (known targets, co-expression, protein-protein interaction) work better than the plain hero? Third: do the
+stacker features gain from running on the PANDA graph or on a co-expression graph instead of only the ChIP-seq label graph?
+
+All new GNN rows use 5 seeds (42 to 46), the hero optimiser settings, epoch chosen on validation AUROC, and a refit
+on all training rows. The reference is the hero (GNN, one SAGE layer, Hadamard decoder, no Geneformer). The hero and the hero with Geneformer
+were re-run on the GPU so that every row comes from one device. Each paired test is the usual one: per-TF AUROC averaged over
+seeds, Wilcoxon over the 33 test TFs. One run takes 0.3 min for the hero and about 0.9 min for the neural PANDA encoder.
+
+| Reference | AUROC | AUPRC | within-TF |
+|---|---|---|---|
+| hero | 0.8884 ± 0.0018 | 0.6255 ± 0.0032 | 0.7470 ± 0.0046 |
+| hero + Geneformer | 0.8907 ± 0.0014 | 0.6345 ± 0.0039 | 0.7510 ± 0.0025 |
+
+**Headline: no new variant beat the hero on within-TF AUROC.** The closest was the neural PANDA encoder with the Hadamard decoder, which
+was level on AUROC and 0.006 higher on AUPRC. Details follow.
+
+### Part 1: the PANDA top-K graph as the message-passing graph
+
+For every label TF, the K genes with the highest PANDA score were joined to it. The graph is undirected, as the GRN graph is.
+The `union` variant uses the GRN training edges plus the PANDA edges.
+
+**Why a prior can leak.** PANDA is built from a prior that contains the training positives. A training pair (TF, gene) whose edge is in the prior
+gets a high PANDA score, so the gene tends to land in the TF's top-K list. The GNN would then pass messages along an edge that exists because of the
+pair's own label. At test time no such edge exists. A model that learns this shortcut does well in training and badly on new pairs.
+
+**The safe version.** The training rows were cut into the same five folds that the PANDA scalar cache uses. For fold k, a PANDA with fold k's positives
+removed from the prior was built. Each training batch holds rows of one fold only and uses that fold's PANDA graph. Validation and test rows use the
+full PANDA graph. The naive version (`--panda_safe 0`) uses the full graph for all training batches and exists to measure the leak.
+
+**Leak measurement (K = 100).** Of the training positives, 55.6% sit inside the full PANDA graph, but only 3.3% sit inside the graph of their own fold.
+The own-fold figure matches the test figure (3.2%), so the safe graph looks to the model in training like the graph it will see at test time.
+
+| K | Edges | Test positives inside the graph | Share of test pairs in the graph that are positive | Training positives inside, full graph | Training positives inside, own-fold graph |
+|---|---|---|---|---|---|
+| 50 | 1700 | 0.7% | 4.7% | 35.4% | 1.0% |
+| 100 | 3400 | 3.2% | 8.3% | 55.6% | 3.3% |
+| 200 | 6800 | 10.1% | 10.4% | 85.7% | 12.7% |
+
+Half of the K = 100 PANDA graph is simply the training positives: 1685 of its 3400 edges. The PANDA graph therefore adds only about 1700 new edges, and these are depleted of true
+targets (8.3% of the test pairs inside the graph are positive, against a base rate of 14.9% over all test pairs).
+
+The leak makes the test results worse, not better. A model trained on the naive graph learns to lean on graph membership: in training, a positive pair is
+usually joined by an edge, and a negative pair usually is not. Test pairs never have this property, so the shortcut fails there. The leak therefore shows up as a train/test mismatch,
+and this is why a prior built from training labels must be built out-of-fold. The cost, naive against safe with the same K and seeds:
+
+| Graph (K = 100) | AUROC | AUPRC | within-TF | Naive minus safe, within-TF |
+|---|---|---|---|---|
+| PANDA only, safe | 0.8822 ± 0.0022 | 0.6117 ± 0.0040 | 0.7231 ± 0.0096 | |
+| PANDA only, naive | 0.8659 ± 0.0017 | 0.5847 ± 0.0037 | 0.6918 ± 0.0059 | −0.0313 (p = 0.004) |
+| Union, safe | 0.8836 ± 0.0019 | 0.6151 ± 0.0035 | 0.7298 ± 0.0091 | |
+| Union, naive | 0.8730 ± 0.0021 | 0.5974 ± 0.0063 | 0.7110 ± 0.0095 | −0.0187 (p = 0.010) |
+
+The naive runs stop at epoch 2 to 3 against 4 to 15 for the safe runs. The validation rows are clean, so their AUROC drops as the
+model learns the shortcut. The loss is −0.016 AUROC for PANDA only and −0.011 for the union, in all five seeds.
+
+**Safe PANDA graph against the hero.**
+
+| Model | AUROC | AUPRC | within-TF | Within-TF diff vs hero | p |
+|---|---|---|---|---|---|
+| hero (GRN graph) | 0.8884 | 0.6255 | 0.7470 | | |
+| PANDA K = 50 | 0.8811 | 0.6058 | 0.7133 | −0.0337 | 0.004 |
+| PANDA K = 100 | 0.8822 | 0.6117 | 0.7231 | −0.0239 | 0.009 |
+| PANDA K = 200 | 0.8838 | 0.6110 | 0.7218 | −0.0252 | 0.080 |
+| GRN + PANDA K = 100 | 0.8836 | 0.6151 | 0.7298 | −0.0172 | 0.009 |
+
+All four are worse than the hero in all five seeds on AUROC and AUPRC. Replacing the GRN with PANDA does not help, and adding PANDA to the GRN does not help either.
+Validation AUROC picked K = 200 and the union (both 0.8846). Both were re-run with Geneformer:
+
+| With Geneformer | AUROC | AUPRC | within-TF | Within-TF diff vs hero + Geneformer | p |
+|---|---|---|---|---|---|
+| hero + Geneformer | 0.8907 | 0.6345 | 0.7510 | | |
+| PANDA K = 200 | 0.8852 | 0.6208 | 0.7209 | −0.0301 | 0.018 |
+| GRN + PANDA K = 100 | 0.8852 | 0.6217 | 0.7308 | −0.0202 | 0.002 |
+
+The low recall of the graph probably explains the loss. Just 3.2% of test positives are inside the K = 100 graph, so most messages carry no
+information about the pair being scored, while the GRN graph carries the known targets of each TF.
+
+### Part 2: the neural PANDA encoder
+
+Each layer computes `h' = lin_self(h) + SAGE_R(h, R) + SAGE_C(h, C) + SAGE_P(h, P)`. R is the training-positive GRN graph (with the usual
+per-batch split), C is a label-free gene-gene kNN graph from co-expression (k = 10, positive Pearson correlations, symmetrised), and P is the STRING
+TF-TF graph. C and P are built without labels. R contains no test pair in the (TF, gene) direction. The two-layer model lets
+layer 1 give each TF its targets and layer 2 pass a partner TF's targets over P, which mirrors PANDA's responsibility term. Two new decoders were added:
+`tani` (six-head Tanimoto similarity of the two embeddings, together with the embeddings) and `tani_pure` (Tanimoto terms only).
+
+| Model | AUROC | AUPRC | within-TF | Within-TF diff vs hero | p |
+|---|---|---|---|---|---|
+| hero (Hadamard decoder) | 0.8884 ± 0.0018 | 0.6255 ± 0.0032 | 0.7470 ± 0.0046 | | |
+| hero with Tanimoto decoder | 0.8837 ± 0.0011 | 0.6205 ± 0.0037 | 0.7174 ± 0.0038 | −0.0296 | 0.097 |
+| neural PANDA RCP, Tanimoto | 0.8852 ± 0.0009 | 0.6210 ± 0.0054 | 0.7180 ± 0.0061 | −0.0290 | 0.042 |
+| without C (RP) | 0.8852 ± 0.0009 | 0.6240 ± 0.0017 | 0.7136 ± 0.0049 | −0.0334 | 0.074 |
+| without P (RC) | 0.8839 ± 0.0009 | 0.6190 ± 0.0057 | 0.7162 ± 0.0056 | −0.0308 | 0.017 |
+| without R (CP) | 0.8825 ± 0.0010 | 0.6197 ± 0.0040 | 0.7108 ± 0.0045 | −0.0362 | 0.074 |
+| one layer | 0.8824 ± 0.0016 | 0.6146 ± 0.0082 | 0.7145 ± 0.0025 | −0.0325 | 0.053 |
+| metacell C | 0.8853 ± 0.0008 | 0.6235 ± 0.0044 | 0.7123 ± 0.0044 | −0.0347 | 0.037 |
+| `tani_pure` decoder | 0.8337 ± 0.0245 | 0.5105 ± 0.0959 | 0.6669 ± 0.0140 | −0.0801 | 1e-6 |
+| RCP + Geneformer, Tanimoto | 0.8858 ± 0.0009 | 0.6266 ± 0.0032 | 0.7192 ± 0.0033 | −0.0318 (vs hero + Geneformer) | 0.096 |
+| **RCP, Hadamard decoder** | 0.8898 ± 0.0014 | 0.6315 ± 0.0033 | 0.7410 ± 0.0079 | −0.0060 | 0.86 |
+
+Three readings follow.
+
+- The Tanimoto decoder is the main cause of the drop. The hero with only the decoder swapped loses 0.030 within-TF, the same as the full neural PANDA with that decoder.
+  The decoder with Tanimoto terms alone (the PANDA-like form without popularity terms) is 0.08 worse within-TF and unstable (AUROC 0.834 ± 0.025). Popularity terms
+  are needed, as in earlier weeks.
+- With the Hadamard decoder, neural PANDA RCP is level with the hero on AUROC (+0.0014, 4 of 5 seeds higher), higher on AUPRC (+0.0060, 5 of 5 seeds), and lower
+  on within-TF (−0.0060, p = 0.86, no real difference). This is not a win on the TF-specific ranking, which is the measure of interest.
+- Removing any single relation changed little, and the ablation differences are smaller than the seed noise on within-TF.
+
+An added control (not in the original plan) asked whether the Hadamard gain comes from the PANDA relations or only from the second layer:
+
+| Hadamard decoder | AUROC | AUPRC | within-TF |
+|---|---|---|---|
+| hero, one layer | 0.8884 ± 0.0018 | 0.6255 ± 0.0032 | 0.7470 ± 0.0046 |
+| hero, two SAGE layers | 0.8866 ± 0.0022 | 0.6282 ± 0.0032 | 0.7333 ± 0.0104 |
+| R only | 0.8863 ± 0.0013 | 0.6278 ± 0.0025 | 0.7306 ± 0.0025 |
+| RC | 0.8887 ± 0.0016 | 0.6297 ± 0.0024 | 0.7359 ± 0.0039 |
+| RP | 0.8883 ± 0.0009 | 0.6299 ± 0.0010 | 0.7370 ± 0.0047 |
+| CP | 0.8888 ± 0.0008 | 0.6268 ± 0.0027 | 0.7297 ± 0.0053 |
+| RCP | 0.8898 ± 0.0014 | 0.6315 ± 0.0033 | 0.7410 ± 0.0079 |
+
+Against the matched two-layer controls (hero with two layers and R only), adding C and P raises AUROC and AUPRC by about 0.003 each, which is small and
+close to the seed spread. Within-TF stays below the one-layer hero in every row. Ten variants were compared in all, so a gain of this size would
+need confirmation on other cell types before it is believed.
+
+### Part 3: the stacker on other graphs
+
+The stacker features (popularity, user-CF, item-CF, 3-paths, resource allocation) were also computed on the binarised PANDA top-100 graph and, for
+co-expression, on the label-free kNN graph (Pearson correlation, common neighbours, Adamic-Adar, degree of the gene and the TF, and item-CF over the
+co-expression graph with the known targets taken out-of-fold). Test rows use the full PANDA. Training rows use the PANDA of their own fold, so no row sees its own
+edge. The numbers for the existing stacks were reproduced to four decimals.
+
+| Stack (test set, one fit) | AUROC | AUPRC | within-TF | Within-TF diff vs hero | p |
+|---|---|---|---|---|---|
+| existing best: label + contrast + PANDA score, GBM | 0.8871 | 0.6171 | 0.7279 | −0.0191 | 0.36 |
+| same features, LR | 0.8867 | 0.6102 | 0.7399 | −0.0071 | 0.68 |
+| label + PANDA graph, LR | 0.8881 | 0.6181 | 0.7385 | −0.0085 | 0.58 |
+| label + PANDA graph, GBM | 0.8882 | 0.6161 | 0.7326 | −0.0144 | 0.96 |
+| label + co-expression graph, LR | 0.8851 | 0.6097 | 0.7110 | −0.0360 | 0.63 |
+| all features, LR | 0.8893 | 0.6194 | 0.7423 | −0.0047 | 0.82 |
+| all features, GBM | 0.8889 | 0.6199 | 0.7270 | −0.0200 | 0.83 |
+| PANDA graph only, GBM | 0.8423 | 0.5369 | 0.6560 | −0.0910 | 8e-5 |
+| co-expression graph only, GBM | 0.7995 | 0.4342 | 0.5324 | −0.2146 | 7e-8 |
+| context only (PANDA graph + score + co-expression), GBM | 0.8586 | 0.5611 | 0.6673 | −0.0797 | 2e-4 |
+
+Findings:
+
+- The PANDA-graph features add nothing beyond the PANDA score and the contrast that the old best stack already holds. Label + PANDA graph with LR gives within-TF 0.7385 against 0.7399 for the old best with LR;
+  with GBM it gives 0.7326 against 0.7279 (paired p = 0.54). The full feature set reaches 0.8893 AUROC, the highest stacker value so far, but the difference to the old best is within noise
+  (within-TF +0.014 against the GBM baseline, p = 0.07, and +0.002 against the LR baseline).
+- Co-expression-graph features do not help the label stack and lower within-TF (0.7110 against 0.7253 for the label-only LR stack). Their single-feature AUROC is near or below 0.5, except item-CF (0.644, but within-TF 0.52).
+- A stacker without any ChIP-seq graph features reaches 0.859 AUROC but only 0.667 within-TF. Popularity of the gene in the label graph is what carries the AUROC, and the PANDA graph
+  alone cannot replace it. On the TF-specific ranking the context-only stack is 0.080 below the hero (p = 2e-4).
+- No stack beats the hero on within-TF. The stacker rows are one fit each (the stacker is deterministic), so the p-values compare it with the hero's 5-seed per-TF mean.
+
+### What this adds up to
+
+On hESC, PANDA information as a graph does not improve the hero. The PANDA top-K graph is a weak graph (few test positives inside it) and a leaky one if built naively.
+The leak was measured: 56% against 3% of training positives inside the graph, and −0.016 AUROC on test. The safe construction removes it, but the safe graph still
+loses to the hero. The neural PANDA encoder is level with the hero on pooled metrics only when the Hadamard decoder is kept. Earlier weeks found that PANDA helps as a number
+fed to the decoder, and this week's results fit that finding.
+
+### Limits
+
+- hESC only. Other cell types were not run.
+- In the undirected GRN graph, 30 of the 7142 test pairs (7 of 1061 test positives) have their reverse (gene, TF) direction as a training edge. This holds for the hero and for
+  every row above, so it does not change the comparison, but it is a small shared leak of the benchmark.
+- Training batches in the safe version are interleaved across folds (each batch is from one fold, but batches from different folds are shuffled together).
+- The Part 2b control was added after seeing the Part 2 results, so it was not planned in advance.
+- Files: `analysis/out/w3_report_hESC.txt` (all tables, same-seed differences, per-TF tests), `analysis/w3_graph_recall.py`, `analysis/stacker_graphs.py`, `analysis/w3_report.py`.
+
+
+## 18. Week 3, part 5 (23 Oct): the same questions on hHEP, mESC and mHSC-E
+
+### Setup
+
+STRING protein-protein edges were built for the three new cell types with `make_ppi.py`, which calls the STRING v12 API (functional network, score of at least 0.7),
+the same call and threshold as the hESC file. hHEP uses human STRING (species 9606), mESC and mHSC-E use mouse STRING (10090). The data use upper-case gene symbols, which STRING matches to its
+mouse proteins by alias; edges are written under the dataset symbol. The edge counts are 4486 (hHEP), 3862 (mESC) and 1504 (mHSC-E), against 2296 for hESC. The PANDA and contrast caches were then
+built for each cell type (`analysis/scalars.py`), and the PANDA test AUROC of the scalar alone is 0.743 (hHEP), 0.902 (mESC) and 0.708 (mHSC-E).
+
+Each cell type got the rows of the hESC study: hero, hero + Geneformer, GRN + PANDA K = 100 (safe, union), and the neural PANDA encoder with the Hadamard decoder and with the
+Tanimoto decoder. Each model ran with 5 seeds (42 to 46) on the GPU. The scRegNet published recipe (rule A: epoch chosen on validation AUROC) also ran for each cell type, and the stacker with PANDA-graph
+and co-expression-graph features was fitted once per cell type. The hero settings come from hESC and were not re-tuned here, so a gap to a model tuned elsewhere can reflect that choice.
+Paired tests are the same as before: per-TF AUROC averaged over seeds, Wilcoxon over the test TFs (30 in hHEP, 85 in mESC, 29 in mHSC-E, 33 in hESC) against that cell type's hero.
+The hESC tables from section 17 are repeated for comparison; the hESC published-recipe row is the earlier `f02_A_paper` run (5 seeds, rule A).
+
+### Results per cell type
+
+AUROC, AUPRC and within-TF are mean ± std over seeds, from the refit models. The last two columns give the within-TF difference to the hero of the same cell type and the Wilcoxon p-value.
+
+**hESC**
+
+| Model | Seeds | AUROC | AUPRC | within-TF | Within-TF diff vs hero | p |
+|---|---|---|---|---|---|---|
+| hero | 5 | 0.8884 ± 0.0018 | 0.6255 ± 0.0032 | 0.7470 ± 0.0046 |  |  |
+| hero + Geneformer | 5 | 0.8907 ± 0.0014 | 0.6345 ± 0.0039 | 0.7510 ± 0.0025 | +0.0040 | 0.0864 |
+| GRN + PANDA K=100 safe | 5 | 0.8836 ± 0.0019 | 0.6151 ± 0.0035 | 0.7298 ± 0.0091 | -0.0172 | 0.00879 |
+| neural PANDA RCP, Hadamard | 5 | 0.8898 ± 0.0014 | 0.6315 ± 0.0033 | 0.7410 ± 0.0079 | -0.0060 | 0.86 |
+| neural PANDA RCP, Tanimoto | 5 | 0.8852 ± 0.0009 | 0.6210 ± 0.0054 | 0.7180 ± 0.0061 | -0.0290 | 0.0424 |
+| scRegNet published recipe | 5 | 0.8830 ± 0.0012 | 0.6155 ± 0.0029 | 0.7029 ± 0.0063 | -0.0441 | 0.00516 |
+| stacker, old best (GBM) | 1 fit | 0.8871 | 0.6171 | 0.7279 | -0.0191 | 0.358 |
+| stacker, all features (LR) | 1 fit | 0.8893 | 0.6194 | 0.7423 | -0.0047 | 0.819 |
+
+**hHEP**
+
+| Model | Seeds | AUROC | AUPRC | within-TF | Within-TF diff vs hero | p |
+|---|---|---|---|---|---|---|
+| hero | 5 | 0.8993 ± 0.0007 | 0.8384 ± 0.0010 | 0.7599 ± 0.0022 |  |  |
+| hero + Geneformer | 5 | 0.9027 ± 0.0007 | 0.8430 ± 0.0018 | 0.7800 ± 0.0046 | +0.0201 | 0.00578 |
+| GRN + PANDA K=100 safe | 5 | 0.8970 ± 0.0008 | 0.8370 ± 0.0028 | 0.7549 ± 0.0061 | -0.0049 | 0.0879 |
+| neural PANDA RCP, Hadamard | 5 | 0.9024 ± 0.0005 | 0.8437 ± 0.0006 | 0.7744 ± 0.0070 | +0.0145 | 0.000418 |
+| neural PANDA RCP, Tanimoto | 5 | 0.8999 ± 0.0011 | 0.8372 ± 0.0028 | 0.7752 ± 0.0014 | +0.0154 | 0.556 |
+| scRegNet published recipe | 5 | 0.9023 ± 0.0003 | 0.8413 ± 0.0006 | 0.7870 ± 0.0011 | +0.0272 | 0.0841 |
+| stacker, old best (GBM) | 1 fit | 0.8969 | 0.8147 | 0.7668 | +0.0069 | 0.14 |
+| stacker, all features (LR) | 1 fit | 0.8993 | 0.8288 | 0.7586 | -0.0013 | 0.7 |
+
+**mESC**
+
+| Model | Seeds | AUROC | AUPRC | within-TF | Within-TF diff vs hero | p |
+|---|---|---|---|---|---|---|
+| hero | 5 | 0.9393 ± 0.0009 | 0.8819 ± 0.0015 | 0.8235 ± 0.0013 |  |  |
+| hero + Geneformer | 5 | 0.9401 ± 0.0005 | 0.8838 ± 0.0006 | 0.8245 ± 0.0020 | +0.0010 | 0.465 |
+| GRN + PANDA K=100 safe | 5 | 0.9374 ± 0.0008 | 0.8790 ± 0.0016 | 0.8133 ± 0.0028 | -0.0101 | 0.00081 |
+| neural PANDA RCP, Hadamard | 5 | 0.9411 ± 0.0007 | 0.8861 ± 0.0014 | 0.8250 ± 0.0034 | +0.0015 | 0.00645 |
+| neural PANDA RCP, Tanimoto | 5 | 0.9243 ± 0.0008 | 0.8554 ± 0.0026 | 0.7618 ± 0.0037 | -0.0617 | 1.85e-08 |
+| scRegNet published recipe | 5 | 0.9254 ± 0.0001 | 0.8587 ± 0.0001 | 0.7657 ± 0.0002 | -0.0578 | 7.26e-08 |
+| stacker, old best (GBM) | 1 fit | 0.9294 | 0.8546 | 0.7956 | -0.0279 | 6.39e-06 |
+| stacker, all features (LR) | 1 fit | 0.9349 | 0.8684 | 0.8042 | -0.0192 | 0.0218 |
+
+**mHSC-E**
+
+| Model | Seeds | AUROC | AUPRC | within-TF | Within-TF diff vs hero | p |
+|---|---|---|---|---|---|---|
+| hero | 5 | 0.9229 ± 0.0014 | 0.9428 ± 0.0014 | 0.7616 ± 0.0110 |  |  |
+| hero + Geneformer | 5 | 0.9250 ± 0.0011 | 0.9441 ± 0.0011 | 0.7816 ± 0.0044 | +0.0200 | 4.13e-05 |
+| GRN + PANDA K=100 safe | 5 | 0.9226 ± 0.0011 | 0.9423 ± 0.0012 | 0.7600 ± 0.0056 | -0.0016 | 0.275 |
+| neural PANDA RCP, Hadamard | 5 | 0.9239 ± 0.0011 | 0.9433 ± 0.0011 | 0.7572 ± 0.0050 | -0.0044 | 0.882 |
+| neural PANDA RCP, Tanimoto | 5 | 0.9187 ± 0.0012 | 0.9384 ± 0.0015 | 0.7202 ± 0.0033 | -0.0414 | 0.000551 |
+| scRegNet published recipe | 5 | 0.9196 ± 0.0001 | 0.9392 ± 0.0001 | 0.7219 ± 0.0012 | -0.0397 | 0.00479 |
+| stacker, old best (GBM) | 1 fit | 0.9123 | 0.9224 | 0.7584 | -0.0032 | 0.00324 |
+| stacker, all features (LR) | 1 fit | 0.9116 | 0.9263 | 0.7342 | -0.0274 | 0.00694 |
+
+### What holds across the four cell types
+
+- **The safe PANDA graph never beats the hero.** Its within-TF difference is negative in all four cell types (−0.017, −0.005, −0.010, −0.002). It is worse in hESC and mESC and level in the other two. Replacing or extending the GRN graph with PANDA edges does not help anywhere.
+- **The Tanimoto decoder hurts within-TF in three of four cell types** (−0.029 in hESC, −0.062 in mESC, −0.041 in mHSC-E). The exception is hHEP (+0.015, p = 0.56, within the seed noise). The Hadamard product of the two embeddings works better here than the Tanimoto similarity terms.
+- **The neural PANDA encoder with the Hadamard decoder gives a small and consistent gain on the pooled metrics.** Against the hero with the same seeds, AUROC is higher by 0.0014 (hESC), 0.0031 (hHEP), 0.0018 (mESC) and 0.0009 (mHSC-E), and AUPRC by 0.0060, 0.0053, 0.0042 and 0.0005. Within-TF it is better only in hHEP (+0.0145, 24 of 30 TFs, p = 0.0004). In mESC the difference is +0.0015 (p = 0.006) and in hESC and mHSC-E it is negative and not significant. A control on hESC (section 17) showed that part of the pooled gain also appears with two plain SAGE layers, and that control was not repeated on the other cell types.
+- **Geneformer helps within-TF in two of the four cell types.** The gain is +0.020 in hHEP (p = 0.006) and +0.020 in mHSC-E (p = 4e-5). It is +0.004 in hESC (p = 0.09) and +0.001 in mESC (p = 0.47).
+- **The published recipe does not transfer its advantage from hESC.** Against the hero, it is lower within-TF in hESC, mESC and mHSC-E (−0.044, −0.058 and −0.040) and higher in hHEP (+0.027, p = 0.08; 17 of 30 TFs better, wide interval). The hHEP result is the one case in which the hero is not the best single GNN: the published recipe reaches within-TF 0.787, against 0.760 for the hero and 0.780 for the hero with Geneformer. The hero settings were set on hESC, so this may be a tuning gap and not a model difference.
+- **The stacker with graph features does not beat the hero.** The PANDA-graph features add nothing in hHEP and mHSC-E. In mESC, co-expression-graph features raise the LR stack from 0.8013 to 0.8131 within-TF (0.8023 for the label-only LR stack). The best stacker there is 0.010 below the hero within-TF (p = 0.07). In hHEP, the label-only stacker (0.783 LR, 0.785 GBM) is above the hero within-TF, but the paired test is not significant (p = 0.29 to 0.81).
+- **The stacker with only context features (no ChIP-seq label graph) is 0.09 to 0.14 below the hero within-TF** in the three new cell types (0.62 to 0.74 against 0.76 to 0.82), and 0.08 below in hESC.
+
+### Limits
+
+- The hero, the neural PANDA settings and the PANDA K were chosen on hESC and not tuned for the new cell types.
+- Rule A (validation AUROC) selected the epoch for every GNN row. Selecting on validation within-TF AUROC was not repeated here.
+- The neural PANDA gain over the hero could come from the second layer and not from the PANDA relations; the matching two-layer control was run on hESC only.
+- Mouse STRING was reached through upper-case alias matching, so a few mouse genes may be unmapped (mESC 965 of 977 genes mapped, mHSC-E 690 of 691).
+- The numbers of TFs differ (30, 85, 29), so p-values are not comparable across cell types: mESC has the most TFs, which gives it the smallest p for a given effect.
+- Files: `analysis/out/w4_report.txt` (all tables, paired tests, same-seed differences, stacker rows), `analysis/w4_report.py`, `make_ppi.py`, `analysis/jobs/w4_*.txt`.
+
+## 19. New ideas tested on hESC (late fusion, ranking loss, PANDA teacher, scalar weight, cold start)
+
+### Why
+Sections 17 and 18 showed that PANDA does not help when it is put inside the GNN: not as the
+message-passing graph, not as a neural encoder with a Tanimoto decoder. Five further ideas were
+tested on hESC, each aimed at a specific earlier observation. Every GNN row uses the hero settings,
+5 seeds (42-46), the GPU, epoch chosen on validation AUROC, then refit. Paired tests are per-TF
+AUROC averaged over seeds, Wilcoxon over the 33 test TFs, against the hero (0.7470 within-TF).
+
+| Idea | Observation behind it | Flag / script |
+|---|---|---|
+| Within-TF ranking loss | The metric that matters is within-TF, but training uses pooled BCE | `--rank_w` |
+| PANDA as a teacher | PANDA scores all 31k TF-gene pairs, labels cover 10k | `--aux_panda` |
+| A free weight for the PANDA / contrast number | These numbers never helped inside the GNN; their weight may not move in ~10 epochs at lr 1e-4 | `--scalar panda,contrast --scalar_lr` |
+| Late fusion | The stacker and the GNN may make different errors | `analysis/w5_ensembles.py` |
+| Neural PANDA without labels | Its co-expression and PPI edges need no labels, so they may help unseen genes and TFs | `--protocol gene/tf` |
+
+### Result 1: none of the ideas helps inside the GNN
+| Model (5 seeds) | AUROC | AUPRC | Within-TF | Diff vs hero (p) |
+|---|---|---|---|---|
+| Hero | 0.8884 | 0.6255 | 0.7470 | |
+| Hero + ranking loss (w = 1) | 0.8860 | 0.6165 | 0.7391 | −0.008 (0.046) |
+| Hero + PANDA teacher (w = 1) | 0.8882 | 0.6280 | 0.7411 | −0.006 (0.17) |
+| Hero + PANDA number, fixed lr | 0.8886 | 0.6261 | 0.7475 | +0.001 (0.22) |
+| Hero + contrast number, free weight (lr × 1000) | 0.8854 | 0.6210 | 0.7352 | −0.012 (0.0003) |
+| Hero + both numbers, free weight (lr × 1000) | 0.8864 | 0.6236 | 0.7307 | −0.016 (0.006) |
+
+- The ranking loss and the PANDA teacher both lower within-TF slightly.
+- Giving the PANDA or contrast number a free weight lowers within-TF ranking. The GNN leans on the
+  number and loses accuracy. The old null result was therefore not a learning-rate artefact.
+
+### Result 2: unseen genes and TFs
+| Held-out genes (5 folds × 5 seeds) | AUROC | AUPRC | Within-TF | Diff vs hero (p) |
+|---|---|---|---|---|
+| Hero | 0.8461 | 0.5220 | 0.5464 | |
+| Neural PANDA, had decoder (R + C + P) | 0.8461 | 0.5082 | 0.5624 | +0.021 (0.041), 24/34 TFs |
+| Neural PANDA without PPI (R + C) | 0.8445 | 0.5018 | 0.5444 | −0.014 (0.81) |
+
+| Held-out TFs (5 folds × 2 seeds) | AUROC | AUPRC | Within-TF | Diff vs hero (p) |
+|---|---|---|---|---|
+| Hero | 0.6304 | 0.2314 | 0.6855 | |
+| Neural PANDA, had decoder | 0.6518 | 0.2347 | 0.6897 | +0.004 (0.95) |
+
+- For genes never seen in training, neural PANDA ranks targets slightly better within each TF
+  (+0.021, p = 0.041), but its AUPRC is lower. The gain needs both the co-expression and the PPI edges: without PPI it is −0.014, without co-expression +0.003 (Section 20).
+  This section makes about ten comparisons, so p = 0.041 is weak evidence.
+- For TFs never seen in training, neural PANDA changes nothing.
+
+A CPU check for held-out TFs (`analysis/w5_heldout_tf_transfer.py`) scored a TF with no training
+targets by borrowing the targets of similar TFs, which is PANDA's "responsibility" step:
+
+| Score for a held-out TF | AUROC | Within-TF |
+|---|---|---|
+| Popularity (gene's training degree) | 0.669 | 0.724 |
+| Borrow targets of co-expressed TFs | 0.646 | 0.701 |
+| Borrow targets of STRING partners | 0.594 | 0.640 |
+| Direct co-expression of TF and gene | 0.475 | 0.504 |
+| Popularity + co-expression borrowing | 0.666 | 0.721 |
+
+Popularity still wins for TFs with no known targets. The direct co-expression of a TF with a gene is
+at chance in hESC (0.504). Co-expression carries signal only as the contrast against the TF's known
+targets (Section 12), which needs labels.
+
+### What this means
+- PANDA and the co-expression contrast gave no gain or a loss in every form tried inside the GNN:
+  as a graph, an encoder, an input number or a teacher.
+- No idea in this section beats the hero within-TF on the benchmark split.
+
+### Result 3: late fusion, and where its gain comes from
+Averaging the z-scored test scores of four separately trained models (hero, Geneformer hero, neural
+PANDA, stacker) beat the hero averaged over four seeds on all four cell types, by +0.009 to +0.013
+within-TF. An attribution check (`analysis/w7_attribution.py`, output `analysis/out/w7_attribution.txt`)
+blended the hero with one ingredient at a time and compared it with the hero blended with itself
+(two seeds, the same cost). Within-TF gain:
+
+| Added to the hero | hESC | hHEP | mESC | mHSC-E |
+|---|---|---|---|---|
+| Geneformer hero | +0.003 | +0.013 | +0.006 | +0.011 |
+| Neural PANDA | +0.003 | +0.010 | +0.004 | −0.001 |
+| Stacker | +0.009 | +0.004 | +0.005 | +0.002 |
+| Raw PANDA score | +0.004 | −0.002 | −0.002 | 0.000 |
+| Raw contrast score | −0.002 | −0.013 | −0.001 | +0.004 |
+
+The blend weights were scanned on the test scores, so these numbers are optimistic; they only rank
+the ingredients.
+
+- Geneformer is the only ingredient that helps on all four cell types. The raw PANDA and contrast
+  numbers do not explain the gain.
+- Against the hero + Geneformer averaged over four seeds, the blend gains only on mESC (+0.010,
+  p = 1e-5). It ties on hESC (+0.006, p = 0.12) and loses on hHEP (−0.008) and mHSC-E (−0.011).
+- So the blend's gain over the hero is mostly Geneformer, which earlier weeks already showed helps.
+  The blend adds little beyond the hero + Geneformer and was dropped.
+
+## 20. Hard negatives, and neural PANDA for unseen genes (hESC)
+
+### Hard negatives
+Each training positive was compared with a "hard" negative of the same TF: either the most popular
+gene among 16 random training negatives of that TF, or the one the model currently scores highest.
+The loss was either a ranking loss (BPR) or extra BCE on that negative. 5 seeds each, paired per-TF
+tests against the hero (0.7470 within-TF).
+
+| Hard negative | Loss | Weight | Within-TF | Diff (p) |
+|---|---|---|---|---|
+| Most popular gene | BPR | 0.1 | 0.7094 | −0.038 (6e-5) |
+| Most popular gene | BCE | 0.1 | 0.7100 | −0.037 (2e-5) |
+| Most popular gene | BPR | 0.3 | 0.6420 | −0.105 (5e-7) |
+| Highest model score | BPR | 0.1 | 0.7453 | −0.002 (0.55) |
+| Highest model score | BCE | 0.1 | 0.7306 | −0.016 (9e-5) |
+| Highest model score | BPR | 1 | 0.7114 | −0.036 (0.004) |
+
+Every variant ties or hurts. Popular non-targets hurt most. A gene that many TFs regulate is more
+likely to be a target of the next TF as well, so popularity is real biology (hub targets), not only a
+benchmark artefact. Teaching the model to push popular genes down removes that signal.
+
+### Neural PANDA for unseen genes
+Held-out genes: 20% of target genes removed from training and from the graph, 5 folds × 5 seeds.
+
+| Model | AUROC | AUPRC | Within-TF | Diff (p) |
+|---|---|---|---|---|
+| Hero | 0.8461 | 0.5220 | 0.5464 | |
+| Neural PANDA (R + C + P) | 0.8461 | 0.5082 | 0.5624 | +0.021 vs hero (0.041) |
+| Neural PANDA (R + P, no co-expression) | 0.8449 | 0.5129 | 0.5447 | +0.003 vs hero (0.40) |
+| Hero + Geneformer | 0.8468 | 0.5288 | 0.5702 | +0.026 vs hero (0.004) |
+| Neural PANDA + Geneformer | 0.8498 | 0.5323 | 0.5769 | +0.004 vs hero + Geneformer (0.72) |
+
+- A gene with no known regulators has no edges in the regulatory graph, so the model must describe it
+  from other information. Geneformer, pretrained on millions of cells, is the best source here.
+- Neural PANDA's co-expression and PPI edges help a little, but only with both present, and the gain
+  mostly overlaps with Geneformer.
+- Within-TF on unseen genes stays near 0.57, against 0.75 on the normal split. Predicting regulators of
+  a gene with no known regulators remains largely unsolved.
+
+****** 25 Oct ******
+
+## 21. Best model per cell type, then tuning it
+
+### Part 1: GCN or SAGE with Geneformer
+SAGE + Geneformer and GCN + Geneformer were run with identical settings on all four cell types. Only the
+encoder differs: 1 layer, width 256, interacting (Hadamard) decoder, edge split, Adam at lr 1e-4 and
+weight decay 1e-3, epoch chosen on validation AUROC, refit on all training rows, 5 seeds (42-46). The
+GCN + Geneformer model from the earlier 3-seed tables used these same settings, so the 5-seed runs
+replace it. Seeds 42 reproduced the old runs (hESC and mESC exactly, hHEP and mHSC-E within 0.002 AUROC).
+
+Test metrics, mean ± std over 5 seeds (AUROC / AUPRC / within-TF):
+
+| Cell | SAGE + Geneformer | GCN + Geneformer | Hero, no Geneformer | Published recipe |
+|---|---|---|---|---|
+| hESC | 0.8907 / 0.6345 / **0.7510** ± 0.0025 | 0.8899 / 0.6256 / 0.7373 ± 0.0058 | 0.8884 / 0.6255 / 0.7470 ± 0.0046 | 0.8830 / 0.6155 / 0.7029 ± 0.0063 |
+| hHEP | 0.9027 / 0.8430 / 0.7800 ± 0.0046 | 0.9023 / 0.8440 / **0.7885** ± 0.0034 | 0.8993 / 0.8384 / 0.7599 ± 0.0022 | 0.9023 / 0.8413 / 0.7870 ± 0.0011 |
+| mHSC-E | 0.9250 / 0.9441 / 0.7816 ± 0.0044 | 0.9260 / 0.9442 / **0.8054** ± 0.0078 | 0.9229 / 0.9428 / 0.7616 ± 0.0110 | 0.9196 / 0.9392 / 0.7219 ± 0.0012 |
+| mESC | 0.9401 / 0.8838 / **0.8245** ± 0.0020 | 0.9374 / 0.8793 / 0.8117 ± 0.0021 | 0.9393 / 0.8819 / 0.8235 ± 0.0013 | 0.9254 / 0.8587 / 0.7657 ± 0.0002 |
+
+Paired per-TF tests on within-TF AUROC (difference, Wilcoxon p over test TFs):
+
+| Cell | GCN+GF minus SAGE+GF | Best minus published recipe |
+|---|---|---|
+| hESC | −0.014 (p = 0.16) | SAGE: +0.048 (p = 0.001) |
+| hHEP | +0.009 (p = 0.69) | GCN: +0.002 (p = 0.53) |
+| mHSC-E | +0.024 (p = 0.73) | GCN: +0.084 (p = 5e-5) |
+| mESC | −0.013 (p = 2e-4) | SAGE: +0.059 (p = 6e-8) |
+
+- The best model per cell type is the one with the higher 5-seed within-TF mean: SAGE on hESC and
+  mESC, GCN on hHEP and mHSC-E. This is the earlier pattern (SAGE on hESC and mESC, GCN on mHSC-E and hHEP).
+- Only mESC separates the two encoders (SAGE better, p = 2e-4). On the other three cells the p-values
+  are 0.16 to 0.73, so the encoder choice there is a small and uncertain difference.
+- Validation AUROC picks the other encoder on hESC and mHSC-E. The winner was named from the test
+  within-TF mean of two fixed candidates, so it is a descriptive label and not a tuned choice.
+- hHEP is a tie with the published recipe (+0.002, p = 0.53). On the other three cells the best model beats it.
+
+### Part 2: tuning the best model
+Each winner was tuned with 16 random trials over learning rate (3e-5 to 1e-3), weight decay (1e-5 to
+1e-2), GNN width (64 to 512), MLP width, dropout (0 to 0.5) and batch size (128, 193, 512). Each trial
+was scored on validation AUROC averaged over 2 seeds (0 and 1; the final seeds were not used). The
+best trial was run at 5 seeds (42-46) with the same refit protocol. The untuned winner was scored as a
+reference but could not be selected.
+
+| Cell (model) | Validation AUROC, best trial / untuned / trial median | Tuned: AUROC / AUPRC / within-TF | Tuned minus untuned (p) | Tuned minus published recipe (p) |
+|---|---|---|---|---|
+| hHEP (GCN) | 0.9056 / 0.9039 / 0.9026 | 0.9021 / 0.8426 / 0.7874 | −0.001 (0.75) | +0.000 (0.57) |
+| mHSC-E (GCN) | 0.9275 / 0.9263 / 0.9258 | 0.9250 / 0.9434 / 0.7979 | −0.008 (0.050) | +0.076 (5e-5) |
+| hESC (SAGE) | 0.8939 / 0.8903 / 0.8911 | 0.8915 / 0.6349 / 0.7598 | +0.009 (0.027) | +0.057 (2e-4) |
+| mESC (SAGE) | 0.9405 / 0.9396 / 0.9375 | 0.9413 / 0.8857 / 0.8297 | +0.005 (0.003) | +0.064 (2e-8) |
+
+Chosen settings (all Adam): hHEP width 512, lr 1.6e-4, wd 1e-5, dropout 0.04, MLP 128; mHSC-E width 64,
+lr 1.9e-4, wd 1.1e-3, dropout 0.45, MLP 256; hESC width 64, lr 1e-4, wd 5e-4, dropout 0.24, batch 128;
+mESC width 512, lr 7e-5, wd 6e-5, dropout 0.09.
+
+- Tuning gave a small gain on hESC (+0.009 within-TF, p = 0.03) and mESC (+0.005, p = 0.003), no change
+  on hHEP, and a loss on mHSC-E (−0.008, p = 0.05).
+- The validation gain of the best trial over the untuned model was 0.001 to 0.004 AUROC, about the size
+  of the validation noise. On mHSC-E and hHEP the best validation trial did not carry over to test.
+  Picking the best of 16 noisy scores partly picks noise.
+- The tuned models stay above the published recipe on hESC, mHSC-E and mESC. On hHEP they tie it.
+- Tuning is not the source of the gain over the published recipe. Changing the model (SAGE or 1-layer
+  GCN, interacting decoder, edge split, validation-AUROC epoch) already gives most of it.
+
+Scripts: `analysis/w8_report.py` (tables and tests, output in `analysis/out/w8_report.txt`),
+`analysis/tune2.py wjobs|wfinals <cell> <encoder>`. Jobs: `analysis/jobs/w8_*.txt`.

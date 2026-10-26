@@ -1,0 +1,10 @@
+w3_hero_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --seed 42
+w3_herogf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 1 --seed 42
+w3_hero_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --seed 43
+w3_herogf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 1 --seed 43
+w3_hero_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --seed 44
+w3_herogf_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 1 --seed 44
+w3_hero_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --seed 45
+w3_herogf_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 1 --seed 45
+w3_hero_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --seed 46
+w3_herogf_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 1 --seed 46

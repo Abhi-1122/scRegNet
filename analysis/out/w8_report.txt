@@ -1,0 +1,85 @@
+Week 4 part A. 5 seeds (42-46), epoch chosen on validation AUROC, refit on all training rows. mean ± std over seeds.
+
+== hESC: part 1
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+SAGE + Geneformer                              5   0.8907 ± 0.0014  0.6345 ± 0.0039  0.7510 ± 0.0025  0.7311 ± 0.0039  0.8918 ± 0.0010    0.24
+GCN + Geneformer                               5   0.8899 ± 0.0022  0.6256 ± 0.0033  0.7373 ± 0.0058  0.7313 ± 0.0054  0.8941 ± 0.0008    0.39
+hero (SAGE, no Geneformer)                     5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061  0.8882 ± 0.0008    0.26
+scRegNet published recipe (rule A)             5   0.8830 ± 0.0012  0.6155 ± 0.0029  0.7029 ± 0.0063  0.7004 ± 0.0030  0.8750 ± 0.0008    9.91
+paired per-TF tests:
+  GCN+GF - SAGE+GF                               within-TF diff -0.0137  95% CI [-0.0303, +0.0027]  TFs better 14/33  p=0.155
+  best (sage) - published recipe                 within-TF diff +0.0481  95% CI [+0.0210, +0.0797]  TFs better 25/33  p=0.00137
+  best (sage) - hero without Geneformer          within-TF diff +0.0040  95% CI [-0.0074, +0.0138]  TFs better 23/33  p=0.0864
+best by test within-TF: sage (0.7510 SAGE vs 0.7373 GCN); by validation AUROC: gcngf (0.8918 vs 0.8941)
+
+== hESC: part 2 (tuned sage)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+untuned sage + Geneformer                      5   0.8907 ± 0.0014  0.6345 ± 0.0039  0.7510 ± 0.0025  0.7311 ± 0.0039  0.8918 ± 0.0010    0.24
+tuned                                          5   0.8915 ± 0.0011  0.6349 ± 0.0025  0.7598 ± 0.0029  0.7357 ± 0.0053  0.8930 ± 0.0015    0.34
+published recipe                               5   0.8830 ± 0.0012  0.6155 ± 0.0029  0.7029 ± 0.0063  0.7004 ± 0.0030  0.8750 ± 0.0008    9.91
+paired per-TF tests:
+  tuned - untuned                                within-TF diff +0.0088  95% CI [+0.0007, +0.0202]  TFs better 22/33  p=0.0268
+  tuned - published recipe                       within-TF diff +0.0569  95% CI [+0.0288, +0.0903]  TFs better 25/33  p=0.000189
+
+== hHEP: part 1
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+SAGE + Geneformer                              5   0.9027 ± 0.0007  0.8430 ± 0.0018  0.7800 ± 0.0046  0.7816 ± 0.0017  0.9005 ± 0.0007    0.38
+GCN + Geneformer                               5   0.9023 ± 0.0016  0.8440 ± 0.0016  0.7885 ± 0.0034  0.7866 ± 0.0028  0.9037 ± 0.0007    0.81
+hero (SAGE, no Geneformer)                     5   0.8993 ± 0.0007  0.8384 ± 0.0010  0.7599 ± 0.0022  0.7683 ± 0.0016  0.8989 ± 0.0013    0.61
+scRegNet published recipe (rule A)             5   0.9023 ± 0.0003  0.8413 ± 0.0006  0.7870 ± 0.0011  0.7790 ± 0.0007  0.8973 ± 0.0004   17.66
+paired per-TF tests:
+  GCN+GF - SAGE+GF                               within-TF diff +0.0086  95% CI [-0.0092, +0.0306]  TFs better 17/30  p=0.685
+  best (gcngf) - published recipe                within-TF diff +0.0015  95% CI [-0.0295, +0.0320]  TFs better 16/30  p=0.529
+  best (gcngf) - hero without Geneformer         within-TF diff +0.0287  95% CI [-0.0016, +0.0693]  TFs better 18/30  p=0.109
+best by test within-TF: gcngf (0.7800 SAGE vs 0.7885 GCN); by validation AUROC: gcngf (0.9005 vs 0.9037)
+
+== hHEP: part 2 (tuned gcngf)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+untuned gcngf + Geneformer                     5   0.9023 ± 0.0016  0.8440 ± 0.0016  0.7885 ± 0.0034  0.7866 ± 0.0028  0.9037 ± 0.0007    0.81
+tuned                                          5   0.9021 ± 0.0019  0.8426 ± 0.0026  0.7874 ± 0.0066  0.7845 ± 0.0041  0.9042 ± 0.0004    0.42
+published recipe                               5   0.9023 ± 0.0003  0.8413 ± 0.0006  0.7870 ± 0.0011  0.7790 ± 0.0007  0.8973 ± 0.0004   17.66
+paired per-TF tests:
+  tuned - untuned                                within-TF diff -0.0011  95% CI [-0.0085, +0.0051]  TFs better 12/30  p=0.746
+  tuned - published recipe                       within-TF diff +0.0004  95% CI [-0.0263, +0.0270]  TFs better 17/30  p=0.57
+
+== mHSC-E: part 1
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+SAGE + Geneformer                              5   0.9250 ± 0.0011  0.9441 ± 0.0011  0.7816 ± 0.0044  0.8129 ± 0.0018  0.9291 ± 0.0005    0.69
+GCN + Geneformer                               5   0.9260 ± 0.0009  0.9442 ± 0.0005  0.8054 ± 0.0078  0.8118 ± 0.0025  0.9262 ± 0.0007    0.66
+hero (SAGE, no Geneformer)                     5   0.9229 ± 0.0014  0.9428 ± 0.0014  0.7616 ± 0.0110  0.8015 ± 0.0040  0.9257 ± 0.0008    0.73
+scRegNet published recipe (rule A)             5   0.9196 ± 0.0001  0.9392 ± 0.0001  0.7219 ± 0.0012  0.7762 ± 0.0009  0.9139 ± 0.0004   15.12
+paired per-TF tests:
+  GCN+GF - SAGE+GF                               within-TF diff +0.0237  95% CI [-0.0035, +0.0681]  TFs better 12/29  p=0.733
+  best (gcngf) - published recipe                within-TF diff +0.0835  95% CI [+0.0297, +0.1508]  TFs better 23/29  p=5.34e-05
+  best (gcngf) - hero without Geneformer         within-TF diff +0.0438  95% CI [+0.0101, +0.0931]  TFs better 17/29  p=0.0157
+best by test within-TF: gcngf (0.7816 SAGE vs 0.8054 GCN); by validation AUROC: sage (0.9291 vs 0.9262)
+
+== mHSC-E: part 2 (tuned gcngf)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+untuned gcngf + Geneformer                     5   0.9260 ± 0.0009  0.9442 ± 0.0005  0.8054 ± 0.0078  0.8118 ± 0.0025  0.9262 ± 0.0007    0.66
+tuned                                          5   0.9250 ± 0.0009  0.9434 ± 0.0006  0.7979 ± 0.0052  0.8099 ± 0.0015  0.9271 ± 0.0008    0.20
+published recipe                               5   0.9196 ± 0.0001  0.9392 ± 0.0001  0.7219 ± 0.0012  0.7762 ± 0.0009  0.9139 ± 0.0004   15.12
+paired per-TF tests:
+  tuned - untuned                                within-TF diff -0.0075  95% CI [-0.0174, -0.0011]  TFs better 11/29  p=0.0502
+  tuned - published recipe                       within-TF diff +0.0760  95% CI [+0.0274, +0.1359]  TFs better 24/29  p=5.34e-05
+
+== mESC: part 1
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+SAGE + Geneformer                              5   0.9401 ± 0.0005  0.8838 ± 0.0006  0.8245 ± 0.0020  0.8300 ± 0.0019  0.9394 ± 0.0007    3.30
+GCN + Geneformer                               5   0.9374 ± 0.0008  0.8793 ± 0.0013  0.8117 ± 0.0021  0.8195 ± 0.0027  0.9377 ± 0.0002    2.27
+hero (SAGE, no Geneformer)                     5   0.9393 ± 0.0009  0.8819 ± 0.0015  0.8235 ± 0.0013  0.8287 ± 0.0013  0.9381 ± 0.0005    5.45
+scRegNet published recipe (rule A)             5   0.9254 ± 0.0001  0.8587 ± 0.0001  0.7657 ± 0.0002  0.7651 ± 0.0002  0.9267 ± 0.0001   75.02
+paired per-TF tests:
+  GCN+GF - SAGE+GF                               within-TF diff -0.0128  95% CI [-0.0255, -0.0027]  TFs better 29/85  p=0.000227
+  best (sage) - published recipe                 within-TF diff +0.0588  95% CI [+0.0364, +0.0833]  TFs better 63/85  p=5.78e-08
+  best (sage) - hero without Geneformer          within-TF diff +0.0010  95% CI [-0.0043, +0.0061]  TFs better 43/85  p=0.465
+best by test within-TF: sage (0.8245 SAGE vs 0.8117 GCN); by validation AUROC: sage (0.9394 vs 0.9377)
+
+== mESC: part 2 (tuned sage)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+untuned sage + Geneformer                      5   0.9401 ± 0.0005  0.8838 ± 0.0006  0.8245 ± 0.0020  0.8300 ± 0.0019  0.9394 ± 0.0007    3.30
+tuned                                          5   0.9413 ± 0.0005  0.8857 ± 0.0006  0.8297 ± 0.0037  0.8338 ± 0.0015  0.9402 ± 0.0007    2.71
+published recipe                               5   0.9254 ± 0.0001  0.8587 ± 0.0001  0.7657 ± 0.0002  0.7651 ± 0.0002  0.9267 ± 0.0001   75.02
+paired per-TF tests:
+  tuned - untuned                                within-TF diff +0.0053  95% CI [+0.0001, +0.0118]  TFs better 54/85  p=0.00331
+  tuned - published recipe                       within-TF diff +0.0640  95% CI [+0.0413, +0.0888]  TFs better 63/85  p=1.5e-08

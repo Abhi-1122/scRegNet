@@ -1,0 +1,38 @@
+
+hESC: hero x2 seeds within-TF 0.7507
+  hero + w*Geneformer hero              best w=1.0  within-TF 0.7540  vs hero x2 +0.0033 (24/33, p=0.035)
+  hero + w*neural PANDA                 best w=0.75 within-TF 0.7534  vs hero x2 +0.0026 (21/33, p=0.1)
+  hero + w*stacker (all)                best w=1.0  within-TF 0.7594  vs hero x2 +0.0086 (22/33, p=0.068)
+  hero + w*stacker (label graph only)   best w=0.75 within-TF 0.7530  vs hero x2 +0.0022 (22/33, p=0.16)
+  hero + w*PANDA score                  best w=0.3  within-TF 0.7550  vs hero x2 +0.0043 (19/33, p=0.42)
+  hero + w*contrast score               best w=0.1  within-TF 0.7487  vs hero x2 -0.0020 (11/33, p=0.21)
+
+hHEP: hero x2 seeds within-TF 0.7613
+  hero + w*Geneformer hero              best w=1.0  within-TF 0.7742  vs hero x2 +0.0129 (23/30, p=3.5e-05)
+  hero + w*neural PANDA                 best w=1.0  within-TF 0.7712  vs hero x2 +0.0099 (25/30, p=8e-06)
+  hero + w*stacker (all)                best w=1.0  within-TF 0.7656  vs hero x2 +0.0043 (26/30, p=9.9e-05)
+  hero + w*stacker (label graph only)   best w=1.0  within-TF 0.7768  vs hero x2 +0.0155 (25/30, p=5e-05)
+  hero + w*PANDA score                  best w=0.1  within-TF 0.7591  vs hero x2 -0.0023 (11/30, p=0.18)
+  hero + w*contrast score               best w=0.1  within-TF 0.7487  vs hero x2 -0.0126 (7/30, p=0.0066)
+
+mESC: hero x2 seeds within-TF 0.8266
+  hero + w*Geneformer hero              best w=0.75 within-TF 0.8322  vs hero x2 +0.0055 (60/85, p=2.9e-05)
+  hero + w*neural PANDA                 best w=1.0  within-TF 0.8305  vs hero x2 +0.0038 (59/85, p=1e-05)
+  hero + w*stacker (all)                best w=0.75 within-TF 0.8311  vs hero x2 +0.0045 (56/85, p=0.00029)
+  hero + w*stacker (label graph only)   best w=0.75 within-TF 0.8296  vs hero x2 +0.0029 (52/85, p=0.0047)
+  hero + w*PANDA score                  best w=0.1  within-TF 0.8247  vs hero x2 -0.0019 (26/85, p=0.00035)
+  hero + w*contrast score               best w=0.1  within-TF 0.8262  vs hero x2 -0.0005 (19/85, p=0.0002)
+
+mHSC-E: hero x2 seeds within-TF 0.7627
+  hero + w*Geneformer hero              best w=1.0  within-TF 0.7739  vs hero x2 +0.0112 (26/29, p=5.1e-07)
+  hero + w*neural PANDA                 best w=0.1  within-TF 0.7615  vs hero x2 -0.0013 (8/29, p=0.024)
+  hero + w*stacker (all)                best w=0.3  within-TF 0.7647  vs hero x2 +0.0020 (12/29, p=0.25)
+  hero + w*stacker (label graph only)   best w=0.1  within-TF 0.7597  vs hero x2 -0.0030 (8/29, p=0.0083)
+  hero + w*PANDA score                  best w=0.1  within-TF 0.7623  vs hero x2 -0.0004 (7/29, p=0.0032)
+  hero + w*contrast score               best w=0.1  within-TF 0.7666  vs hero x2 +0.0039 (4/29, p=0.00033)
+
+Single hero+Geneformer, its 4-seed average, and the 4-model blend (within-TF; paired vs Geneformer hero x4)
+  hESC    GF hero 0.7510   GF hero x4 0.7563   blend 0.7626   blend - GF x4 +0.0063 (20/33, p=0.12)
+  hHEP    GF hero 0.7800   GF hero x4 0.7833   blend 0.7754   blend - GF x4 -0.0079 (18/30, p=0.33)
+  mESC    GF hero 0.8245   GF hero x4 0.8288   blend 0.8389   blend - GF x4 +0.0101 (58/85, p=9.2e-06)
+  mHSC-E  GF hero 0.7816   GF hero x4 0.7839   blend 0.7726   blend - GF x4 -0.0113 (10/29, p=0.1)

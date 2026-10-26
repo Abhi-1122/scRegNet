@@ -1,0 +1,7 @@
+HELD-OUT TFs, hESC, 5 folds (same folds as src.pair_gnn --protocol tf); mean ± std over folds
+popularity                                   AUROC 0.6689 ± 0.0168  AUPRC 0.2316 ± 0.0299  within-TF 0.7244 ± 0.0643  within>=8 0.7120 ± 0.0379
+co-expression transfer                       AUROC 0.6462 ± 0.0210  AUPRC 0.2312 ± 0.0345  within-TF 0.7006 ± 0.0745  within>=8 0.6950 ± 0.0463
+PPI transfer                                 AUROC 0.5936 ± 0.0817  AUPRC 0.2214 ± 0.0521  within-TF 0.6403 ± 0.0443  within>=8 0.6305 ± 0.0312
+direct co-expression corr(t,g)               AUROC 0.4748 ± 0.0374  AUPRC 0.1526 ± 0.0419  within-TF 0.5038 ± 0.0363  within>=8 0.5062 ± 0.0421
+popularity + co-expr transfer (rank avg)     AUROC 0.6661 ± 0.0176  AUPRC 0.2434 ± 0.0302  within-TF 0.7207 ± 0.0693  within>=8 0.7125 ± 0.0433
+popularity + corr(t,g) (rank avg)            AUROC 0.5967 ± 0.0322  AUPRC 0.2102 ± 0.0467  within-TF 0.6658 ± 0.0661  within>=8 0.6531 ± 0.0516

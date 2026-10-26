@@ -1,0 +1,25 @@
+w3_hero_2L_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 256 --encoder sage --decoder had --scfm 0 --seed 42
+w3_hero_2L_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 256 --encoder sage --decoder had --scfm 0 --seed 43
+w3_hero_2L_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 256 --encoder sage --decoder had --scfm 0 --seed 44
+w3_hero_2L_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 256 --encoder sage --decoder had --scfm 0 --seed 45
+w3_hero_2L_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 256 --encoder sage --decoder had --scfm 0 --seed 46
+w3_nph_R_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations R --seed 42
+w3_nph_R_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations R --seed 43
+w3_nph_R_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations R --seed 44
+w3_nph_R_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations R --seed 45
+w3_nph_R_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations R --seed 46
+w3_nph_RC_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RC --seed 42
+w3_nph_RC_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RC --seed 43
+w3_nph_RC_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RC --seed 44
+w3_nph_RC_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RC --seed 45
+w3_nph_RC_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RC --seed 46
+w3_nph_RP_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RP --seed 42
+w3_nph_RP_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RP --seed 43
+w3_nph_RP_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RP --seed 44
+w3_nph_RP_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RP --seed 45
+w3_nph_RP_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations RP --seed 46
+w3_nph_CP_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations CP --seed 42
+w3_nph_CP_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations CP --seed 43
+w3_nph_CP_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations CP --seed 44
+w3_nph_CP_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations CP --seed 45
+w3_nph_CP_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --encoder npanda --decoder had --scfm 0 --gnn_dims 256 256 --relations CP --seed 46

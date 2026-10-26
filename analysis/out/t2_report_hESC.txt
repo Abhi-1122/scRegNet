@@ -1,0 +1,21 @@
+hESC: refit test metrics, mean ± std over seeds; hyperparameters AND epoch chosen on validation within-TF AUROC
+model                                            n             AUROC            AUPRC        within-TF within-TF(>=8 pos)
+scRegNet (published recipe)                      5   0.8855 ± 0.0006  0.6210 ± 0.0015  0.7240 ± 0.0045    0.7165 ± 0.0028
+hero without Geneformer (tuned)                  5   0.8827 ± 0.0007  0.6016 ± 0.0032  0.7101 ± 0.0043    0.7125 ± 0.0025
+hero with Geneformer (tuned)                     5   0.8904 ± 0.0006  0.6292 ± 0.0018  0.7393 ± 0.0045    0.7337 ± 0.0026
+
+paired per-TF tests (per-TF AUROC averaged over seeds):
+  C_hero - A_paper                         within-TF diff -0.0139  95% CI [-0.0401, +0.0163]  TFs better 11/33  Wilcoxon p=0.0424
+  B_hero_sf - A_paper                      within-TF diff +0.0153  95% CI [-0.0095, +0.0453]  TFs better 17/33  Wilcoxon p=0.751
+  B_hero_sf - C_hero                       within-TF diff +0.0292  95% CI [+0.0073, +0.0531]  TFs better 22/33  Wilcoxon p=0.0188
+
+ENSEMBLE of the seeds (z-scored logits averaged; not a single model, not comparable to the mean ± std rows):
+  w2_hESC_C_hero                 (5 seeds) AUROC 0.8834  AUPRC 0.6040  within-TF 0.7126  within-TF(>=8 pos) 0.7139
+  w2_hESC_B_hero_sf              (5 seeds) AUROC 0.8922  AUPRC 0.6337  within-TF 0.7421  within-TF(>=8 pos) 0.7373
+
+reference: earlier 5-seed hESC runs (epoch chosen on validation AUROC)
+model                                            n             AUROC            AUPRC        within-TF within-TF(>=8 pos)
+d01_C_default (hand-set hero)                    5   0.8884 ± 0.0018  0.6256 ± 0.0033  0.7471 ± 0.0047    0.7266 ± 0.0062
+f04_C_tuned (val-AUROC-tuned hero)               5   0.8862 ± 0.0026  0.6154 ± 0.0077  0.7449 ± 0.0109    0.7267 ± 0.0054
+d02_B_default (hand-set hero + Geneformer)       5   0.8910 ± 0.0015  0.6346 ± 0.0038  0.7517 ± 0.0027    0.7322 ± 0.0046
+f02_A_paper (scRegNet, published recipe)         5   0.8830 ± 0.0012  0.6155 ± 0.0029  0.7029 ± 0.0063    0.7004 ± 0.0030

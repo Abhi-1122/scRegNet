@@ -128,3 +128,66 @@ no model beats popularity on held-out TFs (hero -0.042, p=7e-4) and none ranks h
 TF dropout does not fix it; five-feature stacker statistically tied with hero on hESC.
 Validation AUROC is a poor tuning criterion for withinTF ranking. Not run: SEAL / NBFNet / NCN.
 Details and tables: PROGRESS.md sections 10-16.
+
+## 2026-10-16 (branch in-depth-analysis)
+
+**Direct check of the PANDA-in-the-GNN mechanism.** `analysis/hero_vs_contrast.py`: per TF (33 TFs, >=8 test rows,
+both classes), Spearman and partial Spearman (popularity rank regressed out of both) between the model's test
+logit and the co-expression contrast / PANDA number; alignment of npz tf/tgt/y with Test_set.csv asserted.
+Mean ± std over 5 seeds. Hero partial rho with contrast 0.309 ± 0.045, additive-final-layer hero 0.074,
+scRegNet design 0.07; paired hero minus additive +0.234 (CI [0.147, 0.327], 26/33 TFs, p=2e-5). Moderate agreement,
+specific to interacting layers, also present with GCN (0.303). Correlation only; not proof of the mechanism.
+Contrast alone has within-TF AUROC 0.574 (PANDA 0.664). Details: PROGRESS.md section 12.
+
+**Within-TF validation criterion for tuning (hESC pilot).** Added `--select_metric {auc,within}` to `src/pair_gnn.py` (default auc, old runs unchanged);
+`analysis/tune2.py` (jobs/finals/report). 16 random trials per family (C_hero, B_hero_sf; encoder sage/gcn, Adam, one GNN layer) on the validation
+slice, seed 0, hyperparameters and epoch both chosen by validation within-TF AUROC; winners refit with 5 seeds, beside the untuned scRegNet recipe
+(same epoch rule). Test within-TF: scRegNet 0.7240, hero 0.7101, hero+Geneformer 0.7393. Pre-specified verdict (tuned hero > 0.7471, the hand-set
+default) failed: tuning on within-TF did not help. Validation within-TF winners beat the default trial on validation (0.743 vs 0.705) but not on test.
+Epoch selection on within-TF raised the published recipe from 0.7029 to 0.7240. Report: analysis/out/t2_report_hESC.txt.
+
+## 2026-10-23 (branch in-depth-analysis)
+
+**Week 3, hESC: PANDA as the graph, neural PANDA, stacker on other graphs.** `src/pair_gnn.py`: new flags `--mp_graph {grn,panda,union}`, `--panda_k`, `--panda_safe`
+(fold-pure training batches: fold-k PANDA top-K graph for fold-k batches, full graph for val/test; naive = full graph everywhere), encoder `npanda` (R known targets,
+C co-expression kNN k=10 label-free, `--coexp meta` metacells, P STRING; `--relations`), decoders `tani`, `tani_pure`. Defaults reproduce old runs
+(w3_hero_s42 GPU 0.8890 vs d01 0.8890). `analysis/scalars.py` now also saves the 5 per-fold PANDA matrices (`get_folds`; old ev/tr caches reproduced exactly).
+New: `analysis/w3_graph_recall.py`, `analysis/stacker_graphs.py`, `analysis/w3_report.py` (report analysis/out/w3_report_hESC.txt). Runs: 125 GPU runs, 0.3 to 0.9 min each.
+Results (AUROC/AUPRC/within-TF, 5 seeds): hero 0.8884/0.6255/0.7470; safe PANDA graph K=100 0.8822/0.6117/0.7231 (p=0.009), union 0.8836/0.6151/0.7298 (p=0.009), K=200 0.8838 (p=0.08);
+naive K=100 0.8659/0.5847/0.6918. Leak: 55.6% of training positives inside the full K=100 graph vs 3.3% in the own-fold graph (test 3.2%; 1685 of the 3400 edges are training positives); naive minus safe -0.016 AUROC, -0.031 within-TF (p=0.004).
+Neural PANDA RCP with Tanimoto 0.8852/0.6210/0.7180 (p=0.042 vs hero); with Hadamard decoder 0.8898/0.6315/0.7410 (within-TF diff -0.006, p=0.86; AUPRC +0.006 in 5/5 seeds);
+two-layer hero 0.8866/0.6282/0.7333; Tanimoto decoder alone on the hero 0.8837/.6205/.7174; tani_pure 0.8337. Stacker: best new `all` LR 0.8893/0.6194/0.7423 vs old best 0.8867-0.8871, within-TF
+difference not significant; PANDA/co-expression graphs alone far below the hero within-TF. Verdict: no variant beats the hero on within-TF. Caveat: 7 of 1061 test positives have the reverse
+(gene, TF) edge in the undirected training graph (shared by all rows). Part 5 (other cell types) not run. Details: PROGRESS.md section 17.
+
+**Week 3 part 5 (2026-10-23): hHEP, mESC, mHSC-E.** `make_ppi.py` now takes `CELL SPECIES` (default hESC 9606) and reports edges under the dataset symbol (needed for mouse; STRING v12 API, score 700, functional,
+as hESC). Built STRING edge files: hHEP 4486 edges, mESC 3862, mHSC-E 1504 (hESC 2296; the hESC files were re-created with the original pipeline after an accidental overwrite and verified to reproduce
+the cached PANDA matrices exactly). `analysis/scalars.py <cell> 500` run for all three. 90 GPU runs `w4_<cell>_{hero,herogf,pgU_k100,np_had,np_tani,A_paper}_s42-46`
+(jobs `analysis/jobs/w4_*.txt`; mESC runs 4-14 min, mESC published recipe 70-85 min), `analysis/stacker_graphs.py <cell>` for each cell, report `analysis/w4_report.py`.
+Within-TF difference to the cell's hero (p): neural PANDA RCP Hadamard hHEP +0.0145 (0.0004), mESC +0.0015 (0.006), mHSC-E -0.0044 (0.88), hESC -0.006 (0.86), AUROC/AUPRC gain in all four (5/5 seeds in three);
+safe GRN+PANDA graph -0.017 / -0.005 / -0.010 / -0.002 (hESC/hHEP/mESC/mHSC-E); Tanimoto decoder -0.029 / +0.015 / -0.062 / -0.041; Geneformer +0.004 / +0.020 / +0.001 / +0.020;
+published recipe (rule A) -0.044 / +0.027 (p=0.08) / -0.058 / -0.040. No graph-PANDA variant beats the hero within-TF except neural PANDA in hHEP. Details: PROGRESS.md section 18.
+
+**2026-10-23 W5: new ideas, coordinator's own line.** `src/pair_gnn.py`: `--rank_w` (within-TF BPR, each batch positive vs 4 same-TF training negatives), `--aux_panda`
+(aux MSE head on out-of-fold PANDA over 512 random (TF, gene) pairs per batch), `--scalar a,b` (several scalars) and `--scalar_lr` (scalars as a separate linear term, own lr, no wd).
+Defaults unchanged. New: `analysis/w5_report.py`, `analysis/w5_ensembles.py` (z-scored logit averaging, seed-matched, with hero x2/x3/x4 seed controls), `analysis/w5_heldout_tf_transfer.py` (CPU).
+hESC, 5 seeds, GPU: ranking loss and PANDA teacher -0.005 to -0.008 within-TF; free scalar weight hurts (contrast -0.012, p=3e-4; both -0.016, p=0.006).
+Held-out genes (5 folds x 5 seeds): np had +0.021 within-TF (p=0.041, AUPRC lower), gone without PPI. Held-out TFs: no gain; popularity still best, TF-similarity transfer 0.701 vs 0.724.
+Late fusion (hero + Geneformer hero + np had + stacker) vs hero x4 seeds within-TF: hESC +0.010 (p=0.007), hHEP +0.013 (2e-5), mESC +0.011 (5e-8), mHSC-E +0.009 (0.07).
+One run (w5_nphad_gf_s44) started in the same second the hESC STRING files were restored; re-run, identical to 4 decimals. Write-up: PROGRESS.md section 19.
+
+**2026-10-23 W6: hard negatives, neural PANDA for unseen genes.** `src/pair_gnn.py`: `--rank_neg {rand,pop,model}` (1 of 16 random same-TF training negatives:
+most popular gene or highest current score), `--rank_loss {bpr,bce}`; rand path reproduces w5_rank1_s42 within GPU noise. 45 hard-negative runs: all tie or hurt (popular-gene
+negatives -0.04 to -0.10 within-TF; model-hard BPR w=0.1 -0.002, p=0.55). Held-out genes 5x5: np RP +0.003, hero+GF +0.026 (p=0.004), np+GF vs hero+GF +0.004;
+4-model late fusion +0.013 vs same-cost seed blend (p=0.004; `analysis/w6_heldout_fusion.py`). PROGRESS.md section 20; section 19 PPI sentence corrected.
+
+**2026-10-23 W7: late-fusion attribution.** `analysis/w7_attribution.py`: hero + w*ingredient (w scanned on test, diagnostic only) vs hero x2 seeds, and the
+4-model blend vs hero+Geneformer x4 seeds. Geneformer is the only ingredient that helps on all 4 cells; raw PANDA/contrast do not explain the gain. Blend vs
+GF hero x4: hESC +0.006 (p=0.12), hHEP -0.008, mESC +0.010 (p=1e-5), mHSC-E -0.011. Blend dropped from slides, summary and PROGRESS conclusions
+(PROGRESS s19 Result 3 rewritten as the attribution; s20 held-out fusion paragraph removed).
+
+**2026-10-26 W8 part A: best model per cell, then tuning.** `analysis/w8_report.py`; `analysis/tune2.py` gained `wjobs`/`wfinals <cell> <encoder>` (16 random trials,
+fixed encoder + Geneformer, score = validation AUROC over seeds 0,1, `default` scored but not selectable; finals `w8_<cell>_tuned_s42..46`, `--select_metric auc`, refit).
+Part 1: `w8_<cell>_gcngf_s42..46` = SAGE+GF args with `--encoder gcn`; last week's g11 GCN+GF used the identical args, so no separate `_lw` run (s42 reproduces g11).
+Winners (5-seed within-TF): hESC SAGE, hHEP GCN, mHSC-E GCN, mESC SAGE; GCN vs SAGE significant only on mESC (SAGE, p=2e-4). Tuning: hESC +0.009 (p=0.03), mESC +0.005
+(p=0.003), hHEP -0.001 (p=0.75), mHSC-E -0.008 (p=0.05); validation gains of the best trial were 0.001-0.004 AUROC (noise level). PROGRESS.md section 21.

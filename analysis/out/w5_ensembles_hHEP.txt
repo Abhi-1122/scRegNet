@@ -1,0 +1,16 @@
+hHEP: ensembles of z-scored test logits, 5 seeds (member seeds matched); paired per-TF vs single hero
+ensemble                                                    AUROC            AUPRC        within-TF   diff    TFs  p
+hero (single model)                               0.8993 ± 0.0007  0.8384 ± 0.0010  0.7599 ± 0.0022  +0.0000   0/30  1   vs hero x4: -0.0027 (2/30, p=6e-06)
+hero x2 seeds  [compute control]                  0.9004 ± 0.0003  0.8405 ± 0.0004  0.7613 ± 0.0012  +0.0015  27/30  0.00021   vs hero x4: -0.0012 (5/30, p=5e-05)
+hero x3 seeds  [compute control]                  0.9008 ± 0.0002  0.8411 ± 0.0002  0.7622 ± 0.0010  +0.0024  27/30  8.9e-05   vs hero x4: -0.0004 (11/30, p=0.22)
+hero x4 seeds  [compute control]                  0.9010 ± 0.0001  0.8414 ± 0.0001  0.7626 ± 0.0006  +0.0027  28/30  6e-06   vs hero x4: +0.0000 (0/30, p=1)
+hero + Geneformer hero                            0.9034 ± 0.0005  0.8449 ± 0.0008  0.7742 ± 0.0032  +0.0144  26/30  1.2e-06   vs hero x4: +0.0117 (22/30, p=0.00026)
+hero + np had                                     0.9033 ± 0.0003  0.8456 ± 0.0007  0.7712 ± 0.0029  +0.0114  26/30  3.1e-07   vs hero x4: +0.0087 (24/30, p=7.1e-05)
+hero + PANDA score                                0.8558 ± 0.0019  0.7890 ± 0.0029  0.7229 ± 0.0025  -0.0369  10/30  0.0024   vs hero x4: -0.0396 (9/30, p=0.0013)
+hero + contrast score                             0.8318 ± 0.0015  0.6826 ± 0.0019  0.7156 ± 0.0020  -0.0443   6/30  8.9e-05   vs hero x4: -0.0470 (5/30, p=4.4e-05)
+hero + PANDA + contrast scores                    0.8053 ± 0.0015  0.7008 ± 0.0020  0.6929 ± 0.0016  -0.0670   5/30  4.4e-05   vs hero x4: -0.0697 (5/30, p=2.4e-05)
+hero + stacker(all, LR)                           0.9039 ± 0.0005  0.8434 ± 0.0011  0.7656 ± 0.0018  +0.0058  27/30  1.8e-05   vs hero x4: +0.0030 (26/30, p=0.00023)
+hero + stacker(label stack, LR)                   0.9042 ± 0.0005  0.8441 ± 0.0009  0.7768 ± 0.0017  +0.0170  27/30  2.3e-06   vs hero x4: +0.0143 (24/30, p=0.00031)
+hero + Geneformer hero + np had                   0.9048 ± 0.0004  0.8475 ± 0.0007  0.7773 ± 0.0028  +0.0174  27/30  4.7e-08   vs hero x4: +0.0147 (26/30, p=2.3e-06)
+hero + Geneformer hero + stacker                  0.9056 ± 0.0005  0.8470 ± 0.0009  0.7737 ± 0.0022  +0.0138  27/30  9.2e-06   vs hero x4: +0.0111 (25/30, p=6.3e-05)
+hero + Geneformer hero + np had + stacker         0.9060 ± 0.0004  0.8484 ± 0.0008  0.7754 ± 0.0025  +0.0156  26/30  4.4e-06   vs hero x4: +0.0129 (26/30, p=2.4e-05)

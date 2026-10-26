@@ -1,0 +1,8 @@
+HELD-OUT GENES, hESC: per-TF within-TF AUROC averaged over 5 folds x 5 seeds
+hero                                             within-TF 0.5412   vs hero x2 seeds: +0.0007 (14/34, p=0.37)
+hero x2 seeds                                    within-TF 0.5405   vs hero x2 seeds: +0.0000 (0/34, p=1)
+Geneformer hero x2 seeds                         within-TF 0.5691   vs hero x2 seeds: +0.0286 (25/34, p=0.0026)
+hero + np had                                    within-TF 0.5559   vs hero x2 seeds: +0.0153 (25/34, p=0.0081)
+Geneformer hero + np had (GF)                    within-TF 0.5749   vs hero x2 seeds: +0.0344 (27/34, p=0.00063)
+hero x2 + Geneformer hero x2 [4 models]          within-TF 0.5576   vs hero x2 + Geneformer hero x2 [4 models]: +0.0000 (0/34, p=1)
+hero + GF hero + np had + np had GF [4 models]   within-TF 0.5704   vs hero x2 + Geneformer hero x2 [4 models]: +0.0128 (26/34, p=0.0043)

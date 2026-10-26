@@ -1,0 +1,16 @@
+{
+ "C_hero": {
+  "trial": "t07",
+  "val_within": 0.7433650876282165,
+  "val_auc": 0.8814237231088549,
+  "default_val_within": 0.7046214540060596,
+  "flags": "--encoder gcn --gnn_dims 64 --optimizer Adam --lr 0.000186869 --wd 0.00575 --dropout 0.352 --mlp_dim 198 --batch_size 193 --eval_interval 1 --epochs 300"
+ },
+ "B_hero_sf": {
+  "trial": "t04",
+  "val_within": 0.7508685708015759,
+  "val_auc": 0.8945240699707364,
+  "default_val_within": 0.717719692050101,
+  "flags": "--encoder gcn --gnn_dims 128 --optimizer Adam --lr 0.000238283 --wd 2.71e-06 --dropout 0.476 --mlp_dim 198 --batch_size 512 --eval_interval 1 --epochs 300"
+ }
+}

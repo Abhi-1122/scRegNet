@@ -1,0 +1,4 @@
+w8_hESC_gcngf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder gcn --split batch --decoder had --gnn_dims 256 --scfm 1 --cell_type hESC --seed 42
+w8_hHEP_gcngf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder gcn --split batch --decoder had --gnn_dims 256 --scfm 1 --cell_type hHEP --seed 42
+w8_mHSC-E_gcngf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder gcn --split batch --decoder had --gnn_dims 256 --scfm 1 --cell_type mHSC-E --seed 42
+w8_mESC_gcngf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder gcn --split batch --decoder had --gnn_dims 256 --scfm 1 --cell_type mESC --seed 42

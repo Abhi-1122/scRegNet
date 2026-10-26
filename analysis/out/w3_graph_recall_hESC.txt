@@ -1,0 +1,7 @@
+hESC: PANDA top-K graph diagnostics (test base rate 0.149, train base rate 0.147)
+   K  edges  test pos recall  test pairs in graph  precision  train pos recall FULL  train pos recall OWN-FOLD
+  50   1700            0.007                  149      0.047                  0.354                      0.010
+ 100   3400            0.032                  412      0.083                  0.556                      0.033
+ 200   6800            0.101                 1026      0.104                  0.857                      0.127
+training positives among the K=100 edges of the full graph: 1685 of 3400
+train-pos recall FULL minus OWN-FOLD = the share of training positives that sit in the graph only because they are in the prior (the leak).

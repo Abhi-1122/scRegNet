@@ -1,0 +1,3 @@
+w6_check_rank1_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --rank_w 1 --seed 42
+w6_hn_pop_bpr_w1_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --rank_w 1 --rank_neg pop --seed 42
+w6_hn_model_bce_w1_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --rank_w 1 --rank_neg model --rank_loss bce --seed 42

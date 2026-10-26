@@ -5,11 +5,12 @@ with Geneformer), then a pluggable pair decoder:
   add : linear on [u_tf, u_gene]                 (what scRegNet does: TF term + gene term)
   had : linear on [u_tf, u_gene, u_tf * u_gene]  (biased matrix factorization: adds interaction)
   mlp : hidden layer on [u_tf, u_gene]           (concat + MLP)
+  tani, tani_pure : 6-head Tanimoto similarity of u_tf and u_gene (tani keeps [u_tf, u_gene] too)
 --split batch removes each batch's own positive edges from the message-passing graph, so a pair is
 never scored through its own edge. Epochs are chosen on a held-out validation slice of the
 training rows, never on the test set. Usage: python3.12 -m src.pair_gnn --name X --decoder had ...
 """
-import argparse, json, os, sys, time
+import argparse, glob, json, os, sys, time
 from types import SimpleNamespace
 import numpy as np
 import pandas as pd
@@ -32,13 +33,66 @@ class DirConv(nn.Module):
         return 0.5 * (s.f(h, ei[0]) + s.b(h, ei[1]))
 
 
-def make_conv(enc, i, o):
+class NPanda(nn.Module):
+    """Neural PANDA layer: h' = lin_self(h) + sum over relations of SAGE_r(h, E_r); R = known targets, C = co-expression, P = PPI."""
+    def __init__(s, i, o, rels):
+        super().__init__()
+        s.self_ = nn.Linear(i, o)
+        s.rel = nn.ModuleDict({r: SAGEConv(i, o, root_weight=False) for r in rels})
+
+    def forward(s, h, G):
+        return s.self_(h) + sum(c(h, G[r]) for r, c in s.rel.items())
+
+
+def make_conv(enc, i, o, rels='RCP'):
     if enc == 'gcn': return GCNConv(i, o)
     if enc == 'sage': return SAGEConv(i, o)
     if enc == 'gat': return GATConv(i, o, heads=4, concat=False)
     if enc == 'gin': return GINConv(nn.Sequential(nn.Linear(i, o), nn.ReLU(), nn.Linear(o, o)), aggr='mean')  # sum aggregation overflows on hub genes
     if enc == 'dir': return DirConv(i, o)
+    if enc == 'npanda': return NPanda(i, o, rels)
     raise ValueError(enc)
+
+
+def sym_edges(ei, n):
+    """undirected edge list (2, E) -> both directions, duplicates removed"""
+    key = np.unique(np.minimum(ei[0], ei[1]) * n + np.maximum(ei[0], ei[1]))
+    p, q = key // n, key % n
+    return np.stack([np.concatenate([p, q]), np.concatenate([q, p])])
+
+
+def panda_graph(M, tfs, k, n):
+    """top-k genes per TF by PANDA score (self excluded), undirected"""
+    M = M[tfs].copy(); M[np.arange(len(tfs)), tfs] = -np.inf
+    top = np.argsort(-M, 1)[:, :k]
+    return sym_edges(np.stack([np.repeat(tfs, k), top.ravel()]), n)
+
+
+def coexp_graph(x, meta):
+    """label-free gene-gene kNN (k=10, positive Pearson); meta: on 75 KMeans metacells of the first 30 PCs of the cells"""
+    if meta:
+        from sklearn.cluster import KMeans
+        from sklearn.decomposition import PCA
+        lab = KMeans(75, n_init=10, random_state=0).fit_predict(PCA(30, random_state=0).fit_transform(x.T))
+        x = np.stack([x[:, lab == c].mean(1) for c in range(75)], 1)
+    C = np.nan_to_num(np.corrcoef(x)); np.fill_diagonal(C, -1)
+    nb = np.argsort(-C, 1)[:, :10]
+    ei = np.stack([np.repeat(np.arange(len(C)), 10), nb.ravel()])
+    return sym_edges(ei[:, C[ei[0], ei[1]] > 0], len(C))
+
+
+def ppi_graph(path, n):
+    """label-free STRING edges among the genes"""
+    g = pd.read_csv(path + 'Target.csv', index_col=0).set_index('Gene')['index']
+    e = pd.read_csv(glob.glob(path + 'STRING/*.symmetric_edges.csv')[0])
+    e = e[e.Gene1.isin(g.index) & e.Gene2.isin(g.index) & (e.Gene1 != e.Gene2)]
+    return sym_edges(np.stack([e.Gene1.map(g).values, e.Gene2.map(g).values]), n)
+
+
+def tanimoto(a, b, H=6):
+    a, b = a.reshape(len(a), H, -1), b.reshape(len(b), H, -1)
+    ab = (a * b).sum(-1)
+    return ab / ((a * a).sum(-1) + (b * b).sum(-1) - ab + 1e-6)
 
 
 def within_tf(y, s, tf):
@@ -72,12 +126,22 @@ def parse():
     p.add_argument('--cell_type', default='hESC')
     p.add_argument('--num_TF', default='500')
     p.add_argument('--seed', type=int, default=42)
-    p.add_argument('--decoder', default='add', choices=['add', 'had', 'mlp'])
+    p.add_argument('--decoder', default='add', choices=['add', 'had', 'mlp', 'tani', 'tani_pure'])
     p.add_argument('--split', default='none', choices=['none', 'batch'])
     p.add_argument('--scfm', type=int, default=1, help='0 off, 1 Geneformer, 2 Geneformer vectors shuffled across genes (control)')
     p.add_argument('--scalar', default='none', help='none | panda | panda_old | contrast | contrast_raw')
-    p.add_argument('--encoder', default='gcn', choices=['gcn', 'sage', 'gat', 'gin', 'dir'])
+    p.add_argument('--encoder', default='gcn', choices=['gcn', 'sage', 'gat', 'gin', 'dir', 'npanda'])
     p.add_argument('--tf_drop', type=float, default=0.0, help='per batch, hide ALL training edges of this fraction of TFs (teaches the model to cope with TFs that have no known targets)')
+    p.add_argument('--mp_graph', default='grn', choices=['grn', 'panda', 'union'], help='message-passing graph: training-positive GRN (default) | PANDA top-K | both')
+    p.add_argument('--panda_k', type=int, default=100, help='top-K genes per TF in the PANDA graph')
+    p.add_argument('--panda_safe', type=int, default=1, help='1: training batches use the fold-k PANDA graph (prior without the batch rows); 0: full PANDA graph (leaks the label)')
+    p.add_argument('--relations', default='RCP', help='npanda encoder relations: R known targets, C co-expression kNN, P STRING PPI')
+    p.add_argument('--coexp', default='full', choices=['full', 'meta'], help='npanda C graph on cells or on metacells')
+    p.add_argument('--scalar_lr', type=float, default=1.0, help='!=1: scalars enter as a separate linear term trained at lr * scalar_lr, no weight decay (else concatenated into the decoder)')
+    p.add_argument('--rank_w', type=float, default=0.0, help='weight of a within-TF BPR loss: each batch positive vs 4 training negatives of the same TF')
+    p.add_argument('--rank_neg', default='rand', choices=['rand', 'pop', 'model'], help='same-TF training negative for --rank_w: random (x4) | most popular gene of 16 random | highest-scoring of 16 random')
+    p.add_argument('--rank_loss', default='bpr', choices=['bpr', 'bce'], help='bpr: softplus(s_neg - s_pos); bce: extra BCE with label 0 on the chosen negatives')
+    p.add_argument('--aux_panda', type=float, default=0.0, help='weight of an auxiliary MSE head that predicts the out-of-fold PANDA score on random (TF, gene) pairs')
     p.add_argument('--roles', default='shared', choices=['shared', 'sep'])
     p.add_argument('--gnn_dims', type=int, nargs='+', default=[227, 29, 34])
     p.add_argument('--mlp_dim', type=int, default=198)
@@ -89,6 +153,7 @@ def parse():
     p.add_argument('--batch_size', type=int, default=193)
     p.add_argument('--epochs', type=int, default=300)
     p.add_argument('--eval_interval', type=int, default=5)
+    p.add_argument('--select_metric', default='auc', choices=['auc', 'within'], help='validation metric that picks the epoch')
     p.add_argument('--patience', type=int, default=10)
     p.add_argument('--val_frac', type=float, default=0.1)
     p.add_argument('--split_seed', type=int, default=0)
@@ -146,18 +211,25 @@ class PairGNN(nn.Module):
         s.convs = nn.ModuleList()
         prev = d_in
         for h in a.gnn_dims:
-            s.convs.append(make_conv(a.encoder, prev, h))
+            s.convs.append(make_conv(a.encoder, prev, h, a.relations))
             prev = h
         fused = prev + (d_sf if a.scfm else 0)
         s.mlp = nn.Linear(fused, a.mlp_dim)
         s.mlp_t = nn.Linear(fused, a.mlp_dim) if a.roles == 'sep' else None
         D = a.mlp_dim
+        s.sw = nn.Linear(n_scalar, 1, bias=False) if n_scalar and a.scalar_lr != 1 else None
+        n_scalar = 0 if s.sw is not None else n_scalar
         if a.decoder == 'add':
             s.out = nn.Linear(2 * D + n_scalar, 1)
         elif a.decoder == 'had':
             s.out = nn.Linear(3 * D + n_scalar, 1)
+        elif a.decoder == 'tani':
+            s.out = nn.Linear(2 * D + 6 + n_scalar, 1)
+        elif a.decoder == 'tani_pure':
+            s.out = nn.Linear(6 + n_scalar, 1)
         else:
             s.out = nn.Sequential(nn.Linear(2 * D + n_scalar, a.dec_hidden), nn.ReLU(), nn.Linear(a.dec_hidden, 1))
+        s.aux = nn.Linear(3 * D, 1) if a.aux_panda > 0 else None
 
     def nodes(s, x, f, ei, ew=None):
         h = x
@@ -172,8 +244,12 @@ class PairGNN(nn.Module):
 
     def score(s, ut, ug, pairs, scalar=None):
         a, b = ut[pairs[:, 0]], ug[pairs[:, 1]]
-        parts = [a, b] + ([a * b] if s.a.decoder == 'had' else []) + ([scalar[:, None]] if scalar is not None else [])
-        return s.out(torch.cat(parts, 1)).squeeze(1)
+        sx = None if scalar is None else (scalar[:, None] if scalar.dim() == 1 else scalar)
+        parts = [a, b] + ([a * b] if s.a.decoder == 'had' else []) + ([sx] if sx is not None and s.sw is None else [])
+        if s.a.decoder.startswith('tani'):
+            parts = ([a, b] if s.a.decoder == 'tani' else []) + [tanimoto(a, b)] + parts[2:]
+        out = s.out(torch.cat(parts, 1)).squeeze(1)
+        return out + s.sw(sx).squeeze(1) if s.sw is not None else out
 
 
 def fit(a, D, dev, epochs, select):
@@ -191,8 +267,9 @@ def fit(a, D, dev, epochs, select):
     S_ev = S_tr = None
     if a.scalar != 'none':
         import scalars
-        a_ = SimpleNamespace(**{**vars(a), 'scalar': a.scalar})
-        S_ev, S_tr = [T(v, torch.float32) for v in scalars.get(a_, D)]
+        kinds = a.scalar.split(',')  # several kinds -> (n, n, k)
+        got = [scalars.get(SimpleNamespace(**{**vars(a), 'scalar': k}), D) for k in kinds]
+        S_ev, S_tr = [T(got[0][j] if len(kinds) == 1 else np.stack([g[j] for g in got], -1), torch.float32) for j in (0, 1)]
     w_u = None
     if a.graph_w != 'none':
         import scalars
@@ -204,7 +281,30 @@ def fit(a, D, dev, epochs, select):
         ok = u_tri >= 0
         w_u[u_tri[ok]] = 0.5 + torch.sigmoid(Sg[pr[ok, 0], pr[ok, 1]])
 
-    def full_graph(drop=None):
+    if a.rank_w > 0:  # training negatives grouped by TF, for same-TF negative sampling
+        yt, tft = tr.Label.values[tri], tr.TF.values[tri]
+        neg = np.where(yt == 0)[0]; neg = neg[np.argsort(tft[neg], kind='stable')]
+        st_ = np.searchsorted(tft[neg], np.arange(n))
+        NEG, NS, NC = T(neg, torch.long), T(st_, torch.long), T(np.searchsorted(tft[neg], np.arange(n), 'right') - st_, torch.long)
+        pos_t = tr.Target.values[tri][yt == 1]
+        DEG = T(np.bincount(pos_t, minlength=n), torch.float32)  # training in-degree of each gene (popularity)
+    if a.aux_panda > 0:  # out-of-fold PANDA (training rows scored without their own fold's positives)
+        import scalars
+        M_aux = T(scalars.get(SimpleNamespace(**{**vars(a), 'scalar': 'panda'}), D)[1], torch.float32)
+        aux_tf = T(np.unique(tr.TF.values), torch.long)
+
+    PG = None
+    if a.mp_graph != 'grn':
+        assert a.encoder in ('gcn', 'sage', 'gat', 'gin') and a.protocol == 'random'
+        import scalars
+        a_ = SimpleNamespace(**{**vars(a), 'scalar': 'panda'})
+        tfs = np.unique(np.concatenate([tr.TF.values, D['te'].TF.values]))
+        PG = dict(ev=T(panda_graph(scalars.get(a_, D)[0], tfs, a.panda_k, n), torch.long),
+                  fold=[T(panda_graph(M, tfs, a.panda_k, n), torch.long) for M in scalars.get_folds(a_, D)])
+    G_C = T(coexp_graph(D['x'], a.coexp == 'meta'), torch.long) if a.encoder == 'npanda' and 'C' in a.relations else None
+    G_P = T(ppi_graph(D['path'], n), torch.long) if a.encoder == 'npanda' and 'P' in a.relations else None
+
+    def full_graph(drop=None, fold=None):
         keep = torch.ones(m, dtype=torch.bool, device=dev)
         if drop is not None and len(drop) > 0:
             keep[drop] = False
@@ -213,6 +313,11 @@ def fit(a, D, dev, epochs, select):
         if a.encoder == 'dir':
             ei = (torch.stack([OT[keep], OG[keep]]), torch.stack([OG[keep], OT[keep]]))
         ew = torch.cat([w_u[keep], w_u[keep]]) if w_u is not None else None
+        if PG is not None:
+            pg = PG['ev'] if fold is None else PG['fold'][fold]
+            return (pg if a.mp_graph == 'panda' else torch.cat([ei, pg], 1)), ew
+        if a.encoder == 'npanda':
+            return {r: g for r, g in zip('RCP', (ei, G_C, G_P)) if r in a.relations}, None
         return ei, ew
 
     P_tr = T(tr[['TF', 'Target']].values[tri], torch.long); Y_tr = T(tr.Label.values[tri], torch.float32)
@@ -220,8 +325,11 @@ def fit(a, D, dev, epochs, select):
     P_va = T(tr[['TF', 'Target']].values[vai], torch.long); y_va = tr.Label.values[vai]; tf_va = tr.TF.values[vai]
     P_te = T(te[['TF', 'Target']].values, torch.long); y_te = te.Label.values; tf_te = te.TF.values
 
-    model = PairGNN(X.shape[1], Fe.shape[1] if Fe is not None else 0, a, 1 if S_tr is not None else 0).to(dev)
-    opt = getattr(torch.optim, a.optimizer)(model.parameters(), lr=a.lr, weight_decay=a.wd)
+    model = PairGNN(X.shape[1], Fe.shape[1] if Fe is not None else 0, a, 0 if S_tr is None else (1 if S_tr.dim() == 2 else S_tr.shape[2])).to(dev)
+    groups = [{'params': [q for nm, q in model.named_parameters() if not nm.startswith('sw.')]}]
+    if model.sw is not None:
+        groups.append({'params': model.sw.parameters(), 'lr': a.lr * a.scalar_lr, 'weight_decay': 0.0})
+    opt = getattr(torch.optim, a.optimizer)(groups, lr=a.lr, weight_decay=a.wd)
     sc = lambda S, P: None if S is None else S[P[:, 0], P[:, 1]]
 
     def evaluate(with_val=True):
@@ -233,12 +341,20 @@ def fit(a, D, dev, epochs, select):
             sv = model.score(ut, ug, P_va, sc(S_ev, P_va)).cpu().numpy() if with_val else None
         return (metrics(y_va, sv, tf_va) if with_val else None), metrics(y_te, st, tf_te), st
 
+    safe = PG is not None and a.panda_safe  # fold-pure batches: batch rows come from one OOF fold, whose PANDA prior excludes them
+    if safe:
+        fold_rows = [T(h, torch.long) for h in np.array_split(np.random.RandomState(42).permutation(len(tri)), 5)]  # same folds as scalars.get
+
     hist, best, bad = [], None, 0
     for ep in range(1, epochs + 1):
         model.train()
         perm = torch.randperm(len(P_tr), device=dev)
-        for i in range(0, len(perm), a.batch_size):
-            idx = perm[i:i + a.batch_size]
+        if safe:
+            batches = [(k, r[torch.randperm(len(r), device=dev)][i:i + a.batch_size]) for k, r in enumerate(fold_rows) for i in range(0, len(r), a.batch_size)]
+            batches = [batches[j] for j in np.random.permutation(len(batches))]
+        else:
+            batches = [(None, perm[i:i + a.batch_size]) for i in range(0, len(perm), a.batch_size)]
+        for fk, idx in batches:
             p, y = P_tr[idx], Y_tr[idx]
             drop = None
             if a.split == 'batch':
@@ -246,14 +362,31 @@ def fit(a, D, dev, epochs, select):
                 if a.tf_drop > 0:
                     ex = torch.nonzero((torch.rand(n, device=dev) < a.tf_drop)[OT]).squeeze(1)
                     drop = torch.unique(torch.cat([drop, ex]))
-            ei, ew = full_graph(drop)
+            ei, ew = full_graph(drop, fk)
             ut, ug = model.nodes(X, Fe, ei, ew)
             loss = F.binary_cross_entropy_with_logits(model.score(ut, ug, p, sc(S_tr, p)), y)
+            if a.rank_w > 0:
+                pp = p[y == 1]; c = NC[pp[:, 0]]; pp, c = pp[c > 0], c[c > 0]
+                if len(pp) and a.rank_neg == 'rand':
+                    pp, c = pp.repeat(4, 1), c.repeat(4)
+                    pn = P_tr[NEG[NS[pp[:, 0]] + (torch.rand(len(pp), device=dev) * c).long()]]
+                elif len(pp):  # hard negative: pick 1 of 16 random same-TF negatives
+                    pc = P_tr[NEG[NS[pp[:, 0], None] + (torch.rand(len(pp), 16, device=dev) * c[:, None]).long()]]
+                    with torch.no_grad():
+                        h = DEG[pc[..., 1]] if a.rank_neg == 'pop' else model.score(ut, ug, pc.reshape(-1, 2), sc(S_tr, pc.reshape(-1, 2))).reshape(len(pp), 16)
+                    pn = pc[torch.arange(len(pp), device=dev), h.argmax(1)]
+                if len(pp):
+                    sn = model.score(ut, ug, pn, sc(S_tr, pn))
+                    loss = loss + a.rank_w * (F.softplus(sn - model.score(ut, ug, pp, sc(S_tr, pp))).mean() if a.rank_loss == 'bpr' else F.binary_cross_entropy_with_logits(sn, torch.zeros_like(sn)))
+            if a.aux_panda > 0:
+                q = torch.stack([aux_tf[torch.randint(len(aux_tf), (512,), device=dev)], torch.randint(n, (512,), device=dev)], 1)
+                ua, ub = ut[q[:, 0]], ug[q[:, 1]]
+                loss = loss + a.aux_panda * F.mse_loss(model.aux(torch.cat([ua, ub, ua * ub], 1)).squeeze(1), M_aux[q[:, 0], q[:, 1]])
             opt.zero_grad(); loss.backward(); opt.step()
         if select and ep % a.eval_interval == 0:
             v, t, _ = evaluate()
             hist.append(dict(epoch=ep, val=v, test=t))
-            if best is None or v['auc'] > best['val']['auc']:
+            if best is None or v[a.select_metric] > best['val'][a.select_metric]:
                 best, bad = hist[-1], 0
             else:
                 bad += 1

@@ -1,0 +1,3 @@
+w3_pg_k100_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 0 --mp_graph panda --panda_k 100 --seed 42
+w3_pg_k100_naive_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 0 --mp_graph panda --panda_k 100 --panda_safe 0 --seed 42
+w3_pgU_k100_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 0 --mp_graph union --panda_k 100 --seed 42

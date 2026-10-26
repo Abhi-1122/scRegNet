@@ -57,6 +57,7 @@ def query_string_network(string_ids, species=SPECIES, required_score=700,
 
 def build_ppi_from_bl_network(
     bl_network_csv,
+    species=SPECIES,
     out_prefix="hESC_TFs500_STRING_PPI",
     required_score=700,
     network_type="functional",
@@ -70,7 +71,7 @@ def build_ppi_from_bl_network(
     print(f"Input genes from BL-network: {len(genes)}")
 
     # 2) Map symbols to STRING IDs
-    mapping_df, gene_to_string = map_to_string_ids(genes)
+    mapping_df, gene_to_string = map_to_string_ids(genes, species)
     mapped_genes = sorted(gene_to_string.keys())
     mapped_string_ids = sorted(set(gene_to_string.values()))
     print(f"Mapped genes to STRING: {len(mapped_genes)} / {len(genes)}")
@@ -82,6 +83,7 @@ def build_ppi_from_bl_network(
     # 3) Query STRING network among mapped genes
     net_df = query_string_network(
         mapped_string_ids,
+        species=species,
         required_score=required_score,
         network_type=network_type,
     )
@@ -93,6 +95,10 @@ def build_ppi_from_bl_network(
         net_df["preferredName_A"].isin(gene_set) &
         net_df["preferredName_B"].isin(gene_set)
     ].copy()
+
+    # 4b) Report edges under the dataset's own symbol (matters for mouse, where STRING names are Title-case, and for aliases)
+    q = dict(zip(mapping_df["preferredName"], mapping_df["queryItem"]))
+    ppi_df["preferredName_A"], ppi_df["preferredName_B"] = ppi_df["preferredName_A"].map(q), ppi_df["preferredName_B"].map(q)
 
     # 5) Remove self-loops
     ppi_df = ppi_df[ppi_df["preferredName_A"] != ppi_df["preferredName_B"]].copy()
@@ -145,9 +151,13 @@ def build_ppi_from_bl_network(
 
 
 if __name__ == "__main__":
+    # usage: python3 make_ppi.py [CELL SPECIES]   e.g. mESC 10090 (default: hESC 9606)
+    import sys
+    cell, species = (sys.argv[1], int(sys.argv[2])) if len(sys.argv) > 2 else ("hESC", SPECIES)
     result = build_ppi_from_bl_network(
-        bl_network_csv="./data/hESC/TFs+500/BL--network.csv",
-        out_prefix="hESC_TFs500_STRING_PPI",
+        bl_network_csv=f"./data/{cell}/TFs+500/BL--network.csv",
+        species=species,
+        out_prefix=f"./data/{cell}/TFs+500/STRING/{cell}_TFs500_STRING_PPI",
         required_score=700,          # change this
         network_type="functional",   # or "physical"
     )

@@ -1,0 +1,74 @@
+== Benchmark split, 5 seeds; paired per-TF vs the GPU hero (w3_hero) or hero + Geneformer (w3_herogf)
+model                               n             AUROC            AUPRC        within-TF        within>=8
+hero                                5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061
+hero + Geneformer                   5   0.8907 ± 0.0014  0.6345 ± 0.0039  0.7510 ± 0.0025  0.7311 ± 0.0039
+hero + rank loss w=0.5              5   0.8869 ± 0.0008  0.6191 ± 0.0023  0.7425 ± 0.0030  0.7239 ± 0.0031
+hero + rank loss w=1                5   0.8860 ± 0.0009  0.6165 ± 0.0023  0.7391 ± 0.0055  0.7212 ± 0.0049
+hero + rank loss w=2                5   0.8855 ± 0.0019  0.6134 ± 0.0035  0.7413 ± 0.0095  0.7216 ± 0.0071
+hero + PANDA teacher w=0.1          5   0.8875 ± 0.0015  0.6253 ± 0.0035  0.7420 ± 0.0061  0.7233 ± 0.0071
+hero + PANDA teacher w=0.3          5   0.8870 ± 0.0027  0.6248 ± 0.0049  0.7401 ± 0.0085  0.7229 ± 0.0078
+hero + PANDA teacher w=1            5   0.8882 ± 0.0015  0.6280 ± 0.0021  0.7411 ± 0.0069  0.7262 ± 0.0056
+hero + panda number, lr x1          5   0.8886 ± 0.0016  0.6261 ± 0.0032  0.7475 ± 0.0048  0.7269 ± 0.0061
+hero + panda number, lr x100        5   0.8858 ± 0.0038  0.6248 ± 0.0053  0.7355 ± 0.0150  0.7207 ± 0.0096
+hero + panda number, lr x1000       5   0.8869 ± 0.0022  0.6260 ± 0.0042  0.7386 ± 0.0089  0.7226 ± 0.0067
+hero + contrast number, lr x100     5   0.8864 ± 0.0016  0.6225 ± 0.0030  0.7385 ± 0.0040  0.7194 ± 0.0042
+hero + contrast number, lr x1000    5   0.8854 ± 0.0022  0.6210 ± 0.0026  0.7352 ± 0.0060  0.7158 ± 0.0067
+hero + both number, lr x100         5   0.8863 ± 0.0038  0.6257 ± 0.0045  0.7315 ± 0.0177  0.7202 ± 0.0119
+hero + both number, lr x1000        5   0.8864 ± 0.0026  0.6236 ± 0.0045  0.7307 ± 0.0138  0.7182 ± 0.0115
+hero+GF + both numbers, lr x100     5   0.8866 ± 0.0024  0.6298 ± 0.0036  0.7395 ± 0.0087  0.7234 ± 0.0051
+hero + hard neg pop bpr w=0.1       5   0.8772 ± 0.0020  0.5950 ± 0.0059  0.7094 ± 0.0063  0.6901 ± 0.0079
+hero + hard neg pop bpr w=0.3       5   0.8596 ± 0.0007  0.5490 ± 0.0045  0.6420 ± 0.0145  0.6243 ± 0.0090
+hero + hard neg pop bce w=0.1       5   0.8781 ± 0.0019  0.5982 ± 0.0026  0.7100 ± 0.0081  0.6963 ± 0.0079
+hero + hard neg pop bce w=0.3       5   0.8645 ± 0.0019  0.5635 ± 0.0042  0.6695 ± 0.0118  0.6586 ± 0.0121
+hero + hard neg model bpr w=0.1     5   0.8859 ± 0.0010  0.6180 ± 0.0028  0.7453 ± 0.0023  0.7232 ± 0.0049
+hero + hard neg model bpr w=0.3     5   0.8815 ± 0.0017  0.6074 ± 0.0035  0.7330 ± 0.0082  0.7157 ± 0.0059
+hero + hard neg model bce w=0.1     5   0.8839 ± 0.0021  0.6183 ± 0.0021  0.7306 ± 0.0065  0.7131 ± 0.0063
+hero + hard neg model bce w=0.3     5   0.8794 ± 0.0006  0.6070 ± 0.0024  0.7140 ± 0.0058  0.7025 ± 0.0041
+hero + hard neg model bpr w=1       5   0.8740 ± 0.0014  0.5930 ± 0.0047  0.7114 ± 0.0030  0.6967 ± 0.0082
+np had (RCP)                        5   0.8898 ± 0.0014  0.6315 ± 0.0033  0.7410 ± 0.0079  0.7242 ± 0.0105
+np had + Geneformer                 5   0.8912 ± 0.0027  0.6355 ± 0.0030  0.7549 ± 0.0090  0.7356 ± 0.0109
+  hero + rank loss w=0.5           vs w3_hero    within-TF diff -0.0045  TFs better 12/33  p=0.16
+  hero + rank loss w=1             vs w3_hero    within-TF diff -0.0079  TFs better 10/33  p=0.046
+  hero + rank loss w=2             vs w3_hero    within-TF diff -0.0057  TFs better 12/33  p=0.16
+  hero + PANDA teacher w=0.1       vs w3_hero    within-TF diff -0.0050  TFs better 15/33  p=0.37
+  hero + PANDA teacher w=0.3       vs w3_hero    within-TF diff -0.0069  TFs better 12/33  p=0.058
+  hero + PANDA teacher w=1         vs w3_hero    within-TF diff -0.0059  TFs better 12/33  p=0.17
+  hero + panda number, lr x1       vs w3_hero    within-TF diff +0.0005  TFs better 18/33  p=0.22
+  hero + panda number, lr x100     vs w3_hero    within-TF diff -0.0115  TFs better 13/33  p=0.065
+  hero + panda number, lr x1000    vs w3_hero    within-TF diff -0.0084  TFs better 12/33  p=0.065
+  hero + contrast number, lr x100  vs w3_hero    within-TF diff -0.0085  TFs better 8/33  p=0.00082
+  hero + contrast number, lr x1000 vs w3_hero    within-TF diff -0.0118  TFs better 7/33  p=0.00025
+  hero + both number, lr x100      vs w3_hero    within-TF diff -0.0155  TFs better 7/33  p=0.0055
+  hero + both number, lr x1000     vs w3_hero    within-TF diff -0.0163  TFs better 9/33  p=0.0055
+  hero+GF + both numbers, lr x100  vs w3_herogf  within-TF diff -0.0115  TFs better 13/33  p=0.022
+  hero + hard neg pop bpr w=0.1    vs w3_hero    within-TF diff -0.0376  TFs better 6/33  p=6.2e-05
+  hero + hard neg pop bpr w=0.3    vs w3_hero    within-TF diff -0.1050  TFs better 3/33  p=4.7e-07
+  hero + hard neg pop bce w=0.1    vs w3_hero    within-TF diff -0.0370  TFs better 5/33  p=1.8e-05
+  hero + hard neg pop bce w=0.3    vs w3_hero    within-TF diff -0.0775  TFs better 2/33  p=1.2e-06
+  hero + hard neg model bpr w=0.1  vs w3_hero    within-TF diff -0.0017  TFs better 16/33  p=0.55
+  hero + hard neg model bpr w=0.3  vs w3_hero    within-TF diff -0.0140  TFs better 14/33  p=0.18
+  hero + hard neg model bce w=0.1  vs w3_hero    within-TF diff -0.0164  TFs better 8/33  p=9.1e-05
+  hero + hard neg model bce w=0.3  vs w3_hero    within-TF diff -0.0330  TFs better 6/33  p=2.5e-05
+  hero + hard neg model bpr w=1    vs w3_hero    within-TF diff -0.0356  TFs better 7/33  p=0.0038
+  np had (RCP)                     vs w3_hero    within-TF diff -0.0060  TFs better 17/33  p=0.86
+  np had + Geneformer              vs w3_herogf  within-TF diff +0.0039  TFs better 17/33  p=0.74
+
+== HELD-OUT TFs (5 folds x 2 seeds; per-TF AUROC pooled over folds)
+model                               n             AUROC            AUPRC        within-TF        within>=8
+hero                               10   0.6304 ± 0.1127  0.2314 ± 0.0978  0.6855 ± 0.0643  0.6766 ± 0.0388
+nphad                              10   0.6518 ± 0.0646  0.2347 ± 0.0716  0.6897 ± 0.0539  0.6731 ± 0.0308
+  nphad vs hero: within-TF diff +0.0040  TFs better 17/34  p=0.95
+
+== HELD-OUT GENES (5 folds x 5 seeds)
+model                               n             AUROC            AUPRC        within-TF        within>=8
+hero                               25   0.8461 ± 0.0073  0.5220 ± 0.0085  0.5464 ± 0.0341  0.5633 ± 0.0195
+nphad                              25   0.8461 ± 0.0059  0.5082 ± 0.0169  0.5624 ± 0.0237  0.5796 ± 0.0174
+npRC                               25   0.8445 ± 0.0050  0.5018 ± 0.0245  0.5444 ± 0.0382  0.5695 ± 0.0184
+npRP                               25   0.8449 ± 0.0068  0.5129 ± 0.0223  0.5447 ± 0.0314  0.5602 ± 0.0234
+herogf                             25   0.8468 ± 0.0091  0.5288 ± 0.0128  0.5702 ± 0.0273  0.5874 ± 0.0186
+nphadgf                            25   0.8498 ± 0.0061  0.5323 ± 0.0125  0.5769 ± 0.0257  0.6003 ± 0.0149
+  nphad vs hero: within-TF diff +0.0213  TFs better 24/34  p=0.041
+  npRC vs hero: within-TF diff -0.0135  TFs better 20/34  p=0.81
+  npRP vs hero: within-TF diff +0.0034  TFs better 22/34  p=0.4
+  herogf vs hero: within-TF diff +0.0262  TFs better 26/34  p=0.0041
+  nphadgf vs herogf: within-TF diff +0.0036  TFs better 20/34  p=0.72

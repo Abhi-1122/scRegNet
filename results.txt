@@ -368,3 +368,546 @@ top-30 of EZH2's TEST candidates: held-out targets recovered (chance level ~ 3.9
 | GCN 1-layer, interacting, split, Geneformer | 3 | 0.9372 ± 0.0009 | 0.8788 ± 0.0012 | 0.8116 ± 0.0024 |
 | SAGE 1-layer, interacting, split, no Geneformer | 3 | 0.9389 ± 0.0010 | 0.8814 ± 0.0019 | 0.8249 ± 0.0021 |
 |   + co-expression number | 3 | 0.9392 ± 0.0010 | 0.8817 ± 0.0018 | 0.8277 ± 0.0017 |
+
+--- hero vs co-expression contrast / PANDA (analysis/hero_vs_contrast.py -> analysis/out/hero_vs_contrast.txt): per-TF Spearman of test logit with the number, and partial Spearman controlling for target popularity; 33 TFs, mean ± std over 5 seeds ---
+config            rho_contrast   partial_contrast  rho_panda      partial_panda
+d01_C_default     0.269 ± 0.026  0.309 ± 0.045     0.473 ± 0.019  0.289 ± 0.035
+f04_C_tuned       0.261 ± 0.033  0.294 ± 0.047     0.467 ± 0.023  0.279 ± 0.042
+d02_B_default     0.284 ± 0.022  0.338 ± 0.034     0.490 ± 0.013  0.326 ± 0.023
+f07_C_gcn         0.245 ± 0.036  0.303 ± 0.050     0.440 ± 0.023  0.239 ± 0.045
+f08_C_add         0.097 ± 0.025  0.074 ± 0.050     0.353 ± 0.009  0.079 ± 0.023
+f01_A_tuned       0.097 ± 0.001  0.071 ± 0.001     0.313 ± 0.005  0.062 ± 0.003
+f02_A_paper       0.094 ± 0.003  0.067 ± 0.005     0.320 ± 0.005  0.065 ± 0.001
+paired partial rho with contrast, d01 minus f08_C_add: +0.234 CI [+0.147,+0.327] 26/33 TFs p=2e-5; minus f02_A_paper: +0.242 CI [+0.162,+0.326] 27/33 p=3e-6
+number alone, within-TF AUROC: contrast 0.5744, PANDA 0.6636 ---
+
+--- Within-TF-criterion tuning pilot, hESC (analysis/tune2.py -> analysis/out/t2_report_hESC.txt; 2026-10-16): hyperparameters (16 trials/family, seed 0, validation slice) AND training epoch chosen on VALIDATION within-TF AUROC (--select_metric within); 5 seeds 42-46, refit ---
+hESC: refit test metrics, mean ± std over seeds; hyperparameters AND epoch chosen on validation within-TF AUROC
+model                                            n             AUROC            AUPRC        within-TF within-TF(>=8 pos)
+scRegNet (published recipe)                      5   0.8855 ± 0.0006  0.6210 ± 0.0015  0.7240 ± 0.0045    0.7165 ± 0.0028
+hero without Geneformer (tuned)                  5   0.8827 ± 0.0007  0.6016 ± 0.0032  0.7101 ± 0.0043    0.7125 ± 0.0025
+hero with Geneformer (tuned)                     5   0.8904 ± 0.0006  0.6292 ± 0.0018  0.7393 ± 0.0045    0.7337 ± 0.0026
+
+paired per-TF tests (per-TF AUROC averaged over seeds):
+  C_hero - A_paper                         within-TF diff -0.0139  95% CI [-0.0401, +0.0163]  TFs better 11/33  Wilcoxon p=0.0424
+  B_hero_sf - A_paper                      within-TF diff +0.0153  95% CI [-0.0095, +0.0453]  TFs better 17/33  Wilcoxon p=0.751
+  B_hero_sf - C_hero                       within-TF diff +0.0292  95% CI [+0.0073, +0.0531]  TFs better 22/33  Wilcoxon p=0.0188
+
+ENSEMBLE of the seeds (z-scored logits averaged; not a single model, not comparable to the mean ± std rows):
+  w2_hESC_C_hero                 (5 seeds) AUROC 0.8834  AUPRC 0.6040  within-TF 0.7126  within-TF(>=8 pos) 0.7139
+  w2_hESC_B_hero_sf              (5 seeds) AUROC 0.8922  AUPRC 0.6337  within-TF 0.7421  within-TF(>=8 pos) 0.7373
+tuning winners (val within-TF; hand-set default trial in brackets): C_hero gcn/64-wide/Adam lr 1.87e-4 wd 5.75e-3 dropout 0.352 bs 193 0.7434 [0.7046]; B_hero_sf gcn/128/Adam lr 2.38e-4 wd 2.7e-6 dropout 0.476 bs 512 0.7509 [0.7177].
+Pre-specified verdict: tuned C_hero test within-TF 0.7101 < 0.7471 (hand-set d01_C_default) -> within-TF tuning is NOT better for the hero. Old refs (val-AUROC epoch): d01_C_default 0.7471, f04_C_tuned 0.7449, d02_B_default 0.7517, f02_A_paper 0.7029.
+Note: epoch rule alone lifts the published recipe 0.7029 -> 0.7240.
+
+--- Week 3, hESC (analysis/w3_report.py -> analysis/out/w3_report_hESC.txt; 2026-10-23): PANDA top-K as the message-passing graph (safe = fold-pure batches vs naive), neural PANDA encoder (R/C/P relations, Tanimoto decoders), stacker on PANDA / co-expression graphs. GPU, 5 seeds, hero optimiser settings, epoch on validation AUROC, refit. Paired tests vs the GPU hero (w3_hero). Result: no variant beats the hero on within-TF.
+Week 3, hESC. All pair_gnn rows: GPU, 5 seeds (42-46), hero optimiser settings, epoch chosen on validation AUROC, refit on all training rows.
+
+== Reference
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (GNN, GRN graph, no scFM)                 5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061  0.8882 ± 0.0008    0.26
+hero + Geneformer                              5   0.8907 ± 0.0014  0.6345 ± 0.0039  0.7510 ± 0.0025  0.7311 ± 0.0039  0.8918 ± 0.0010    0.24
+paired per-TF tests vs hero (w3_hero):
+  hero + Geneformer                              within-TF diff +0.0040  95% CI [-0.0074, +0.0138]  TFs better 23/33  p=0.0864
+same-seed differences vs hero (mean over seeds, seeds better of 5):
+  hero + Geneformer                              AUROC +0.0023 (5/5)  AUPRC +0.0090 (5/5)
+
+== Part 1: PANDA top-K as the message-passing graph (safe = fold-pure batches)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (GRN graph)                               5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061  0.8882 ± 0.0008    0.26
+PANDA graph K=50 safe                          5   0.8811 ± 0.0021  0.6058 ± 0.0036  0.7133 ± 0.0157  0.7011 ± 0.0098  0.8828 ± 0.0020    0.28
+PANDA graph K=100 safe                         5   0.8822 ± 0.0022  0.6117 ± 0.0040  0.7231 ± 0.0096  0.7098 ± 0.0037  0.8823 ± 0.0021    0.28
+PANDA graph K=200 safe                         5   0.8838 ± 0.0012  0.6110 ± 0.0023  0.7218 ± 0.0082  0.7171 ± 0.0063  0.8846 ± 0.0013    0.42
+GRN + PANDA K=100 safe (union)                 5   0.8836 ± 0.0019  0.6151 ± 0.0035  0.7298 ± 0.0091  0.7150 ± 0.0054  0.8846 ± 0.0018    0.30
+PANDA graph K=100 NAIVE (leaks)                5   0.8659 ± 0.0017  0.5847 ± 0.0037  0.6918 ± 0.0059  0.6824 ± 0.0047  0.8617 ± 0.0028    0.11
+GRN + PANDA K=100 NAIVE (union)                5   0.8730 ± 0.0021  0.5974 ± 0.0063  0.7110 ± 0.0095  0.6883 ± 0.0087  0.8670 ± 0.0014    0.12
+PANDA graph K=200 safe + Geneformer            5   0.8852 ± 0.0011  0.6208 ± 0.0035  0.7209 ± 0.0095  0.7205 ± 0.0053  0.8905 ± 0.0012    0.57
+GRN + PANDA K=100 safe + Geneformer            5   0.8852 ± 0.0013  0.6217 ± 0.0031  0.7308 ± 0.0064  0.7219 ± 0.0066  0.8882 ± 0.0016    0.43
+paired per-TF tests vs hero (w3_hero):
+  PANDA graph K=50 safe                          within-TF diff -0.0337  95% CI [-0.0647, -0.0081]  TFs better 10/33  p=0.00354
+  PANDA graph K=100 safe                         within-TF diff -0.0239  95% CI [-0.0469, -0.0059]  TFs better 8/33  p=0.00879
+  PANDA graph K=200 safe                         within-TF diff -0.0252  95% CI [-0.0603, -0.0003]  TFs better 10/33  p=0.0798
+  GRN + PANDA K=100 safe (union)                 within-TF diff -0.0172  95% CI [-0.0359, -0.0036]  TFs better 9/33  p=0.00879
+  PANDA graph K=100 NAIVE (leaks)                within-TF diff -0.0552  95% CI [-0.0812, -0.0334]  TFs better 3/33  p=2.3e-06
+  GRN + PANDA K=100 NAIVE (union)                within-TF diff -0.0360  95% CI [-0.0524, -0.0183]  TFs better 5/33  p=2.48e-05
+  PANDA graph K=200 safe + Geneformer            within-TF diff -0.0261  95% CI [-0.0647, +0.0029]  TFs better 15/33  p=0.406
+  GRN + PANDA K=100 safe + Geneformer            within-TF diff -0.0162  95% CI [-0.0470, +0.0063]  TFs better 15/33  p=0.406
+same-seed differences vs hero (mean over seeds, seeds better of 5):
+  PANDA graph K=50 safe                          AUROC -0.0074 (0/5)  AUPRC -0.0198 (0/5)
+  PANDA graph K=100 safe                         AUROC -0.0062 (0/5)  AUPRC -0.0138 (0/5)
+  PANDA graph K=200 safe                         AUROC -0.0046 (0/5)  AUPRC -0.0145 (0/5)
+  GRN + PANDA K=100 safe (union)                 AUROC -0.0048 (0/5)  AUPRC -0.0104 (0/5)
+  PANDA graph K=100 NAIVE (leaks)                AUROC -0.0225 (0/5)  AUPRC -0.0409 (0/5)
+  GRN + PANDA K=100 NAIVE (union)                AUROC -0.0154 (0/5)  AUPRC -0.0281 (0/5)
+  PANDA graph K=200 safe + Geneformer            AUROC -0.0032 (0/5)  AUPRC -0.0047 (1/5)
+  GRN + PANDA K=100 safe + Geneformer            AUROC -0.0032 (0/5)  AUPRC -0.0038 (1/5)
+
+leak measurement, NAIVE minus SAFE (same K, same seeds):
+  w3_pg_k100_naive - safe                        within-TF diff -0.0313  95% CI [-0.0551, -0.0092]  TFs better 9/33  p=0.00428
+  epochs chosen: naive [2, 2, 3, 2, 2], safe [10, 8, 4, 5, 7]
+  w3_pgU_k100_naive - safe                       within-TF diff -0.0187  95% CI [-0.0385, +0.0035]  TFs better 9/33  p=0.0104
+  epochs chosen: naive [2, 2, 3, 2, 3], safe [10, 15, 4, 5, 7]
+
+== Part 2: neural PANDA encoder (R known targets, C co-expression kNN, P STRING PPI; 2 layers, Tanimoto decoder unless stated)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (sage, had)                               5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061  0.8882 ± 0.0008    0.26
+hero with Tanimoto decoder                     5   0.8837 ± 0.0011  0.6205 ± 0.0037  0.7174 ± 0.0038  0.7067 ± 0.0044  0.8841 ± 0.0008    0.40
+np full RCP                                    5   0.8852 ± 0.0009  0.6210 ± 0.0054  0.7180 ± 0.0061  0.7064 ± 0.0043  0.8877 ± 0.0005    0.75
+np without C (RP)                              5   0.8852 ± 0.0009  0.6240 ± 0.0017  0.7136 ± 0.0049  0.7085 ± 0.0007  0.8873 ± 0.0006    0.52
+np without P (RC)                              5   0.8839 ± 0.0009  0.6190 ± 0.0057  0.7162 ± 0.0056  0.7042 ± 0.0039  0.8861 ± 0.0007    0.72
+np without R (CP)                              5   0.8825 ± 0.0010  0.6197 ± 0.0040  0.7108 ± 0.0045  0.7049 ± 0.0039  0.8854 ± 0.0008    0.82
+np full, had decoder                           5   0.8898 ± 0.0014  0.6315 ± 0.0033  0.7410 ± 0.0079  0.7242 ± 0.0105  0.8918 ± 0.0005    0.86
+np full, 1 layer                               5   0.8824 ± 0.0016  0.6146 ± 0.0082  0.7145 ± 0.0025  0.7060 ± 0.0045  0.8860 ± 0.0007    0.89
+np full, metacell C                            5   0.8853 ± 0.0008  0.6235 ± 0.0044  0.7123 ± 0.0044  0.7070 ± 0.0018  0.8878 ± 0.0007    0.77
+np full, tani_pure decoder                     5   0.8337 ± 0.0245  0.5105 ± 0.0959  0.6669 ± 0.0140  0.6595 ± 0.0237  0.8615 ± 0.0107    1.82
+np full + Geneformer                           5   0.8858 ± 0.0009  0.6266 ± 0.0032  0.7192 ± 0.0033  0.7133 ± 0.0036  0.8885 ± 0.0003    0.84
+paired per-TF tests vs hero (w3_hero):
+  hero with Tanimoto decoder                     within-TF diff -0.0296  95% CI [-0.0564, -0.0074]  TFs better 14/33  p=0.097
+  np full RCP                                    within-TF diff -0.0290  95% CI [-0.0547, -0.0079]  TFs better 14/33  p=0.0424
+  np without C (RP)                              within-TF diff -0.0334  95% CI [-0.0630, -0.0078]  TFs better 16/33  p=0.0737
+  np without P (RC)                              within-TF diff -0.0308  95% CI [-0.0582, -0.0086]  TFs better 14/33  p=0.0169
+  np without R (CP)                              within-TF diff -0.0362  95% CI [-0.0680, -0.0104]  TFs better 13/33  p=0.0737
+  np full, had decoder                           within-TF diff -0.0060  95% CI [-0.0211, +0.0063]  TFs better 17/33  p=0.86
+  np full, 1 layer                               within-TF diff -0.0325  95% CI [-0.0612, -0.0095]  TFs better 14/33  p=0.0528
+  np full, metacell C                            within-TF diff -0.0347  95% CI [-0.0632, -0.0107]  TFs better 14/33  p=0.037
+  np full, tani_pure decoder                     within-TF diff -0.0801  95% CI [-0.1101, -0.0516]  TFs better 4/33  p=1.33e-06
+  np full + Geneformer                           within-TF diff -0.0278  95% CI [-0.0568, -0.0036]  TFs better 17/33  p=0.214
+same-seed differences vs hero (mean over seeds, seeds better of 5):
+  hero with Tanimoto decoder                     AUROC -0.0047 (0/5)  AUPRC -0.0051 (0/5)
+  np full RCP                                    AUROC -0.0033 (0/5)  AUPRC -0.0045 (1/5)
+  np without C (RP)                              AUROC -0.0032 (0/5)  AUPRC -0.0015 (2/5)
+  np without P (RC)                              AUROC -0.0046 (0/5)  AUPRC -0.0066 (0/5)
+  np without R (CP)                              AUROC -0.0059 (0/5)  AUPRC -0.0058 (1/5)
+  np full, had decoder                           AUROC +0.0014 (4/5)  AUPRC +0.0060 (5/5)
+  np full, 1 layer                               AUROC -0.0060 (0/5)  AUPRC -0.0109 (0/5)
+  np full, metacell C                            AUROC -0.0032 (0/5)  AUPRC -0.0020 (2/5)
+  np full, tani_pure decoder                     AUROC -0.0547 (0/5)  AUPRC -0.1150 (0/5)
+  np full + Geneformer                           AUROC -0.0026 (0/5)  AUPRC +0.0011 (4/5)
+
+== Part 2b (added): where does the np had-decoder gain come from? (had decoder everywhere)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (1 layer sage)                            5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061  0.8882 ± 0.0008    0.26
+hero, 2 layers sage                            5   0.8866 ± 0.0022  0.6282 ± 0.0032  0.7333 ± 0.0104  0.7125 ± 0.0072  0.8870 ± 0.0013    0.29
+np R only                                      5   0.8863 ± 0.0013  0.6278 ± 0.0025  0.7306 ± 0.0025  0.7089 ± 0.0030  0.8873 ± 0.0010    0.38
+np RC                                          5   0.8887 ± 0.0016  0.6297 ± 0.0024  0.7359 ± 0.0039  0.7214 ± 0.0093  0.8896 ± 0.0009    0.70
+np RP                                          5   0.8883 ± 0.0009  0.6299 ± 0.0010  0.7370 ± 0.0047  0.7156 ± 0.0036  0.8894 ± 0.0007    0.38
+np CP                                          5   0.8888 ± 0.0008  0.6268 ± 0.0027  0.7297 ± 0.0053  0.7218 ± 0.0052  0.8902 ± 0.0005    0.86
+np RCP                                         5   0.8898 ± 0.0014  0.6315 ± 0.0033  0.7410 ± 0.0079  0.7242 ± 0.0105  0.8918 ± 0.0005    0.86
+paired per-TF tests vs hero (w3_hero):
+  hero, 2 layers sage                            within-TF diff -0.0137  95% CI [-0.0317, +0.0005]  TFs better 14/33  p=0.171
+  np R only                                      within-TF diff -0.0164  95% CI [-0.0376, +0.0002]  TFs better 14/33  p=0.155
+  np RC                                          within-TF diff -0.0111  95% CI [-0.0239, -0.0002]  TFs better 16/33  p=0.339
+  np RP                                          within-TF diff -0.0101  95% CI [-0.0272, +0.0038]  TFs better 17/33  p=0.513
+  np CP                                          within-TF diff -0.0173  95% CI [-0.0431, +0.0039]  TFs better 16/33  p=0.627
+  np RCP                                         within-TF diff -0.0060  95% CI [-0.0211, +0.0063]  TFs better 17/33  p=0.86
+same-seed differences vs hero (mean over seeds, seeds better of 5):
+  hero, 2 layers sage                            AUROC -0.0018 (0/5)  AUPRC +0.0027 (5/5)
+  np R only                                      AUROC -0.0022 (0/5)  AUPRC +0.0022 (5/5)
+  np RC                                          AUROC +0.0003 (3/5)  AUPRC +0.0042 (4/5)
+  np RP                                          AUROC -0.0002 (2/5)  AUPRC +0.0044 (4/5)
+  np CP                                          AUROC +0.0004 (3/5)  AUPRC +0.0012 (3/5)
+  np RCP                                         AUROC +0.0014 (4/5)  AUPRC +0.0060 (5/5)
+
+np full + Geneformer vs hero + Geneformer:
+  np_gf - herogf                                 within-TF diff -0.0318  95% CI [-0.0628, -0.0064]  TFs better 14/33  p=0.0961
+  w3_pg_k200_gf - herogf                         within-TF diff -0.0301  95% CI [-0.0616, -0.0065]  TFs better 7/33  p=0.0176
+  w3_pgU_k100_gf - herogf                        within-TF diff -0.0202  95% CI [-0.0427, -0.0037]  TFs better 7/33  p=0.00216
+
+== Part 3: context-specific stacker (single run; test rows use full PANDA, training rows their own fold PANDA)
+stack                                                                      AUROC   AUPRC  within   vs best cs_baselines (p)    vs hero (p)
+label stack (3-paths + RA) [LR]                                           0.8837  0.6064  0.7253 -0.0026 (p=0.51) -0.0217 (p=0.93)
+label stack (3-paths + RA) [GBM]                                          0.8831  0.6132  0.7079 -0.0200 (p=0.093) -0.0391 (p=0.09)
+label + contrast + PANDA score (best in cs_baselines) [LR]                0.8867  0.6102  0.7399 +0.0120 (p=0.36) -0.0071 (p=0.68)
+label + contrast + PANDA score (best in cs_baselines) [GBM]               0.8871  0.6171  0.7279 +0.0000 (p=1) -0.0191 (p=0.36)
+context only (PANDA graph + PANDA score + co-expression graph) [LR]       0.7879  0.4502  0.5836 -0.1443 (p=5.1e-05) -0.1634 (p=4.8e-08)
+context only (PANDA graph + PANDA score + co-expression graph) [GBM]      0.8586  0.5611  0.6673 -0.0606 (p=0.001) -0.0797 (p=0.00019)
+PANDA graph only [LR]                                                     0.7840  0.4465  0.5825 -0.1454 (p=2.8e-05) -0.1645 (p=1e-07)
+PANDA graph only [GBM]                                                    0.8423  0.5369  0.6560 -0.0719 (p=0.00032) -0.0910 (p=8.3e-05)
+co-expression graph only [LR]                                             0.5651  0.1759  0.4984 -0.2295 (p=2.9e-07) -0.2486 (p=2e-08)
+co-expression graph only [GBM]                                            0.7995  0.4342  0.5324 -0.1955 (p=1.4e-05) -0.2146 (p=7.1e-08)
+label + PANDA graph [LR]                                                  0.8881  0.6181  0.7385 +0.0106 (p=0.13) -0.0085 (p=0.58)
+label + PANDA graph [GBM]                                                 0.8882  0.6161  0.7326 +0.0047 (p=0.54) -0.0144 (p=0.96)
+label + co-expression graph [LR]                                          0.8851  0.6097  0.7110 -0.0169 (p=0.54) -0.0360 (p=0.63)
+label + co-expression graph [GBM]                                         0.8852  0.6140  0.7095 -0.0184 (p=0.043) -0.0375 (p=0.035)
+all [LR]                                                                  0.8893  0.6194  0.7423 +0.0144 (p=0.074) -0.0047 (p=0.82)
+all [GBM]                                                                 0.8889  0.6199  0.7270 -0.0009 (p=0.43) -0.0200 (p=0.83)
+hero within-TF (mean over seeds, same TFs) for reference: 0.7470
+
+single features (raw test AUROC / within-TF):
+  pg_pa        0.6114 / 0.6522
+  pg_user_cf   0.6635 / 0.7072
+  pg_item_cf   0.5688 / 0.6987
+  pg_k3        0.5585 / 0.7027
+  pg_ra3       0.6679 / 0.7018
+  cx_corr      0.4572 / 0.4909
+  cx_cn        0.4979 / 0.4726
+  cx_aa        0.4974 / 0.4723
+  cx_degg      0.4752 / 0.4690
+  cx_degt      0.5140 / 0.5000
+  cx_itemcf    0.6443 / 0.5177
+  panda        0.7438 / 0.6636
+
+== Graph diagnostics and leak
+hESC: PANDA top-K graph diagnostics (test base rate 0.149, train base rate 0.147)
+   K  edges  test pos recall  test pairs in graph  precision  train pos recall FULL  train pos recall OWN-FOLD
+  50   1700            0.007                  149      0.047                  0.354                      0.010
+ 100   3400            0.032                  412      0.083                  0.556                      0.033
+ 200   6800            0.101                 1026      0.104                  0.857                      0.127
+training positives among the K=100 edges of the full graph: 1685 of 3400
+train-pos recall FULL minus OWN-FOLD = the share of training positives that sit in the graph only because they are in the prior (the leak).
+
+--- Week 3 part 5, other cell types (analysis/w4_report.py -> analysis/out/w4_report.txt; 2026-10-23): hHEP, mESC, mHSC-E (hESC column from the w3 rows). GPU, 5 seeds, hero settings from hESC (not re-tuned), epoch on validation AUROC, refit; scRegNet published recipe = rule A. Paired tests vs each cell's hero.
+Week 3 part 5: hHEP (human), mESC and mHSC-E (mouse). GPU, 5 seeds (42-46), epoch chosen on validation AUROC, refit on all training rows.
+Hero settings were set on hESC and not re-tuned here. STRING PPI built with make_ppi.py (STRING v12, score >= 700, functional), same as hESC.
+
+== hHEP
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (GNN, GRN graph)                          5   0.8993 ± 0.0007  0.8384 ± 0.0010  0.7599 ± 0.0022  0.7683 ± 0.0016  0.8989 ± 0.0013    0.61
+hero + Geneformer                              5   0.9027 ± 0.0007  0.8430 ± 0.0018  0.7800 ± 0.0046  0.7816 ± 0.0017  0.9005 ± 0.0007    0.38
+GRN + PANDA K=100 safe (union)                 5   0.8970 ± 0.0008  0.8370 ± 0.0028  0.7549 ± 0.0061  0.7656 ± 0.0030  0.8982 ± 0.0010    0.53
+neural PANDA RCP, had decoder                  5   0.9024 ± 0.0005  0.8437 ± 0.0006  0.7744 ± 0.0070  0.7774 ± 0.0027  0.9019 ± 0.0003    1.33
+neural PANDA RCP, Tanimoto decoder             5   0.8999 ± 0.0011  0.8372 ± 0.0028  0.7752 ± 0.0014  0.7724 ± 0.0016  0.8958 ± 0.0004    0.84
+scRegNet published recipe (rule A)             5   0.9023 ± 0.0003  0.8413 ± 0.0006  0.7870 ± 0.0011  0.7790 ± 0.0007  0.8973 ± 0.0004   17.66
+paired per-TF tests vs hero (w4_hHEP_hero):
+  hero + Geneformer                              within-TF diff +0.0201  95% CI [+0.0057, +0.0409]  TFs better 23/30  p=0.00578
+  GRN + PANDA K=100 safe (union)                 within-TF diff -0.0049  95% CI [-0.0106, +0.0004]  TFs better 11/30  p=0.0879
+  neural PANDA RCP, had decoder                  within-TF diff +0.0145  95% CI [+0.0058, +0.0264]  TFs better 24/30  p=0.000418
+  neural PANDA RCP, Tanimoto decoder             within-TF diff +0.0154  95% CI [-0.0005, +0.0378]  TFs better 14/30  p=0.556
+  scRegNet published recipe (rule A)             within-TF diff +0.0272  95% CI [+0.0052, +0.0566]  TFs better 17/30  p=0.0841
+same-seed differences vs hero (mean over seeds, seeds better of 5):
+  hero + Geneformer                              AUROC +0.0035 (5/5)  AUPRC +0.0046 (5/5)
+  GRN + PANDA K=100 safe (union)                 AUROC -0.0023 (0/5)  AUPRC -0.0014 (1/5)
+  neural PANDA RCP, had decoder                  AUROC +0.0031 (5/5)  AUPRC +0.0053 (5/5)
+  neural PANDA RCP, Tanimoto decoder             AUROC +0.0006 (3/5)  AUPRC -0.0012 (2/5)
+  scRegNet published recipe (rule A)             AUROC +0.0030 (5/5)  AUPRC +0.0029 (5/5)
+
+hHEP: stacker (single fit; test rows full PANDA, training rows own-fold PANDA)
+stack                                                                      AUROC   AUPRC  within   vs best cs_baselines (p)    vs hero (p)
+label stack (3-paths + RA) [LR]                                           0.8989  0.8280  0.7826 +0.0159 (p=0.047) +0.0228 (p=0.81)
+label stack (3-paths + RA) [GBM]                                          0.8960  0.8108  0.7850 +0.0183 (p=0.72) +0.0252 (p=0.29)
+label + contrast + PANDA score (best in cs_baselines) [LR]                0.8992  0.8299  0.7590 -0.0078 (p=0.038) -0.0009 (p=0.4)
+label + contrast + PANDA score (best in cs_baselines) [GBM]               0.8969  0.8147  0.7668 +0.0000 (p=1) +0.0069 (p=0.14)
+context only (PANDA graph + PANDA score + co-expression graph) [LR]       0.7577  0.6552  0.6249 -0.1419 (p=6e-06) -0.1349 (p=6e-06)
+context only (PANDA graph + PANDA score + co-expression graph) [GBM]      0.8394  0.7397  0.6382 -0.1285 (p=1.2e-06) -0.1216 (p=8e-06)
+PANDA graph only [LR]                                                     0.7481  0.6432  0.6060 -0.1608 (p=6e-06) -0.1539 (p=6.9e-06)
+PANDA graph only [GBM]                                                    0.8000  0.6964  0.6206 -0.1462 (p=4.4e-06) -0.1393 (p=9.9e-05)
+co-expression graph only [LR]                                             0.5582  0.3906  0.5447 -0.2221 (p=3.1e-07) -0.2152 (p=2e-07)
+co-expression graph only [GBM]                                            0.7713  0.5938  0.5586 -0.2082 (p=1.2e-06) -0.2013 (p=3.8e-06)
+label + PANDA graph [LR]                                                  0.8981  0.8284  0.7791 +0.0123 (p=0.023) +0.0192 (p=0.56)
+label + PANDA graph [GBM]                                                 0.8955  0.8164  0.7495 -0.0172 (p=0.52) -0.0103 (p=0.1)
+label + co-expression graph [LR]                                          0.8998  0.8278  0.7779 +0.0111 (p=0.05) +0.0180 (p=0.32)
+label + co-expression graph [GBM]                                         0.8959  0.8133  0.7705 +0.0038 (p=0.44) +0.0107 (p=0.27)
+all [LR]                                                                  0.8993  0.8288  0.7586 -0.0082 (p=0.047) -0.0013 (p=0.7)
+all [GBM]                                                                 0.8974  0.8203  0.7643 -0.0025 (p=0.5) +0.0045 (p=0.1)
+
+== mESC
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (GNN, GRN graph)                          5   0.9393 ± 0.0009  0.8819 ± 0.0015  0.8235 ± 0.0013  0.8287 ± 0.0013  0.9381 ± 0.0005    5.45
+hero + Geneformer                              5   0.9401 ± 0.0005  0.8838 ± 0.0006  0.8245 ± 0.0020  0.8300 ± 0.0019  0.9394 ± 0.0007    3.30
+GRN + PANDA K=100 safe (union)                 5   0.9374 ± 0.0008  0.8790 ± 0.0016  0.8133 ± 0.0028  0.8252 ± 0.0022  0.9355 ± 0.0007    6.97
+neural PANDA RCP, had decoder                  5   0.9411 ± 0.0007  0.8861 ± 0.0014  0.8250 ± 0.0034  0.8352 ± 0.0032  0.9416 ± 0.0004   14.06
+neural PANDA RCP, Tanimoto decoder             5   0.9243 ± 0.0008  0.8554 ± 0.0026  0.7618 ± 0.0037  0.7617 ± 0.0030  0.9273 ± 0.0002   10.43
+scRegNet published recipe (rule A)             5   0.9254 ± 0.0001  0.8587 ± 0.0001  0.7657 ± 0.0002  0.7651 ± 0.0002  0.9267 ± 0.0001   75.02
+paired per-TF tests vs hero (w4_mESC_hero):
+  hero + Geneformer                              within-TF diff +0.0010  95% CI [-0.0043, +0.0061]  TFs better 43/85  p=0.465
+  GRN + PANDA K=100 safe (union)                 within-TF diff -0.0101  95% CI [-0.0174, -0.0039]  TFs better 26/85  p=0.00081
+  neural PANDA RCP, had decoder                  within-TF diff +0.0015  95% CI [-0.0089, +0.0100]  TFs better 56/85  p=0.00645
+  neural PANDA RCP, Tanimoto decoder             within-TF diff -0.0617  95% CI [-0.0878, -0.0381]  TFs better 18/85  p=1.85e-08
+  scRegNet published recipe (rule A)             within-TF diff -0.0578  95% CI [-0.0825, -0.0350]  TFs better 23/85  p=7.26e-08
+same-seed differences vs hero (mean over seeds, seeds better of 5):
+  hero + Geneformer                              AUROC +0.0008 (4/5)  AUPRC +0.0019 (4/5)
+  GRN + PANDA K=100 safe (union)                 AUROC -0.0018 (1/5)  AUPRC -0.0029 (1/5)
+  neural PANDA RCP, had decoder                  AUROC +0.0018 (5/5)  AUPRC +0.0042 (5/5)
+  neural PANDA RCP, Tanimoto decoder             AUROC -0.0150 (0/5)  AUPRC -0.0265 (0/5)
+  scRegNet published recipe (rule A)             AUROC -0.0139 (0/5)  AUPRC -0.0232 (0/5)
+
+mESC: stacker (single fit; test rows full PANDA, training rows own-fold PANDA)
+stack                                                                      AUROC   AUPRC  within   vs best cs_baselines (p)    vs hero (p)
+label stack (3-paths + RA) [LR]                                           0.9281  0.8541  0.8023 +0.0067 (p=0.0025) -0.0212 (p=0.0038)
+label stack (3-paths + RA) [GBM]                                          0.9258  0.8512  0.7810 -0.0146 (p=0.0027) -0.0425 (p=3e-07)
+label + contrast + PANDA score (best in cs_baselines) [LR]                0.9321  0.8630  0.8013 +0.0058 (p=2.2e-05) -0.0221 (p=0.026)
+label + contrast + PANDA score (best in cs_baselines) [GBM]               0.9294  0.8546  0.7956 +0.0000 (p=1) -0.0279 (p=6.4e-06)
+context only (PANDA graph + PANDA score + co-expression graph) [LR]       0.9039  0.7991  0.7240 -0.0716 (p=1.2e-07) -0.0995 (p=4.7e-14)
+context only (PANDA graph + PANDA score + co-expression graph) [GBM]      0.9130  0.8226  0.7368 -0.0588 (p=6.8e-09) -0.0867 (p=1.4e-13)
+PANDA graph only [LR]                                                     0.9032  0.7954  0.7274 -0.0681 (p=4.2e-07) -0.0960 (p=8.7e-14)
+PANDA graph only [GBM]                                                    0.9072  0.8128  0.7254 -0.0702 (p=5.6e-08) -0.0981 (p=2e-13)
+co-expression graph only [LR]                                             0.5840  0.3478  0.6090 -0.1866 (p=2.9e-14) -0.2145 (p=1.7e-14)
+co-expression graph only [GBM]                                            0.8179  0.6308  0.5863 -0.2093 (p=1e-14) -0.2372 (p=1.8e-15)
+label + PANDA graph [LR]                                                  0.9341  0.8657  0.8050 +0.0094 (p=1.4e-06) -0.0184 (p=0.014)
+label + PANDA graph [GBM]                                                 0.9320  0.8577  0.7974 +0.0018 (p=0.15) -0.0261 (p=6e-06)
+label + co-expression graph [LR]                                          0.9298  0.8562  0.8131 +0.0175 (p=3.2e-05) -0.0104 (p=0.066)
+label + co-expression graph [GBM]                                         0.9280  0.8546  0.7921 -0.0035 (p=0.097) -0.0314 (p=8.7e-08)
+all [LR]                                                                  0.9349  0.8684  0.8042 +0.0086 (p=0.00062) -0.0192 (p=0.022)
+all [GBM]                                                                 0.9329  0.8619  0.8043 +0.0087 (p=0.0018) -0.0192 (p=1.3e-05)
+
+== mHSC-E
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (GNN, GRN graph)                          5   0.9229 ± 0.0014  0.9428 ± 0.0014  0.7616 ± 0.0110  0.8015 ± 0.0040  0.9257 ± 0.0008    0.73
+hero + Geneformer                              5   0.9250 ± 0.0011  0.9441 ± 0.0011  0.7816 ± 0.0044  0.8129 ± 0.0018  0.9291 ± 0.0005    0.69
+GRN + PANDA K=100 safe (union)                 5   0.9226 ± 0.0011  0.9423 ± 0.0012  0.7600 ± 0.0056  0.7949 ± 0.0041  0.9235 ± 0.0015    0.63
+neural PANDA RCP, had decoder                  5   0.9239 ± 0.0011  0.9433 ± 0.0011  0.7572 ± 0.0050  0.8070 ± 0.0017  0.9273 ± 0.0013    1.20
+neural PANDA RCP, Tanimoto decoder             5   0.9187 ± 0.0012  0.9384 ± 0.0015  0.7202 ± 0.0033  0.7763 ± 0.0023  0.9174 ± 0.0004    1.21
+scRegNet published recipe (rule A)             5   0.9196 ± 0.0001  0.9392 ± 0.0001  0.7219 ± 0.0012  0.7762 ± 0.0009  0.9139 ± 0.0004   15.12
+paired per-TF tests vs hero (w4_mHSC-E_hero):
+  hero + Geneformer                              within-TF diff +0.0200  95% CI [+0.0078, +0.0357]  TFs better 24/29  p=4.13e-05
+  GRN + PANDA K=100 safe (union)                 within-TF diff -0.0016  95% CI [-0.0117, +0.0088]  TFs better 14/29  p=0.275
+  neural PANDA RCP, had decoder                  within-TF diff -0.0044  95% CI [-0.0285, +0.0159]  TFs better 16/29  p=0.882
+  neural PANDA RCP, Tanimoto decoder             within-TF diff -0.0414  95% CI [-0.0837, -0.0103]  TFs better 6/29  p=0.000551
+  scRegNet published recipe (rule A)             within-TF diff -0.0397  95% CI [-0.0746, -0.0117]  TFs better 8/29  p=0.00479
+same-seed differences vs hero (mean over seeds, seeds better of 5):
+  hero + Geneformer                              AUROC +0.0020 (5/5)  AUPRC +0.0014 (5/5)
+  GRN + PANDA K=100 safe (union)                 AUROC -0.0003 (1/5)  AUPRC -0.0005 (2/5)
+  neural PANDA RCP, had decoder                  AUROC +0.0009 (4/5)  AUPRC +0.0005 (3/5)
+  neural PANDA RCP, Tanimoto decoder             AUROC -0.0042 (0/5)  AUPRC -0.0044 (0/5)
+  scRegNet published recipe (rule A)             AUROC -0.0033 (0/5)  AUPRC -0.0036 (0/5)
+
+mHSC-E: stacker (single fit; test rows full PANDA, training rows own-fold PANDA)
+stack                                                                      AUROC   AUPRC  within   vs best cs_baselines (p)    vs hero (p)
+label stack (3-paths + RA) [LR]                                           0.9143  0.9307  0.7141 -0.0443 (p=0.55) -0.0475 (p=0.0032)
+label stack (3-paths + RA) [GBM]                                          0.9127  0.9254  0.7498 -0.0087 (p=0.29) -0.0118 (p=0.022)
+label + contrast + PANDA score (best in cs_baselines) [LR]                0.9132  0.9298  0.7368 -0.0216 (p=0.78) -0.0248 (p=0.0022)
+label + contrast + PANDA score (best in cs_baselines) [GBM]               0.9123  0.9224  0.7584 +0.0000 (p=1) -0.0032 (p=0.0032)
+context only (PANDA graph + PANDA score + co-expression graph) [LR]       0.7262  0.7644  0.6638 -0.0946 (p=0.00055) -0.0977 (p=4.1e-05)
+context only (PANDA graph + PANDA score + co-expression graph) [GBM]      0.8639  0.8735  0.6636 -0.0948 (p=5.5e-06) -0.0979 (p=1e-05)
+PANDA graph only [LR]                                                     0.7177  0.7425  0.6562 -0.1022 (p=0.00067) -0.1054 (p=0.0017)
+PANDA graph only [GBM]                                                    0.8384  0.8491  0.6306 -0.1278 (p=1.1e-08) -0.1310 (p=6.5e-06)
+co-expression graph only [LR]                                             0.5740  0.6258  0.5699 -0.1885 (p=8.8e-06) -0.1917 (p=1.6e-07)
+co-expression graph only [GBM]                                            0.8132  0.8247  0.5814 -0.1770 (p=1.1e-06) -0.1801 (p=1.9e-08)
+label + PANDA graph [LR]                                                  0.9093  0.9233  0.7308 -0.0276 (p=0.4) -0.0308 (p=0.0048)
+label + PANDA graph [GBM]                                                 0.9136  0.9260  0.7651 +0.0067 (p=0.38) +0.0035 (p=0.23)
+label + co-expression graph [LR]                                          0.9146  0.9318  0.7149 -0.0435 (p=0.62) -0.0466 (p=0.0041)
+label + co-expression graph [GBM]                                         0.9110  0.9217  0.7363 -0.0221 (p=0.45) -0.0253 (p=0.0069)
+all [LR]                                                                  0.9116  0.9263  0.7342 -0.0242 (p=0.73) -0.0274 (p=0.0069)
+all [GBM]                                                                 0.9138  0.9284  0.7489 -0.0095 (p=0.34) -0.0127 (p=0.12)
+
+== Cross-cell summary: AUROC / AUPRC / within-TF (mean over seeds); within-TF difference to the same cell's hero in brackets (Wilcoxon p)
+model                                                                      hESC                                   hHEP                                   mESC                                 mHSC-E
+hero (GNN, GRN graph)                                      0.8884/0.6255/0.7470                   0.8993/0.8384/0.7599                   0.9393/0.8819/0.8235                   0.9229/0.9428/0.7616
+hero + Geneformer                        0.8907/0.6345/0.7510 (+0.004, p=0.086) 0.9027/0.8430/0.7800 (+0.020, p=0.0058)  0.9401/0.8838/0.8245 (+0.001, p=0.46) 0.9250/0.9441/0.7816 (+0.020, p=4.1e-05)
+GRN + PANDA K=100 safe (union)           0.8836/0.6151/0.7298 (-0.017, p=0.0088) 0.8970/0.8370/0.7549 (-0.005, p=0.088) 0.9374/0.8790/0.8133 (-0.010, p=0.00081)  0.9226/0.9423/0.7600 (-0.002, p=0.27)
+neural PANDA RCP, had decoder             0.8898/0.6315/0.7410 (-0.006, p=0.86) 0.9024/0.8437/0.7744 (+0.014, p=0.00042) 0.9411/0.8861/0.8250 (+0.001, p=0.0064)  0.9239/0.9433/0.7572 (-0.004, p=0.88)
+neural PANDA RCP, Tanimoto decoder       0.8852/0.6210/0.7180 (-0.029, p=0.042)  0.8999/0.8372/0.7752 (+0.015, p=0.56) 0.9243/0.8554/0.7618 (-0.062, p=1.9e-08) 0.9187/0.9384/0.7202 (-0.041, p=0.00055)
+scRegNet published recipe (rule A)       0.8830/0.6155/0.7029 (-0.044, p=0.0052) 0.9023/0.8413/0.7870 (+0.027, p=0.084) 0.9254/0.8587/0.7657 (-0.058, p=7.3e-08) 0.9196/0.9392/0.7219 (-0.040, p=0.0048)
+stacker: all features, LR                 0.8893/0.6194/0.7423 (-0.005, p=0.82)   0.8993/0.8288/0.7586 (-0.001, p=0.7) 0.9349/0.8684/0.8042 (-0.019, p=0.022) 0.9116/0.9263/0.7342 (-0.027, p=0.0069)
+stacker: label + contrast + PANDA score, GBM  0.8871/0.6171/0.7279 (-0.019, p=0.36)  0.8969/0.8147/0.7668 (+0.007, p=0.14) 0.9294/0.8546/0.7956 (-0.028, p=6.4e-06) 0.9123/0.9224/0.7584 (-0.003, p=0.0032)
+
+===== 2026-10-23 W5: new ideas (late fusion, ranking loss, PANDA teacher, free scalar weight, cold start) =====
+== Benchmark split, 5 seeds; paired per-TF vs the GPU hero (w3_hero) or hero + Geneformer (w3_herogf)
+model                               n             AUROC            AUPRC        within-TF        within>=8
+hero                                5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061
+hero + Geneformer                   5   0.8907 ± 0.0014  0.6345 ± 0.0039  0.7510 ± 0.0025  0.7311 ± 0.0039
+hero + rank loss w=0.5              5   0.8869 ± 0.0008  0.6191 ± 0.0023  0.7425 ± 0.0030  0.7239 ± 0.0031
+hero + rank loss w=1                5   0.8860 ± 0.0009  0.6165 ± 0.0023  0.7391 ± 0.0055  0.7212 ± 0.0049
+hero + rank loss w=2                5   0.8855 ± 0.0019  0.6134 ± 0.0035  0.7413 ± 0.0095  0.7216 ± 0.0071
+hero + PANDA teacher w=0.1          5   0.8875 ± 0.0015  0.6253 ± 0.0035  0.7420 ± 0.0061  0.7233 ± 0.0071
+hero + PANDA teacher w=0.3          5   0.8870 ± 0.0027  0.6248 ± 0.0049  0.7401 ± 0.0085  0.7229 ± 0.0078
+hero + PANDA teacher w=1            5   0.8882 ± 0.0015  0.6280 ± 0.0021  0.7411 ± 0.0069  0.7262 ± 0.0056
+hero + panda number, lr x1          5   0.8886 ± 0.0016  0.6261 ± 0.0032  0.7475 ± 0.0048  0.7269 ± 0.0061
+hero + panda number, lr x100        5   0.8858 ± 0.0038  0.6248 ± 0.0053  0.7355 ± 0.0150  0.7207 ± 0.0096
+hero + panda number, lr x1000       5   0.8869 ± 0.0022  0.6260 ± 0.0042  0.7386 ± 0.0089  0.7226 ± 0.0067
+hero + contrast number, lr x100     5   0.8864 ± 0.0016  0.6225 ± 0.0030  0.7385 ± 0.0040  0.7194 ± 0.0042
+hero + contrast number, lr x1000    5   0.8854 ± 0.0022  0.6210 ± 0.0026  0.7352 ± 0.0060  0.7158 ± 0.0067
+hero + both number, lr x100         5   0.8863 ± 0.0038  0.6257 ± 0.0045  0.7315 ± 0.0177  0.7202 ± 0.0119
+hero + both number, lr x1000        5   0.8864 ± 0.0026  0.6236 ± 0.0045  0.7307 ± 0.0138  0.7182 ± 0.0115
+hero+GF + both numbers, lr x100     5   0.8866 ± 0.0024  0.6298 ± 0.0036  0.7395 ± 0.0087  0.7234 ± 0.0051
+np had (RCP)                        5   0.8898 ± 0.0014  0.6315 ± 0.0033  0.7410 ± 0.0079  0.7242 ± 0.0105
+np had + Geneformer                 5   0.8912 ± 0.0027  0.6354 ± 0.0030  0.7549 ± 0.0090  0.7357 ± 0.0109
+  hero + rank loss w=0.5           vs w3_hero    within-TF diff -0.0045  TFs better 12/33  p=0.16
+  hero + rank loss w=1             vs w3_hero    within-TF diff -0.0079  TFs better 10/33  p=0.046
+  hero + rank loss w=2             vs w3_hero    within-TF diff -0.0057  TFs better 12/33  p=0.16
+  hero + PANDA teacher w=0.1       vs w3_hero    within-TF diff -0.0050  TFs better 15/33  p=0.37
+  hero + PANDA teacher w=0.3       vs w3_hero    within-TF diff -0.0069  TFs better 12/33  p=0.058
+  hero + PANDA teacher w=1         vs w3_hero    within-TF diff -0.0059  TFs better 12/33  p=0.17
+  hero + panda number, lr x1       vs w3_hero    within-TF diff +0.0005  TFs better 18/33  p=0.22
+  hero + panda number, lr x100     vs w3_hero    within-TF diff -0.0115  TFs better 13/33  p=0.065
+  hero + panda number, lr x1000    vs w3_hero    within-TF diff -0.0084  TFs better 12/33  p=0.065
+  hero + contrast number, lr x100  vs w3_hero    within-TF diff -0.0085  TFs better 8/33  p=0.00082
+  hero + contrast number, lr x1000 vs w3_hero    within-TF diff -0.0118  TFs better 7/33  p=0.00025
+  hero + both number, lr x100      vs w3_hero    within-TF diff -0.0155  TFs better 7/33  p=0.0055
+  hero + both number, lr x1000     vs w3_hero    within-TF diff -0.0163  TFs better 9/33  p=0.0055
+  hero+GF + both numbers, lr x100  vs w3_herogf  within-TF diff -0.0115  TFs better 13/33  p=0.022
+  np had (RCP)                     vs w3_hero    within-TF diff -0.0060  TFs better 17/33  p=0.86
+  np had + Geneformer              vs w3_herogf  within-TF diff +0.0039  TFs better 17/33  p=0.76
+
+== HELD-OUT TFs (5 folds x 2 seeds; per-TF AUROC pooled over folds)
+model                               n             AUROC            AUPRC        within-TF        within>=8
+hero                               10   0.6304 ± 0.1127  0.2314 ± 0.0978  0.6855 ± 0.0643  0.6766 ± 0.0388
+nphad                              10   0.6518 ± 0.0646  0.2347 ± 0.0716  0.6897 ± 0.0539  0.6731 ± 0.0308
+  nphad vs hero: within-TF diff +0.0040  TFs better 17/34  p=0.95
+
+== HELD-OUT GENES (5 folds x 5 seeds)
+model                               n             AUROC            AUPRC        within-TF        within>=8
+hero                               25   0.8461 ± 0.0073  0.5220 ± 0.0085  0.5464 ± 0.0341  0.5633 ± 0.0195
+nphad                              25   0.8461 ± 0.0059  0.5082 ± 0.0169  0.5624 ± 0.0237  0.5796 ± 0.0174
+npRC                               25   0.8445 ± 0.0050  0.5018 ± 0.0245  0.5444 ± 0.0382  0.5695 ± 0.0184
+  nphad vs hero: within-TF diff +0.0213  TFs better 24/34  p=0.041
+  npRC vs hero: within-TF diff -0.0135  TFs better 20/34  p=0.81
+
+HELD-OUT TFs, hESC, 5 folds (same folds as src.pair_gnn --protocol tf); mean ± std over folds
+popularity                                   AUROC 0.6689 ± 0.0168  AUPRC 0.2316 ± 0.0299  within-TF 0.7244 ± 0.0643  within>=8 0.7120 ± 0.0379
+co-expression transfer                       AUROC 0.6462 ± 0.0210  AUPRC 0.2312 ± 0.0345  within-TF 0.7006 ± 0.0745  within>=8 0.6950 ± 0.0463
+PPI transfer                                 AUROC 0.5936 ± 0.0817  AUPRC 0.2214 ± 0.0521  within-TF 0.6403 ± 0.0443  within>=8 0.6305 ± 0.0312
+direct co-expression corr(t,g)               AUROC 0.4748 ± 0.0374  AUPRC 0.1526 ± 0.0419  within-TF 0.5038 ± 0.0363  within>=8 0.5062 ± 0.0421
+popularity + co-expr transfer (rank avg)     AUROC 0.6661 ± 0.0176  AUPRC 0.2434 ± 0.0302  within-TF 0.7207 ± 0.0693  within>=8 0.7125 ± 0.0433
+popularity + corr(t,g) (rank avg)            AUROC 0.5967 ± 0.0322  AUPRC 0.2102 ± 0.0467  within-TF 0.6658 ± 0.0661  within>=8 0.6531 ± 0.0516
+
+hESC: ensembles of z-scored test logits, 5 seeds (member seeds matched); paired per-TF vs single hero
+ensemble                                                    AUROC            AUPRC        within-TF   diff    TFs  p
+hero (single model)                               0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  +0.0000   0/33  1   vs hero x4: -0.0059 (4/33, p=2.6e-06)
+hero x2 seeds  [compute control]                  0.8902 ± 0.0010  0.6306 ± 0.0017  0.7507 ± 0.0027  +0.0037  29/33  2.8e-05   vs hero x4: -0.0021 (7/33, p=3e-05)
+hero x3 seeds  [compute control]                  0.8909 ± 0.0004  0.6322 ± 0.0005  0.7522 ± 0.0015  +0.0052  29/33  1.3e-06   vs hero x4: -0.0007 (9/33, p=0.0054)
+hero x4 seeds  [compute control]                  0.8912 ± 0.0003  0.6330 ± 0.0006  0.7529 ± 0.0015  +0.0059  29/33  2.6e-06   vs hero x4: +0.0000 (0/33, p=1)
+hero + Geneformer hero                            0.8912 ± 0.0018  0.6344 ± 0.0039  0.7540 ± 0.0030  +0.0070  25/33  0.0058   vs hero x4: +0.0011 (19/33, p=0.23)
+hero + np had                                     0.8923 ± 0.0007  0.6370 ± 0.0010  0.7532 ± 0.0045  +0.0062  24/33  0.012   vs hero x4: +0.0003 (18/33, p=0.41)
+hero + PANDA score                                0.8546 ± 0.0016  0.5179 ± 0.0052  0.7446 ± 0.0019  -0.0024  15/33  0.72   vs hero x4: -0.0083 (13/33, p=0.36)
+hero + contrast score                             0.8087 ± 0.0032  0.4273 ± 0.0052  0.6924 ± 0.0046  -0.0546  10/33  0.0012   vs hero x4: -0.0605 (9/33, p=0.0006)
+hero + PANDA + contrast scores                    0.8011 ± 0.0020  0.4078 ± 0.0029  0.6996 ± 0.0025  -0.0474  12/33  0.0088   vs hero x4: -0.0533 (10/33, p=0.0024)
+hero + stacker(all, LR)                           0.8927 ± 0.0012  0.6364 ± 0.0015  0.7594 ± 0.0024  +0.0124  25/33  0.011   vs hero x4: +0.0065 (21/33, p=0.17)
+hero + stacker(label stack, LR)                   0.8910 ± 0.0012  0.6334 ± 0.0009  0.7527 ± 0.0027  +0.0056  25/33  0.051   vs hero x4: -0.0002 (20/33, p=0.3)
+hero + Geneformer hero + np had                   0.8933 ± 0.0008  0.6401 ± 0.0018  0.7565 ± 0.0023  +0.0095  25/33  0.0019   vs hero x4: +0.0036 (23/33, p=0.042)
+hero + Geneformer hero + stacker                  0.8937 ± 0.0015  0.6399 ± 0.0029  0.7620 ± 0.0024  +0.0149  27/33  0.0011   vs hero x4: +0.0091 (25/33, p=0.0074)
+hero + Geneformer hero + np had + stacker         0.8945 ± 0.0008  0.6423 ± 0.0015  0.7626 ± 0.0024  +0.0156  27/33  0.0026   vs hero x4: +0.0098 (26/33, p=0.0074)
+
+hHEP: ensembles of z-scored test logits, 5 seeds (member seeds matched); paired per-TF vs single hero
+ensemble                                                    AUROC            AUPRC        within-TF   diff    TFs  p
+hero (single model)                               0.8993 ± 0.0007  0.8384 ± 0.0010  0.7599 ± 0.0022  +0.0000   0/30  1   vs hero x4: -0.0027 (2/30, p=6e-06)
+hero x2 seeds  [compute control]                  0.9004 ± 0.0003  0.8405 ± 0.0004  0.7613 ± 0.0012  +0.0015  27/30  0.00021   vs hero x4: -0.0012 (5/30, p=5e-05)
+hero x3 seeds  [compute control]                  0.9008 ± 0.0002  0.8411 ± 0.0002  0.7622 ± 0.0010  +0.0024  27/30  8.9e-05   vs hero x4: -0.0004 (11/30, p=0.22)
+hero x4 seeds  [compute control]                  0.9010 ± 0.0001  0.8414 ± 0.0001  0.7626 ± 0.0006  +0.0027  28/30  6e-06   vs hero x4: +0.0000 (0/30, p=1)
+hero + Geneformer hero                            0.9034 ± 0.0005  0.8449 ± 0.0008  0.7742 ± 0.0032  +0.0144  26/30  1.2e-06   vs hero x4: +0.0117 (22/30, p=0.00026)
+hero + np had                                     0.9033 ± 0.0003  0.8456 ± 0.0007  0.7712 ± 0.0029  +0.0114  26/30  3.1e-07   vs hero x4: +0.0087 (24/30, p=7.1e-05)
+hero + PANDA score                                0.8558 ± 0.0019  0.7890 ± 0.0029  0.7229 ± 0.0025  -0.0369  10/30  0.0024   vs hero x4: -0.0396 (9/30, p=0.0013)
+hero + contrast score                             0.8318 ± 0.0015  0.6826 ± 0.0019  0.7156 ± 0.0020  -0.0443   6/30  8.9e-05   vs hero x4: -0.0470 (5/30, p=4.4e-05)
+hero + PANDA + contrast scores                    0.8053 ± 0.0015  0.7008 ± 0.0020  0.6929 ± 0.0016  -0.0670   5/30  4.4e-05   vs hero x4: -0.0697 (5/30, p=2.4e-05)
+hero + stacker(all, LR)                           0.9039 ± 0.0005  0.8434 ± 0.0011  0.7656 ± 0.0018  +0.0058  27/30  1.8e-05   vs hero x4: +0.0030 (26/30, p=0.00023)
+hero + stacker(label stack, LR)                   0.9042 ± 0.0005  0.8441 ± 0.0009  0.7768 ± 0.0017  +0.0170  27/30  2.3e-06   vs hero x4: +0.0143 (24/30, p=0.00031)
+hero + Geneformer hero + np had                   0.9048 ± 0.0004  0.8475 ± 0.0007  0.7773 ± 0.0028  +0.0174  27/30  4.7e-08   vs hero x4: +0.0147 (26/30, p=2.3e-06)
+hero + Geneformer hero + stacker                  0.9056 ± 0.0005  0.8470 ± 0.0009  0.7737 ± 0.0022  +0.0138  27/30  9.2e-06   vs hero x4: +0.0111 (25/30, p=6.3e-05)
+hero + Geneformer hero + np had + stacker         0.9060 ± 0.0004  0.8484 ± 0.0008  0.7754 ± 0.0025  +0.0156  26/30  4.4e-06   vs hero x4: +0.0129 (26/30, p=2.4e-05)
+
+mESC: ensembles of z-scored test logits, 5 seeds (member seeds matched); paired per-TF vs single hero
+ensemble                                                    AUROC            AUPRC        within-TF   diff    TFs  p
+hero (single model)                               0.9393 ± 0.0009  0.8819 ± 0.0015  0.8235 ± 0.0013  +0.0000   0/85  1   vs hero x4: -0.0048 (2/85, p=1.3e-14)
+hero x2 seeds  [compute control]                  0.9406 ± 0.0009  0.8845 ± 0.0017  0.8266 ± 0.0015  +0.0032  80/85  1.2e-13   vs hero x4: -0.0016 (3/85, p=2.9e-13)
+hero x3 seeds  [compute control]                  0.9410 ± 0.0005  0.8853 ± 0.0011  0.8277 ± 0.0012  +0.0042  81/85  3e-14   vs hero x4: -0.0006 (12/85, p=8.3e-10)
+hero x4 seeds  [compute control]                  0.9411 ± 0.0004  0.8857 ± 0.0007  0.8283 ± 0.0009  +0.0048  81/85  1.3e-14   vs hero x4: +0.0000 (0/85, p=1)
+hero + Geneformer hero                            0.9424 ± 0.0005  0.8882 ± 0.0006  0.8321 ± 0.0014  +0.0086  63/85  1.5e-07   vs hero x4: +0.0039 (51/85, p=0.0057)
+hero + np had                                     0.9426 ± 0.0008  0.8890 ± 0.0015  0.8305 ± 0.0025  +0.0070  68/85  3.7e-09   vs hero x4: +0.0022 (57/85, p=0.0009)
+hero + PANDA score                                0.9317 ± 0.0006  0.8671 ± 0.0015  0.8083 ± 0.0017  -0.0151  24/85  0.00012   vs hero x4: -0.0199 (22/85, p=1.6e-07)
+hero + contrast score                             0.8552 ± 0.0016  0.6293 ± 0.0044  0.7937 ± 0.0013  -0.0298  18/85  1.2e-07   vs hero x4: -0.0346 (13/85, p=5.8e-09)
+hero + PANDA + contrast scores                    0.8933 ± 0.0008  0.7832 ± 0.0034  0.7897 ± 0.0011  -0.0338  19/85  6.3e-08   vs hero x4: -0.0385 (14/85, p=4.6e-09)
+hero + stacker(all, LR)                           0.9411 ± 0.0007  0.8857 ± 0.0013  0.8305 ± 0.0011  +0.0070  62/85  2.7e-06   vs hero x4: +0.0023 (51/85, p=0.014)
+hero + stacker(label stack, LR)                   0.9393 ± 0.0010  0.8825 ± 0.0017  0.8295 ± 0.0012  +0.0060  61/85  2.1e-05   vs hero x4: +0.0012 (45/85, p=0.24)
+hero + Geneformer hero + np had                   0.9438 ± 0.0005  0.8913 ± 0.0009  0.8350 ± 0.0019  +0.0115  68/85  3.3e-09   vs hero x4: +0.0067 (60/85, p=9.6e-06)
+hero + Geneformer hero + stacker                  0.9430 ± 0.0004  0.8894 ± 0.0006  0.8371 ± 0.0009  +0.0136  72/85  1.3e-09   vs hero x4: +0.0088 (65/85, p=1.2e-06)
+hero + Geneformer hero + np had + stacker         0.9441 ± 0.0005  0.8919 ± 0.0008  0.8389 ± 0.0013  +0.0154  70/85  8.4e-11   vs hero x4: +0.0106 (67/85, p=4.8e-08)
+
+mHSC-E: ensembles of z-scored test logits, 5 seeds (member seeds matched); paired per-TF vs single hero
+ensemble                                                    AUROC            AUPRC        within-TF   diff    TFs  p
+hero (single model)                               0.9229 ± 0.0014  0.9428 ± 0.0014  0.7616 ± 0.0110  +0.0000   0/29  1   vs hero x4: -0.0026 (2/29, p=7.6e-06)
+hero x2 seeds  [compute control]                  0.9244 ± 0.0011  0.9438 ± 0.0009  0.7627 ± 0.0067  +0.0011  27/29  6.7e-05   vs hero x4: -0.0014 (3/29, p=2.1e-05)
+hero x3 seeds  [compute control]                  0.9249 ± 0.0007  0.9442 ± 0.0005  0.7638 ± 0.0042  +0.0022  27/29  7.6e-06   vs hero x4: -0.0004 (6/29, p=0.0075)
+hero x4 seeds  [compute control]                  0.9252 ± 0.0003  0.9444 ± 0.0003  0.7641 ± 0.0022  +0.0026  27/29  7.6e-06   vs hero x4: +0.0000 (0/29, p=1)
+hero + Geneformer hero                            0.9255 ± 0.0010  0.9447 ± 0.0008  0.7739 ± 0.0056  +0.0124  28/29  2e-06   vs hero x4: +0.0098 (21/29, p=0.0012)
+hero + np had                                     0.9256 ± 0.0012  0.9447 ± 0.0010  0.7596 ± 0.0067  -0.0019  19/29  0.053   vs hero x4: -0.0045 (15/29, p=1)
+hero + PANDA score                                0.8481 ± 0.0053  0.8930 ± 0.0035  0.7281 ± 0.0079  -0.0335   5/29  0.00055   vs hero x4: -0.0361 (4/29, p=0.0005)
+hero + contrast score                             0.8236 ± 0.0061  0.8230 ± 0.0025  0.7442 ± 0.0069  -0.0174   2/29  0.00019   vs hero x4: -0.0200 (2/29, p=0.00019)
+hero + PANDA + contrast scores                    0.7875 ± 0.0036  0.8208 ± 0.0029  0.7148 ± 0.0064  -0.0468   2/29  0.00019   vs hero x4: -0.0494 (2/29, p=0.00019)
+hero + stacker(all, LR)                           0.9248 ± 0.0013  0.9436 ± 0.0013  0.7611 ± 0.0051  -0.0005  13/29  0.86   vs hero x4: -0.0031 (12/29, p=0.12)
+hero + stacker(label stack, LR)                   0.9263 ± 0.0006  0.9452 ± 0.0006  0.7472 ± 0.0046  -0.0144  16/29  0.62   vs hero x4: -0.0170 (10/29, p=0.35)
+hero + Geneformer hero + np had                   0.9267 ± 0.0009  0.9455 ± 0.0006  0.7700 ± 0.0047  +0.0084  24/29  0.0014   vs hero x4: +0.0059 (18/29, p=0.072)
+hero + Geneformer hero + stacker                  0.9270 ± 0.0008  0.9455 ± 0.0007  0.7722 ± 0.0026  +0.0107  20/29  0.0048   vs hero x4: +0.0081 (17/29, p=0.14)
+hero + Geneformer hero + np had + stacker         0.9275 ± 0.0007  0.9459 ± 0.0006  0.7726 ± 0.0030  +0.0111  21/29  0.0014   vs hero x4: +0.0085 (17/29, p=0.069)
+
+===== 2026-10-23 W6: hard negatives, neural PANDA for unseen genes =====
+hero + hard neg pop bpr w=0.1       5   0.8772 ± 0.0020  0.5950 ± 0.0059  0.7094 ± 0.0063  0.6901 ± 0.0079
+hero + hard neg pop bpr w=0.3       5   0.8596 ± 0.0007  0.5490 ± 0.0045  0.6420 ± 0.0145  0.6243 ± 0.0090
+hero + hard neg pop bce w=0.1       5   0.8781 ± 0.0019  0.5982 ± 0.0026  0.7100 ± 0.0081  0.6963 ± 0.0079
+hero + hard neg pop bce w=0.3       5   0.8645 ± 0.0019  0.5635 ± 0.0042  0.6695 ± 0.0118  0.6586 ± 0.0121
+hero + hard neg model bpr w=0.1     5   0.8859 ± 0.0010  0.6180 ± 0.0028  0.7453 ± 0.0023  0.7232 ± 0.0049
+hero + hard neg model bpr w=0.3     5   0.8815 ± 0.0017  0.6074 ± 0.0035  0.7330 ± 0.0082  0.7157 ± 0.0059
+hero + hard neg model bce w=0.1     5   0.8839 ± 0.0021  0.6183 ± 0.0021  0.7306 ± 0.0065  0.7131 ± 0.0063
+hero + hard neg model bce w=0.3     5   0.8794 ± 0.0006  0.6070 ± 0.0024  0.7140 ± 0.0058  0.7025 ± 0.0041
+hero + hard neg model bpr w=1       5   0.8740 ± 0.0014  0.5930 ± 0.0047  0.7114 ± 0.0030  0.6967 ± 0.0082
+  hero + hard neg pop bpr w=0.1    vs w3_hero    within-TF diff -0.0376  TFs better 6/33  p=6.2e-05
+  hero + hard neg pop bpr w=0.3    vs w3_hero    within-TF diff -0.1050  TFs better 3/33  p=4.7e-07
+  hero + hard neg pop bce w=0.1    vs w3_hero    within-TF diff -0.0370  TFs better 5/33  p=1.8e-05
+  hero + hard neg pop bce w=0.3    vs w3_hero    within-TF diff -0.0775  TFs better 2/33  p=1.2e-06
+  hero + hard neg model bpr w=0.1  vs w3_hero    within-TF diff -0.0017  TFs better 16/33  p=0.55
+  hero + hard neg model bpr w=0.3  vs w3_hero    within-TF diff -0.0140  TFs better 14/33  p=0.18
+  hero + hard neg model bce w=0.1  vs w3_hero    within-TF diff -0.0164  TFs better 8/33  p=9.1e-05
+  hero + hard neg model bce w=0.3  vs w3_hero    within-TF diff -0.0330  TFs better 6/33  p=2.5e-05
+  hero + hard neg model bpr w=1    vs w3_hero    within-TF diff -0.0356  TFs better 7/33  p=0.0038
+== HELD-OUT GENES (5 folds x 5 seeds)
+model                               n             AUROC            AUPRC        within-TF        within>=8
+hero                               25   0.8461 ± 0.0073  0.5220 ± 0.0085  0.5464 ± 0.0341  0.5633 ± 0.0195
+nphad                              25   0.8461 ± 0.0059  0.5082 ± 0.0169  0.5624 ± 0.0237  0.5796 ± 0.0174
+npRC                               25   0.8445 ± 0.0050  0.5018 ± 0.0245  0.5444 ± 0.0382  0.5695 ± 0.0184
+npRP                               25   0.8449 ± 0.0068  0.5129 ± 0.0223  0.5447 ± 0.0314  0.5602 ± 0.0234
+herogf                             25   0.8468 ± 0.0091  0.5288 ± 0.0128  0.5702 ± 0.0273  0.5874 ± 0.0186
+nphadgf                            25   0.8498 ± 0.0061  0.5323 ± 0.0125  0.5769 ± 0.0257  0.6003 ± 0.0149
+  nphad vs hero: within-TF diff +0.0213  TFs better 24/34  p=0.041
+  npRC vs hero: within-TF diff -0.0135  TFs better 20/34  p=0.81
+  npRP vs hero: within-TF diff +0.0034  TFs better 22/34  p=0.4
+  herogf vs hero: within-TF diff +0.0262  TFs better 26/34  p=0.0041
+  nphadgf vs herogf: within-TF diff +0.0036  TFs better 20/34  p=0.72
+HELD-OUT GENES, hESC: per-TF within-TF AUROC averaged over 5 folds x 5 seeds
+hero                                             within-TF 0.5412   vs hero x2 seeds: +0.0007 (14/34, p=0.37)
+hero x2 seeds                                    within-TF 0.5405   vs hero x2 seeds: +0.0000 (0/34, p=1)
+Geneformer hero x2 seeds                         within-TF 0.5691   vs hero x2 seeds: +0.0286 (25/34, p=0.0026)
+hero + np had                                    within-TF 0.5559   vs hero x2 seeds: +0.0153 (25/34, p=0.0081)
+Geneformer hero + np had (GF)                    within-TF 0.5749   vs hero x2 seeds: +0.0344 (27/34, p=0.00063)
+hero x2 + Geneformer hero x2 [4 models]          within-TF 0.5576   vs hero x2 + Geneformer hero x2 [4 models]: +0.0000 (0/34, p=1)
+hero + GF hero + np had + np had GF [4 models]   within-TF 0.5704   vs hero x2 + Geneformer hero x2 [4 models]: +0.0128 (26/34, p=0.0043)
+
+===== 2026-10-23 W7: where the late-fusion gain comes from (attribution; weights scanned on test, diagnostic only) =====
+
+hESC: hero x2 seeds within-TF 0.7507
+  hero + w*Geneformer hero              best w=1.0  within-TF 0.7540  vs hero x2 +0.0033 (24/33, p=0.035)
+  hero + w*neural PANDA                 best w=0.75 within-TF 0.7534  vs hero x2 +0.0026 (21/33, p=0.1)
+  hero + w*stacker (all)                best w=1.0  within-TF 0.7594  vs hero x2 +0.0086 (22/33, p=0.068)
+  hero + w*stacker (label graph only)   best w=0.75 within-TF 0.7530  vs hero x2 +0.0022 (22/33, p=0.16)
+  hero + w*PANDA score                  best w=0.3  within-TF 0.7550  vs hero x2 +0.0043 (19/33, p=0.42)
+  hero + w*contrast score               best w=0.1  within-TF 0.7487  vs hero x2 -0.0020 (11/33, p=0.21)
+
+hHEP: hero x2 seeds within-TF 0.7613
+  hero + w*Geneformer hero              best w=1.0  within-TF 0.7742  vs hero x2 +0.0129 (23/30, p=3.5e-05)
+  hero + w*neural PANDA                 best w=1.0  within-TF 0.7712  vs hero x2 +0.0099 (25/30, p=8e-06)
+  hero + w*stacker (all)                best w=1.0  within-TF 0.7656  vs hero x2 +0.0043 (26/30, p=9.9e-05)
+  hero + w*stacker (label graph only)   best w=1.0  within-TF 0.7768  vs hero x2 +0.0155 (25/30, p=5e-05)
+  hero + w*PANDA score                  best w=0.1  within-TF 0.7591  vs hero x2 -0.0023 (11/30, p=0.18)
+  hero + w*contrast score               best w=0.1  within-TF 0.7487  vs hero x2 -0.0126 (7/30, p=0.0066)
+
+mESC: hero x2 seeds within-TF 0.8266
+  hero + w*Geneformer hero              best w=0.75 within-TF 0.8322  vs hero x2 +0.0055 (60/85, p=2.9e-05)
+  hero + w*neural PANDA                 best w=1.0  within-TF 0.8305  vs hero x2 +0.0038 (59/85, p=1e-05)
+  hero + w*stacker (all)                best w=0.75 within-TF 0.8311  vs hero x2 +0.0045 (56/85, p=0.00029)
+  hero + w*stacker (label graph only)   best w=0.75 within-TF 0.8296  vs hero x2 +0.0029 (52/85, p=0.0047)
+  hero + w*PANDA score                  best w=0.1  within-TF 0.8247  vs hero x2 -0.0019 (26/85, p=0.00035)
+  hero + w*contrast score               best w=0.1  within-TF 0.8262  vs hero x2 -0.0005 (19/85, p=0.0002)
+
+mHSC-E: hero x2 seeds within-TF 0.7627
+  hero + w*Geneformer hero              best w=1.0  within-TF 0.7739  vs hero x2 +0.0112 (26/29, p=5.1e-07)
+  hero + w*neural PANDA                 best w=0.1  within-TF 0.7615  vs hero x2 -0.0013 (8/29, p=0.024)
+  hero + w*stacker (all)                best w=0.3  within-TF 0.7647  vs hero x2 +0.0020 (12/29, p=0.25)
+  hero + w*stacker (label graph only)   best w=0.1  within-TF 0.7597  vs hero x2 -0.0030 (8/29, p=0.0083)
+  hero + w*PANDA score                  best w=0.1  within-TF 0.7623  vs hero x2 -0.0004 (7/29, p=0.0032)
+  hero + w*contrast score               best w=0.1  within-TF 0.7666  vs hero x2 +0.0039 (4/29, p=0.00033)
+
+Single hero+Geneformer, its 4-seed average, and the 4-model blend (within-TF; paired vs Geneformer hero x4)
+  hESC    GF hero 0.7510   GF hero x4 0.7563   blend 0.7626   blend - GF x4 +0.0063 (20/33, p=0.12)
+  hHEP    GF hero 0.7800   GF hero x4 0.7833   blend 0.7754   blend - GF x4 -0.0079 (18/30, p=0.33)
+  mESC    GF hero 0.8245   GF hero x4 0.8288   blend 0.8389   blend - GF x4 +0.0101 (58/85, p=9.2e-06)
+  mHSC-E  GF hero 0.7816   GF hero x4 0.7839   blend 0.7726   blend - GF x4 -0.0113 (10/29, p=0.1)
+
+--- W8 (2026-10-26): GCN vs SAGE + Geneformer, 4 cells, then tuning the winner (5 seeds 42-46, epoch on validation AUROC, refit; AUROC / AUPRC / within-TF) ---
+hESC    SAGE+GF 0.8907 / 0.6345 / 0.7510   GCN+GF 0.8899 / 0.6256 / 0.7373 (vs SAGE -0.014, p=0.16)   hero 0.8884 / 0.6255 / 0.7470   paper 0.8830 / 0.6155 / 0.7029
+hHEP    SAGE+GF 0.9027 / 0.8430 / 0.7800   GCN+GF 0.9023 / 0.8440 / 0.7885 (vs SAGE +0.009, p=0.69)   hero 0.8993 / 0.8384 / 0.7599   paper 0.9023 / 0.8413 / 0.7870
+mHSC-E  SAGE+GF 0.9250 / 0.9441 / 0.7816   GCN+GF 0.9260 / 0.9442 / 0.8054 (vs SAGE +0.024, p=0.73)   hero 0.9229 / 0.9428 / 0.7616   paper 0.9196 / 0.9392 / 0.7219
+mESC    SAGE+GF 0.9401 / 0.8838 / 0.8245   GCN+GF 0.9374 / 0.8793 / 0.8117 (vs SAGE -0.013, p=2e-4)   hero 0.9393 / 0.8819 / 0.8235   paper 0.9254 / 0.8587 / 0.7657
+Best by within-TF mean: hESC SAGE, hHEP GCN, mHSC-E GCN, mESC SAGE. Best vs paper recipe: +0.048 (p=0.001), +0.002 (p=0.53), +0.084 (p=5e-5), +0.059 (p=6e-8).
+Tuned (16 trials, val AUROC over 2 seeds), within-TF vs untuned / vs paper:
+hHEP  tuned GCN 0.9021 / 0.8426 / 0.7874   -0.001 (p=0.75) / +0.000 (p=0.57)
+mHSC-E tuned GCN 0.9250 / 0.9434 / 0.7979  -0.008 (p=0.050) / +0.076 (p=5e-5)
+hESC  tuned SAGE 0.8915 / 0.6349 / 0.7598  +0.009 (p=0.027) / +0.057 (p=2e-4)
+mESC  tuned SAGE 0.9413 / 0.8857 / 0.8297  +0.005 (p=0.003) / +0.064 (p=2e-8)

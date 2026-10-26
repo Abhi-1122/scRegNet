@@ -64,7 +64,7 @@ def get(a, D):
     kind = a.scalar
     pr = getattr(a, 'protocol', 'random')
     cache = f"{D['path']}scalars/{kind}_v{a.val_frac}_s{a.split_seed}" + ('' if pr == 'random' else f"_{pr}{a.fold}")
-    if os.path.exists(cache + '_ev.npy'):
+    if os.path.exists(cache + '_ev.npy') and (kind != 'panda' or os.path.exists(cache + '_fold4.npy')):
         return np.load(cache + '_ev.npy'), np.load(cache + '_tr.npy')
     trn = tr.iloc[tri]
     gp = trn[trn.Label == 1]
@@ -72,17 +72,29 @@ def get(a, D):
     full = fn(gp)
     oof = full.copy()
     rng = np.random.RandomState(42)
+    fold_m = []
     for held in np.array_split(rng.permutation(len(trn)), 5):
         rows = trn.iloc[held]
         f = fn(gp.drop(index=rows.index.intersection(gp.index)))
         oof[rows.TF.values, rows.Target.values] = f[rows.TF.values, rows.Target.values]
+        fold_m.append(f)
     scale_rows = getattr(fn, 'tf_index', np.unique(tr.TF.values))
     scale = full[scale_rows].std() + 1e-8
     full, oof = (full / scale).astype(np.float32), (oof / scale).astype(np.float32)
     os.makedirs(os.path.dirname(cache), exist_ok=True)
     np.save(cache + '_ev.npy', full)
     np.save(cache + '_tr.npy', oof)
+    for k, f in enumerate(fold_m):  # the whole fold-k matrix (prior without fold k's positives), same scale as full
+        np.save(f'{cache}_fold{k}.npy', (f / scale).astype(np.float32))
     return full, oof
+
+
+def get_folds(a, D):
+    """the 5 out-of-fold PANDA matrices behind get()'s training scalars (fold k = rows array_split(RandomState(42).permutation(len(tri)), 5)[k])"""
+    get(a, D)
+    pr = getattr(a, 'protocol', 'random')
+    cache = f"{D['path']}scalars/{a.scalar}_v{a.val_frac}_s{a.split_seed}" + ('' if pr == 'random' else f"_{pr}{a.fold}")
+    return [np.load(f'{cache}_fold{k}.npy') for k in range(5)]
 
 
 if __name__ == '__main__':
@@ -92,7 +104,7 @@ if __name__ == '__main__':
     cell, ntf = sys.argv[1], sys.argv[2]
     kinds = sys.argv[3:] or ['contrast', 'panda']
     for k, vf in [(k, vf) for k in kinds for vf in (0.1, 0.0)]:
-        a = SimpleNamespace(cell_type=cell, num_TF=ntf, data_folder='data', scfm=0, scfm_folder='scFM', val_frac=vf, split_seed=0, scalar=k)
+        a = SimpleNamespace(cell_type=cell, num_TF=ntf, data_folder='data', scfm=0, scfm_folder='scFM', val_frac=vf, split_seed=0, scalar=k, protocol='random', fold=0)
         if k == 'panda' and not glob.glob(f'data/{cell}/TFs+{ntf}/STRING/*.edges.csv'):
             print(k, 'skipped: no STRING file for', cell); continue
         D = prepare(a, None)

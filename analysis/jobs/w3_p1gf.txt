@@ -1,0 +1,10 @@
+w3_pg_k200_gf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph panda --panda_k 200 --seed 42
+w3_pg_k200_gf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph panda --panda_k 200 --seed 43
+w3_pg_k200_gf_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph panda --panda_k 200 --seed 44
+w3_pg_k200_gf_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph panda --panda_k 200 --seed 45
+w3_pg_k200_gf_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph panda --panda_k 200 --seed 46
+w3_pgU_k100_gf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph union --panda_k 100 --seed 42
+w3_pgU_k100_gf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph union --panda_k 100 --seed 43
+w3_pgU_k100_gf_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph union --panda_k 100 --seed 44
+w3_pgU_k100_gf_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph union --panda_k 100 --seed 45
+w3_pgU_k100_gf_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --split batch --gnn_dims 256 --encoder sage --decoder had --scfm 1 --mp_graph union --panda_k 100 --seed 46
