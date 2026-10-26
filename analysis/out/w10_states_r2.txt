@@ -1,0 +1,24 @@
+Item 8 round 2: SAGE hero (no Geneformer), expression columns restricted to one cell state. Test_set, mean ± std over 5 seeds.
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+early (00h+12h+24h, 260 cells)                 5   0.8821 ± 0.0024  0.6128 ± 0.0050  0.7284 ± 0.0104  0.7075 ± 0.0087  0.8812 ± 0.0007    0.23
+late (72h+96h, 260 of 326, per-seed draw)      5   0.8825 ± 0.0033  0.6200 ± 0.0047  0.7120 ± 0.0126  0.6968 ± 0.0131  0.8824 ± 0.0020    0.20
+rand (260 of 758, per-seed draw)               5   0.8859 ± 0.0006  0.6170 ± 0.0021  0.7411 ± 0.0047  0.7175 ± 0.0040  0.8846 ± 0.0024    0.28
+all (758 cells, w3_hero)                       5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061  0.8882 ± 0.0008    0.26
+
+paired per-TF tests (per-TF test AUROC averaged over seeds; difference, bootstrap CI, TFs better, Wilcoxon p):
+  early - rand                                   within-TF diff -0.0127  95% CI [-0.0303, +0.0032]  TFs better 13/33  p=0.208
+  late - rand                                    within-TF diff -0.0291  95% CI [-0.0491, -0.0112]  TFs better 12/33  p=0.00548
+  early - late                                   within-TF diff +0.0164  95% CI [-0.0003, +0.0345]  TFs better 20/33  p=0.155
+  all - rand                                     within-TF diff +0.0059  95% CI [-0.0033, +0.0147]  TFs better 20/33  p=0.13
+same-seed within-TF differences (seeds better of 5): early - rand: -0.0127 (0/5); late - rand: -0.0291 (0/5); early - late: +0.0164 (5/5)
+
+per-TF biology check (33 TFs): AUROC(early model) - AUROC(late model), per-TF test AUROC averaged over seeds, against the TF's mean expression in early cells minus late cells (file values, 260 early / 326 late cells)
+Spearman across TFs: rho = -0.197, p = 0.272; TFs expressed higher early (dE > 0): 19, of which early model better 12; TFs expressed higher late: 14, of which late model better 6
+TF       AUROC early AUROC late early-late expr early-late
+POU5F1         0.686      0.742     -0.056           +3.80
+NANOG          0.782      0.811     -0.029           +5.94
+SOX2           0.739      0.740     -0.001           +3.56
+SOX17          0.736      0.599     +0.137           -2.78
+GATA4          0.703      0.708     -0.006           -4.41
+GATA6          0.796      0.822     -0.026           -5.74
+EOMES          0.747      0.704     +0.043           -3.87

@@ -911,3 +911,37 @@ hHEP  tuned GCN 0.9021 / 0.8426 / 0.7874   -0.001 (p=0.75) / +0.000 (p=0.57)
 mHSC-E tuned GCN 0.9250 / 0.9434 / 0.7979  -0.008 (p=0.050) / +0.076 (p=5e-5)
 hESC  tuned SAGE 0.8915 / 0.6349 / 0.7598  +0.009 (p=0.027) / +0.057 (p=2e-4)
 mESC  tuned SAGE 0.9413 / 0.8857 / 0.8297  +0.005 (p=0.003) / +0.064 (p=2e-8)
+
+--- W9 item 7 round 1 (2026-10-26): motif-only TF->gene prior, hESC. JASPAR 2024 CORE vertebrates non-redundant, promoter TSS -1000/+200 (Ensembl canonical, hg38); no ChIP-derived data ---
+Coverage: promoters 849/910 genes; TFs with a motif 143/410 (all TFs), 29/34 labelled; scored pairs: 5686/7142 test rows, 16459/20677 train rows.
+a) benchmark test rows of covered TFs (AUROC / AUPRC / within-TF): motif_max 0.5986 / 0.2195 / 0.6075; motif_hits 0.5641 / 0.2204 / 0.5437; popularity (same rows) 0.6173 / 0.2264 / 0.6912.
+b) held-out TFs, 5 folds, 29 covered TFs pooled, within-TF (diff vs popularity, Wilcoxon p): popularity 0.7074; motif_max 0.5865 (-0.121, p=8e-6); motif_hits 0.5467 (-0.161, p=9e-8);
+   rank avg pop+max 0.7147 (+0.007, p=0.95); rank avg pop+hits 0.7031 (-0.004, p=0.45); LR[pop,max] 0.7202 (+0.013, p=0.35); LR[pop,hits] 0.7096 (+0.002, p=0.85).
+   motif_max alone vs chance 0.5: +0.087, 26/29 TFs above 0.5, p=2e-5. Popularity on all held-out rows (w5 reference) 0.7244. Details: analysis/out/w9_motif_r1.txt
+
+--- W9 item 7 round 2 (2026-10-26): motif prior diagnostics, hESC; full tables in analysis/out/w9_motif_r2.txt ---
+A) 6 variants (-log10 p of best hit | hit count, max over the TF's motifs; windows -500/+100, -1000/+200, -2000/+500). Chosen on Train_set within-TF of motif alone: logp -500/+100 (0.5743; logp -1000/+200 0.5739, a tie).
+   held-out TFs, within-TF (29 TFs): popularity 0.7074; chosen motif alone 0.5775 (-0.130 vs pop, p=9e-8); LR[pop,motif] 0.7114 (+0.004, 16/29 TFs, p=0.37).
+   Other variants LR vs pop: logp -1000/+200 +0.018 (19/29, p=0.088), logp -2000/+500 +0.005, hitsmax -500/+100 +0.002, -1000/+200 +0.004, -2000/+500 -0.005 (all p>=0.09).
+   benchmark test (28 TFs): pop 0.6912; chosen motif 0.5601; LR 0.6940 (+0.003, 11/28, p=0.88).
+B) held-out TFs, within-TF: motif 0.5775; CpG o/e alone 0.5448; GC alone 0.4746; residual of motif on [pop] 0.5774, on [CpG o/e, GC] 0.5560, on [pop, CpG, GC] 0.5535 (vs 0.5: p=6e-4, 22/29 TFs; vs raw motif -0.024, p=2e-4).
+   benchmark test: motif 0.5601; CpG 0.5566; GC 0.5176; residual on all three 0.5498 (p=0.001 vs 0.5; vs raw motif -0.010, p=0.23). Median Spearman of motif with pop +0.01, CpG o/e -0.19, GC -0.31.
+C) motif-similarity transfer, held-out TFs, all rows (uncovered TFs fall back to popularity), within-TF fold mean: popularity 0.7244; co-expression transfer 0.7006; motif k=3 0.6489 (p=1e-4 vs pop);
+   k=5 0.6655; k=all positive 0.7107 (-0.014, p=0.39); rank avg pop + motif k=3 0.7324 (+0.008, 15/34, p=0.89), k=5 0.7244, k=all 0.7296 (+0.005, p=0.08); rank avg pop + co-expr 0.7207.
+D) benchmark split, 28 covered TFs, z(model)+0.25 z(motif), within-TF vs model alone: SAGE+GF 0.7265 -> 0.7289 (+0.0024, 17/28, p=0.40, 5/5 seeds better); tuned 0.7310 -> 0.7311 (+0.0000, 16/28, p=0.70, 2/5 seeds).
+   w grid (chosen on test, optimistic): w=0.1 +0.009 (p=0.008) / +0.007 (p=0.011); w=0.5 -0.024 / -0.027; w=1 -0.067 / -0.071.
+
+--- W10 item 8 round 1 (2026-10-26): per-time-point |Spearman| co-expression vs hESC labels (no labels in any score); full tables in analysis/out/w10_states_r1.txt ---
+within-TF AUROC, Test_set / all labelled: 00h 0.495/0.501, 12h 0.542/0.509, 24h 0.520/0.527, 36h 0.434/0.480, 72h 0.455/0.471, 96h 0.483/0.486, pooled 0.424/0.462, pooled centred 0.475/0.447. Popularity (round 1 of item 7 style) 0.707 on Test_set.
+Best time point on Train_set rows: 24h (0.5257). Paired per-TF (Test_set / all labelled): 24h vs pooled +0.096 (25/33, p=0.001) / +0.065 (26/34, p=2e-4); early(00h,12h) vs late(72h,96h) +0.049 (24/33, p=0.009) / +0.027 (25/34, p=0.020);
+ centred pooled vs pooled +0.051 (24/33, p=0.037) / -0.015 (21/34, p=0.50). 66-cell subsampling x20: early > late in 20/20 repeats; best time point is 12h (Test, 75% of repeats) or 24h (all labelled, 85%); ordering of 36h/72h/96h at the bottom holds, but their score rises when subsampled (36h 0.434 -> 0.473).
+Per-TF biology (34 TFs): mean rho(expression, AUROC across time points) -0.088, rho>0 for 13/34 (p=0.27); best-AUROC time point = peak-expression time point for 3/34 TFs; AUROC at the peak-expression time point minus other 5: -0.032 (p=0.16). POU5F1 12h/12h, NANOG 36h, SOX2 24h; SOX17 72h, GATA4 72h, GATA6 24h, EOMES 36h.
+Fusion with popularity (Test_set): rank avg pop + 24h 0.661, + pooled 0.618 (24h better +0.043, 23/33, p=0.093); both far below popularity alone 0.707 (p<=3e-4).
+
+--- W10 item 8 round 2 (2026-10-26): SAGE hero trained on expression columns of one cell state, 5 seeds 42-46, Test_set, epoch on validation AUROC, refit; AUROC / AUPRC / within-TF (analysis/out/w10_states_r2.txt) ---
+early (00h+12h+24h, 260 cells)        0.8821 / 0.6128 / 0.7284 ± 0.0104
+late (72h+96h, 260 of 326, per seed)  0.8825 / 0.6200 / 0.7120 ± 0.0126
+rand (260 of 758, per seed)           0.8859 / 0.6170 / 0.7411 ± 0.0047
+all (758 cells, w3_hero)              0.8884 / 0.6255 / 0.7470 ± 0.0046
+Paired per-TF within-TF: early - rand -0.013 (13/33, p=0.21); late - rand -0.029 (12/33, p=0.005); early - late +0.016 (20/33, p=0.16; early better in 5/5 same-seed pairs); all - rand +0.006 (20/33, p=0.13).
+Per-TF check: Spearman(AUROC early - late, expression early - late) across 33 TFs = -0.20 (p=0.27). POU5F1 -0.056, NANOG -0.029, SOX2 -0.001 (all expressed higher early); SOX17 +0.137, GATA4 -0.006, GATA6 -0.026, EOMES +0.043.

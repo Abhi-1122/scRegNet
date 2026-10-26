@@ -1,0 +1,76 @@
+sequences: 849/910 genes; windows of the -2000/+500 fetch that differ from the round-1 -1000/+200 sequence: 0
+
+== A. motif score variants (6 = 2 score types x 3 windows); chosen on the benchmark-split TRAIN rows: within-TF AUROC of the motif alone on Train_set
+variant                  train within-TF | benchmark test, within-TF:    pop  motif     LR  LR vs pop | held-out TFs, within-TF:    pop  motif     LR  motif vs pop | LR vs pop
+logp -500/+100                    0.5743 |                            0.6912 0.5601 0.6940  +0.0027 [-0.0246, +0.0292] 11/28 p=0.884 |                          0.7074 0.5775 0.7114  -0.1299 [-0.1656, -0.0962] 2/29 p=9.31e-08 | +0.0040 [-0.0144, +0.0202] 16/29 p=0.369   <- chosen
+logp -1000/+200                   0.5739 |                            0.6912 0.6055 0.7155  +0.0242 [-0.0010, +0.0517] 16/28 p=0.157 |                          0.7074 0.5858 0.7258  -0.1216 [-0.1713, -0.0787] 3/29 p=8.84e-06 | +0.0184 [+0.0023, +0.0364] 19/29 p=0.0877
+logp -2000/+500                   0.5339 |                            0.6912 0.5700 0.7040  +0.0128 [-0.0050, +0.0331] 16/28 p=0.274 |                          0.7074 0.5411 0.7124  -0.1663 [-0.2326, -0.1156] 2/29 p=2.61e-07 | +0.0050 [-0.0077, +0.0194] 14/29 p=0.898
+hitsmax -500/+100                 0.5448 |                            0.6912 0.5231 0.6911  -0.0001 [-0.0190, +0.0183] 13/28 p=0.946 |                          0.7074 0.5357 0.7098  -0.1717 [-0.2117, -0.1368] 0/29 p=3.73e-09 | +0.0024 [-0.0098, +0.0137] 11/29 p=0.568
+hitsmax -1000/+200                0.5566 |                            0.6912 0.5440 0.6950  +0.0038 [-0.0156, +0.0244] 11/28 p=0.989 |                          0.7074 0.5477 0.7111  -0.1597 [-0.2059, -0.1175] 2/29 p=9.31e-08 | +0.0037 [-0.0112, +0.0181] 16/29 p=0.534
+hitsmax -2000/+500                0.5476 |                            0.6912 0.5425 0.6939  +0.0027 [-0.0171, +0.0231] 13/28 p=0.989 |                          0.7074 0.5379 0.7020  -0.1695 [-0.2217, -0.1228] 2/29 p=9.31e-08 | -0.0054 [-0.0209, +0.0095] 13/29 p=0.62
+(benchmark test: 28 covered TFs with both classes; held-out: 29 TFs pooled over 5 folds. Round 1 (raw max, -1000/+200, held-out): motif 0.5865, LR 0.7202 vs pop 0.7074.)
+chosen variant: logp -500/+100
+
+== B. confound check: is the motif signal more than popularity, CpG o/e or GC? (chosen variant; -1000/+200 composition)
+benchmark test (covered TFs): 28 TFs; within-TF AUROC; vs chance 0.5 / vs the motif alone (paired Wilcoxon, TFs above / improved)
+  pop                        0.6912   vs 0.5: +0.1912 [+0.1521, +0.2281] 27/28 p=5.22e-08   vs motif: +0.1311 [+0.0814, +0.1805] 23/28 p=6.32e-05
+  motif                      0.5601   vs 0.5: +0.0601 [+0.0052, +0.1067] 25/28 p=0.00106
+  cpg                        0.5566   vs 0.5: +0.0566 [+0.0060, +0.1121] 18/28 p=0.0546   vs motif: -0.0035 [-0.0816, +0.0908] 13/28 p=0.374
+  gc                         0.5176   vs 0.5: +0.0176 [-0.0329, +0.0779] 14/28 p=0.867   vs motif: -0.0425 [-0.1210, +0.0589] 6/28 p=0.00763
+  resid [pop]                0.5576   vs 0.5: +0.0576 [+0.0020, +0.1054] 24/28 p=0.00223   vs motif: -0.0025 [-0.0073, +0.0021] 12/28 p=0.386
+  resid [CpG o/e, GC]        0.5517   vs 0.5: +0.0517 [+0.0045, +0.0913] 23/28 p=0.00117   vs motif: -0.0084 [-0.0239, +0.0071] 12/28 p=0.374
+  resid [pop, CpG o/e, GC]   0.5498   vs 0.5: +0.0498 [+0.0025, +0.0902] 23/28 p=0.00129   vs motif: -0.0103 [-0.0256, +0.0053] 10/28 p=0.227
+held-out TFs (5 folds pooled): 29 TFs; within-TF AUROC; vs chance 0.5 / vs the motif alone (paired Wilcoxon, TFs above / improved)
+  pop                        0.7074   vs 0.5: +0.2074 [+0.1779, +0.2395] 29/29 p=3.73e-09   vs motif: +0.1299 [+0.0962, +0.1656] 27/29 p=9.31e-08
+  motif                      0.5775   vs 0.5: +0.0775 [+0.0369, +0.1138] 26/29 p=8.84e-06
+  cpg                        0.5448   vs 0.5: +0.0448 [+0.0031, +0.0925] 17/29 p=0.076   vs motif: -0.0327 [-0.0851, +0.0334] 8/29 p=0.0308
+  gc                         0.4746   vs 0.5: -0.0254 [-0.0732, +0.0221] 8/29 p=0.0365   vs motif: -0.1029 [-0.1612, -0.0365] 3/29 p=2.78e-05
+  resid [pop]                0.5774   vs 0.5: +0.0774 [+0.0365, +0.1139] 26/29 p=2.11e-05   vs motif: -0.0001 [-0.0055, +0.0049] 16/29 p=0.654
+  resid [CpG o/e, GC]        0.5560   vs 0.5: +0.0560 [+0.0196, +0.0895] 24/29 p=0.000195   vs motif: -0.0215 [-0.0326, -0.0110] 5/29 p=0.000269
+  resid [pop, CpG o/e, GC]   0.5535   vs 0.5: +0.0535 [+0.0167, +0.0877] 22/29 p=0.000607   vs motif: -0.0240 [-0.0377, -0.0117] 5/29 p=0.000242
+median over covered TFs of the Spearman correlation between the motif score and: popularity (benchmark in-degree) +0.014, CpG o/e -0.187, GC -0.310
+
+== C. motif-similarity transfer (similarity = Pearson correlation of logp -500/+100 profiles across 849 genes; 143 TFs with a motif)
+held-out TFs that fell back to popularity (uncovered, or no positively similar training TF with a motif; k=3 run), per fold: [2, 2, 1, 0, 0] of [7, 7, 7, 7, 6]
+-- all held-out rows, all TFs (uncovered TFs score by popularity); AUROC and within-TF are fold mean ± std as in w5_heldout_tf_transfer.txt
+  popularity                         AUROC 0.6689 ± 0.0168  within-TF 0.7244 ± 0.0643  (34 TFs)
+  co-expression transfer (w5)        AUROC 0.6462 ± 0.0210  within-TF 0.7006 ± 0.0745  vs pop -0.0246 [-0.0485, -0.0015] 9/34 p=0.0169
+  motif transfer k=3                 AUROC 0.5611 ± 0.1090  within-TF 0.6489 ± 0.0607  vs pop -0.0762 [-0.1068, -0.0469] 3/34 p=0.000114
+  motif transfer k=5                 AUROC 0.5577 ± 0.1057  within-TF 0.6655 ± 0.0674  vs pop -0.0594 [-0.0892, -0.0297] 4/34 p=0.000345
+  motif transfer k=all positive      AUROC 0.5961 ± 0.1259  within-TF 0.7107 ± 0.0573  vs pop -0.0142 [-0.0413, +0.0104] 11/34 p=0.393
+  rank avg pop + co-expr transfer    AUROC 0.6661 ± 0.0176  within-TF 0.7207 ± 0.0693  vs pop -0.0041 [-0.0159, +0.0071] 10/34 p=0.235
+  rank avg pop + motif k=3           AUROC 0.6426 ± 0.0653  within-TF 0.7324 ± 0.0702  vs pop +0.0078 [-0.0043, +0.0221] 15/34 p=0.888
+  rank avg pop + motif k=5           AUROC 0.6311 ± 0.0643  within-TF 0.7244 ± 0.0706  vs pop -0.0000 [-0.0088, +0.0096] 14/34 p=0.567
+  rank avg pop + motif k=all         AUROC 0.6414 ± 0.0768  within-TF 0.7296 ± 0.0671  vs pop +0.0051 [-0.0012, +0.0113] 18/34 p=0.078
+-- TFs with a motif only, pooled over folds
+  popularity                         within-TF 0.7305  (29 TFs)
+  co-expression transfer (w5)        within-TF 0.7009  vs pop -0.0296 [-0.0548, -0.0042] 8/29 p=0.0148
+  motif transfer k=3                 within-TF 0.6412  vs pop -0.0893 [-0.1219, -0.0565] 3/29 p=2.78e-05
+  motif transfer k=5                 within-TF 0.6609  vs pop -0.0696 [-0.1033, -0.0362] 4/29 p=0.000139
+  motif transfer k=all positive      within-TF 0.7139  vs pop -0.0166 [-0.0485, +0.0122] 11/29 p=0.405
+  rank avg pop + co-expr transfer    within-TF 0.7245  vs pop -0.0060 [-0.0185, +0.0066] 8/29 p=0.205
+  rank avg pop + motif k=3           within-TF 0.7397  vs pop +0.0092 [-0.0054, +0.0261] 15/29 p=0.898
+  rank avg pop + motif k=5           within-TF 0.7305  vs pop -0.0000 [-0.0107, +0.0116] 14/29 p=0.579
+  rank avg pop + motif k=all         within-TF 0.7365  vs pop +0.0060 [-0.0012, +0.0135] 18/29 p=0.0798
+
+== D. motif added to the trained model on the benchmark split: z(model) + w * z(motif), test rows of covered TFs with a finite motif score, within-TF, 5 seeds
+-- SAGE + Geneformer (w3_herogf): 5686 rows, 29 TFs (28 with both classes)
+  model alone                            within-TF 0.7265 ± 0.0057 over seeds (per-TF AUROC averaged over seeds: 0.7265)
+  pooled z(motif), w=0.25 (headline, fixed in advance) w=0.25 within-TF 0.7289 ± 0.0057  seeds better 5/5   vs model alone +0.0024 [-0.0195, +0.0213] 17/28 p=0.399
+  pooled z(motif), grid chosen on test, optimistic     w=0.1  within-TF 0.7354 ± 0.0056  seeds better 5/5   vs model alone +0.0089 [-0.0010, +0.0176] 21/28 p=0.00763
+  pooled z(motif), grid chosen on test, optimistic     w=0.5  within-TF 0.7028 ± 0.0056  seeds better 0/5   vs model alone -0.0237 [-0.0605, +0.0079] 11/28 p=0.178
+  pooled z(motif), grid chosen on test, optimistic     w=1.0  within-TF 0.6596 ± 0.0043  seeds better 0/5   vs model alone -0.0669 [-0.1168, -0.0229] 7/28 p=0.00606
+  per-TF z(motif), grid chosen on test, optimistic     w=0.1  within-TF 0.7343 ± 0.0053  seeds better 5/5   vs model alone +0.0078 [-0.0060, +0.0188] 19/28 p=0.0167
+  per-TF z(motif), grid chosen on test, optimistic     w=0.25 within-TF 0.7244 ± 0.0059  seeds better 0/5   vs model alone -0.0022 [-0.0324, +0.0215] 17/28 p=0.762
+  per-TF z(motif), grid chosen on test, optimistic     w=0.5  within-TF 0.6934 ± 0.0050  seeds better 0/5   vs model alone -0.0331 [-0.0783, +0.0037] 10/28 p=0.09
+  per-TF z(motif), grid chosen on test, optimistic     w=1.0  within-TF 0.6488 ± 0.0041  seeds better 0/5   vs model alone -0.0777 [-0.1329, -0.0305] 7/28 p=0.00316
+-- tuned SAGE + Geneformer (w8_hESC_tuned): 5686 rows, 29 TFs (28 with both classes)
+  model alone                            within-TF 0.7310 ± 0.0050 over seeds (per-TF AUROC averaged over seeds: 0.7310)
+  pooled z(motif), w=0.25 (headline, fixed in advance) w=0.25 within-TF 0.7311 ± 0.0048  seeds better 2/5   vs model alone +0.0000 [-0.0214, +0.0184] 16/28 p=0.695
+  pooled z(motif), grid chosen on test, optimistic     w=0.1  within-TF 0.7382 ± 0.0050  seeds better 5/5   vs model alone +0.0072 [-0.0025, +0.0157] 21/28 p=0.011
+  pooled z(motif), grid chosen on test, optimistic     w=0.5  within-TF 0.7039 ± 0.0052  seeds better 0/5   vs model alone -0.0271 [-0.0619, +0.0031] 9/28 p=0.0815
+  pooled z(motif), grid chosen on test, optimistic     w=1.0  within-TF 0.6605 ± 0.0030  seeds better 0/5   vs model alone -0.0705 [-0.1184, -0.0282] 7/28 p=0.00374
+  per-TF z(motif), grid chosen on test, optimistic     w=0.1  within-TF 0.7374 ± 0.0054  seeds better 5/5   vs model alone +0.0064 [-0.0061, +0.0167] 19/28 p=0.0281
+  per-TF z(motif), grid chosen on test, optimistic     w=0.25 within-TF 0.7263 ± 0.0049  seeds better 0/5   vs model alone -0.0048 [-0.0341, +0.0180] 16/28 p=0.902
+  per-TF z(motif), grid chosen on test, optimistic     w=0.5  within-TF 0.6945 ± 0.0048  seeds better 0/5   vs model alone -0.0365 [-0.0794, -0.0015] 7/28 p=0.0451
+  per-TF z(motif), grid chosen on test, optimistic     w=1.0  within-TF 0.6495 ± 0.0039  seeds better 0/5   vs model alone -0.0815 [-0.1348, -0.0356] 7/28 p=0.00223

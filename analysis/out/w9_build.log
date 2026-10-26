@@ -1,0 +1,25 @@
+lookup 0
+lookup 100
+lookup 200
+lookup 300
+lookup 400
+lookup 500
+lookup 600
+lookup 700
+lookup 800
+lookup 900
+transcripts 0
+transcripts 100
+transcripts 200
+transcripts 300
+transcripts 400
+transcripts 500
+transcripts 600
+transcripts 700
+transcripts 800
+promoters: 849/910 genes; background ACGT [0.217 0.283 0.283 0.217]
+genes with a promoter: 849/910 (unresolved symbols: 61, e.g. ['MLF1IP', 'ERCC-00145', 'KIAA0528', 'FAM46A', 'ERCC-00022', 'LECT1', 'C11orf46', 'ERCC-00042', 'KIAA1109', 'FAM69A', 'KIAA1467', 'C3orf14'])
+TFs in TF.csv with a JASPAR motif: 143/410 (182 motif-TF links, 178 distinct matrices)
+labelled TFs with a motif: 29/34: ['AR', 'BCL11A', 'EGR1', 'EOMES', 'FOXH1', 'FOXP1', 'GATA2', 'GATA3', 'GATA4', 'GATA6', 'HAND2', 'JUND', 'KLF5', 'LEF1', 'MXI1', 'NANOG', 'OTX2', 'POU5F1', 'PRDM1', 'SMAD2', 'SNAI2', 'SOX17', 'SOX2', 'STAT3', 'TCF4', 'TEAD4', 'TFAP2A', 'TP53', 'ZFP42']
+labelled TFs without a motif: ['CTNNB1', 'DNMT3B', 'EZH2', 'MLLT3', 'TRIM28']
+motif_max finite fraction in covered rows: 0.933; mean hits per pair 0.48

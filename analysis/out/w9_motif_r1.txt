@@ -1,0 +1,28 @@
+train pairs: 20677, scored (TF has a motif and gene has a promoter): 16459, TFs scored: 29 of 34
+test pairs: 7142, scored (TF has a motif and gene has a promoter): 5686, TFs scored: 29 of 34
+
+== a) benchmark split, test pairs of covered TFs only (popularity from Train_set positives, same rows, for reference)
+score              AUROC   AUPRC  within-TF (TFs 28, positives 989/5686, base AUPRC 0.174)
+motif_max         0.5986  0.2195     0.6075
+motif_hits        0.5641  0.2204     0.5437
+popularity        0.6173  0.2264     0.6912
+fold 0: held-out TFs 7, with a motif and both classes 5, rows scored 3819/5727
+fold 1: held-out TFs 7, with a motif and both classes 5, rows scored 3825/5729
+fold 2: held-out TFs 7, with a motif and both classes 6, rows scored 4586/5727
+fold 3: held-out TFs 7, with a motif and both classes 7, rows scored 5331/5727
+fold 4: held-out TFs 6, with a motif and both classes 6, rows scored 4584/4909
+
+== b) held-out TFs, 5 folds; TFs with a motif only (29 TFs pooled); popularity on ALL held-out rows (w5 reference, fold mean): 0.7244
+score                     AUROC (fold mean ± std)  within-TF, pooled TFs   within-TF, fold mean ± std   diff vs popularity (95% bootstrap CI), TFs better, Wilcoxon p
+popularity             0.6534 ± 0.0249                           0.7074         0.7097 ± 0.0528
+motif_max              0.6015 ± 0.0892                           0.5865         0.5838 ± 0.0360   -0.1209 [-0.1703, -0.0783]  3/29  p=7.58e-06
+motif_hits             0.5633 ± 0.0653                           0.5467         0.5471 ± 0.0138   -0.1607 [-0.2070, -0.1186]  2/29  p=9.31e-08
+rank avg pop + max     0.6793 ± 0.0570                           0.7147         0.7161 ± 0.0535   +0.0073 [-0.0127, +0.0287]  15/29  p=0.949
+rank avg pop + hits    0.6674 ± 0.0417                           0.7031         0.7057 ± 0.0518   -0.0043 [-0.0196, +0.0120]  12/29  p=0.454
+LR [pop, max]          0.6791 ± 0.0581                           0.7202         0.7219 ± 0.0569   +0.0128 [-0.0077, +0.0340]  17/29  p=0.347
+LR [pop, hits]         0.6653 ± 0.0436                           0.7096         0.7123 ± 0.0581   +0.0022 [-0.0124, +0.0167]  14/29  p=0.849
+
+best variant by pooled within-TF (picked on these test rows, so optimistic): LR [pop, max], 0.7202 vs popularity 0.7074, Wilcoxon p=0.347
+motif_max alone vs chance (per-TF AUROC - 0.5): mean +0.0865, TFs above 0.5: 26/29, Wilcoxon p=2.43e-05
+motif_hits alone vs chance (per-TF AUROC - 0.5): mean +0.0467, TFs above 0.5: 21/29, Wilcoxon p=0.0011
+per-TF AUROC, popularity vs motif_max vs motif_hits: TFAP2A: 0.76/0.66/0.63; TP53: 0.58/0.66/0.62; SOX2: 0.72/0.57/0.55; NANOG: 0.73/0.53/0.51; OTX2: 0.70/0.59/0.56; JUND: 0.72/0.60/0.58; HAND2: 0.55/0.42/0.50; TCF4: 0.86/0.75/0.38; GATA4: 0.67/0.66/0.63; BCL11A: 0.67/0.56/0.56; SOX17: 0.74/0.65/0.58; AR: 0.99/0.39/0.45; EOMES: 0.71/0.55/0.52; FOXH1: 0.67/0.61/0.56; MXI1: 0.72/0.51/0.50; SMAD2: 0.73/0.53/0.50; GATA6: 0.79/0.62/0.59; KLF5: 0.66/0.50/0.46; FOXP1: 0.72/0.55/0.51; GATA2: 0.65/0.77/0.54; GATA3: 0.62/0.61/0.59; STAT3: 0.58/0.46/0.45; ZFP42: 0.65/0.52/0.50; EGR1: 0.66/0.59/0.57; PRDM1: 0.72/0.55/0.50; LEF1: 0.76/0.64/0.65; POU5F1: 0.78/0.63/0.60; SNAI2: 0.64/0.77/0.72; TEAD4: 0.74/0.58/0.55

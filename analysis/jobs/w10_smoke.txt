@@ -1,0 +1,3 @@
+w10_early_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --data_folder data/states --cell_type early --seed 42
+w10_late_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --data_folder data/states --cell_type late_s42 --seed 42
+w10_rand_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --data_folder data/states --cell_type rand_s42 --seed 42

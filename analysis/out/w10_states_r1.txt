@@ -1,0 +1,107 @@
+Item 8 round 1: |Spearman| co-expression of each (TF, gene) pair, per time point / pooled / pooled after centring each gene within its time point.
+Cells per time point: {'00h': 92, '12h': 102, '24h': 66, '36h': 172, '72h': 138, '96h': 188}; labelled TFs: 34; Test_set rows 7142, all labelled rows 27819. No label enters any score.
+
+== 0. Main table: within-TF AUROC (headline), AUROC, AUPRC; positive rate Test_set 0.149, all labelled 0.147
+score                                cells |  Test_set: within-TF   AUROC   AUPRC |  all labelled: within-TF   AUROC   AUPRC
+00h                                     92 |               0.4948  0.4931  0.1478 |                   0.5013  0.4892  0.1439
+12h                                    102 |               0.5416  0.5343  0.1572 |                   0.5094  0.5206  0.1504
+24h                                     66 |               0.5196  0.5109  0.1487 |                   0.5265  0.5263  0.1560
+36h                                    172 |               0.4337  0.4860  0.1400 |                   0.4800  0.4960  0.1435
+72h                                    138 |               0.4549  0.4722  0.1351 |                   0.4706  0.4800  0.1362
+96h                                    188 |               0.4831  0.4736  0.1342 |                   0.4864  0.4800  0.1348
+pooled                                 758 |               0.4237  0.5134  0.1517 |                   0.4618  0.5229  0.1561
+pooled, centred within time point      758 |               0.4746  0.4678  0.1336 |                   0.4472  0.4707  0.1328
+
+best time point on the Train_set rows (within-TF): 00h 0.4998, 12h 0.4798, 24h 0.5257, 36h 0.5166, 72h 0.4862, 96h 0.4965  ->  24h
+
+== 1. Cell-count control: each time point subsampled to 66 cells (the size of 24h), 20 repeats, mean ± sd (24h has exactly 66 cells, so it does not vary)
+time point cells |   Test_set within-TF (full data)    66-cell mean ± sd            AUROC            AUPRC |  all labelled within-TF (full)    66-cell mean ± sd            AUROC            AUPRC
+00h           92 |                           0.4948      0.5072 ± 0.0140  0.4998 ± 0.0155  0.1495 ± 0.0041 |                           0.5013      0.5051 ± 0.0121  0.4969 ± 0.0157  0.1459 ± 0.0036 |
+12h          102 |                           0.5416      0.5330 ± 0.0141  0.5358 ± 0.0110  0.1584 ± 0.0044 |                           0.5094      0.5157 ± 0.0084  0.5292 ± 0.0089  0.1537 ± 0.0030 |
+24h           66 |                           0.5196      0.5196 ± 0.0000  0.5109 ± 0.0000  0.1487 ± 0.0000 |                           0.5265      0.5265 ± 0.0000  0.5263 ± 0.0000  0.1560 ± 0.0000 |
+36h          172 |                           0.4337      0.4728 ± 0.0238  0.4905 ± 0.0086  0.1434 ± 0.0034 |                           0.4800      0.4909 ± 0.0175  0.4976 ± 0.0063  0.1455 ± 0.0030 |
+72h          138 |                           0.4549      0.4816 ± 0.0221  0.4740 ± 0.0090  0.1378 ± 0.0028 |                           0.4706      0.4835 ± 0.0149  0.4785 ± 0.0096  0.1376 ± 0.0029 |
+96h          188 |                           0.4831      0.4868 ± 0.0231  0.4744 ± 0.0095  0.1365 ± 0.0026 |                           0.4864      0.4828 ± 0.0185  0.4782 ± 0.0077  0.1365 ± 0.0024 |
+Test_set: mean rank of the 6 time points over 20 repeats (1 = best) 00h 3.25, 12h 1.30, 24h 2.15, 36h 5.10, 72h 4.65, 96h 4.55; share of repeats in which each is the best: 00h 0.00, 12h 0.75, 24h 0.20, 36h 0.00, 72h 0.05, 96h 0.00; Kendall tau, full-data vs subsampled-mean ordering: +1.00
+   early (00h,12h) minus late (72h,96h) within-TF at 66 cells: +0.0359 ± 0.0179; early better in 20/20 repeats. Full-data ordering: 12h > 24h > 00h > 96h > 72h > 36h
+all labelled: mean rank of the 6 time points over 20 repeats (1 = best) 00h 3.30, 12h 2.40, 24h 1.15, 36h 4.35, 72h 4.85, 96h 4.95; share of repeats in which each is the best: 00h 0.05, 12h 0.10, 24h 0.85, 36h 0.00, 72h 0.00, 96h 0.00; Kendall tau, full-data vs subsampled-mean ordering: +0.73
+   early (00h,12h) minus late (72h,96h) within-TF at 66 cells: +0.0272 ± 0.0181; early better in 20/20 repeats. Full-data ordering: 24h > 12h > 00h > 96h > 36h > 72h
+
+== 2. Paired per-TF tests on within-TF AUROC (difference [bootstrap 95% CI], TFs improved, Wilcoxon p)
+-- rows: Test_set (best time point 24h chosen on Train_set)
+  best (24h) vs pooled                   +0.0959 [+0.0419, +0.1622]  TFs improved 25/33  p=0.000952
+  early (00h,12h) vs late (72h,96h)          +0.0492 [+0.0044, +0.0992]  TFs improved 24/33  p=0.0093
+  centred pooled vs pooled                   +0.0509 [-0.0204, +0.1227]  TFs improved 24/33  p=0.037
+  best (24h) vs the mean of the other 5 time points +0.0380 [-0.0007, +0.0816]  TFs improved 19/33  p=0.208
+  centred pooled vs best (24h)            -0.0451 [-0.1190, +0.0194]  TFs improved 17/33  p=0.48
+  early (00h,12h) vs pooled                  +0.0945 [+0.0402, +0.1478]  TFs improved 26/33  p=0.000404
+-- rows: all labelled (best time point 24h chosen on Train_set)
+  best (24h) vs pooled                   +0.0647 [+0.0336, +0.1003]  TFs improved 26/34  p=0.000178
+  early (00h,12h) vs late (72h,96h)          +0.0268 [-0.0235, +0.0784]  TFs improved 25/34  p=0.0196
+  centred pooled vs pooled                   -0.0146 [-0.0659, +0.0272]  TFs improved 21/34  p=0.499
+  best (24h) vs the mean of the other 5 time points +0.0370 [+0.0134, +0.0642]  TFs improved 24/34  p=0.00459
+  centred pooled vs best (24h)            -0.0793 [-0.1425, -0.0255]  TFs improved 12/34  p=0.0138
+  early (00h,12h) vs pooled                  +0.0435 [+0.0054, +0.0808]  TFs improved 23/34  p=0.00728
+
+== 3. Per-TF check (all labelled rows). Expression = mean of the log-expression values in the file; rho = Spearman across the 6 time points between the TF's mean expression and its AUROC
+TF        best tp peak expr tp    rho | AUROC at 00h/12h/24h/36h/72h/96h       | mean expression at 00h/12h/24h/36h/72h/96h
+TFAP2A        12h          24h  +0.14 | 0.500 0.572 0.491 0.443 0.483 0.446 |  0.00  4.17  4.61  0.58  0.44  0.33
+TP53          12h          00h  -0.49 | 0.364 0.437 0.359 0.392 0.394 0.429 |  7.18  5.22  5.86  5.21  4.74  5.32
+SOX2          24h          00h  +0.60 | 0.511 0.519 0.525 0.503 0.466 0.508 |  5.68  3.44  0.80  0.18  0.01  0.00
+NANOG         36h          00h  +0.43 | 0.510 0.511 0.523 0.530 0.507 0.491 |  8.49  8.10  5.89  2.27  2.06  1.51
+OTX2          24h          72h  -0.77 | 0.539 0.513 0.554 0.490 0.462 0.441 |  4.13  2.21  2.65  7.09  7.99  7.33
+JUND          00h          72h  -0.83 | 0.536 0.520 0.517 0.523 0.463 0.471 |  2.87  1.58  4.66  4.00  5.18  4.93
+HAND2         36h          96h  +0.23 | 0.500 0.500 0.500 0.564 0.275 0.528 |  0.00  0.00  0.00  0.13  0.55  1.16
+TCF4          12h          36h  -0.60 | 0.245 0.820 0.468 0.262 0.084 0.313 |  6.91  5.10  7.20  8.55  7.60  6.63
+GATA4         72h          36h  +0.37 | 0.500 0.486 0.551 0.534 0.585 0.436 |  0.00  0.45  1.77  5.55  5.09  5.00
+BCL11A        24h          00h  +0.26 | 0.506 0.447 0.582 0.526 0.494 0.508 |  6.93  4.21  4.28  6.47  3.62  2.72
+SOX17         72h          72h  +0.77 | 0.500 0.438 0.427 0.510 0.585 0.526 |  0.00  0.07  0.42  1.30  2.95  2.88
+CTNNB1        12h          00h  -0.14 | 0.411 0.533 0.529 0.441 0.490 0.516 |  9.82  8.77  8.50  8.45  8.72  9.20
+AR            96h          00h  -0.60 | 0.355 0.031 0.592 0.264 0.540 0.882 |  1.80  1.70  1.31  0.77  0.48  0.37
+DNMT3B        24h          00h  -0.09 | 0.386 0.693 0.871 0.729 0.448 0.548 |  9.51  7.59  7.51  6.55  6.22  4.72
+EOMES         36h          72h  -0.03 | 0.497 0.519 0.503 0.532 0.476 0.514 |  0.03  5.58  7.01  7.85  8.22  7.58
+FOXH1         96h          24h  -0.49 | 0.531 0.515 0.468 0.464 0.496 0.540 |  3.29  2.45  5.11  2.84  1.68  0.87
+MXI1          24h          72h  -0.49 | 0.504 0.480 0.524 0.507 0.468 0.457 |  1.96  1.13  1.00  3.10  3.53  2.87
+SMAD2         12h          72h  -0.37 | 0.488 0.511 0.483 0.493 0.461 0.492 |  8.97  5.86  5.27  8.91  9.99  9.24
+GATA6         24h          36h  -0.43 | 0.500 0.461 0.524 0.489 0.426 0.426 |  0.00  0.13  3.33  7.32  6.83  6.48
+KLF5          00h          36h  -0.60 | 0.625 0.481 0.547 0.431 0.493 0.551 |  0.03  0.58  0.93  1.70  0.86  0.74
+TRIM28        72h          24h  -0.26 | 0.513 0.535 0.477 0.507 0.542 0.463 |  6.28  5.90  7.60  5.89  3.82  4.60
+FOXP1         72h          00h  +0.14 | 0.525 0.537 0.518 0.493 0.545 0.477 |  4.89  2.28  2.36  1.77  2.00  2.10
+GATA2         24h          36h  +0.54 | 0.375 0.303 0.674 0.580 0.478 0.460 |  0.02  1.10  2.41  2.52  0.83  1.04
+GATA3         12h          24h  +0.60 | 0.490 0.564 0.555 0.516 0.500 0.526 |  0.04  4.46  5.64  5.16  2.84  2.10
+STAT3         00h          00h  +0.09 | 0.559 0.372 0.480 0.539 0.364 0.474 |  5.94  4.14  3.66  3.99  4.58  3.48
+ZFP42         72h          00h  -0.03 | 0.571 0.528 0.538 0.462 0.595 0.475 |  7.61  6.49  6.00  6.83  5.07  3.71
+EGR1          96h          00h  +0.37 | 0.505 0.501 0.495 0.462 0.489 0.528 |  4.50  2.03  3.50  1.45  3.18  2.69
+EZH2          12h          00h  -0.26 | 0.438 0.498 0.459 0.430 0.468 0.432 |  5.46  4.32  4.80  5.28  3.84  3.30
+PRDM1         12h          96h  -0.31 | 0.435 0.549 0.520 0.495 0.417 0.472 |  0.03  0.22  1.28  3.12  6.27  6.73
+LEF1          96h          24h  -0.14 | 0.502 0.418 0.501 0.536 0.509 0.557 |  0.02  1.48  4.54  3.46  1.65  1.21
+MLLT3         00h          96h  -0.77 | 0.982 0.949 0.676 0.288 0.580 0.177 |  1.50  0.12  0.61  3.13  4.28  4.99
+POU5F1        12h          12h  +0.94 | 0.498 0.516 0.485 0.470 0.433 0.403 |  6.90  7.99  7.47  4.82  4.12  3.35
+SNAI2         00h          36h  -0.71 | 0.592 0.556 0.525 0.455 0.520 0.578 |  0.07  0.04  0.13  3.59  1.54  0.77
+TEAD4         00h          24h  -0.09 | 0.551 0.506 0.459 0.463 0.462 0.490 |  1.52  2.35  2.56  1.20  0.69  0.54
+
+summary over 34 TFs: mean rho -0.088, median -0.114, rho > 0 for 13/34 TFs, Wilcoxon p (rho vs 0) = 0.27
+best-AUROC time point equals the peak-expression time point for 3/34 TFs (chance about 5.7); Spearman across TFs between the two time-point indices: -0.201 (p=0.255)
+AUROC at the TF's peak-expression time point minus the mean AUROC at its other 5: -0.0318, higher for 13/34 TFs, Wilcoxon p=0.163
+expected-direction TFs (best AUROC time point / peak expression time point): early group POU5F1 12h/12h, NANOG 36h/00h, SOX2 24h/00h; later group SOX17 72h/72h, GATA4 72h/36h, GATA6 24h/36h, EOMES 36h/72h
+   mean best-time-point index (0=00h ... 5=96h): early group 2.00, later group 3.25 (Mann-Whitney p=0.203, 3 vs 4 TFs, so low power)
+
+== 4. Fusion with popularity: rank-avg(popularity, score); popularity = log1p Train_set in-degree of the gene
+-- rows: Test_set
+  popularity alone                           within-TF 0.7068  AUROC 0.6415  AUPRC 0.2102
+  rank avg pop + 24h                         within-TF 0.6612  AUROC 0.6093  AUPRC 0.1951   vs rank avg pop + pooled: +0.0430 [+0.0040, +0.0934]  TFs improved 23/33  p=0.0933
+  rank avg pop + pooled                      within-TF 0.6182  AUROC 0.6125  AUPRC 0.2078
+  rank avg pop + pooled, centred within time point within-TF 0.6336  AUROC 0.5772  AUPRC 0.1794   vs rank avg pop + pooled: +0.0154 [-0.0357, +0.0694]  TFs improved 20/33  p=0.304
+  24h alone                                  within-TF 0.5196  AUROC 0.5109  AUPRC 0.1487
+  pooled alone                               within-TF 0.4237  AUROC 0.5134  AUPRC 0.1517
+  rank avg pop + 24h vs popularity alone: -0.0456 [-0.0721, -0.0136]  TFs improved 6/33  p=0.000247
+  rank avg pop + pooled vs popularity alone: -0.0886 [-0.1175, -0.0611]  TFs improved 2/33  p=1.77e-07
+-- rows: all labelled (popularity with the row's own label removed)
+  popularity alone                           within-TF 0.7167  AUROC 0.6368  AUPRC 0.2079
+  rank avg pop + 24h                         within-TF 0.6676  AUROC 0.6139  AUPRC 0.2039   vs rank avg pop + pooled: +0.0134 [-0.0046, +0.0345]  TFs improved 17/34  p=0.388
+  rank avg pop + pooled                      within-TF 0.6542  AUROC 0.6143  AUPRC 0.2149
+  rank avg pop + pooled, centred within time point within-TF 0.6209  AUROC 0.5759  AUPRC 0.1806   vs rank avg pop + pooled: -0.0334 [-0.0729, -0.0020]  TFs improved 14/34  p=0.174
+  24h alone                                  within-TF 0.5265  AUROC 0.5263  AUPRC 0.1560
+  pooled alone                               within-TF 0.4618  AUROC 0.5229  AUPRC 0.1561
+  rank avg pop + 24h vs popularity alone: -0.0491 [-0.0662, -0.0289]  TFs improved 2/34  p=3.02e-05
+  rank avg pop + pooled vs popularity alone: -0.0625 [-0.0796, -0.0461]  TFs improved 2/34  p=1.28e-08

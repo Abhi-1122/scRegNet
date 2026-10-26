@@ -191,3 +191,24 @@ fixed encoder + Geneformer, score = validation AUROC over seeds 0,1, `default` s
 Part 1: `w8_<cell>_gcngf_s42..46` = SAGE+GF args with `--encoder gcn`; last week's g11 GCN+GF used the identical args, so no separate `_lw` run (s42 reproduces g11).
 Winners (5-seed within-TF): hESC SAGE, hHEP GCN, mHSC-E GCN, mESC SAGE; GCN vs SAGE significant only on mESC (SAGE, p=2e-4). Tuning: hESC +0.009 (p=0.03), mESC +0.005
 (p=0.003), hHEP -0.001 (p=0.75), mHSC-E -0.008 (p=0.05); validation gains of the best trial were 0.001-0.004 AUROC (noise level). PROGRESS.md section 21.
+
+**2026-10-26 W9 item 7 round 1: motif-only TF->gene prior (hESC).** `analysis/w9_motif_build.py` (JASPAR 2024 CORE vertebrates non-redundant PFMs from data/external/jaspar2024, mapped to TFs by symbol, `::`
+dimers split, `(var.N)` stripped; promoter TSS -1000/+200 of the Ensembl canonical transcript via REST, raw responses cached in data/external/promoters_hg38/; own numpy PWM scan on both strands,
+pseudocount 0.8, background = pooled promoter ACGT made strand-symmetric, p<1e-4 threshold by DP; writes data/hESC/TFs+500/motif/motif_{max,hits}.npy). Coverage: 849/910 promoters, 29/34 labelled TFs (143/410 all).
+`analysis/w9_motif_signal.py` -> `analysis/out/w9_motif_r1.txt`. Motif alone has signal (within-TF 0.59 on 29 held-out TFs, p=2e-5 vs chance) but is far below popularity (0.71, p=8e-6);
+popularity+motif LR/rank-average is +0.013/+0.007 within-TF, p=0.35/0.95: no detectable gain on held-out TFs. Ensembl REST was slow (expand=1 lookups timed out; switched to
+non-expanded gene + transcript lookups); build is ~90 min mostly waiting on the API. Run with `python3.12 -P` (user-site numpy/Bio unavailable under -I).
+
+**2026-10-26 W9 item 7 round 2: motif prior diagnostics.** `analysis/w9_motif_r2.py` -> `analysis/out/w9_motif_r2.txt`. A: window -2000/+500 fetched once (17 batches, cached seqw_*.json; the -1000/+200 slice equals the round-1 sequences,
+0 mismatches), integer PWM scan on the DP grid, 6 variants saved as data/hESC/TFs+500/motif/r2_{logp,hitsmax}_*.npy; chosen on Train_set (logp -500/+100, tied with -1000/+200). No variant beats popularity on held-out TFs
+(LR +0.004, p=0.37). B: residual motif signal stays at 0.55 within-TF (mostly not CpG/GC/popularity). C: motif-similarity transfer does not beat popularity (k=all 0.711 vs 0.724); rank average +0.005 to +0.008, p>=0.08.
+D: adding z(motif) at w=0.25 to the trained model changes within-TF by +0.002 (p=0.40) and 0.000 (p=0.70). Fetch took ~20 min, analysis ~1 min.
+
+**2026-10-26 W10 item 8 round 1: per-time-point co-expression vs ChIP labels (hESC).** `analysis/w10_states_r1.py` -> `analysis/out/w10_states_r1.txt`. |Spearman| TF-gene on each of the 6 time points, pooled, and pooled after centring each gene within its
+time point; Test_set and all labelled rows; CPU, ~1 min. Early time points (00h/12h/24h) are better than late (36h/72h/96h) and than pooled (24h vs pooled +0.096, p=0.001; early vs late +0.049, p=0.009; 20/20 subsamples at 66 cells), but all within-TF values are 0.42-0.54
+(pooled 0.42 is below chance), nothing beats popularity (0.707) and fusion with popularity lowers it. Per-TF expression-vs-AUROC check does not support "TFs match best where expressed" (mean rho -0.09, p=0.27).
+
+**2026-10-26 W10 item 8 round 2: hero on one cell state.** `analysis/w10_states_prep.py` (data/states/<cond>/TFs+500: expression subset + symlinked labels; late/rand redrawn per seed with RandomState(seed)), jobs `analysis/jobs/w10.txt`, `analysis/w10_report.py` ->
+`analysis/out/w10_states_r2.txt`. Hero args as w3_hero including `--scfm 0` (pair_gnn defaults to --scfm 1, so it must be passed to get no Geneformer); the hero path needs nothing else under the cell_type folder; `all` reuses w3_hero (identical args).
+Result: early 0.728 / late 0.712 / rand 0.741 / all 0.747 within-TF. Late is worse than the random control (-0.029, p=0.005); early is not better than random (-0.013, p=0.21), though early beats late (+0.016, p=0.16, 5/5 same-seed pairs).
+Per-TF early-vs-late AUROC does not follow expression timing (rho -0.20, p=0.27). The early-state hypothesis is not supported; mixed-state training columns are as good or better.

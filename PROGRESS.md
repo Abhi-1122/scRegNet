@@ -2525,3 +2525,124 @@ mESC width 512, lr 7e-5, wd 6e-5, dropout 0.09.
 
 Scripts: `analysis/w8_report.py` (tables and tests, output in `analysis/out/w8_report.txt`),
 `analysis/tune2.py wjobs|wfinals <cell> <encoder>`. Jobs: `analysis/jobs/w8_*.txt`.
+
+## 22. Binding motifs as a prior for new TFs (hESC)
+
+**Question.** For a TF with no training edges, the best score so far is popularity (genes with many
+known regulators rank first, 0.724 within-TF). A TF's DNA-binding motif is known without any ChIP-seq.
+Does scanning gene promoters for that motif rank the TF's real targets higher?
+
+**Setup.** Motifs: JASPAR 2024 CORE vertebrates, non-redundant. Promoters: hg38, around the TSS of
+each gene's canonical Ensembl transcript. Each promoter was scanned on both strands with each of the
+TF's motifs. No ChIP-derived data was used. Coverage: 29 of the 34 labelled hESC TFs have a motif. The
+five without one (CTNNB1, DNMT3B, EZH2, MLLT3, TRIM28) are cofactors or chromatin regulators that do
+not bind DNA through a motif of their own. 849 of the 910 genes got a promoter. Held-out TFs used the
+same 5 folds as section 19. No model was trained; every score is a fixed formula.
+
+**Result 1: the motif signal is real but weak.**
+
+| Score (held-out TFs, 29 with a motif) | Within-TF AUROC | vs popularity |
+|---|---|---|
+| Popularity | 0.707 | |
+| Motif alone (best hit, −1000/+200) | 0.586 | −0.121 (p = 8e-6) |
+| Motif + popularity (logistic regression) | 0.720 | +0.013 (p = 0.35) |
+
+- The motif ranks targets above chance for 26 of 29 TFs (p = 2e-5), but scores 0.12 below popularity.
+- A better score (best-hit p-value instead of raw score), three promoter windows (−500/+100 up to
+  −2000/+500) and hit counts all give the same picture. The best combination with popularity is
+  +0.018 (p = 0.09). The variant chosen on training rows is +0.004.
+
+**Result 2: the signal is not promoter composition.** CpG-rich promoters are popular and match GC-rich
+motifs, so the motif might only mirror composition. After removing popularity, CpG content and GC
+content, the motif keeps 0.554 within-TF (22 of 29 TFs above chance, p = 6e-4). The motif is
+uncorrelated with popularity (median Spearman +0.01). It carries different information, but too
+little to change the ranking.
+
+**Result 3: borrowing targets from TFs with similar motifs does not beat popularity.** A new TF was
+given the training targets of the TFs whose motif profiles across genes correlate with its own.
+
+| Score (held-out TFs, all 34) | Within-TF AUROC | vs popularity |
+|---|---|---|
+| Popularity | 0.724 | |
+| Co-expression transfer (section 19) | 0.701 | −0.025 (p = 0.02) |
+| Motif transfer, top 3 similar TFs | 0.649 | −0.076 (p = 1e-4) |
+| Motif transfer, all similar TFs | 0.711 | −0.014 (p = 0.39) |
+| Rank average of popularity and motif transfer | 0.730 | +0.005 (p = 0.08) |
+
+**Result 4: the motif adds nothing to the trained model.** On the benchmark split, the SAGE +
+Geneformer model's score plus 0.25 × the motif score (weight fixed in advance) changes within-TF AUROC
+by +0.002 (p = 0.40); for the tuned model the change is +0.000 (p = 0.70). A weight of 0.1, picked on
+test and so optimistic, gives +0.009. Weights of 0.5 and above make it worse.
+
+**Conclusion.** Motifs carry a real, composition-independent signal about which genes a TF binds, but
+it is about 0.09 above chance against popularity's 0.22. In promoter-only form it does not improve
+predictions for new TFs or for the trained model. Likely reasons: many ChIP-seq peaks sit in distal
+enhancers outside the promoter window, short motifs match most promoters by chance, and a TF's
+binding in hESC depends on open chromatin, which a sequence scan cannot see. A chromatin-accessibility
+mask (hESC ATAC-seq or DNase) is the natural next step if this line is reopened.
+
+Scripts: `analysis/w9_motif_build.py` (promoters, motif scan), `analysis/w9_motif_signal.py` (round
+1), `analysis/w9_motif_r2.py` (score variants, confound check, transfer, model add-on). Output:
+`analysis/out/w9_motif_r1.txt`, `analysis/out/w9_motif_r2.txt`. Motif matrices:
+`data/hESC/TFs+500/motif/`.
+
+## 23. Networks for one cell state (hESC time course)
+
+**Question.** The 758 hESC cells come from six time points of a differentiation towards endoderm:
+
+| Time point | 0h | 12h | 24h | 36h | 72h | 96h |
+|---|---|---|---|---|---|---|
+| Cells | 92 | 102 | 66 | 172 | 138 | 188 |
+
+The ChIP-seq labels come mostly from undifferentiated ESCs. A network built from the early cells
+should then match the labels better than one built from late cells or from all cells mixed.
+
+**Round 1: co-expression per time point (no training).** Each TF-gene pair was scored by |Spearman|
+between TF and gene, using one time point's cells at a time.
+
+| Score | Within-TF AUROC (test) |
+|---|---|
+| All 758 cells pooled | 0.424 |
+| Best time point (24h, picked on training rows) | 0.520 |
+| Early (0h, 12h) minus late (72h, 96h) | +0.049, 24 of 33 TFs (p = 0.009) |
+
+- Early time points beat late ones. The gap holds when every time point is cut to 66 cells (early
+  wins in 20 of 20 repeats).
+- Every co-expression score sits near chance, and pooled co-expression falls below it: the genes most
+  correlated with a TF are slightly less often its ChIP targets. Adding any of these scores to
+  popularity makes it worse.
+
+**Round 2: the trained model on one cell state.** The model reads each gene's expression across cells,
+so a cell-state model uses only that state's cells. The hero (SAGE, no Geneformer) was trained on
+early cells (0-24h, 260 cells), on 260 late cells (72-96h), and on 260 random cells from the whole
+time course as a cell-count control. Each was run at 5 seeds, and the late and random subsets were
+redrawn for each seed.
+
+| Cells used | AUROC | AUPRC | Within-TF |
+|---|---|---|---|
+| Early, 260 | 0.882 | 0.613 | 0.728 |
+| Late, 260 | 0.883 | 0.620 | 0.712 |
+| Random, 260 | 0.886 | 0.617 | 0.741 |
+| All, 758 | 0.888 | 0.626 | 0.747 |
+
+| Comparison (within-TF) | Difference | TFs better | p |
+|---|---|---|---|
+| Early vs random | −0.013 | 13/33 | 0.21 |
+| Late vs random | −0.029 | 12/33 | 0.005 |
+| Early vs late | +0.016 | 20/33 | 0.16 |
+| All vs random | +0.006 | 20/33 | 0.13 |
+
+- Early cells do not beat a random draw of the same size. Late cells lose to it.
+- Per TF, the gain from early cells does not follow when the TF is expressed (Spearman −0.20,
+  p = 0.27). POU5F1 and NANOG, expressed early, do better with late cells; SOX17 and EOMES, expressed
+  late, do better with early cells.
+
+**Conclusion.** Restricting the data to one cell state does not help. Cells spread over the whole
+time course give the model the most to learn from, and the ESC-like cells are no better than a random
+mix. Late cells alone hurt, which fits labels measured in undifferentiated cells. A fair test of
+state-specific networks needs state-specific labels (for example ChIP-seq in definitive endoderm),
+which this benchmark does not have.
+
+Scripts: `analysis/w10_states_r1.py` (co-expression per time point), `analysis/w10_states_prep.py`
+(cell subsets under `data/states/`), `analysis/w10_report.py`. Output:
+`analysis/out/w10_states_r1.txt`, `analysis/out/w10_states_r2.txt`. Jobs: `analysis/jobs/w10.txt`.
