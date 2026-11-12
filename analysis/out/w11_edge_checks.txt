@@ -1,0 +1,49 @@
+W11 B3 leak audit, hESC TFs+500, hero config (val_frac 0.1, split_seed 0). Line numbers refer to src/pair_gnn.py.
+
+(i) validation positives are never in the message-passing graph while validation is scored
+  CONFIRMED for the pair itself: graph edges come only from training rows (L200-203: pos_rows = tri positives; evaluate() L345-348 uses full_graph() with no validation edge); assert uid[val rows] == -1 for all 2068 validation rows; 0 validation pairs duplicate a training pair in the same direction.
+  REFUTED in the reverse direction: the graph is undirected, so a validation pair (t,g) whose reverse (g,t) is a training positive is scored through its own edge. 6 of 2068 validation pairs (1 of 303 positives).
+
+(ii) test pairs are never in any training graph
+  Same-direction: CONFIRMED, 0 of 7142 test pairs appear in Train_set (any label).
+  Reverse direction: REFUTED, 28 of 7142 test pairs (7 of 1061 positives) have the undirected edge in the graph built from the validation-split training rows; with the refit graph (all training rows, val_frac 0) the count is 30 (task A, analysis/out/w11_reverse_leak.txt).
+  Training itself never uses test rows: prepare() reads Test_set only into D["te"] (L176, protocol random leaves it untouched); fit() only reads te at evaluate()/final scoring (L345-350, L410).
+
+(iv) degree/popularity quantities use training rows only
+  CONFIRMED by code: DEG/NC/NEG (L287-293, used only with --rank_w > 0, off in the hero) are built from yt, tft, pos_t = tr[tri] (L288-293); tri excludes the validation rows (assert tri & vai = {}) and the test file is never indexed.
+  Check: recomputed in-degree from tr[tri] sums to 2727 positives, below the 3030 of all Train_set rows, so validation positives are excluded; test positives are never in either.
+  scalars.get (PANDA/contrast; off in the hero) also starts from trn = tr.iloc[tri] (analysis/scalars.py L69-70). The GCN/SAGE degree normalisation uses the same graph (training edges only).
+  Caveat, not a leak: standardised expression x (L178), and the co-expression kNN graph (L72, npanda only) use all cells but no labels.
+
+(iii) Geneformer embeddings use no labels
+  CONFIRMED by code reading: pair_gnn L186 calls Trainer._get_embeddings (src/train.py L41-57), which reads scFM/Geneformer/<cell>_500_gene_embeddings.csv and maps rows to genes through <cell>_500.csv (gene -> Ensembl id).
+  The loader takes no label, split or graph argument and builds one 896-d vector per gene (zeros when the gene is missing). The embeddings are precomputed files (pretrained Geneformer on the expression data);
+  the generation script is not in the repository, so that last step is taken from the file provenance and cannot be audited from here.
+
+--split fixed --mp_frac 0.7 sanity (asserted on the CPU one-epoch run, seed 42)
+  undirected training edges 2717; in the training graph 1902 (70.0%); supervised rows 16701 = 819 positives (rows of the other 815 edges, reverse rows included) + 15882 negatives (all training negatives); no supervised positive edge is in the training graph; the split is by undirected edge so an edge and its reverse row never straddle it.
+  Validation/test graph = full_graph() with nothing dropped = ALL training-positive edges (same call as --split batch, L348 and L410). Training graph = the fixed 70% (L331, L375).
+
+
+B1 own-edge memorisation (hESC, hero config without Geneformer, 5 seeds 42-46, refit model).
+Scored after training: a random 10% of the training-positive undirected edges (n=301) + as many training negatives, fixed seed 123; graph = all training edges ("present") vs the same graph with those edges removed ("removed").
+split     n  pos logit gap (present-removed)  median gap   neg gap   pos logit present/removed    AUROC present    AUROC removed               test AUROC/AUPRC/within-TF
+batch     5                 -0.0589 ± 0.0393      -0.024    -0.013         -0.30/-0.24  0.9297 ± 0.0022  0.9272 ± 0.0043   0.8884 ± 0.0017 / 0.6254 ± 0.0032 / 0.7470 ± 0.0047
+none      5                  0.3854 ± 0.2697       0.254     0.022         -0.47/-0.86  0.8993 ± 0.0225  0.8517 ± 0.0065   0.8467 ± 0.0051 / 0.5444 ± 0.0134 / 0.6198 ± 0.0346
+per-seed gap (batch): -0.018 -0.083 -0.025 -0.045 -0.124   (none): +0.196 +0.463 +0.882 +0.207 +0.178
+negatives mean logit present/removed (batch, none): -3.86/-3.85, -3.19/-3.21
+
+B2 fixed 70/30 split vs per-batch removal (hESC, hero config without Geneformer, 5 seeds, test set, epoch on validation AUROC, refit).
+Reference w3_hero = --split batch, scfm 0, same args (checked). w11_own_batch = identical args plus the diagnostic flag (reproducibility check).
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero, split batch (w3_hero)                    5   0.8884 ± 0.0018  0.6255 ± 0.0032  0.7470 ± 0.0046  0.7267 ± 0.0061  0.8882 ± 0.0008    0.26
+hero + diag flag (w11_own_batch)               5   0.8884 ± 0.0017  0.6254 ± 0.0032  0.7470 ± 0.0047  0.7267 ± 0.0062  0.8881 ± 0.0008    0.16
+split none (w11_own_none)                      5   0.8467 ± 0.0051  0.5444 ± 0.0134  0.6198 ± 0.0346  0.6031 ± 0.0250  0.8527 ± 0.0054    0.08
+split fixed mp_frac 0.7 (w11_fixed)            5   0.8635 ± 0.0039  0.5785 ± 0.0100  0.6707 ± 0.0091  0.6589 ± 0.0110  0.8759 ± 0.0014    0.08
+best validation epoch per seed: w3_hero: [10, 11, 7, 7, 12]; w11_own_batch: [10, 11, 7, 7, 12]; w11_own_none: [1, 2, 3, 1, 1]; w11_fixed: [8, 9, 6, 5, 6]
+paired per-TF tests (per-TF AUROC averaged over seeds, Wilcoxon over TFs):
+  w11_fixed - w3_hero                            within-TF diff -0.0763  95% CI [-0.1067, -0.0503]  TFs better 3/33  p=4.74e-07
+  w11_own_none - w3_hero                         within-TF diff -0.1272  95% CI [-0.1554, -0.0979]  TFs better 1/33  p=1.25e-07
+  w11_own_batch - w3_hero                        within-TF diff -0.0001  95% CI [-0.0004, +0.0003]  TFs better 13/33  p=0.629
+  w11_fixed - w11_own_none                       within-TF diff +0.0509  95% CI [+0.0241, +0.0793]  TFs better 26/33  p=0.00029
+args differ w3_hero vs w11_own_batch: {'rank_loss': (None, 'bpr'), 'mp_frac': (None, 0.7), 'rank_w': (None, 0.0), 'rank_neg': (None, 'rand'), 'aux_panda': (None, 0.0), 'scalar_lr': (None, 1.0), 'own_edge_diag': (None, 1)}

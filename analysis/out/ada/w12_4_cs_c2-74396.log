@@ -1,0 +1,23 @@
+NVIDIA GeForce RTX 2080 Ti
+ModuleNotFoundError: No module named 'colorlog'
+ModuleNotFoundError: No module named 'colorlog'
+w12_pe_rw_coexp_k32_s42	epoch 10	val AUROC 0.8862	REFIT TEST AUROC 0.8889 AUPRC 0.6223 withinTF 0.7443	0.5 min
+w12_pe_rw_coexp_k8_s42	epoch 10	val AUROC 0.8887	REFIT TEST AUROC 0.8880 AUPRC 0.6247 withinTF 0.7407	0.6 min
+w12_cs_hero_s43	epoch 11	val AUROC 0.8873	REFIT TEST AUROC 0.8897 AUPRC 0.6268 withinTF 0.7456	0.7 min
+w12_pe_rw_coexp_k16_s42	epoch 10	val AUROC 0.8912	REFIT TEST AUROC 0.8885 AUPRC 0.6254 withinTF 0.7463	0.7 min
+w12_pe_rw_ppi_k16_s42	epoch 10	val AUROC 0.8900	REFIT TEST AUROC 0.8885 AUPRC 0.6262 withinTF 0.7448	0.5 min
+w12_pe_rw_grn_k16_leak_s42	epoch 10	val AUROC 0.8891	REFIT TEST AUROC 0.8867 AUPRC 0.6179 withinTF 0.7391	0.6 min
+w12_pe_foldctl_s42	epoch 10	val AUROC 0.8865	REFIT TEST AUROC 0.8867 AUPRC 0.6196 withinTF 0.7497	0.7 min
+w12_pe_rw_coexp_k16_prod_s42	epoch 10	val AUROC 0.8894	REFIT TEST AUROC 0.8885 AUPRC 0.6248 withinTF 0.7464	0.7 min
+w12_pe_lap_coexp_k16_dist_s42	epoch 10	val AUROC 0.8884	REFIT TEST AUROC 0.8887 AUPRC 0.6252 withinTF 0.7495	1.6 min
+w12_hub_cap20_s42	epoch 6	val AUROC 0.8865	REFIT TEST AUROC 0.8864 AUPRC 0.6198 withinTF 0.7390	0.6 min
+w12_hub_cap5_s42	epoch 6	val AUROC 0.8853	REFIT TEST AUROC 0.8853 AUPRC 0.6181 withinTF 0.7317	0.6 min
+w12_hub_idf1_s42	epoch 10	val AUROC 0.8879	REFIT TEST AUROC 0.8881 AUPRC 0.6280 withinTF 0.7511	0.6 min
+w12_hub_cap10_evall_s42	epoch 6	val AUROC 0.8866	REFIT TEST AUROC 0.8865 AUPRC 0.6195 withinTF 0.7387	0.6 min
+w12_hub_cap10_degfeat_s42	epoch 14	val AUROC 0.8865	REFIT TEST AUROC 0.8889 AUPRC 0.6173 withinTF 0.7501	0.7 min
+w12_qatt_h4_raw_k0_s42	epoch 5	val AUROC 0.8849	REFIT TEST AUROC 0.8808 AUPRC 0.6129 withinTF 0.7173	0.6 min
+w12_qatt_h1_raw_k0_s42	epoch 9	val AUROC 0.8838	REFIT TEST AUROC 0.8868 AUPRC 0.6189 withinTF 0.7339	0.9 min
+w12_qatt_h1_emb_k0_s42	epoch 10	val AUROC 0.8914	REFIT TEST AUROC 0.8906 AUPRC 0.6260 withinTF 0.7556	0.9 min
+w12_qatt_h4_emb_k0_s42	epoch 10	val AUROC 0.8906	REFIT TEST AUROC 0.8904 AUPRC 0.6276 withinTF 0.7558	0.9 min
+w12_pe_lap_grn_k16_fold_s42	epoch 7	val AUROC 0.8865	REFIT TEST AUROC 0.8826 AUPRC 0.6146 withinTF 0.7442	3.4 min
+QUEUE_DONE analysis/jobs/ada_sent/w12_4_cs_c2.txt

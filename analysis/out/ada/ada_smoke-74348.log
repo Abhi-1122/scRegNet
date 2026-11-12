@@ -1,0 +1,4 @@
+NVIDIA GeForce RTX 2080 Ti
+NVIDIA GeForce RTX 2080 Ti
+ada_smoke_hero_s42	epoch 7	val AUROC 0.8877	REFIT TEST AUROC 0.8867 AUPRC 0.6223 withinTF 0.7454	0.9 min
+QUEUE_DONE analysis/jobs/ada_smoke.txt

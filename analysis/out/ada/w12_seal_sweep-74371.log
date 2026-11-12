@@ -1,0 +1,8 @@
+NVIDIA GeForce RTX 2080 Ti
+w12_seal_h1tt_s42	epoch 11	val AUROC 0.8875	REFIT TEST AUROC 0.8850 AUPRC 0.6149 withinTF 0.6964	1.7 min
+w12_seal_h1mm_s42	epoch 27	val AUROC 0.8818	REFIT TEST AUROC 0.8832 AUPRC 0.6095 withinTF 0.7051	2.0 min
+w12_seal_h1sort_s42	epoch 10	val AUROC 0.8876	REFIT TEST AUROC 0.8788 AUPRC 0.5948 withinTF 0.6849	1.4 min
+w12_seal_h2c10_s42	epoch 10	val AUROC 0.8868	REFIT TEST AUROC 0.8849 AUPRC 0.6197 withinTF 0.6762	1.7 min
+w12_seal_h2c20_s42	epoch 14	val AUROC 0.8869	REFIT TEST AUROC 0.8845 AUPRC 0.6207 withinTF 0.6944	1.9 min
+w12_seal_h1tt_gcn_s42	epoch 9	val AUROC 0.8864	REFIT TEST AUROC 0.8796 AUPRC 0.6073 withinTF 0.6959	1.4 min
+QUEUE_DONE analysis/jobs/ada_sent/w12_seal_sweep.txt

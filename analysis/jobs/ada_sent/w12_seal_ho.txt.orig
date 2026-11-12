@@ -1,0 +1,21 @@
+#mod src.seal 2
+w12_ho_tf0_seal_h1tt_s42 --protocol tf --fold 0 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_tf0_seal_h1tt_s43 --protocol tf --fold 0 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_tf1_seal_h1tt_s42 --protocol tf --fold 1 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_tf1_seal_h1tt_s43 --protocol tf --fold 1 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_tf2_seal_h1tt_s42 --protocol tf --fold 2 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_tf2_seal_h1tt_s43 --protocol tf --fold 2 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_tf3_seal_h1tt_s42 --protocol tf --fold 3 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_tf3_seal_h1tt_s43 --protocol tf --fold 3 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_tf4_seal_h1tt_s42 --protocol tf --fold 4 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_tf4_seal_h1tt_s43 --protocol tf --fold 4 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_gene0_seal_h1tt_s42 --protocol gene --fold 0 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_gene0_seal_h1tt_s43 --protocol gene --fold 0 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_gene1_seal_h1tt_s42 --protocol gene --fold 1 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_gene1_seal_h1tt_s43 --protocol gene --fold 1 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_gene2_seal_h1tt_s42 --protocol gene --fold 2 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_gene2_seal_h1tt_s43 --protocol gene --fold 2 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_gene3_seal_h1tt_s42 --protocol gene --fold 3 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_gene3_seal_h1tt_s43 --protocol gene --fold 3 --hops 1 --pool tt --workers 2 --seed 43
+w12_ho_gene4_seal_h1tt_s42 --protocol gene --fold 4 --hops 1 --pool tt --workers 2 --seed 42
+w12_ho_gene4_seal_h1tt_s43 --protocol gene --fold 4 --hops 1 --pool tt --workers 2 --seed 43

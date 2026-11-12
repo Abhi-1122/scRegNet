@@ -1,0 +1,3 @@
+#mod src.nbf 2
+w12_nbf_L6pna_s42 --layers 6 --aggr pna --batch_size 512 --seed 42
+w12_nbf_L3pna_nofeat_s42 --layers 3 --aggr pna --feat none --batch_size 512 --seed 42

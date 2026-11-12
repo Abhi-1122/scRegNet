@@ -1,0 +1,17 @@
+# W11 status log
+- 2026-11-12 15:16:43 started; read harness. A: reverse-edge leak, B: edge checks, C: grid inventory
+- 2026-11-12 15:17:10 Task A done: analysis/w11_reverse_leak.py -> analysis/out/w11_reverse_leak.txt (hESC 30/7 reproduced)
+- 2026-11-12 15:18:41 pair_gnn.py: added --split fixed, --mp_frac, --own_edge_diag (smoke ok, smoke files removed). Submitting analysis/jobs/w11_edge.txt (15 runs, CAP=4)
+- 2026-11-12 15:20:07 all 15 w11_edge runs DONE; audit script analysis/w11_edge_audit.py written (B3), output analysis/out/w11_edge_checks.txt
+- 2026-11-12 15:23:06 B reports written (w11_edge_checks.txt), C inventory + analysis/jobs/w11_grid.txt (391 lines, NOT submitted), results.txt/work.md appended. Remaining: final report.
+- 2026-11-12 15:24:47 coordinator change: npanda at 2 layers ('256 256'), decoder add label. Regenerated analysis/jobs/w11_grid.txt (366 runs, mESC last). Submitting with CAP=4.
+- 2026-11-12 15:26:34 grid queue running (366 runs); analysis/w11_grid_report.py written, awaiting completion
+- 2026-11-12 15:27:16 older g*/h* runs have no npz (no per-TF logits): inventory/report now require json+npz. Extra 15 reruns of hESC 1-layer gcn/sage gf0 seeds 42-44 in analysis/jobs/w11_grid_fix.txt, submitted; analysis/jobs/w11_grid.txt now holds the union (recomputed).
+- 2026-11-12 15:31:04 grid queue in progress: 49 of 381 w11_grid runs done
+- 2026-11-12 16:07:21 188 w11_grid runs done
+- 2026-11-12 16:34:50 hESC/hHEP/mHSC-E grid done; mESC running
+- 2026-11-12 17:26:28 297/381 w11_grid runs done (mESC in progress)
+- 2026-11-12 18:21:14 328/381 done; mESC npanda runs ~14 min each
+- 2026-11-12 19:15:40 347/381 done
+- 2026-11-12 19:49:09 ALL grid runs done (381 w11_grid json, 0 failures); running analysis/w11_grid_report.py
+- 2026-11-12 19:49:54 DONE: analysis/out/w11_grid.txt written; results.txt/work.md appended; analysis/jobs/w11_grid.txt = union (381 lines).

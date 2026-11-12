@@ -1,0 +1,33 @@
+W12 idea 4: Correct & Smooth on a graph of (TF, gene) pairs. hESC, seeds 42-44. Hyperparameters chosen per seed on the validation slice (stage-1 model, training labels = 90% of training rows); applied to the refit model with all training labels; test scored once.
+
+== hero (family w12_cs_hero, 3 seeds)
+                                              AUROC            AUPRC        within-TF
+refit model, raw (rerun of the hero)  0.8884 ± 0.0013  0.6255 ± 0.0014  0.7488 ± 0.0022
++ C&S, chosen on val AUROC          0.8864 ± 0.0019  0.6177 ± 0.0104  0.7343 ± 0.0071
++ C&S, chosen on mean(val AUROC, val within-TF)  0.8876 ± 0.0015  0.6287 ± 0.0069  0.7328 ± 0.0012
+original run w3_hero                0.8885 ± 0.0014  0.6254 ± 0.0015  0.7490 ± 0.0018
+chosen hyperparameters (val AUROC base -> chosen): s42: coexp k=10 both a1=0.95 s=1.0 a2=0.5 (0.8887 -> 0.8904); s43: coexp k=10 both a1=0.0 s=0.5 a2=0.5 (0.8873 -> 0.8904); s44: coexp k=5 tf a1=0.8 s=0.5 a2=0.0 (0.8891 -> 0.8918)
+  C&S - same model without C&S                   within-TF diff -0.0144  95% CI [-0.0442, +0.0086]  TFs better 16/33  p=0.685
+  C&S - original w3_hero                         within-TF diff -0.0146  95% CI [-0.0439, +0.0082]  TFs better 16/33  p=0.659
+where the effect comes from (test, same hyperparameters, one part off; mean over seeds; the full method gives within-TF 0.7343, AUROC 0.8864):
+  correct_only       (n=2) within-TF 0.7487  AUROC 0.8892
+  smooth_only        (n=2) within-TF 0.7287  AUROC 0.8848
+  gene_edges_only    (n=3) within-TF 0.7293  AUROC 0.8810
+  tf_edges_only      (n=3) within-TF 0.7438  AUROC 0.8842
+score/popularity Spearman over all genes (mean over TFs, seeds): raw +0.732, C&S +0.689
+
+== hero + Geneformer (family w12_cs_herogf, 3 seeds)
+                                              AUROC            AUPRC        within-TF
+refit model, raw (rerun of the hero)  0.8904 ± 0.0013  0.6328 ± 0.0026  0.7496 ± 0.0018
++ C&S, chosen on val AUROC          0.8850 ± 0.0017  0.6120 ± 0.0043  0.7271 ± 0.0040
++ C&S, chosen on mean(val AUROC, val within-TF)  0.8920 ± 0.0004  0.6373 ± 0.0025  0.7459 ± 0.0040
+original run w3_herogf              0.8904 ± 0.0013  0.6327 ± 0.0025  0.7495 ± 0.0018
+chosen hyperparameters (val AUROC base -> chosen): s42: coexp k=10 both a1=0.95 s=0.5 a2=0.5 (0.8928 -> 0.8933); s43: coexp k=10 both a1=0.95 s=0.5 a2=0.5 (0.8915 -> 0.8927); s44: coexp k=10 both a1=0.0 s=0.5 a2=0.5 (0.8919 -> 0.8929)
+  C&S - same model without C&S                   within-TF diff -0.0225  95% CI [-0.0523, -0.0001]  TFs better 9/33  p=0.112
+  C&S - original w3_herogf                       within-TF diff -0.0224  95% CI [-0.0523, -0.0000]  TFs better 9/33  p=0.116
+where the effect comes from (test, same hyperparameters, one part off; mean over seeds; the full method gives within-TF 0.7271, AUROC 0.8850):
+  correct_only       (n=2) within-TF 0.7499  AUROC 0.8916
+  smooth_only        (n=3) within-TF 0.7270  AUROC 0.8850
+  gene_edges_only    (n=3) within-TF 0.7163  AUROC 0.8782
+  tf_edges_only      (n=3) within-TF 0.7431  AUROC 0.8820
+score/popularity Spearman over all genes (mean over TFs, seeds): raw +0.749, C&S +0.621

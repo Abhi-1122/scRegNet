@@ -1,0 +1,11 @@
+w12_hub_cap3_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --hub_cap 3 --seed 42
+w12_hub_cap5_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --hub_cap 5 --seed 42
+w12_hub_cap10_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --hub_cap 10 --seed 42
+w12_hub_cap20_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --hub_cap 20 --seed 42
+w12_hub_cap40_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --hub_cap 40 --seed 42
+w12_hub_cap10_evall_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --hub_cap 10 --hub_eval all --seed 42
+w12_hub_idf05_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --idf_beta 0.5 --seed 42
+w12_hub_idf1_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --idf_beta 1 --seed 42
+w12_hub_degfeat_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --deg_feat 1 --seed 42
+w12_hub_cap10_degfeat_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --hub_cap 10 --deg_feat 1 --seed 42
+w12_hub_idf05_cap20_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --idf_beta 0.5 --hub_cap 20 --seed 42

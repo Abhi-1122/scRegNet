@@ -1,0 +1,89 @@
+W11 task C: consolidated-grid inventory (no runs). Existing = all 5 seeds present with matching args on every functionally relevant flag.
+
+96 configs (4 cells x 24), 22 complete at 5 seeds, 8 partly present, 66 absent. Missing runs: 349 of 480.
+Decoder column: add = TF + gene terms, no interaction (the harness default; there is no dot decoder), had = + Hadamard interaction. npanda = relations RCP, coexp full (flags of the w3/w4/w5 *np_had* runs), at 2 layers (as reported).
+
+EXISTING (run-name prefix):
+  hESC    gcn    had none  gf1  w11_grid_hESC_gcn_had_none_gf1
+  hESC    gcn    had batch gf1  w8_hESC_gcngf
+  hESC    sage   add none  gf0  w11_grid_hESC_sage_add_none_gf0
+  hESC    sage   add none  gf1  w11_grid_hESC_sage_add_none_gf1
+  hESC    sage   had none  gf0  w11_own_none
+  hESC    sage   had none  gf1  w11_grid_hESC_sage_had_none_gf1
+  hESC    sage   had batch gf0  w3_hero
+  hESC    sage   had batch gf1  d02_B_default
+  hESC    npanda had batch gf0  w3_np_had
+  hESC    npanda had batch gf1  w5_nphad_gf
+  hHEP    gcn    had batch gf1  w8_hHEP_gcngf
+  hHEP    sage   had batch gf0  m_hHEP_e_sage_d256
+  hHEP    sage   had batch gf1  w4_hHEP_herogf
+  hHEP    npanda had batch gf0  w4_hHEP_np_had
+  mHSC-E  gcn    had batch gf1  w8_mHSC-E_gcngf
+  mHSC-E  sage   had batch gf0  w4_mHSC-E_hero
+  mHSC-E  sage   had batch gf1  w4_mHSC-E_herogf
+  mHSC-E  npanda had batch gf0  w4_mHSC-E_np_had
+  mESC    gcn    had batch gf1  w8_mESC_gcngf
+  mESC    sage   had batch gf0  w4_mESC_hero
+  mESC    sage   had batch gf1  w4_mESC_herogf
+  mESC    npanda had batch gf0  w4_mESC_np_had
+
+GRID (rows = encoder/decoder/split/GF, columns = cells; number = seeds already present, E = complete):
+encoder dec split gf          hESC    hHEP  mHSC-E    mESC
+gcn add none gf0                 2       0       0       0
+gcn add none gf1                 2       0       0       0
+gcn add batch gf0                0       0       0       0
+gcn add batch gf1                0       0       0       0
+gcn had none gf0                 0       0       0       0
+gcn had none gf1                 E       0       0       0
+gcn had batch gf0                2       3       3       3
+gcn had batch gf1                E       E       E       E
+sage add none gf0                E       0       0       0
+sage add none gf1                E       0       0       0
+sage add batch gf0               2       0       0       0
+sage add batch gf1               4       0       0       0
+sage had none gf0                E       0       0       0
+sage had none gf1                E       0       0       0
+sage had batch gf0               E       E       E       E
+sage had batch gf1               E       E       E       E
+npanda add none gf0              0       0       0       0
+npanda add none gf1              0       0       0       0
+npanda add batch gf0             0       0       0       0
+npanda add batch gf1             0       0       0       0
+npanda had none gf0              0       0       0       0
+npanda had none gf1              0       0       0       0
+npanda had batch gf0             E       E       E       E
+npanda had batch gf1             E       0       0       0
+
+scRegNet recipe rows (gcn, add, split none, Geneformer, 3 layers [227 29 34], SGD, lr 0.00144, 600 epochs; not part of the 1-layer grid):
+  hESC    f02_A_paper: 5 seeds
+  hHEP    w4_hHEP_A_paper: 5 seeds
+  mHSC-E  w4_mHSC-E_A_paper: 5 seeds
+  mESC    w4_mESC_A_paper: 5 seeds
+npanda at 2 layers [256 256] (what the w3/w4/w5 runs used) complete at 5 seeds: hESC had batch gf0, hESC had batch gf1, hHEP had batch gf0, mHSC-E had batch gf0, mESC had batch gf0
+
+Runtime: minutes per run = mean over existing hero-type runs of the same cell/family/split (family = npanda or gcn+sage; any depth, decoder, Geneformer). Runs ran 4 at a time, so the minutes include sharing the machine.
+cell    family  split    min/run  n runs
+hESC    gnn     none        0.15      32
+hESC    gnn     batch       0.36      67
+hESC    np      none        0.32       0   (no runs: batch value x none/batch ratio 0.41 from hESC)
+hESC    np      batch       0.79      70
+hHEP    gnn     none        1.37       1
+hHEP    gnn     batch       1.04      30
+hHEP    np      none        0.44       0   (no runs: batch value x none/batch ratio 0.41 from hESC)
+hHEP    np      batch       1.08      10
+mHSC-E  gnn     none        1.01       3
+mHSC-E  gnn     batch       0.78      30
+mHSC-E  np      none        0.49       0   (no runs: batch value x none/batch ratio 0.41 from hESC)
+mHSC-E  np      batch       1.21      10
+mESC    gnn     none        3.07       3
+mESC    gnn     batch       5.78      30
+mESC    np      none        4.99       0   (no runs: batch value x none/batch ratio 0.41 from hESC)
+mESC    np      batch      12.25      10
+
+Estimated cost of the missing runs (run-minutes = sum of per-run minutes; wall time at 4 slots = run-minutes / 4; treat as +/- a factor 2, epochs-to-convergence vary):
+  hESC      58 runs     22.1 run-min  ~ 0.09 h wall
+  hHEP      97 runs    102.6 run-min  ~ 0.43 h wall
+  mHSC-E    97 runs     85.3 run-min  ~ 0.36 h wall
+  mESC      97 runs    533.6 run-min  ~ 2.22 h wall
+  total    349 runs    743.7 run-min  ~ 3.10 h wall
+job file analysis/jobs/w11_grid.txt: 349 lines (not submitted)

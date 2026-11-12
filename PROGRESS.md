@@ -2646,3 +2646,399 @@ which this benchmark does not have.
 Scripts: `analysis/w10_states_r1.py` (co-expression per time point), `analysis/w10_states_prep.py`
 (cell subsets under `data/states/`), `analysis/w10_report.py`. Output:
 `analysis/out/w10_states_r1.txt`, `analysis/out/w10_states_r2.txt`. Jobs: `analysis/jobs/w10.txt`.
+
+## 24. Leak checks on the training graph, and a full factor grid
+
+**Reverse-edge pairs.** Some test pairs (TF A, gene B) have the reverse pair (B, A) as a training
+positive, so the edge A-B sits in the message-passing graph at test time. Counts: hESC 30 test pairs
+(7 positive), hHEP 57 (18), mHSC-E 59 (36), mESC 429 (167). Scoring without them leaves the best
+model's lead over the scRegNet recipe unchanged: hESC +0.057, hHEP +0.002, mHSC-E +0.086, mESC +0.064.
+
+**Does the model read its own edge?** After training, a random 10% of training-positive edges were
+scored twice, once with the edge in the graph and once without, against as many training negatives.
+
+| Training split | Logit gap, positives (present − removed) | AUROC edge present | AUROC edge removed |
+|---|---|---|---|
+| none (edge always in the graph) | +0.385 | 0.899 | 0.852 |
+| batch (each batch's edges removed) | −0.059 | 0.930 | 0.927 |
+
+Without the per-batch split, the model learns that "my edge is in the graph" means positive, and that
+cue is absent at test time. With the split, the edge's presence makes no difference.
+
+**Fixed split instead of per-batch removal.** Holding 70% of the edges as a fixed graph and
+supervising on the other 30% gives within-TF 0.671, against 0.747 for the per-batch split (−0.076,
+p = 5e-7) and 0.620 with no split. Per-batch removal keeps every edge in the graph for most steps and
+still hides each pair's own edge, so it wins.
+
+**Audit.** Validation and test pairs never appear in the graph in the same direction. Geneformer
+embeddings and the popularity counts use no labels. The script that produced the Geneformer
+embeddings is not in the repository, so their label-freedom rests on the model being pretrained on
+unlabelled cells.
+
+**Grid.** 24 configurations per cell: encoder (GCN, SAGE at 1 layer; neural PANDA at 2 layers with
+R, C, P relations) x decoder (add, Hadamard) x split (none, batch) x Geneformer (off, on), 5 seeds,
+381 runs, plus the scRegNet recipe. Main effects pool the configurations that differ in one factor
+only (within-TF difference, Wilcoxon over TFs):
+
+| Factor | hESC | hHEP | mHSC-E | mESC |
+|---|---|---|---|---|
+| Hadamard − add decoder | +0.004 (p = 0.22) | −0.008 (p = 0.37) | +0.043 (p = 0.004) | +0.055 (p = 3e-9) |
+| Batch split − none | +0.039 (p = 7e-7) | +0.004 (p = 0.03) | +0.008 (p = 0.31) | −0.003 (p = 0.001) |
+| Geneformer on − off | +0.006 (p = 0.005) | +0.012 (p = 0.01) | +0.014 (p = 2e-6) | +0.006 (p = 6e-4) |
+| SAGE − GCN | −0.021 (p = 0.005) | −0.008 (p = 0.02) | −0.012 (p = 0.38) | +0.012 (p = 4e-9) |
+| Neural PANDA − SAGE | +0.010 (p = 0.06) | +0.006 (p = 5e-4) | −0.001 (p = 0.78) | −0.000 (p = 0.30) |
+
+| Cell | Best configuration | AUROC / AUPRC / within-TF | vs recipe (p) |
+|---|---|---|---|
+| hESC | neural PANDA, Hadamard, batch, Geneformer | 0.891 / 0.636 / 0.755 | +0.052 (0.002) |
+| hHEP | neural PANDA, Hadamard, batch, Geneformer | 0.904 / 0.847 / 0.789 | +0.001 (0.53) |
+| mHSC-E | GCN, Hadamard, batch, Geneformer | 0.926 / 0.944 / 0.805 | +0.084 (5e-5) |
+| mESC | SAGE, Hadamard, none, Geneformer | 0.940 / 0.883 / 0.828 | +0.063 (2e-8) |
+
+- Geneformer is the one factor that helps in every cell.
+- The Hadamard decoder carries the gain on the two mouse cells and does nothing on the human ones.
+- The batch split matters most where the model can memorise edges. SAGE with a Hadamard decoder and
+  no split collapses on hESC (0.620), and the same model with the split is the hero (0.747).
+- No encoder wins everywhere. Neural PANDA runs at 2 layers against 1 for the others, so its encoder
+  effect is mixed with depth.
+- The best configuration per cell is picked on test within-TF, so its lead over the recipe is
+  optimistic. hHEP stays a tie: its top three configurations sit within 0.002.
+
+Scripts: `analysis/w11_reverse_leak.py`, `analysis/w11_edge_audit.py`, `analysis/w11_edge_report.py`,
+`analysis/w11_grid_report.py`. Outputs: `analysis/out/w11_reverse_leak.txt`, `w11_edge_checks.txt`,
+`w11_grid.txt`. Jobs: `analysis/jobs/w11_edge.txt`, `w11_grid.txt`, `w11_grid_fix.txt`. Harness flags
+added: `--split fixed`, `--mp_frac`, `--own_edge_diag`.
+
+****** 7 Nov ******
+
+## 25. Comparing a gene with its TF's known targets (query-aware TF summary)
+
+**Where the idea comes from.** Item-based collaborative filtering and DIN (Zhou et al. 2018) in
+recommender systems score a candidate item by weighting the user's history by its similarity to that
+item. Here the TF plays the user and its known targets the history. The motivation: the hero's TF
+embedding is one mean over all known targets, so a TF that regulates several gene programs gets
+blurred into one vector, while within-TF ranking asks whether a gene looks like any of the TF's
+known targets.
+
+**Method.** New decoder flag in `src/pair_gnn.py`. For a pair (t, g), attention runs over t's targets
+in the current message-passing graph (so under `--split batch` the batch's own edges are already
+gone, and g itself is masked). The context c = sum of attention-weighted target embeddings enters the
+decoder as [u_t, u_g, u_t*u_g, c, c*u_g]. Knobs at seed 42 on validation: 1 or 4 heads, post-GNN or
+raw-feature embeddings, top-k or full attention. Chosen: 1 head, post-GNN embeddings, full attention.
+Control: the same decoder with uniform weights, so c is the plain mean of the targets' post-GNN
+embeddings.
+
+**Results** (within-TF, seeds 42-44 for the random split, 5 folds x 2 seeds held out; paired per-TF
+Wilcoxon against the hero of the same cell and seeds, no Geneformer unless stated):
+
+| Test | Hero | Attention | Uniform control |
+|---|---|---|---|
+| hESC | 0.749 | +0.002 (p = 0.58) | +0.000 (p = 0.45) |
+| hESC + Geneformer | 0.750 | +0.004 (p = 0.07) | |
+| hHEP | 0.759 | **+0.011 (22/30, p = 0.003)** | **+0.011 (21/30, p = 0.01)** |
+| mHSC-E | 0.758 | **+0.008 (20/29, p = 0.03)** | **+0.011 (23/29, p = 0.002)** |
+| mESC | 0.824 | −0.015 (32/85, p = 0.12) | +0.000 (p = 0.12) |
+| Held-out genes (hESC) | 0.546 | **+0.018 (25/34, p = 0.003)** | **+0.018 (27/34, p = 0.005)** |
+| Held-out TFs (hESC) | 0.686 | −0.053 (p < 0.001) | |
+
+With `--tf_drop` training, held-out TFs fall only as much as the hero with the same TF dropout.
+
+**Why.**
+- The gain is real on hHEP, mHSC-E and new genes, but it does not come from query-awareness. The
+  uniform control matches the attention everywhere and avoids the mESC loss. The learned attention is
+  nearly flat (normalised entropy 0.97 on positives).
+- So the information added is a second TF summary: the mean of the targets' post-GNN embeddings,
+  compared with the gene through c*u_g. Those embeddings already average each target's own
+  regulators, so c is a two-step view (TF -> its targets -> their regulators), while the hero's u_t
+  sees one step of raw expression. The decoder can then ask how close a gene sits to the TF's
+  target set in the learned space.
+- The new-gene gain sits on TFs with few known targets (Spearman −0.46 with the number of targets,
+  p = 0.006; +0.035 below the median of 38 targets, +0.001 above). A small target set gives a noisy
+  one-step mean, and the second summary steadies it.
+- The multi-module hypothesis found no support: the gain does not follow how spread out a TF's targets
+  are (Spearman −0.29, p = 0.13).
+- A new TF has no known targets, so c is empty and the extra decoder terms add noise (−0.053).
+
+**Verdict.** The first change in this series that helps hHEP (+0.011) and new genes (+0.018). The
+simpler uniform version is the config to keep. Next: test it on the best configuration of each cell
+(section 24, with Geneformer), where hHEP sits at 0.789.
+
+Report `python3.12 analysis/w12_1_report.py` -> `analysis/out/w12_1_query_tf.txt`; write-up
+`analysis/out/W12_1_query_tf.md`.
+
+## 26. Scoring a gene by the paths from its TF (NBFNet, hESC)
+
+**Where the idea comes from.** Neural Bellman-Ford Networks (Zhu et al., NeurIPS 2021) lead
+knowledge-graph completion. A run starts at the source node with a learned query vector, and each
+layer passes messages along the edges, so the state that reaches a target node summarises the short
+paths from the source to it. The project had two reasons to try it. The model is built per TF, which
+matches the within-TF ranking. An earlier stacker also ranked 3-path counts (TF -> target <- other
+regulator -> gene) among its strongest features, and NBFNet learns a weighted version of those counts.
+
+**Method.** `src/nbf.py`. All labelled TFs run at once (TFs x genes x hidden). Two relations: TF ->
+target and the reverse. DistMult messages, sum, mean or PNA aggregation, layer norm and short-cuts as
+in the paper. The score reads every layer's state at the gene, a projection of the gene's expression,
+and the TF-gene expression product (the term the hero's Hadamard decoder has). Each batch's own edges
+and their reverses leave the graph, as with `--split batch`. The sweep ran at seed 42 and chose on
+validation AUROC: layers {3, 4, 6}, aggregation, where features enter, extra co-expression and STRING
+relations, learning rate. It picked 6 layers, PNA, features in the final layer, plus the expression
+product.
+
+**Results** (seeds 42-44, refit; paired per-TF Wilcoxon over 33 TFs against `w3_hero` at the same seeds):
+
+| Model | AUROC | AUPRC | Within-TF | vs hero (TFs better, p) |
+|---|---|---|---|---|
+| Hero (SAGE) | 0.889 | 0.625 | 0.749 | |
+| NBFNet, chosen | 0.885 | 0.607 | 0.697 | −0.052 (9/33, 0.001) |
+| NBFNet, paths only (no expression) | 0.873 | 0.614 | 0.658 | −0.091 (8/33, 6e-5) |
+| NBFNet, expression only (no path layers) | 0.867 | 0.583 | 0.684 | −0.065 (5/33, 5e-5) |
+| Chosen + gene degree as input | 0.886 | 0.612 | 0.703 | −0.046 (10/33, 0.02) |
+
+| Held-out test (5 folds x 2 seeds) | Hero within-TF | NBFNet within-TF | p |
+|---|---|---|---|
+| New TFs | 0.686 | 0.602 | 8e-7 |
+| New genes | 0.546 | 0.543 | 0.62 |
+
+**Why it regressed.**
+- Paths add little to what expression already gives: +0.013 within-TF (0.684 to 0.697, p = 0.035). A
+  raw 3-path count alone scores 0.670.
+- The loss sits on pairs without paths. On test pairs with no 3-path the hero scores 0.815 and NBFNet
+  0.724. On pairs with paths the gap shrinks to 0.691 against 0.648.
+- Missing popularity does not explain it: giving NBFNet the gene degree raised it only to 0.703. More
+  hidden units did not help either.
+- A new TF has no edges, so no path leaves it and NBFNet falls back to the expression term (−0.084 on
+  held-out TFs).
+- Untested reading: the hero's SAGE layer averages the expression of a gene's known regulators and of
+  a TF's known targets at full width, and that average carries most of the signal. NBFNet states start
+  at zero and see the expression only through a 64-wide projection.
+
+**Verdict.** Path information beyond the hero's neighbour averages is small on this graph. Not worth
+tuning further.
+
+Code `src/nbf.py`; report `python3.12 analysis/w12_nbf_report.py` -> `analysis/out/w12_nbf_report.txt`;
+write-up `analysis/out/W12_2_nbfnet.md`.
+
+## 27. Classifying the subgraph around each pair (SEAL, hESC)
+
+**Where the idea comes from.** SEAL (Zhang & Chen, NeurIPS 2018) cuts out the small graph around a
+candidate pair, deletes the pair's own edge, labels each node by its distances to the two ends (DRNL),
+and classifies the subgraph with a GNN. The own-edge leak cannot happen by design, and the labels let
+the model see joint structure, such as common neighbours and paths, that per-node embeddings miss.
+
+**Method.** `src/seal.py`. Subgraphs of the training-positive graph, 1 or 2 hops, at most 30
+neighbours per node, with the t-g edge removed for every pair in every split. Node input: DRNL label,
+log degrees (own edge subtracted), PCA(32) of expression. Three SAGE layers, then pooling, then an MLP.
+The sweep (seed 42, validation AUROC) covered hops and cap, pooling (mean+max, plus the two end nodes,
+SortPooling) and GCN against SAGE. All sat within 0.006 of each other. A check on 300 training
+positives found no own edge left in any subgraph.
+
+**Results** (seeds 42-44, refit, against `w3_hero`):
+
+| Model | AUROC | AUPRC | Within-TF | vs hero (TFs better, p) |
+|---|---|---|---|---|
+| Hero (SAGE) | 0.889 | 0.625 | 0.749 | |
+| SEAL, 1 hop, cap 30, chosen | 0.886 | 0.620 | 0.708 | −0.042 (11/33, 0.03) |
+| SEAL without DRNL labels | 0.883 | 0.608 | 0.690 | −0.059 (10/33, 0.007) |
+| SEAL without expression | 0.882 | 0.602 | 0.699 | −0.050 (12/33, 0.006) |
+| SEAL, expression PCA 128 | 0.885 | 0.619 | 0.714 | −0.035 (12/33, 0.06) |
+
+| Held-out test (5 folds x 2 seeds) | Hero within-TF | SEAL within-TF | p |
+|---|---|---|---|
+| New TFs | 0.686 | 0.655 | 0.12 |
+| New genes | 0.546 | 0.506 | 2e-6 |
+
+**Why it regressed.**
+- The pair-structure signal is real but small: DRNL labels add +0.018 within-TF (p = 0.014). The
+  structure-only model already reaches 0.699, so the training graph around the pair carries most of
+  what SEAL knows.
+- SEAL ranks genes mostly by how connected they are. Within a TF, its scores correlate with gene
+  in-degree at Spearman 0.85, against 0.72 for the hero.
+- The hero wins most on poorly connected pairs (no 3-path: 0.815 against 0.702), where the subgraph is
+  small and the expression read at full resolution decides. More PCA components did not close the gap.
+- A new gene has no edges, so its subgraph is nearly empty (−0.040 on held-out genes).
+
+**Verdict.** No gain, and no setting moved it. The two architectures from general link prediction
+(sections 26, 27) both lose to a 1-layer SAGE for the same reason: on this graph the averaged
+expression of a node's known partners matters more than path or subgraph structure.
+
+Code `src/seal.py`; report `python3.12 analysis/w12_seal_report.py` -> `analysis/out/w12_seal_report.txt`;
+write-up `analysis/out/W12_3_seal.md`.
+
+## 28. Correct & Smooth on a graph of pairs (hESC)
+
+**Where the idea comes from.** Correct & Smooth (Huang et al., ICLR 2021) improves node classifiers
+without retraining: it spreads the training residuals over the graph (correct), then spreads the
+corrected scores with training labels held fixed (smooth). Here the nodes are (TF, gene) pairs. Two
+pairs of the same TF are linked when their genes are co-expression neighbours (or neighbours in the
+hero's embedding), and two pairs of the same gene when their TFs share many training targets.
+
+**Method.** `analysis/w12_cs.py`, after training, on the hero and on the Geneformer hero. The
+hyperparameters (two propagation strengths, scale, k, which edge types) were chosen per seed on the
+validation slice. The base scores for that choice came from the validation-stage model, with
+out-of-fold training scores so that no pair is scored through its own edge. The chosen setting was
+then applied to the refit model with all training labels, and test was scored once.
+
+**Results** (seeds 42-44): hero 0.749 -> 0.734 within-TF (−0.014, 16/33, p = 0.69); Geneformer hero
+0.750 -> 0.727 (−0.022, 9/33, p = 0.11).
+
+**Why it regressed.**
+- The correct step does nothing (0.749 -> 0.749). The base model already uses its neighbours' labels
+  through the training graph, so neighbouring residuals carry little.
+- The smooth step carries the loss (0.729), and within it the gene-gene edges (0.729 with gene edges
+  only, 0.744 with TF edges only). Smoothing spreads label mass to genes that only look alike in
+  expression, which blurs the ranking inside a TF.
+- Smoothing lowers the score's correlation with popularity (0.732 -> 0.689), and popularity is a real
+  within-TF signal (0.707 alone).
+- Choosing on validation within-TF instead picks a winner's-curse setting: about 9 validation
+  positives per TF and about 500 settings raise validation within-TF by +0.03 and lower test by −0.02.
+
+**Verdict.** No gain. Not worth tuning.
+
+Report `python3.12 analysis/w12_4_report.py` -> `analysis/out/w12_4_cs.txt`; write-up `analysis/out/W12_4_cs.md`.
+
+## 29. Limiting hub genes in the message graph
+
+**Where the idea comes from.** Over-squashing and curvature rewiring (Topping et al., ICLR 2022) and
+inverse-frequency weighting against popularity bias in recommender systems. The motivation: popular
+genes sit in every TF's neighbourhood mean, which could make TF embeddings alike and push the model
+toward popularity.
+
+**Method.** Flags in `src/pair_gnn.py`: `--hub_cap K` (each gene keeps at most K message-passing edges,
+resampled each batch) and inverse-degree weighting of each edge in the TF's mean (deg(g)^−beta,
+beta 0.5 or 1). Variants with gene degree as an extra feature. Curvature rewiring was not run.
+
+**Results** (within-TF against the hero of the cell, seeds 42-44):
+
+| Variant | hESC | hHEP | mESC | Held-out genes | Held-out TFs |
+|---|---|---|---|---|---|
+| Inverse degree, beta 0.5 | −0.004 (p = 0.22) | +0.001 (p = 0.82) | +0.001 (p = 0.29) | +0.001 | −0.007 |
+| Inverse degree, beta 1 | −0.004 (p = 0.14) | +0.004 (p = 0.89) | | | |
+| Cap 20 | −0.003 (p = 0.37) | +0.000 | | | |
+| Cap 10 | | −0.001 (p = 0.44) | −0.009 (p = 0.006) | | |
+
+**Why it did nothing.**
+- hESC hubs are mild: the highest gene in-degree in the training graph is 14, so cap 20 removes no
+  edge and acts as a null control.
+- Inverse-degree weighting leaves the score's correlation with popularity unchanged (within 0.005 in
+  every cell). Capping lowers it where hubs are heavy (mESC 0.724 -> 0.687 at cap 10), and within-TF
+  falls with it: popularity is signal, not bias, inside a TF.
+- The per-TF gain does not follow the share of the TF's targets that are hubs (Spearman +0.28,
+  p = 0.13).
+- Untested reading: popularity reaches the score through the gene-side decoder terms and the number of
+  messages a gene receives, not through the TF's neighbourhood mean that these knobs change.
+
+**Verdict.** No gain. The hub problem the idea targets does not exist on these graphs.
+
+Report `python3.12 analysis/w12_6_report.py` -> `analysis/out/w12_6_hubs.txt`; write-up `analysis/out/W12_6_hubs.md`.
+
+## 30. Positional encodings of genes (hESC)
+
+**Where the idea comes from.** Laplacian and random-walk positional encodings (Dwivedi et al. 2020,
+2022) and PEG for link prediction (Wang et al., ICLR 2022) tell a GNN where a node sits in the graph.
+The motivation: give the model each gene's community.
+
+**Method.** Flags `--pe {lap, rw}`, `--pe_dim k`, `--pe_graph {grn, coexp, ppi}`: the encoding is
+concatenated to the node features (random sign flips for Laplacian eigenvectors), or fed to the
+decoder as a distance or product (PEG style). k in {8, 16, 32}. Encodings from the training GRN carry
+each training pair's own edge, so a fold-safe version computes them per fold, and the full-graph
+("leak") version was kept as a contrast. Control: random vectors of the same size.
+
+**Results** (within-TF against the hero, seeds 42-44):
+
+| Variant | Difference (p) |
+|---|---|
+| Laplacian, STRING, k = 16 | −0.003 (0.37) |
+| Laplacian, co-expression, k = 32 | −0.002 (0.58) |
+| Random-walk, co-expression, k = 16 | −0.008 (0.04) |
+| Laplacian, GRN, fold-safe | −0.019 (2e-4) |
+| Laplacian, GRN, full graph (leak) | −0.007 (0.13) |
+| Random vectors, k = 16 | −0.007 (0.20) |
+
+Held-out (Laplacian, STRING, k = 16): genes −0.010 (p = 0.06), TFs −0.010 (p = 0.17).
+
+**Why it did nothing.**
+- The informative encodings beat random vectors by only 0.004-0.006 (STRING: p = 0.035), so the graphs
+  carry a little community information. That gain does not repay the cost of extra input dimensions
+  (random vectors alone cost 0.007, since unique per-gene vectors help the model memorise genes).
+- The fold-safe GRN version suffers a train/test mismatch: training encodings come from 80% of the
+  edges, evaluation from all. Fold-pure batching alone costs 0.007. The leak version scores higher than
+  the fold-safe one (+0.013, p = 0.04) and still loses to the hero, so the own-edge leak does not
+  reach the test score here.
+- No subgroup of test pairs (by similarity to known targets, by popularity) shows a gain above 0.005.
+- Untested reading: the SAGE layer already averages expression over each node's partners, which
+  places a gene in its co-expression community; coordinates of that community add noise.
+
+**Verdict.** No gain.
+
+Report `python3.12 analysis/w12_9_report.py` -> `analysis/out/w12_9_pe.txt`; write-up `analysis/out/W12_9_pe.md`.
+
+## 31. Statistical network models without a neural network (all four cells)
+
+**Where the idea comes from.** Stock et al. (bioRxiv 2025.12.19.695616) report that degree heuristics
+match or beat GNNs on BEELINE under the standard negative sampling. Section 16 had already found that
+popularity plus a few counts ties the GNN on hESC. The textbook statistical model for "degree plus
+group structure" is the degree-corrected stochastic block model (DC-SBM; Karrer & Newman 2011):
+P(t regulates g) = theta_g x omega(t, block of g). Here theta_g is the gene's popularity and omega is
+the TF's preference for each gene block. Relatives: mixed membership (Airoldi et al. 2008), Poisson
+factorisation (Gopalan et al. 2015), the latent space model (Hoff et al. 2002).
+
+**Method.** `analysis/w12_stat.py`, CPU only, the same splits and validation slice as the GNN runs.
+Each model is fitted on the training labelled pairs only; unlabelled pairs count as missing, not as
+negatives. Knobs were chosen on validation within-TF, then refit on all training rows; test is scored
+once, at seeds 42-44.
+1. DC-SBM with fixed blocks: GMM clusters of genes on Geneformer embeddings or on expression PCs,
+   K in {5, 10, 20, 40}, soft or hard assignment, with Beta-smoothed theta and omega.
+2. DC-SBM with learned blocks: logit = a_t + b_g + log sum_k softmax(u_g)_k exp(W_tk), fitted by
+   gradient descent (a soft relaxation, not variational EM), K in {5, 10, 20}.
+3. Poisson factorisation, rank {4, 8, 16}, plus degree terms.
+4. Latent space model: logit = a_t + b_g − ||z_t − z_g||, d in {2, 4, 8}.
+
+Controls: popularity alone; the same fit as model 2 with one block (TF and gene terms only).
+
+**Results** (within-TF, test, mean of seeds 42-44):
+
+| Model | hESC | hHEP | mESC | mHSC-E |
+|---|---|---|---|---|
+| Popularity (smoothed rate) | 0.718 | 0.783 | 0.765 | 0.719 |
+| One-block control (TF + gene terms) | 0.718 | 0.787 | 0.767 | 0.731 |
+| DC-SBM, GMM blocks (best on validation) | 0.701 | 0.768 | 0.773 | 0.744 |
+| GMM block term alone | 0.548 | 0.519 | 0.636 | 0.653 |
+| **DC-SBM, learned blocks** | **0.730** | **0.801** | **0.833** | 0.753 |
+| Poisson factorisation | 0.703 | 0.780 | 0.825 | 0.722 |
+| Latent space model | 0.723 | 0.800 | 0.823 | 0.746 |
+| Best GNN in the grid (section 24) | 0.755 | 0.789 | 0.828 | 0.805 |
+
+Paired per-TF tests of the learned DC-SBM against the best grid GNN at the same seeds (42-44):
+hHEP +0.009 (17/30 TFs better, p = 0.32), mESC +0.005 (51/85, p = 0.05). Against the best GNN of
+section 21: hESC −0.032 (12/33, p = 0.02), mHSC-E −0.054 (14/29, p = 0.65; a few TFs carry the whole
+gap). The validation-chosen mHSC-E model is the fixed-block DC-SBM (0.744, −0.063, p = 5e-4). The best grid GNN was picked on test, so the hHEP and mESC comparisons
+favour the GNN.
+
+Held-out genes (hESC, 5 folds x 2 seeds): the DC-SBM with Geneformer blocks scores a new gene through
+its block, and reaches within-TF 0.575 against the hero's 0.546 (p = 0.008). Its block term adds
++0.053 over its theta-only version (p = 8e-6). A new TF has no omega row, so held-out TFs were skipped.
+
+**Why.**
+- Blocks defined by expression or Geneformer carry almost no TF-specific signal. The block term alone
+  sits near chance (0.52-0.65), and the fitted TF profiles over blocks are nearly flat (normalised
+  entropy 0.95-0.98). The one readable pattern: NANOG and SOX2 both prefer a replication and
+  cell-cycle cluster (MCM4, CCNA2, CDC7, NUSAP1).
+- Blocks learned from the labels do carry signal. Over the one-block control they add +0.011 (hESC,
+  p = 0.38), +0.014 (hHEP, p = 0.04), +0.066 (mESC, p = 1e-11) and +0.022 (mHSC-E, p = 0.06). The
+  gain goes mostly to TFs with few targets. Since GMM blocks with the same K and likelihood stay at
+  popularity level, the useful groups are likely co-targeted genes (genes hit by the same TFs), which
+  expression clusters do not recover. That reading is untested.
+- hHEP: every model sits near popularity (0.783), and the hero's scores follow popularity most closely
+  of the four cells (Spearman 0.84, against 0.64-0.72 elsewhere). hHEP TFs share many targets (mean
+  pairwise cosine of target vectors 0.25, against 0.09 on hESC). mHSC-E shares even more (0.36) and
+  still gains from structure, so target overlap alone does not explain hHEP.
+- The GNN keeps its lead on hESC and mHSC-E, where expression read through known partners adds what
+  block structure cannot (sections 26, 27).
+
+**Verdict.** A statistical model with learned blocks ties the best GNN on hHEP
+and mESC and beats the hero on held-out genes. It loses on hESC and mHSC-E. Two configs worth tuning
+next: the learned DC-SBM as a per-cell choice in the curated pipeline (hHEP, mESC), and its score as an
+input to the GNN decoder, since the two models err in different places.
+
+Code `analysis/w12_stat.py`; report `python3.12 analysis/w12_stat_report.py` -> `analysis/out/w12_stat.txt`;
+write-up `analysis/out/W12_S_stat.md`; scores `analysis/out/stat/`.

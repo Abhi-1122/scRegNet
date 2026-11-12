@@ -1,0 +1,19 @@
+#mod src.pair_gnn 6
+w12_mESC_hub_idf05_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mESC --idf_beta 0.5 --seed 43
+w12_mESC_hub_idf1_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mESC --idf_beta 1 --seed 42
+w12_mESC_hub_idf1_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mESC --idf_beta 1 --seed 44
+w12_mESC_hub_cap10_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mESC --hub_cap 10 --seed 43
+w12_mESC_hub_cap20_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mESC --hub_cap 20 --seed 42
+w12_mESC_hub_cap20_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mESC --hub_cap 20 --seed 44
+w12_mHSC-E_hub_idf05_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mHSC-E --idf_beta 0.5 --seed 43
+w12_mHSC-E_hub_idf1_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mHSC-E --idf_beta 1 --seed 42
+w12_mHSC-E_hub_idf1_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mHSC-E --idf_beta 1 --seed 44
+w12_mHSC-E_hub_cap10_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mHSC-E --hub_cap 10 --seed 43
+w12_mHSC-E_hub_cap20_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mHSC-E --hub_cap 20 --seed 42
+w12_mHSC-E_hub_cap20_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type mHSC-E --hub_cap 20 --seed 44
+w12_hHEP_hub_idf05_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type hHEP --idf_beta 0.5 --seed 43
+w12_hHEP_hub_idf1_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type hHEP --idf_beta 1 --seed 42
+w12_hHEP_hub_idf1_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type hHEP --idf_beta 1 --seed 44
+w12_hHEP_hub_cap10_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type hHEP --hub_cap 10 --seed 43
+w12_hHEP_hub_cap20_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type hHEP --hub_cap 20 --seed 42
+w12_hHEP_hub_cap20_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --gnn_dims 256 --decoder had --scfm 0 --cell_type hHEP --hub_cap 20 --seed 44

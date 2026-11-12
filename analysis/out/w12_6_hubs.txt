@@ -1,0 +1,159 @@
+W12 idea 6: hub control. hESC, random split, no Geneformer, hero settings, epoch chosen on validation AUROC, refit.
+
+== Screen, seed 42 only (n=1 per row)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (w3_hero)                                 1   0.8890 ± 0.0000  0.6264 ± 0.0000  0.7499 ± 0.0000  0.7292 ± 0.0000  0.8890 ± 0.0000    0.27
+hub_cap10                                      1   0.8866 ± 0.0000  0.6198 ± 0.0000  0.7385 ± 0.0000  0.7208 ± 0.0000  0.8865 ± 0.0000    0.54
+hub_cap10_degfeat                              1   0.8889 ± 0.0000  0.6173 ± 0.0000  0.7501 ± 0.0000  0.7320 ± 0.0000  0.8865 ± 0.0000    0.73
+hub_cap10_evall                                1   0.8865 ± 0.0000  0.6195 ± 0.0000  0.7387 ± 0.0000  0.7205 ± 0.0000  0.8866 ± 0.0000    0.59
+hub_cap20                                      1   0.8864 ± 0.0000  0.6198 ± 0.0000  0.7390 ± 0.0000  0.7218 ± 0.0000  0.8865 ± 0.0000    0.55
+hub_cap3                                       1   0.8869 ± 0.0000  0.6164 ± 0.0000  0.7315 ± 0.0000  0.7302 ± 0.0000  0.8862 ± 0.0000    0.79
+hub_cap40                                      1   0.8863 ± 0.0000  0.6196 ± 0.0000  0.7390 ± 0.0000  0.7219 ± 0.0000  0.8865 ± 0.0000    0.51
+hub_cap5                                       1   0.8853 ± 0.0000  0.6181 ± 0.0000  0.7317 ± 0.0000  0.7192 ± 0.0000  0.8853 ± 0.0000    0.56
+hub_degfeat                                    1   0.8880 ± 0.0000  0.6232 ± 0.0000  0.7485 ± 0.0000  0.7286 ± 0.0000  0.8887 ± 0.0000    0.53
+hub_idf05                                      1   0.8882 ± 0.0000  0.6272 ± 0.0000  0.7526 ± 0.0000  0.7320 ± 0.0000  0.8882 ± 0.0000    0.59
+hub_idf05_cap20                                1   0.8890 ± 0.0000  0.6223 ± 0.0000  0.7537 ± 0.0000  0.7353 ± 0.0000  0.8853 ± 0.0000    0.97
+hub_idf1                                       1   0.8881 ± 0.0000  0.6280 ± 0.0000  0.7511 ± 0.0000  0.7311 ± 0.0000  0.8879 ± 0.0000    0.56
+paired per-TF tests vs hero (w3_hero), seeds [42]:
+  hub_cap10                                      within-TF diff -0.0115  95% CI [-0.0223, -0.0012]  TFs better 12/33  p=0.0387
+  hub_cap10_degfeat                              within-TF diff +0.0002  95% CI [-0.0192, +0.0157]  TFs better 20/33  p=0.242
+  hub_cap10_evall                                within-TF diff -0.0112  95% CI [-0.0218, -0.0012]  TFs better 13/33  p=0.0528
+  hub_cap20                                      within-TF diff -0.0109  95% CI [-0.0216, -0.0002]  TFs better 12/33  p=0.0626
+  hub_cap3                                       within-TF diff -0.0185  95% CI [-0.0430, +0.0012]  TFs better 15/33  p=0.224
+  hub_cap40                                      within-TF diff -0.0109  95% CI [-0.0216, -0.0005]  TFs better 12/33  p=0.0575
+  hub_cap5                                       within-TF diff -0.0182  95% CI [-0.0322, -0.0055]  TFs better 11/33  p=0.00485
+  hub_degfeat                                    within-TF diff -0.0015  95% CI [-0.0120, +0.0090]  TFs better 14/33  p=0.56
+  hub_idf05                                      within-TF diff +0.0026  95% CI [-0.0057, +0.0115]  TFs better 16/33  p=0.627
+  hub_idf05_cap20                                within-TF diff +0.0038  95% CI [-0.0118, +0.0166]  TFs better 22/33  p=0.033
+  hub_idf1                                       within-TF diff +0.0012  95% CI [-0.0080, +0.0106]  TFs better 17/33  p=0.779
+same-seed differences vs hero (mean over seeds, seeds better):
+  hub_cap10                                      AUROC -0.0024 (0/1)  AUPRC -0.0066  within-TF -0.0115 (0/1)
+  hub_cap10_degfeat                              AUROC -0.0001 (0/1)  AUPRC -0.0091  within-TF +0.0002 (1/1)
+  hub_cap10_evall                                AUROC -0.0025 (0/1)  AUPRC -0.0069  within-TF -0.0112 (0/1)
+  hub_cap20                                      AUROC -0.0025 (0/1)  AUPRC -0.0066  within-TF -0.0109 (0/1)
+  hub_cap3                                       AUROC -0.0020 (0/1)  AUPRC -0.0100  within-TF -0.0185 (0/1)
+  hub_cap40                                      AUROC -0.0026 (0/1)  AUPRC -0.0068  within-TF -0.0109 (0/1)
+  hub_cap5                                       AUROC -0.0036 (0/1)  AUPRC -0.0083  within-TF -0.0182 (0/1)
+  hub_degfeat                                    AUROC -0.0010 (0/1)  AUPRC -0.0032  within-TF -0.0015 (0/1)
+  hub_idf05                                      AUROC -0.0008 (0/1)  AUPRC +0.0008  within-TF +0.0026 (1/1)
+  hub_idf05_cap20                                AUROC +0.0000 (1/1)  AUPRC -0.0042  within-TF +0.0038 (1/1)
+  hub_idf1                                       AUROC -0.0009 (0/1)  AUPRC +0.0016  within-TF +0.0012 (1/1)
+
+== Confirmation, seeds 42-44
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (w3_hero)                                 3   0.8885 ± 0.0014  0.6254 ± 0.0015  0.7490 ± 0.0018  0.7273 ± 0.0018  0.8885 ± 0.0009    0.26
+hub_cap20                                      3   0.8874 ± 0.0007  0.6250 ± 0.0039  0.7456 ± 0.0047  0.7230 ± 0.0009  0.8875 ± 0.0011    0.45
+hub_idf05                                      3   0.8875 ± 0.0006  0.6251 ± 0.0015  0.7453 ± 0.0061  0.7262 ± 0.0041  0.8873 ± 0.0007    0.47
+hub_idf05_cap20                                3   0.8874 ± 0.0014  0.6230 ± 0.0006  0.7449 ± 0.0063  0.7284 ± 0.0073  0.8862 ± 0.0008    0.56
+hub_idf1                                       3   0.8877 ± 0.0004  0.6256 ± 0.0018  0.7446 ± 0.0059  0.7268 ± 0.0031  0.8868 ± 0.0008    0.45
+paired per-TF tests vs hero (w3_hero), seeds [42, 43, 44]:
+  hub_cap20                                      within-TF diff -0.0034  95% CI [-0.0098, +0.0034]  TFs better 14/33  p=0.367
+  hub_idf05                                      within-TF diff -0.0037  95% CI [-0.0099, +0.0025]  TFs better 14/33  p=0.217
+  hub_idf05_cap20                                within-TF diff -0.0040  95% CI [-0.0172, +0.0070]  TFs better 15/33  p=0.808
+  hub_idf1                                       within-TF diff -0.0044  95% CI [-0.0110, +0.0019]  TFs better 12/33  p=0.135
+same-seed differences vs hero (mean over seeds, seeds better):
+  hub_cap20                                      AUROC -0.0011 (1/3)  AUPRC -0.0004  within-TF -0.0034 (1/3)
+  hub_idf05                                      AUROC -0.0009 (1/3)  AUPRC -0.0002  within-TF -0.0037 (1/3)
+  hub_idf05_cap20                                AUROC -0.0010 (1/3)  AUPRC -0.0023  within-TF -0.0040 (1/3)
+  hub_idf1                                       AUROC -0.0008 (1/3)  AUPRC +0.0002  within-TF -0.0044 (1/3)
+
+Score/popularity: Spearman over all genes between the score and the gene's training in-degree, mean over TFs and seeds
+  w3_hero                            +0.731
+  hub_cap20                          +0.720
+  hub_idf05                          +0.730
+  hub_idf05_cap20                    +0.734
+  hub_idf1                           +0.731
+
+Per-TF gain vs hub share of the TF's training targets (hub = training in-degree >= 5, top quartile of genes with any edge):
+  hub_cap20                          Spearman(hub share, within-TF gain) = +0.016 (p=0.93, 31 TFs)
+  hub_idf05                          Spearman(hub share, within-TF gain) = +0.281 (p=0.13, 31 TFs)
+  hub_idf05_cap20                    Spearman(hub share, within-TF gain) = +0.012 (p=0.95, 31 TFs)
+  hub_idf1                           Spearman(hub share, within-TF gain) = +0.199 (p=0.28, 31 TFs)
+
+Gene in-degree (training positives) per cell: hubs are mild in hESC and heavy elsewhere
+  hESC    genes 910, max in-degree 14, genes with >10 TFs 8, edges 3030, edges removed by cap 10: 16, cap 20: 0
+  hHEP    genes 948, max in-degree 19, genes with >10 TFs 220, edges 6641, edges removed by cap 10: 602, cap 20: 0
+  mESC    genes 1120, max in-degree 45, genes with >10 TFs 902, edges 19805, edges removed by cap 10: 10383, cap 20: 2575
+  mHSC-E  genes 704, max in-degree 20, genes with >10 TFs 431, edges 7731, edges removed by cap 10: 1499, cap 20: 0
+
+== Stage 3: other cell types (3 seeds; baseline = w4 hero runs of the cell, no Geneformer)
+
+== hHEP
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (hHEP)                                    3   0.8990 ± 0.0006  0.8378 ± 0.0006  0.7587 ± 0.0020  0.7678 ± 0.0017  0.8983 ± 0.0008    0.65
+idf05                                          3   0.8990 ± 0.0008  0.8382 ± 0.0017  0.7598 ± 0.0022  0.7671 ± 0.0022  0.8988 ± 0.0008    1.36
+idf1                                           3   0.8987 ± 0.0008  0.8381 ± 0.0016  0.7626 ± 0.0029  0.7681 ± 0.0016  0.8988 ± 0.0006    1.49
+cap10                                          3   0.8989 ± 0.0003  0.8382 ± 0.0013  0.7581 ± 0.0050  0.7670 ± 0.0027  0.8983 ± 0.0005    1.34
+cap20                                          3   0.8988 ± 0.0002  0.8374 ± 0.0010  0.7587 ± 0.0083  0.7672 ± 0.0030  0.8983 ± 0.0005    1.05
+paired per-TF tests vs hero (w4_hHEP_hero), seeds [42, 43, 44]:
+  idf05                                          within-TF diff +0.0012  95% CI [-0.0051, +0.0092]  TFs better 14/30  p=0.824
+  idf1                                           within-TF diff +0.0040  95% CI [-0.0035, +0.0150]  TFs better 16/30  p=0.887
+  cap10                                          within-TF diff -0.0006  95% CI [-0.0106, +0.0101]  TFs better 14/30  p=0.44
+  cap20                                          within-TF diff +0.0000  95% CI [-0.0025, +0.0024]  TFs better 14/30  p=0.855
+same-seed differences vs hero (mean over seeds, seeds better):
+  idf05                                          AUROC -0.0000 (2/3)  AUPRC +0.0003  within-TF +0.0012 (2/3)
+  idf1                                           AUROC -0.0004 (1/3)  AUPRC +0.0003  within-TF +0.0040 (2/3)
+  cap10                                          AUROC -0.0002 (1/3)  AUPRC +0.0004  within-TF -0.0006 (1/3)
+  cap20                                          AUROC -0.0002 (1/3)  AUPRC -0.0004  within-TF +0.0000 (1/3)
+  score/popularity Spearman idf05: +0.839 vs hero +0.835
+  score/popularity Spearman idf1: +0.835 vs hero +0.835
+  score/popularity Spearman cap10: +0.823 vs hero +0.835
+  score/popularity Spearman cap20: +0.836 vs hero +0.835
+
+== mESC
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (mESC)                                    3   0.9390 ± 0.0010  0.8813 ± 0.0016  0.8241 ± 0.0013  0.8281 ± 0.0014  0.9382 ± 0.0006    5.45
+idf05                                          3   0.9393 ± 0.0013  0.8820 ± 0.0023  0.8248 ± 0.0054  0.8295 ± 0.0038  0.9385 ± 0.0006   10.76
+idf1                                           3   0.9391 ± 0.0012  0.8817 ± 0.0020  0.8254 ± 0.0046  0.8293 ± 0.0034  0.9387 ± 0.0008   10.80
+cap10                                          3   0.9377 ± 0.0007  0.8797 ± 0.0016  0.8149 ± 0.0025  0.8231 ± 0.0012  0.9360 ± 0.0002   13.32
+cap20                                          3   0.9399 ± 0.0007  0.8838 ± 0.0013  0.8219 ± 0.0024  0.8290 ± 0.0017  0.9381 ± 0.0002   15.06
+paired per-TF tests vs hero (w4_mESC_hero), seeds [42, 43, 44]:
+  idf05                                          within-TF diff +0.0007  95% CI [-0.0012, +0.0025]  TFs better 47/85  p=0.29
+  idf1                                           within-TF diff +0.0012  95% CI [-0.0005, +0.0030]  TFs better 44/85  p=0.409
+  cap10                                          within-TF diff -0.0092  95% CI [-0.0183, -0.0012]  TFs better 35/85  p=0.00594
+  cap20                                          within-TF diff -0.0022  95% CI [-0.0081, +0.0030]  TFs better 47/85  p=0.318
+same-seed differences vs hero (mean over seeds, seeds better):
+  idf05                                          AUROC +0.0003 (2/3)  AUPRC +0.0008  within-TF +0.0007 (1/3)
+  idf1                                           AUROC +0.0001 (2/3)  AUPRC +0.0004  within-TF +0.0012 (2/3)
+  cap10                                          AUROC -0.0013 (1/3)  AUPRC -0.0016  within-TF -0.0092 (0/3)
+  cap20                                          AUROC +0.0009 (2/3)  AUPRC +0.0025  within-TF -0.0022 (1/3)
+  score/popularity Spearman idf05: +0.728 vs hero +0.724
+  score/popularity Spearman idf1: +0.729 vs hero +0.724
+  score/popularity Spearman cap10: +0.687 vs hero +0.724
+  score/popularity Spearman cap20: +0.706 vs hero +0.724
+
+== mHSC-E
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (mHSC-E)                                  3   0.9233 ± 0.0016  0.9429 ± 0.0017  0.7575 ± 0.0062  0.8009 ± 0.0036  0.9257 ± 0.0010    0.75
+idf05                                          3   0.9223 ± 0.0007  0.9420 ± 0.0008  0.7526 ± 0.0111  0.7999 ± 0.0025  0.9253 ± 0.0009    0.88
+idf1                                           3   0.9225 ± 0.0008  0.9423 ± 0.0010  0.7514 ± 0.0099  0.7999 ± 0.0025  0.9253 ± 0.0009    0.86
+cap10                                          3   0.9218 ± 0.0010  0.9418 ± 0.0009  0.7590 ± 0.0032  0.8008 ± 0.0032  0.9264 ± 0.0010    1.11
+cap20                                          3   0.9210 ± 0.0007  0.9412 ± 0.0008  0.7598 ± 0.0073  0.8007 ± 0.0026  0.9263 ± 0.0005    1.03
+paired per-TF tests vs hero (w4_mHSC-E_hero), seeds [42, 43, 44]:
+  idf05                                          within-TF diff -0.0049  95% CI [-0.0150, +0.0028]  TFs better 8/29  p=0.115
+  idf1                                           within-TF diff -0.0061  95% CI [-0.0177, +0.0022]  TFs better 11/29  p=0.0877
+  cap10                                          within-TF diff +0.0015  95% CI [-0.0099, +0.0169]  TFs better 14/29  p=0.594
+  cap20                                          within-TF diff +0.0023  95% CI [-0.0031, +0.0105]  TFs better 9/29  p=0.294
+same-seed differences vs hero (mean over seeds, seeds better):
+  idf05                                          AUROC -0.0010 (1/3)  AUPRC -0.0010  within-TF -0.0049 (1/3)
+  idf1                                           AUROC -0.0008 (1/3)  AUPRC -0.0007  within-TF -0.0061 (1/3)
+  cap10                                          AUROC -0.0014 (0/3)  AUPRC -0.0012  within-TF +0.0015 (2/3)
+  cap20                                          AUROC -0.0023 (0/3)  AUPRC -0.0018  within-TF +0.0023 (2/3)
+  score/popularity Spearman idf05: +0.657 vs hero +0.651
+  score/popularity Spearman idf1: +0.651 vs hero +0.651
+  score/popularity Spearman cap10: +0.636 vs hero +0.651
+  score/popularity Spearman cap20: +0.642 vs hero +0.651
+
+== Stage 2
+held-out genes: 5 folds x seeds [42, 43]
+model                                    n             AUROC            AUPRC        within-TF        within>=8
+hero (w5)                                10   0.8467 ± 0.0064  0.5213 ± 0.0111  0.5461 ± 0.0305  0.5617 ± 0.0156
+hub_idf05                                10   0.8474 ± 0.0060  0.5223 ± 0.0120  0.5488 ± 0.0298  0.5618 ± 0.0166
+  hub_idf05 (n=10)                               within-TF diff +0.0013  95% CI [-0.0092, +0.0121]  TFs better 18/34  p=0.8
+
+== Stage 2
+held-out tfs: 5 folds x seeds [42, 43]
+model                                    n             AUROC            AUPRC        within-TF        within>=8
+hero (w5)                                10   0.6304 ± 0.1127  0.2314 ± 0.0978  0.6855 ± 0.0643  0.6766 ± 0.0388
+hub_idf05                                10   0.6341 ± 0.1085  0.2282 ± 0.0905  0.6787 ± 0.0693  0.6673 ± 0.0463
+  hub_idf05 (n=10)                               within-TF diff -0.0065  95% CI [-0.0196, +0.0062]  TFs better 11/34  p=0.263

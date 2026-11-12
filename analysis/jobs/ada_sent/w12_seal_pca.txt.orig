@@ -1,0 +1,7 @@
+#mod src.seal 2
+w12_seal_h1tt_pca128_s42 --hops 1 --pool tt --pca 128 --workers 2 --seed 42
+w12_seal_h1tt_pca256_s42 --hops 1 --pool tt --pca 256 --workers 2 --seed 42
+w12_seal_h1tt_pca128_s43 --hops 1 --pool tt --pca 128 --workers 2 --seed 43
+w12_seal_h1tt_pca256_s43 --hops 1 --pool tt --pca 256 --workers 2 --seed 43
+w12_seal_h1tt_pca128_s44 --hops 1 --pool tt --pca 128 --workers 2 --seed 44
+w12_seal_h1tt_pca256_s44 --hops 1 --pool tt --pca 256 --workers 2 --seed 44

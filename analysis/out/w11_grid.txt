@@ -1,0 +1,162 @@
+W11 grid. 5 seeds (42-46), epoch chosen on validation AUROC, refit on all training rows; mean ± sd over seeds. Encoders: gcn and sage at 1 layer (256), npanda at 2 layers (256 256, relations RCP).
+Decoder add = TF + gene terms, no interaction; had = add + Hadamard interaction. Split none / batch (own batch edges removed from the training graph). GF = Geneformer.
+Hero hyper-parameters: Adam lr 1e-4, wd 1e-3, dropout 0.175, batch 193, mlp 198. Recipe = scRegNet published recipe (gcn, add, none, GF, 3 layers 227/29/34, SGD).
+
+== hESC: master table
+encoder dec split GF             AUROC            AUPRC        within-TF
+gcn     add none  0    0.8807 ± 0.0018  0.6162 ± 0.0013  0.7148 ± 0.0042
+gcn     add none  1    0.8793 ± 0.0031  0.6153 ± 0.0034  0.7070 ± 0.0129
+gcn     add batch 0    0.8837 ± 0.0005  0.6166 ± 0.0020  0.7045 ± 0.0029
+gcn     add batch 1    0.8868 ± 0.0009  0.6243 ± 0.0025  0.7175 ± 0.0022
+gcn     had none  0    0.8777 ± 0.0022  0.5975 ± 0.0059  0.7211 ± 0.0097
+gcn     had none  1    0.8857 ± 0.0037  0.6206 ± 0.0037  0.7328 ± 0.0122
+gcn     had batch 0    0.8837 ± 0.0016  0.5992 ± 0.0045  0.7227 ± 0.0066
+gcn     had batch 1    0.8899 ± 0.0022  0.6256 ± 0.0033  0.7373 ± 0.0058
+sage    add none  0    0.8811 ± 0.0026  0.6185 ± 0.0033  0.7043 ± 0.0091
+sage    add none  1    0.8780 ± 0.0020  0.6175 ± 0.0034  0.6910 ± 0.0083
+sage    add batch 0    0.8838 ± 0.0011  0.6205 ± 0.0040  0.7172 ± 0.0036
+sage    add batch 1    0.8829 ± 0.0008  0.6181 ± 0.0051  0.7107 ± 0.0032
+sage    had none  0    0.8467 ± 0.0051  0.5444 ± 0.0134  0.6198 ± 0.0346
+sage    had none  1    0.8560 ± 0.0020  0.5646 ± 0.0056  0.6465 ± 0.0219
+sage    had batch 0    0.8884 ± 0.0018  0.6255 ± 0.0032  0.7471 ± 0.0048
+sage    had batch 1    0.8910 ± 0.0015  0.6346 ± 0.0038  0.7517 ± 0.0027
+npanda  add none  0    0.8781 ± 0.0061  0.6066 ± 0.0150  0.6858 ± 0.0253
+npanda  add none  1    0.8805 ± 0.0038  0.6139 ± 0.0085  0.6970 ± 0.0200
+npanda  add batch 0    0.8849 ± 0.0010  0.6204 ± 0.0055  0.7171 ± 0.0061
+npanda  add batch 1    0.8856 ± 0.0009  0.6257 ± 0.0031  0.7182 ± 0.0037
+npanda  had none  0    0.8711 ± 0.0012  0.5916 ± 0.0034  0.6741 ± 0.0053
+npanda  had none  1    0.8745 ± 0.0056  0.6042 ± 0.0147  0.6811 ± 0.0197
+npanda  had batch 0    0.8898 ± 0.0014  0.6315 ± 0.0033  0.7410 ± 0.0079
+npanda  had batch 1    0.8912 ± 0.0027  0.6355 ± 0.0030  0.7549 ± 0.0090
+recipe                 0.8830 ± 0.0012  0.6155 ± 0.0029  0.7029 ± 0.0063   (f02_A_paper)
+
+== hHEP: master table
+encoder dec split GF             AUROC            AUPRC        within-TF
+gcn     add none  0    0.8983 ± 0.0005  0.8312 ± 0.0012  0.7757 ± 0.0013
+gcn     add none  1    0.9026 ± 0.0002  0.8410 ± 0.0011  0.7859 ± 0.0014
+gcn     add batch 0    0.8988 ± 0.0006  0.8286 ± 0.0018  0.7681 ± 0.0014
+gcn     add batch 1    0.9030 ± 0.0005  0.8409 ± 0.0010  0.7870 ± 0.0015
+gcn     had none  0    0.8960 ± 0.0029  0.8292 ± 0.0034  0.7717 ± 0.0041
+gcn     had none  1    0.9014 ± 0.0012  0.8433 ± 0.0026  0.7868 ± 0.0019
+gcn     had batch 0    0.8987 ± 0.0014  0.8319 ± 0.0020  0.7717 ± 0.0015
+gcn     had batch 1    0.9023 ± 0.0016  0.8441 ± 0.0016  0.7883 ± 0.0033
+sage    add none  0    0.8995 ± 0.0006  0.8362 ± 0.0005  0.7773 ± 0.0011
+sage    add none  1    0.9016 ± 0.0004  0.8389 ± 0.0006  0.7838 ± 0.0004
+sage    add batch 0    0.8999 ± 0.0006  0.8372 ± 0.0015  0.7742 ± 0.0035
+sage    add batch 1    0.9017 ± 0.0003  0.8403 ± 0.0008  0.7824 ± 0.0023
+sage    had none  0    0.8869 ± 0.0009  0.8160 ± 0.0024  0.7447 ± 0.0026
+sage    had none  1    0.8956 ± 0.0006  0.8274 ± 0.0028  0.7667 ± 0.0021
+sage    had batch 0    0.8991 ± 0.0008  0.8384 ± 0.0011  0.7597 ± 0.0020
+sage    had batch 1    0.9027 ± 0.0007  0.8430 ± 0.0018  0.7800 ± 0.0046
+npanda  add none  0    0.8999 ± 0.0011  0.8376 ± 0.0019  0.7808 ± 0.0021
+npanda  add none  1    0.9006 ± 0.0009  0.8387 ± 0.0017  0.7832 ± 0.0009
+npanda  add batch 0    0.8997 ± 0.0009  0.8363 ± 0.0019  0.7764 ± 0.0020
+npanda  add batch 1    0.9012 ± 0.0009  0.8387 ± 0.0025  0.7812 ± 0.0010
+npanda  had none  0    0.8933 ± 0.0026  0.8320 ± 0.0029  0.7616 ± 0.0036
+npanda  had none  1    0.8976 ± 0.0009  0.8303 ± 0.0019  0.7715 ± 0.0020
+npanda  had batch 0    0.9024 ± 0.0005  0.8437 ± 0.0006  0.7744 ± 0.0070
+npanda  had batch 1    0.9041 ± 0.0007  0.8468 ± 0.0008  0.7885 ± 0.0051
+recipe                 0.9023 ± 0.0003  0.8413 ± 0.0006  0.7870 ± 0.0011   (w4_hHEP_A_paper)
+
+== mHSC-E: master table
+encoder dec split GF             AUROC            AUPRC        within-TF
+gcn     add none  0    0.9203 ± 0.0007  0.9393 ± 0.0006  0.7231 ± 0.0021
+gcn     add none  1    0.9213 ± 0.0002  0.9404 ± 0.0002  0.7303 ± 0.0012
+gcn     add batch 0    0.9222 ± 0.0012  0.9409 ± 0.0012  0.7244 ± 0.0033
+gcn     add batch 1    0.9227 ± 0.0003  0.9422 ± 0.0002  0.7290 ± 0.0009
+gcn     had none  0    0.9206 ± 0.0022  0.9405 ± 0.0010  0.7480 ± 0.0071
+gcn     had none  1    0.9252 ± 0.0023  0.9441 ± 0.0011  0.7982 ± 0.0071
+gcn     had batch 0    0.9212 ± 0.0049  0.9403 ± 0.0024  0.7755 ± 0.0042
+gcn     had batch 1    0.9260 ± 0.0009  0.9442 ± 0.0005  0.8054 ± 0.0078
+sage    add none  0    0.9197 ± 0.0005  0.9388 ± 0.0006  0.7247 ± 0.0019
+sage    add none  1    0.9190 ± 0.0010  0.9386 ± 0.0006  0.7255 ± 0.0022
+sage    add batch 0    0.9183 ± 0.0004  0.9373 ± 0.0007  0.7212 ± 0.0034
+sage    add batch 1    0.9187 ± 0.0005  0.9384 ± 0.0009  0.7229 ± 0.0021
+sage    had none  0    0.9172 ± 0.0021  0.9397 ± 0.0009  0.7399 ± 0.0029
+sage    had none  1    0.9191 ± 0.0025  0.9404 ± 0.0015  0.7602 ± 0.0063
+sage    had batch 0    0.9233 ± 0.0011  0.9431 ± 0.0009  0.7656 ± 0.0105
+sage    had batch 1    0.9250 ± 0.0011  0.9441 ± 0.0011  0.7816 ± 0.0044
+npanda  add none  0    0.9206 ± 0.0007  0.9395 ± 0.0006  0.7255 ± 0.0019
+npanda  add none  1    0.9206 ± 0.0006  0.9397 ± 0.0005  0.7284 ± 0.0017
+npanda  add batch 0    0.9187 ± 0.0012  0.9387 ± 0.0011  0.7215 ± 0.0021
+npanda  add batch 1    0.9198 ± 0.0007  0.9393 ± 0.0006  0.7218 ± 0.0015
+npanda  had none  0    0.9211 ± 0.0015  0.9417 ± 0.0014  0.7450 ± 0.0029
+npanda  had none  1    0.9230 ± 0.0011  0.9431 ± 0.0009  0.7590 ± 0.0013
+npanda  had batch 0    0.9239 ± 0.0011  0.9433 ± 0.0011  0.7572 ± 0.0050
+npanda  had batch 1    0.9245 ± 0.0018  0.9436 ± 0.0014  0.7747 ± 0.0052
+recipe                 0.9196 ± 0.0001  0.9392 ± 0.0001  0.7219 ± 0.0012   (w4_mHSC-E_A_paper)
+
+== mESC: master table
+encoder dec split GF             AUROC            AUPRC        within-TF
+gcn     add none  0    0.9234 ± 0.0002  0.8533 ± 0.0006  0.7599 ± 0.0012
+gcn     add none  1    0.9250 ± 0.0002  0.8577 ± 0.0005  0.7651 ± 0.0011
+gcn     add batch 0    0.9231 ± 0.0004  0.8532 ± 0.0007  0.7572 ± 0.0012
+gcn     add batch 1    0.9247 ± 0.0002  0.8578 ± 0.0003  0.7639 ± 0.0009
+gcn     had none  0    0.9310 ± 0.0023  0.8639 ± 0.0067  0.8031 ± 0.0066
+gcn     had none  1    0.9384 ± 0.0003  0.8806 ± 0.0015  0.8174 ± 0.0013
+gcn     had batch 0    0.9273 ± 0.0016  0.8579 ± 0.0055  0.7879 ± 0.0065
+gcn     had batch 1    0.9374 ± 0.0008  0.8793 ± 0.0013  0.8117 ± 0.0021
+sage    add none  0    0.9242 ± 0.0004  0.8556 ± 0.0006  0.7647 ± 0.0016
+sage    add none  1    0.9248 ± 0.0004  0.8572 ± 0.0003  0.7663 ± 0.0015
+sage    add batch 0    0.9245 ± 0.0004  0.8565 ± 0.0008  0.7647 ± 0.0015
+sage    add batch 1    0.9247 ± 0.0004  0.8576 ± 0.0005  0.7653 ± 0.0012
+sage    had none  0    0.9383 ± 0.0007  0.8804 ± 0.0014  0.8238 ± 0.0016
+sage    had none  1    0.9400 ± 0.0003  0.8831 ± 0.0004  0.8282 ± 0.0015
+sage    had batch 0    0.9392 ± 0.0009  0.8818 ± 0.0015  0.8235 ± 0.0013
+sage    had batch 1    0.9401 ± 0.0005  0.8838 ± 0.0006  0.8245 ± 0.0020
+npanda  add none  0    0.9247 ± 0.0004  0.8565 ± 0.0014  0.7642 ± 0.0032
+npanda  add none  1    0.9252 ± 0.0003  0.8578 ± 0.0005  0.7664 ± 0.0024
+npanda  add batch 0    0.9242 ± 0.0007  0.8555 ± 0.0025  0.7615 ± 0.0035
+npanda  add batch 1    0.9251 ± 0.0003  0.8577 ± 0.0003  0.7659 ± 0.0029
+npanda  had none  0    0.9404 ± 0.0020  0.8851 ± 0.0040  0.8238 ± 0.0052
+npanda  had none  1    0.9411 ± 0.0017  0.8862 ± 0.0030  0.8277 ± 0.0040
+npanda  had batch 0    0.9411 ± 0.0007  0.8861 ± 0.0014  0.8250 ± 0.0034
+npanda  had batch 1    0.9409 ± 0.0014  0.8858 ± 0.0027  0.8243 ± 0.0060
+recipe                 0.9254 ± 0.0001  0.8587 ± 0.0001  0.7657 ± 0.0002   (w4_mESC_A_paper)
+
+== Main effects (within-TF AUROC). Pairs: configs that differ only in the factor; per cell the pairs are pooled over the other factors.
+For each TF the per-TF AUROC difference (seed-averaged) is averaged over the pairs; mean diff = mean of that over TFs; Wilcoxon over TFs. "pairs +" = pairs whose mean per-TF difference is > 0.
+cell    factor      contrast (B - A) pairs  mean diff  pairs +   TFs +  Wilcoxon p
+hESC    encoder     sage - gcn           8    -0.0212     3/8     9/33     0.00456
+hHEP    encoder     sage - gcn           8    -0.0083     2/8    10/30      0.0197
+mHSC-E  encoder     sage - gcn           8    -0.0115     1/8    14/29       0.381
+mESC    encoder     sage - gcn           8    +0.0119     8/8    71/85    4.04e-09
+
+hESC    encoder     npanda - gcn         8    -0.0111     4/8    11/33       0.068
+hHEP    encoder     npanda - gcn         8    -0.0022     4/8    14/30       0.824
+mHSC-E  encoder     npanda - gcn         8    -0.0126     1/8    14/29       0.686
+mESC    encoder     npanda - gcn         8    +0.0116     8/8    70/85    1.96e-08
+
+hESC    encoder     npanda - sage        8    +0.0101     5/8    24/33      0.0626
+hHEP    encoder     npanda - sage        8    +0.0061     6/8    24/30     0.00046
+mHSC-E  encoder     npanda - sage        8    -0.0011     4/8    14/29       0.782
+mESC    encoder     npanda - sage        8    -0.0003     3/8    47/85       0.298
+
+hESC    decoder     had - add           12    +0.0037     8/12   11/33       0.221
+hHEP    decoder     had - add           12    -0.0075     4/12   11/30       0.371
+mHSC-E  decoder     had - add           12    +0.0427    12/12   21/29     0.00351
+mESC    decoder     had - add           12    +0.0546    12/12   67/85    3.18e-09
+
+hESC    split       batch - none        12    +0.0387    11/12   31/33    7.48e-07
+hHEP    split       batch - none        12    +0.0035     6/12   20/30      0.0277
+mHSC-E  split       batch - none        12    +0.0077     7/12   18/29       0.314
+mESC    split       batch - none        12    -0.0029     1/12   30/85     0.00116
+
+hESC    Geneformer  GF1 - GF0           12    +0.0063     9/12   25/33     0.00516
+hHEP    Geneformer  GF1 - GF0           12    +0.0124    12/12   22/30       0.012
+mHSC-E  Geneformer  GF1 - GF0           12    +0.0138    12/12   26/29       2e-06
+mESC    Geneformer  GF1 - GF0           12    +0.0056    11/12   61/85     0.00055
+
+== Best config per cell (highest 5-seed mean within-TF among the 24 grid configs; chosen on the test metric, so optimistic) vs the recipe
+hESC: npanda had batch gf1   AUROC 0.8912 ± 0.0027  AUPRC 0.6355 ± 0.0030  within-TF 0.7549 ± 0.0090
+  best config - recipe                           within-TF diff +0.0519  95% CI [+0.0209, +0.0861]  TFs better 24/33  p=0.00209
+   top 3 by within-TF: npanda had batch gf1 0.7549; sage had batch gf1 0.7517; sage had batch gf0 0.7471
+hHEP: npanda had batch gf1   AUROC 0.9041 ± 0.0007  AUPRC 0.8468 ± 0.0008  within-TF 0.7885 ± 0.0051
+  best config - recipe                           within-TF diff +0.0014  95% CI [-0.0281, +0.0269]  TFs better 16/30  p=0.529
+   top 3 by within-TF: npanda had batch gf1 0.7885; gcn had batch gf1 0.7883; gcn add batch gf1 0.7870
+mHSC-E: gcn had batch gf1   AUROC 0.9260 ± 0.0009  AUPRC 0.9442 ± 0.0005  within-TF 0.8054 ± 0.0078
+  best config - recipe                           within-TF diff +0.0835  95% CI [+0.0297, +0.1508]  TFs better 23/29  p=5.34e-05
+   top 3 by within-TF: gcn had batch gf1 0.8054; gcn had none gf1 0.7982; sage had batch gf1 0.7816
+mESC: sage had none gf1   AUROC 0.9400 ± 0.0003  AUPRC 0.8831 ± 0.0004  within-TF 0.8282 ± 0.0015
+  best config - recipe                           within-TF diff +0.0625  95% CI [+0.0401, +0.0866]  TFs better 62/85  p=2.06e-08
+   top 3 by within-TF: sage had none gf1 0.8282; npanda had none gf1 0.8277; npanda had batch gf0 0.8250

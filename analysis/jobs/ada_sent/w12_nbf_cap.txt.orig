@@ -1,0 +1,7 @@
+#mod src.nbf 2
+w12_nbf_nopath_h256_s42 --tf_inter 1 --layers 0 --hidden 256 --batch_size 512 --seed 42
+w12_nbf_tfi_L3sum_h128_s42 --tf_inter 1 --layers 3 --aggr sum --hidden 128 --batch_size 512 --seed 42
+w12_nbf_nopath_h256_s43 --tf_inter 1 --layers 0 --hidden 256 --batch_size 512 --seed 43
+w12_nbf_tfi_L3sum_h128_s43 --tf_inter 1 --layers 3 --aggr sum --hidden 128 --batch_size 512 --seed 43
+w12_nbf_nopath_h256_s44 --tf_inter 1 --layers 0 --hidden 256 --batch_size 512 --seed 44
+w12_nbf_tfi_L3sum_h128_s44 --tf_inter 1 --layers 3 --aggr sum --hidden 128 --batch_size 512 --seed 44

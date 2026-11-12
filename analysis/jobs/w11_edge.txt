@@ -1,0 +1,15 @@
+w11_own_batch_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split batch --own_edge_diag 1 --seed 42
+w11_own_none_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split none --own_edge_diag 1 --seed 42
+w11_fixed_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split fixed --mp_frac 0.7 --seed 42
+w11_own_batch_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split batch --own_edge_diag 1 --seed 43
+w11_own_none_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split none --own_edge_diag 1 --seed 43
+w11_fixed_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split fixed --mp_frac 0.7 --seed 43
+w11_own_batch_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split batch --own_edge_diag 1 --seed 44
+w11_own_none_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split none --own_edge_diag 1 --seed 44
+w11_fixed_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split fixed --mp_frac 0.7 --seed 44
+w11_own_batch_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split batch --own_edge_diag 1 --seed 45
+w11_own_none_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split none --own_edge_diag 1 --seed 45
+w11_fixed_s45 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split fixed --mp_frac 0.7 --seed 45
+w11_own_batch_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split batch --own_edge_diag 1 --seed 46
+w11_own_none_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split none --own_edge_diag 1 --seed 46
+w11_fixed_s46 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --decoder had --gnn_dims 256 --scfm 0 --cell_type hESC --split fixed --mp_frac 0.7 --seed 46

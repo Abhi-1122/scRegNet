@@ -1,0 +1,3 @@
+#mod src.nbf 2
+w12_nbf_L3pna_s42 --layers 3 --aggr pna --batch_size 512 --seed 42
+w12_nbf_L3mean_s42 --layers 3 --aggr mean --batch_size 512 --seed 42

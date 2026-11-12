@@ -7,7 +7,8 @@ with Geneformer), then a pluggable pair decoder:
   mlp : hidden layer on [u_tf, u_gene]           (concat + MLP)
   tani, tani_pure : 6-head Tanimoto similarity of u_tf and u_gene (tani keeps [u_tf, u_gene] too)
 --split batch removes each batch's own positive edges from the message-passing graph, so a pair is
-never scored through its own edge. Epochs are chosen on a held-out validation slice of the
+never scored through its own edge; --split fixed instead keeps a fixed --mp_frac of the edges as the training graph
+(supervision = the rest + all negatives). Epochs are chosen on a held-out validation slice of the
 training rows, never on the test set. Usage: python3.12 -m src.pair_gnn --name X --decoder had ...
 """
 import argparse, glob, json, os, sys, time
@@ -44,7 +45,39 @@ class NPanda(nn.Module):
         return s.self_(h) + sum(c(h, G[r]) for r, c in s.rel.items())
 
 
+class WSage(nn.Module):
+    """SAGEConv with edge weights: lin_l(weighted mean of neighbours) + lin_r(x). Weights ew (E,) are used by --idf_beta."""
+    def __init__(s, i, o):
+        super().__init__()
+        s.l, s.r = nn.Linear(i, o), nn.Linear(i, o, bias=False)
+
+    def forward(s, h, ei, ew):
+        src, dst = ei
+        num = torch.zeros_like(h).index_add_(0, dst, ew[:, None] * h[src])
+        den = torch.zeros(len(h), device=h.device).index_add_(0, dst, ew).clamp(min=1e-12)
+        return s.l(num / den[:, None]) + s.r(h)
+
+
+def make_pe(kind, ei, n, k, dev):
+    """positional encoding (n, k) of an undirected graph given as an edge list (2, E) over n nodes.
+    lap: k lowest non-trivial eigenvectors of the normalised Laplacian of the non-isolated nodes (x sqrt(n)); rw: diagonal of the first k powers of the random-walk matrix (RWSE).
+    Isolated nodes get zeros."""
+    A = np.zeros((n, n), np.float32); A[ei[0], ei[1]] = 1; A = np.maximum(A, A.T); np.fill_diagonal(A, 0)
+    deg = A.sum(1); nz = deg > 0; pe = np.zeros((n, k), np.float32)
+    if kind == 'lap':
+        An = A[np.ix_(nz, nz)]; d = deg[nz]
+        V = np.linalg.eigh(np.eye(len(d)) - An / np.sqrt(d[:, None] * d[None]))[1][:, 1:k + 1]
+        pe[nz, :V.shape[1]] = V * np.sqrt(len(d))
+    else:
+        P = torch.as_tensor(A / np.maximum(deg, 1)[:, None], device=dev); Q = P.clone(); cols = []
+        for _ in range(k):
+            cols.append(torch.diagonal(Q)); Q = Q @ P
+        pe = torch.stack(cols, 1).cpu().numpy(); pe = pe / (pe[nz].std(0) + 1e-6)
+    return pe
+
+
 def make_conv(enc, i, o, rels='RCP'):
+    if enc == 'wsage': return WSage(i, o)
     if enc == 'gcn': return GCNConv(i, o)
     if enc == 'sage': return SAGEConv(i, o)
     if enc == 'gat': return GATConv(i, o, heads=4, concat=False)
@@ -126,8 +159,10 @@ def parse():
     p.add_argument('--cell_type', default='hESC')
     p.add_argument('--num_TF', default='500')
     p.add_argument('--seed', type=int, default=42)
-    p.add_argument('--decoder', default='add', choices=['add', 'had', 'mlp', 'tani', 'tani_pure'])
-    p.add_argument('--split', default='none', choices=['none', 'batch'])
+    p.add_argument('--decoder', default='add', choices=['add', 'had', 'mlp', 'tani', 'tani_pure', 'qatt'], help='qatt = had + query-aware TF summary: attention of the pair gene over the TF\'s known targets (W12 idea 1)')
+    p.add_argument('--split', default='none', choices=['none', 'batch', 'fixed'], help="none | batch (each batch's own edges leave the graph) | fixed (a fixed --mp_frac of the undirected training edges is the training graph, supervision = the other edges + all negatives; validation/test graph = all training edges, as for batch)")
+    p.add_argument('--mp_frac', type=float, default=0.7, help='--split fixed: fraction of training-positive edges in the training message-passing graph')
+    p.add_argument('--own_edge_diag', type=int, default=0, help='1: after the refit, score a random 10%% of training-positive edges (+ as many training negatives) with and without those edges in the graph; stored in the json')
     p.add_argument('--scfm', type=int, default=1, help='0 off, 1 Geneformer, 2 Geneformer vectors shuffled across genes (control)')
     p.add_argument('--scalar', default='none', help='none | panda | panda_old | contrast | contrast_raw')
     p.add_argument('--encoder', default='gcn', choices=['gcn', 'sage', 'gat', 'gin', 'dir', 'npanda'])
@@ -142,6 +177,24 @@ def parse():
     p.add_argument('--rank_neg', default='rand', choices=['rand', 'pop', 'model'], help='same-TF training negative for --rank_w: random (x4) | most popular gene of 16 random | highest-scoring of 16 random')
     p.add_argument('--rank_loss', default='bpr', choices=['bpr', 'bce'], help='bpr: softplus(s_neg - s_pos); bce: extra BCE with label 0 on the chosen negatives')
     p.add_argument('--aux_panda', type=float, default=0.0, help='weight of an auxiliary MSE head that predicts the out-of-fold PANDA score on random (TF, gene) pairs')
+    p.add_argument('--qatt_heads', type=int, default=1)
+    p.add_argument('--qatt_dim', type=int, default=64, help='total attention width (split over heads)')
+    p.add_argument('--qatt_src', default='emb', choices=['emb', 'raw'], help='vectors that are compared: post-GNN embeddings or raw expression')
+    p.add_argument('--qatt_topk', type=int, default=0, help='>0: attention only over the k best-matching known targets')
+    p.add_argument('--qatt_uniform', type=int, default=0, help='control: uniform attention over the known targets (a plain mean, no query-awareness)')
+    p.add_argument('--hub_cap', type=int, default=0, help='>0: each gene keeps at most K message-passing edges, redrawn every training batch (W12 idea 6)')
+    p.add_argument('--hub_eval', default='cap', choices=['cap', 'all'], help='evaluation graph with --hub_cap: one fixed-seed cap draw, or all edges')
+    p.add_argument('--idf_beta', type=float, default=0.0, help='>0 (sage): edge (t,g) weighted deg(g)^-beta in the neighbourhood mean, deg from the current graph')
+    p.add_argument('--deg_feat', type=int, default=0, help='1: log(1+degree in the current message-passing graph) appended to node features')
+    p.add_argument('--pe', default='none', choices=['none', 'lap', 'rw'], help='positional encoding of the genes (W12 idea 9)')
+    p.add_argument('--pe_dim', type=int, default=16)
+    p.add_argument('--pe_graph', default='coexp', choices=['grn', 'coexp', 'ppi'])
+    p.add_argument('--pe_use', default='concat', choices=['concat', 'dist', 'prod'], help='concat to the GNN input | PEG-style: ||pe_t-pe_g|| / pe_t*pe_g into the decoder')
+    p.add_argument('--pe_fold', type=int, default=1, help='grn PE: batches come from one of 5 folds and use the PE of the graph without that fold\'s edges (0: PE of the full training graph, own edge inside = leak)')
+    p.add_argument('--pe_flip', type=int, default=1, help='random sign flip of lap eigenvectors per training batch')
+    p.add_argument('--pe_rand', type=int, default=0, help='control: replace the PE by fixed random Gaussian vectors')
+    p.add_argument('--fold_batches', type=int, default=0, help='1: fold-pure batches (as --pe_fold) even without a PE, as control')
+    p.add_argument('--save_sel_grid', type=int, default=0, help='1: also save the best-validation-epoch model\'s TF x gene score grid, its gene embeddings and out-of-fold training scores (Correct&Smooth, W12 idea 4)')
     p.add_argument('--roles', default='shared', choices=['shared', 'sep'])
     p.add_argument('--gnn_dims', type=int, nargs='+', default=[227, 29, 34])
     p.add_argument('--mlp_dim', type=int, default=198)
@@ -205,13 +258,13 @@ def prepare(a, dev):
 
 
 class PairGNN(nn.Module):
-    def __init__(s, d_in, d_sf, a, n_scalar):
+    def __init__(s, d_in, d_sf, a, n_scalar, ctx=None):
         super().__init__()
-        s.a = a
+        s.a, s.ctx = a, ctx  # ctx: per-call state set by fit (current PE, degree feature, TF->target mask)
         s.convs = nn.ModuleList()
         prev = d_in
         for h in a.gnn_dims:
-            s.convs.append(make_conv(a.encoder, prev, h, a.relations))
+            s.convs.append(make_conv('wsage' if a.encoder == 'sage' and a.idf_beta > 0 else a.encoder, prev, h, a.relations))
             prev = h
         fused = prev + (d_sf if a.scfm else 0)
         s.mlp = nn.Linear(fused, a.mlp_dim)
@@ -219,10 +272,18 @@ class PairGNN(nn.Module):
         D = a.mlp_dim
         s.sw = nn.Linear(n_scalar, 1, bias=False) if n_scalar and a.scalar_lr != 1 else None
         n_scalar = 0 if s.sw is not None else n_scalar
+        if a.pe != 'none' and a.pe_use != 'concat':
+            n_scalar += 1 if a.pe_use == 'dist' else a.pe_dim
         if a.decoder == 'add':
             s.out = nn.Linear(2 * D + n_scalar, 1)
         elif a.decoder == 'had':
             s.out = nn.Linear(3 * D + n_scalar, 1)
+        elif a.decoder == 'qatt':
+            H, dk = a.qatt_heads, a.qatt_dim // a.qatt_heads
+            ds = D if a.qatt_src == 'emb' else d_in
+            s.wq, s.wk, s.wv = nn.Linear(ds, H * dk), nn.Linear(ds, H * dk), nn.Linear(ds, H * dk)
+            s.cp = nn.Linear(H * dk, D, bias=False)
+            s.out = nn.Linear(5 * D + 1 + n_scalar, 1)
         elif a.decoder == 'tani':
             s.out = nn.Linear(2 * D + 6 + n_scalar, 1)
         elif a.decoder == 'tani_pure':
@@ -232,7 +293,9 @@ class PairGNN(nn.Module):
         s.aux = nn.Linear(3 * D, 1) if a.aux_panda > 0 else None
 
     def nodes(s, x, f, ei, ew=None):
-        h = x
+        ex = ([s.ctx.pe] if s.a.pe != 'none' and s.a.pe_use == 'concat' else []) + ([s.ctx.deg[:, None]] if s.a.deg_feat else [])
+        h = torch.cat([x] + ex, 1) if ex else x
+        s.raw = h
         for i, c in enumerate(s.convs):
             h = c(h, ei, ew) if ew is not None else c(h, ei)
             if i < len(s.convs) - 1:
@@ -242,10 +305,40 @@ class PairGNN(nn.Module):
         u = F.leaky_relu(s.mlp(h))
         return u, (F.leaky_relu(s.mlp_t(h)) if s.mlp_t is not None else u)
 
+    def qctx(s, ug, pairs, chunk=4096):
+        """query-aware TF summary. For pair (t, g): softmax attention of gene g over t's known targets j (TF->target edges of the CURRENT
+        message-passing graph, g itself removed); returns context (B, D), masked max cosine similarity (B,), attention entropy (B,), number of targets (B,)."""
+        a = s.a; H = a.qatt_heads; dk = a.qatt_dim // H
+        src = ug if a.qatt_src == 'emb' else s.raw
+        Kx, Vx, un = s.wk(src).view(-1, H, dk), s.wv(src).view(-1, H, dk), F.normalize(ug, dim=1)
+        out = []
+        for i in range(0, len(pairs), chunk):
+            t, g = pairs[i:i + chunk, 0], pairs[i:i + chunk, 1]
+            mask = s.ctx.A[t].clone(); mask[torch.arange(len(g), device=g.device), g] = False
+            sc = torch.einsum('bhd,nhd->bhn', s.wq(src[g]).view(-1, H, dk), Kx) / dk ** 0.5
+            sc = sc.masked_fill(~mask[:, None, :], -1e9)
+            if a.qatt_topk > 0:
+                sc = sc.masked_fill(sc < sc.topk(min(a.qatt_topk, sc.shape[-1]), -1).values[..., -1:], -1e9)
+            has = mask.any(1)
+            al = torch.softmax(sc, -1) * has[:, None, None]
+            if a.qatt_uniform: al = (mask / mask.sum(1, keepdim=True).clamp(min=1))[:, None, :].expand(-1, H, -1)
+            c = s.cp(torch.einsum('bhn,nhd->bhd', al, Vx).reshape(len(g), H * dk))
+            ms = (un[g] @ un.T).masked_fill(~mask, -2).max(1).values * has
+            ent = -(al * torch.log(al + 1e-9)).sum(-1).mean(1)
+            out.append((c, ms, ent, mask.sum(1)))
+        return [torch.cat(z) for z in zip(*out)]
+
     def score(s, ut, ug, pairs, scalar=None):
         a, b = ut[pairs[:, 0]], ug[pairs[:, 1]]
         sx = None if scalar is None else (scalar[:, None] if scalar.dim() == 1 else scalar)
-        parts = [a, b] + ([a * b] if s.a.decoder == 'had' else []) + ([sx] if sx is not None and s.sw is None else [])
+        parts = [a, b] + ([a * b] if s.a.decoder in ('had', 'qatt') else [])
+        if s.a.decoder == 'qatt':
+            c, ms, _, _ = s.qctx(ug, pairs)
+            parts += [c, c * b, ms[:, None]]
+        if s.a.pe != 'none' and s.a.pe_use != 'concat':
+            pt, pg = s.ctx.pe[pairs[:, 0]], s.ctx.pe[pairs[:, 1]]
+            parts.append((pt - pg).norm(dim=1, keepdim=True) if s.a.pe_use == 'dist' else pt * pg)
+        parts += [sx] if sx is not None and s.sw is None else []
         if s.a.decoder.startswith('tani'):
             parts = ([a, b] if s.a.decoder == 'tani' else []) + [tanimoto(a, b)] + parts[2:]
         out = s.out(torch.cat(parts, 1)).squeeze(1)
@@ -304,15 +397,57 @@ def fit(a, D, dev, epochs, select):
     G_C = T(coexp_graph(D['x'], a.coexp == 'meta'), torch.long) if a.encoder == 'npanda' and 'C' in a.relations else None
     G_P = T(ppi_graph(D['path'], n), torch.long) if a.encoder == 'npanda' and 'P' in a.relations else None
 
-    def full_graph(drop=None, fold=None):
+    ctx = SimpleNamespace(A=None, pe=None, deg=None)
+    need_A = a.decoder == 'qatt'
+    PE_ev, PE_fold, pe_fold = None, None, False
+    if a.pe != 'none':
+        k_ = a.pe_dim
+        pe_fold = a.pe_graph == 'grn' and bool(a.pe_fold) and not a.pe_rand
+        if a.pe_rand:
+            PE_ev = torch.randn(n, k_, generator=torch.Generator().manual_seed(a.seed)).to(dev)
+        else:
+            if a.pe_graph == 'grn':
+                pe_ei = np.stack([D['U'][0], D['U'][1]])
+            else:
+                pe_ei = coexp_graph(D['x'], False) if a.pe_graph == 'coexp' else ppi_graph(D['path'], n)
+            PE_ev = T(make_pe(a.pe, pe_ei, n, k_, dev))
+            if pe_fold:  # PE of the training graph without fold k's edges, for batches drawn from fold k (the pair's own edge is in no graph it sees)
+                PE_fold = []
+                for h in np.array_split(np.random.RandomState(42).permutation(len(tri)), 5):
+                    u = np.unique(D['uid'][tri[h]]); u = u[u >= 0]
+                    keep_ = np.ones(len(D['U'][0]), bool); keep_[u] = False
+                    pf = T(make_pe(a.pe, np.stack([D['U'][0][keep_], D['U'][1][keep_]]), n, k_, dev))
+                    if a.pe == 'lap': pf = pf * torch.where((pf * PE_ev).sum(0) < 0, -1.0, 1.0)  # align eigenvector signs with the full-graph PE
+                    PE_fold.append(pf)
+    ctx.pe = PE_ev
+
+    def hub_cap(keep, gen):
+        """each gene (OG) keeps at most a.hub_cap of its currently kept edges, chosen at random"""
+        key = torch.where(keep, OG.double() * 2 + torch.rand(m, device=dev, generator=gen).double() * 0.999, torch.full((m,), 2.0 * n + 10, device=dev, dtype=torch.float64))
+        order = torch.argsort(key)
+        cnt = torch.bincount(OG[keep], minlength=n)
+        rank = torch.arange(m, device=dev) - (torch.cumsum(cnt, 0) - cnt)[OG[order]]
+        k2 = torch.zeros_like(keep); k2[order[keep[order] & (rank < a.hub_cap)]] = True
+        return k2
+
+    def full_graph(drop=None, fold=None, train=False):
         keep = torch.ones(m, dtype=torch.bool, device=dev)
         if drop is not None and len(drop) > 0:
             keep[drop] = False
+        if a.hub_cap > 0 and (train or a.hub_eval == 'cap'):
+            keep = hub_cap(keep, None if train else torch.Generator(device=dev).manual_seed(123))
+        if need_A:
+            ctx.A = torch.zeros(n, n, dtype=torch.bool, device=dev); ctx.A[OT[keep], OG[keep]] = True
+        gdeg = torch.bincount(OG[keep], minlength=n).float()
+        ctx.deg = torch.log1p(gdeg) / 3
         p, q = U0[keep], U1[keep]
         ei = torch.stack([torch.cat([p, q]), torch.cat([q, p])])
         if a.encoder == 'dir':
             ei = (torch.stack([OT[keep], OG[keep]]), torch.stack([OG[keep], OT[keep]]))
         ew = torch.cat([w_u[keep], w_u[keep]]) if w_u is not None else None
+        if a.idf_beta > 0:
+            w_e = gdeg[OG].clamp(min=1) ** -a.idf_beta
+            ew = torch.cat([w_e[keep], w_e[keep]])
         if PG is not None:
             pg = PG['ev'] if fold is None else PG['fold'][fold]
             return (pg if a.mp_graph == 'panda' else torch.cat([ei, pg], 1)), ew
@@ -320,12 +455,20 @@ def fit(a, D, dev, epochs, select):
             return {r: g for r, g in zip('RCP', (ei, G_C, G_P)) if r in a.relations}, None
         return ei, ew
 
-    P_tr = T(tr[['TF', 'Target']].values[tri], torch.long); Y_tr = T(tr.Label.values[tri], torch.float32)
-    uid_tr = uid[T(tri, torch.long)]
+    tri_sup = tri
+    if a.split == 'fixed':  # fixed graph/supervision split by undirected edge (so an edge and its reverse row never straddle the split)
+        mp_e = np.zeros(m, dtype=bool); mp_e[np.random.RandomState(a.seed).permutation(m)[:int(round(a.mp_frac * m))]] = True
+        u_np = D['uid'][tri]
+        tri_sup = tri[(u_np < 0) | ~mp_e[np.maximum(u_np, 0)]]  # negatives + positives not in the graph
+        EI_FIX = full_graph(torch.as_tensor(np.where(~mp_e)[0], device=dev), train=True)
+        FIX_STATE = (ctx.A, ctx.deg)
+        D['fixed'] = (mp_e, tri_sup)  # exposed for the w11 audit
+    P_tr = T(tr[['TF', 'Target']].values[tri_sup], torch.long); Y_tr = T(tr.Label.values[tri_sup], torch.float32)
+    uid_tr = uid[T(tri_sup, torch.long)]
     P_va = T(tr[['TF', 'Target']].values[vai], torch.long); y_va = tr.Label.values[vai]; tf_va = tr.TF.values[vai]
     P_te = T(te[['TF', 'Target']].values, torch.long); y_te = te.Label.values; tf_te = te.TF.values
 
-    model = PairGNN(X.shape[1], Fe.shape[1] if Fe is not None else 0, a, 0 if S_tr is None else (1 if S_tr.dim() == 2 else S_tr.shape[2])).to(dev)
+    model = PairGNN(X.shape[1] + (a.pe_dim if a.pe != 'none' and a.pe_use == 'concat' else 0) + int(bool(a.deg_feat)), Fe.shape[1] if Fe is not None else 0, a, 0 if S_tr is None else (1 if S_tr.dim() == 2 else S_tr.shape[2]), ctx).to(dev)
     groups = [{'params': [q for nm, q in model.named_parameters() if not nm.startswith('sw.')]}]
     if model.sw is not None:
         groups.append({'params': model.sw.parameters(), 'lr': a.lr * a.scalar_lr, 'weight_decay': 0.0})
@@ -335,13 +478,33 @@ def fit(a, D, dev, epochs, select):
     def evaluate(with_val=True):
         model.eval()
         with torch.no_grad():
+            ctx.pe = PE_ev
             ei, ew = full_graph()
             ut, ug = model.nodes(X, Fe, ei, ew)
             st = model.score(ut, ug, P_te, sc(S_ev, P_te)).cpu().numpy()
             sv = model.score(ut, ug, P_va, sc(S_ev, P_va)).cpu().numpy() if with_val else None
         return (metrics(y_va, sv, tf_va) if with_val else None), metrics(y_te, st, tf_te), st
 
-    safe = PG is not None and a.panda_safe  # fold-pure batches: batch rows come from one OOF fold, whose PANDA prior excludes them
+    tfu_all = np.unique(np.concatenate([tr.TF.values, te.TF.values]))
+
+    def dump():
+        """full TF x gene score grid, gene embeddings, and out-of-fold scores of all supervision rows (20 folds; a row is never scored through its own edge)"""
+        model.eval()
+        with torch.no_grad():
+            ctx.pe = PE_ev
+            ei, ew = full_graph()
+            ut, ug = model.nodes(X, Fe, ei, ew)
+            pairs = T(np.array([(u, g) for u in tfu_all for g in range(n)]), torch.long)
+            grid = model.score(ut, ug, pairs, None).cpu().numpy().reshape(len(tfu_all), n)
+            oof = np.zeros(len(tri_sup), np.float32)
+            for h in np.array_split(np.random.RandomState(7).permutation(len(tri_sup)), 20):
+                th = T(h, torch.long); d = uid_tr[th]
+                ei, ew = full_graph(d[d >= 0])
+                u2, g2 = model.nodes(X, Fe, ei, ew)
+                oof[h] = model.score(u2, g2, P_tr[th], None).cpu().numpy()
+        return dict(grid=grid, tfu=tfu_all, ug=ug.cpu().numpy(), oof=oof)
+
+    safe = (PG is not None and a.panda_safe) or pe_fold or bool(a.fold_batches)  # fold-pure batches: batch rows come from one OOF fold, whose PANDA prior excludes them
     if safe:
         fold_rows = [T(h, torch.long) for h in np.array_split(np.random.RandomState(42).permutation(len(tri)), 5)]  # same folds as scalars.get
 
@@ -362,7 +525,14 @@ def fit(a, D, dev, epochs, select):
                 if a.tf_drop > 0:
                     ex = torch.nonzero((torch.rand(n, device=dev) < a.tf_drop)[OT]).squeeze(1)
                     drop = torch.unique(torch.cat([drop, ex]))
-            ei, ew = full_graph(drop, fk)
+            if a.split == 'fixed':
+                (ei, ew), (ctx.A, ctx.deg) = EI_FIX, FIX_STATE
+            else:
+                ei, ew = full_graph(drop, fk, train=True)
+            if PE_ev is not None:
+                ctx.pe = PE_fold[fk] if PE_fold is not None else PE_ev
+                if a.pe == 'lap' and a.pe_flip and a.pe_use == 'concat':
+                    ctx.pe = ctx.pe * (torch.randint(0, 2, (a.pe_dim,), device=dev) * 2 - 1)
             ut, ug = model.nodes(X, Fe, ei, ew)
             loss = F.binary_cross_entropy_with_logits(model.score(ut, ug, p, sc(S_tr, p)), y)
             if a.rank_w > 0:
@@ -388,6 +558,7 @@ def fit(a, D, dev, epochs, select):
             hist.append(dict(epoch=ep, val=v, test=t))
             if best is None or v[a.select_metric] > best['val'][a.select_metric]:
                 best, bad = hist[-1], 0
+                if a.save_sel_grid: D['sel'] = dict(epoch=ep, **dump())
             else:
                 bad += 1
                 if bad >= a.patience:
@@ -399,9 +570,29 @@ def fit(a, D, dev, epochs, select):
         model.eval()
         ei, ew = full_graph()
         ut, ug = model.nodes(X, Fe, ei, ew)
-        tfu = np.unique(np.concatenate([tr.TF.values, te.TF.values]))
+        tfu = tfu_all
         pairs = T(np.array([(u, g) for u in tfu for g in range(n)]), torch.long)
         grid = model.score(ut, ug, pairs, sc(S_ev, pairs)).cpu().numpy().reshape(len(tfu), n)
+        if a.save_sel_grid: D['extra'] = dump()
+        if a.decoder == 'qatt':  # attention diagnostics on the test pairs: entropy, number of known targets, masked max cosine similarity
+            _, ms_, ent_, nb_ = model.qctx(ug, P_te)
+            D['qdiag'] = dict(q_ent=ent_.cpu().numpy(), q_nb=nb_.cpu().numpy(), q_maxsim=ms_.cpu().numpy())
+        if a.own_edge_diag:  # does the model read "my own edge is in the graph" as the label? (these edges are training examples, scored after training)
+            rs = np.random.RandomState(123)
+            sel = rs.choice(m, size=max(1, int(0.1 * m)), replace=False)
+            neg_rows = tri[tr.Label.values[tri] == 0]
+            Q = T(np.concatenate([D['orient'][sel], tr[['TF', 'Target']].values[rs.choice(neg_rows, size=len(sel), replace=False)]]), torch.long)
+            yq = np.r_[np.ones(len(sel)), np.zeros(len(sel))]
+            sq = {}
+            for cond, drop in (('present', None), ('removed', T(sel, torch.long))):
+                ei, ew = full_graph(drop)
+                ut, ug = model.nodes(X, Fe, ei, ew)
+                sq[cond] = model.score(ut, ug, Q, sc(S_ev, Q)).cpu().numpy()
+            k = len(sel); gap = sq['present'] - sq['removed']
+            D['diag'] = dict(n_edges=int(k), n_neg=int(k), gap_pos_mean=float(gap[:k].mean()), gap_pos_median=float(np.median(gap[:k])), gap_neg_mean=float(gap[k:].mean()),
+                             pos_logit_present=float(sq['present'][:k].mean()), pos_logit_removed=float(sq['removed'][:k].mean()),
+                             neg_logit_present=float(sq['present'][k:].mean()), neg_logit_removed=float(sq['removed'][k:].mean()),
+                             auc_present=float(roc_auc_score(yq, sq['present'])), auc_removed=float(roc_auc_score(yq, sq['removed'])))
     return t, (st, tfu, grid)
 
 
@@ -420,8 +611,12 @@ def main():
         D2 = prepare(SimpleNamespace(**{**vars(a), 'val_frac': 0.0}), dev)
         a2 = SimpleNamespace(**{**vars(a), 'val_frac': 0.0})
         res['refit'], (st, tfu, grid) = fit(a2, D2, dev, best['epoch'], select=False)
+        if 'diag' in D2: res['own_edge_diag'] = D2['diag']
         os.makedirs(a.out, exist_ok=True)
-        np.savez_compressed(f'{a.out}/{a.name}.npz', logit=st, tf=D2['te'].TF.values, tgt=D2['te'].Target.values, y=D2['te'].Label.values, grid_tf=tfu, grid=grid)
+        ex = {f'refit_{k}': v for k, v in D2.get('extra', {}).items() if k != 'grid'}
+        np.savez_compressed(f'{a.out}/{a.name}.npz', logit=st, tf=D2['te'].TF.values, tgt=D2['te'].Target.values, y=D2['te'].Label.values, grid_tf=tfu, grid=grid, **D2.get('qdiag', {}), **ex)
+        if 'sel' in D:
+            np.savez_compressed(f'{a.out}/{a.name}_sel.npz', **D['sel'])
     res['minutes'] = (time.time() - t0) / 60
     json.dump(res, open(f'{a.out}/{a.name}.json', 'w'), indent=1)
     t = res.get('refit', best['test'])

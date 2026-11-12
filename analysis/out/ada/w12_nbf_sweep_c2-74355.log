@@ -1,0 +1,4 @@
+NVIDIA GeForce RTX 2080 Ti
+w12_nbf_L3pna_featlayer_s42	epoch 4	val AUROC 0.8491	REFIT TEST AUROC 0.8682 AUPRC 0.5665 withinTF 0.7016	1.2 min
+w12_nbf_L4pna_s42	epoch 7	val AUROC 0.8688	REFIT TEST AUROC 0.8754 AUPRC 0.6120 withinTF 0.6675	1.7 min
+QUEUE_DONE analysis/jobs/ada_sent/w12_nbf_sweep_c2.txt

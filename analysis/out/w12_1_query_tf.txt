@@ -1,0 +1,139 @@
+W12 idea 1: query-aware TF summary. hESC, random split, no Geneformer, epoch chosen on validation AUROC, refit. Seed-42 screen rows have n=1.
+
+== Screen (seed 42 only; knob choice by val AUROC / within-TF in the val column)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (w3_hero)                                 1   0.8890 ± 0.0000  0.6264 ± 0.0000  0.7499 ± 0.0000  0.7292 ± 0.0000  0.8890 ± 0.0000    0.27
+qatt_h1_emb_k5                                 1   0.8889 ± 0.0000  0.6258 ± 0.0000  0.7448 ± 0.0000  0.7314 ± 0.0000  0.8916 ± 0.0000    0.91
+qatt_h1_raw_k0                                 1   0.8868 ± 0.0000  0.6189 ± 0.0000  0.7339 ± 0.0000  0.7275 ± 0.0000  0.8838 ± 0.0000    0.87
+qatt_h1_raw_k5                                 1   0.8780 ± 0.0000  0.6145 ± 0.0000  0.6880 ± 0.0000  0.6860 ± 0.0000  0.8835 ± 0.0000    0.53
+qatt_h4_emb_k5                                 1   0.8886 ± 0.0000  0.6218 ± 0.0000  0.7482 ± 0.0000  0.7311 ± 0.0000  0.8911 ± 0.0000    0.81
+qatt_h4_raw_k0                                 1   0.8808 ± 0.0000  0.6129 ± 0.0000  0.7173 ± 0.0000  0.7076 ± 0.0000  0.8849 ± 0.0000    0.63
+qatt_h4_raw_k5                                 1   0.8773 ± 0.0000  0.6016 ± 0.0000  0.7195 ± 0.0000  0.6945 ± 0.0000  0.8793 ± 0.0000    0.60
+paired per-TF tests vs hero (w3_hero), seeds [42]:
+  qatt_h1_emb_k5                                 within-TF diff -0.0051  95% CI [-0.0184, +0.0045]  TFs better 15/33  p=0.846
+  qatt_h1_raw_k0                                 within-TF diff -0.0160  95% CI [-0.0385, +0.0046]  TFs better 16/33  p=0.201
+  qatt_h1_raw_k5                                 within-TF diff -0.0620  95% CI [-0.1007, -0.0305]  TFs better 10/33  p=0.00029
+  qatt_h4_emb_k5                                 within-TF diff -0.0017  95% CI [-0.0158, +0.0098]  TFs better 18/33  p=0.489
+  qatt_h4_raw_k0                                 within-TF diff -0.0326  95% CI [-0.0566, -0.0120]  TFs better 9/33  p=0.00292
+  qatt_h4_raw_k5                                 within-TF diff -0.0304  95% CI [-0.0484, -0.0118]  TFs better 7/33  p=0.00216
+same-seed differences vs hero (mean over seeds, seeds better):
+  qatt_h1_emb_k5                                 AUROC -0.0000 (0/1)  AUPRC -0.0006  within-TF -0.0051 (0/1)
+  qatt_h1_raw_k0                                 AUROC -0.0022 (0/1)  AUPRC -0.0075  within-TF -0.0160 (0/1)
+  qatt_h1_raw_k5                                 AUROC -0.0109 (0/1)  AUPRC -0.0119  within-TF -0.0620 (0/1)
+  qatt_h4_emb_k5                                 AUROC -0.0003 (0/1)  AUPRC -0.0046  within-TF -0.0017 (0/1)
+  qatt_h4_raw_k0                                 AUROC -0.0082 (0/1)  AUPRC -0.0136  within-TF -0.0326 (0/1)
+  qatt_h4_raw_k5                                 AUROC -0.0117 (0/1)  AUPRC -0.0248  within-TF -0.0304 (0/1)
+
+== Confirmation (seeds 42-44)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero                                           3   0.8885 ± 0.0014  0.6254 ± 0.0015  0.7490 ± 0.0018  0.7273 ± 0.0018  0.8885 ± 0.0009    0.26
+qatt_h1_emb_k0                                 3   0.8893 ± 0.0013  0.6256 ± 0.0037  0.7506 ± 0.0043  0.7296 ± 0.0031  0.8892 ± 0.0016    0.64
+qatt_h4_emb_k0                                 3   0.8891 ± 0.0013  0.6253 ± 0.0023  0.7493 ± 0.0048  0.7295 ± 0.0035  0.8890 ± 0.0011    0.65
+qattdrop                                       3   0.8892 ± 0.0004  0.6278 ± 0.0014  0.7440 ± 0.0025  0.7291 ± 0.0050  0.8881 ± 0.0013    1.28
+qattuni                                        3   0.8890 ± 0.0013  0.6254 ± 0.0020  0.7492 ± 0.0045  0.7296 ± 0.0032  0.8888 ± 0.0010    0.91
+paired per-TF tests vs hero (w3_hero), seeds [42, 43, 44]:
+  qatt_h1_emb_k0                                 within-TF diff +0.0017  95% CI [-0.0044, +0.0078]  TFs better 18/33  p=0.584
+  qatt_h4_emb_k0                                 within-TF diff +0.0003  95% CI [-0.0059, +0.0064]  TFs better 17/33  p=0.518
+  qattdrop                                       within-TF diff -0.0049  95% CI [-0.0245, +0.0100]  TFs better 16/33  p=0.916
+  qattuni                                        within-TF diff +0.0002  95% CI [-0.0061, +0.0062]  TFs better 19/33  p=0.454
+same-seed differences vs hero (mean over seeds, seeds better):
+  qatt_h1_emb_k0                                 AUROC +0.0009 (3/3)  AUPRC +0.0002  within-TF +0.0017 (2/3)
+  qatt_h4_emb_k0                                 AUROC +0.0006 (2/3)  AUPRC -0.0001  within-TF +0.0003 (2/3)
+  qattdrop                                       AUROC +0.0007 (2/3)  AUPRC +0.0024  within-TF -0.0049 (0/3)
+  qattuni                                        AUROC +0.0006 (2/3)  AUPRC +0.0000  within-TF +0.0002 (2/3)
+
+== Explanation tests for w12_qatt_h1_emb_k0
+  Spearman(per-TF within-TF gain vs hero, number of training targets) = +0.113, p = 0.531, 33 TFs
+  Spearman(per-TF within-TF gain vs hero, mean pairwise cosine of the targets (low = multi-modal)) = -0.287, p = 0.132, 29 TFs
+  Spearman(per-TF within-TF gain vs hero, number of clusters (average link, cosine distance < 1)) = +0.068, p = 0.727, 29 TFs
+  normalised attention entropy (entropy / log #targets), test pairs: positives 0.971, negatives 0.853
+  masked max cosine of the learnt embeddings, positives 0.930, negatives 0.810; AUROC of this single number 0.7481
+  non-parametric single scores on the test set (no training; known targets = all training positives of the TF):
+    max cosine to known targets                AUROC 0.6077  within-TF 0.4597
+    mean of top-3 cosines                      AUROC 0.6469  within-TF 0.4656
+    gene popularity (training in-degree)       AUROC 0.6415  within-TF 0.7068
+    hero (w3_hero) AUROC 0.8885  within-TF 0.7490
+  score/popularity Spearman over all genes (mean over TFs): hero +0.731, w12_qatt_h1_emb_k0 +0.745
+
+== Stage 3: other cell types (no Geneformer; baseline = w4 hero runs of the cell, seeds 42-44) and + Geneformer on hESC
+
+== hHEP
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (hHEP)                                    3   0.8990 ± 0.0006  0.8378 ± 0.0006  0.7587 ± 0.0020  0.7678 ± 0.0017  0.8983 ± 0.0008    0.65
+qatt_h1_emb_k0                                 3   0.9020 ± 0.0003  0.8438 ± 0.0007  0.7700 ± 0.0020  0.7728 ± 0.0014  0.8999 ± 0.0011    1.55
+qatt, uniform attention (control)              3   0.9014 ± 0.0005  0.8425 ± 0.0004  0.7694 ± 0.0032  0.7723 ± 0.0023  0.8998 ± 0.0006    1.89
+paired per-TF tests vs hero (w4_hHEP_hero), seeds [42, 43, 44]:
+  qatt_h1_emb_k0                                 within-TF diff +0.0114  95% CI [+0.0018, +0.0265]  TFs better 22/30  p=0.00295
+  qatt, uniform attention (control)              within-TF diff +0.0107  95% CI [+0.0012, +0.0258]  TFs better 21/30  p=0.0137
+same-seed differences vs hero (mean over seeds, seeds better):
+  qatt_h1_emb_k0                                 AUROC +0.0030 (3/3)  AUPRC +0.0060  within-TF +0.0114 (3/3)
+  qatt, uniform attention (control)              AUROC +0.0024 (3/3)  AUPRC +0.0047  within-TF +0.0107 (3/3)
+
+== mESC
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (mESC)                                    3   0.9390 ± 0.0010  0.8813 ± 0.0016  0.8241 ± 0.0013  0.8281 ± 0.0014  0.9382 ± 0.0006    5.45
+qatt_h1_emb_k0                                 3   0.9390 ± 0.0002  0.8817 ± 0.0005  0.8093 ± 0.0037  0.8266 ± 0.0008  0.9383 ± 0.0003    7.24
+qatt, uniform attention (control)              3   0.9403 ± 0.0009  0.8836 ± 0.0019  0.8245 ± 0.0015  0.8304 ± 0.0021  0.9387 ± 0.0004   10.02
+paired per-TF tests vs hero (w4_mESC_hero), seeds [42, 43, 44]:
+  qatt_h1_emb_k0                                 within-TF diff -0.0148  95% CI [-0.0299, -0.0025]  TFs better 32/85  p=0.123
+  qatt, uniform attention (control)              within-TF diff +0.0003  95% CI [-0.0051, +0.0054]  TFs better 48/85  p=0.122
+same-seed differences vs hero (mean over seeds, seeds better):
+  qatt_h1_emb_k0                                 AUROC +0.0000 (2/3)  AUPRC +0.0004  within-TF -0.0148 (0/3)
+  qatt, uniform attention (control)              AUROC +0.0014 (3/3)  AUPRC +0.0023  within-TF +0.0003 (3/3)
+
+== mHSC-E
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (mHSC-E)                                  3   0.9233 ± 0.0016  0.9429 ± 0.0017  0.7575 ± 0.0062  0.8009 ± 0.0036  0.9257 ± 0.0010    0.75
+qatt_h1_emb_k0                                 3   0.9245 ± 0.0001  0.9439 ± 0.0003  0.7654 ± 0.0021  0.8020 ± 0.0009  0.9268 ± 0.0011    0.82
+qatt, uniform attention (control)              3   0.9249 ± 0.0005  0.9442 ± 0.0005  0.7689 ± 0.0081  0.8050 ± 0.0052  0.9267 ± 0.0013    1.12
+paired per-TF tests vs hero (w4_mHSC-E_hero), seeds [42, 43, 44]:
+  qatt_h1_emb_k0                                 within-TF diff +0.0080  95% CI [+0.0003, +0.0196]  TFs better 20/29  p=0.0326
+  qatt, uniform attention (control)              within-TF diff +0.0114  95% CI [+0.0028, +0.0240]  TFs better 23/29  p=0.00234
+same-seed differences vs hero (mean over seeds, seeds better):
+  qatt_h1_emb_k0                                 AUROC +0.0012 (2/3)  AUPRC +0.0010  within-TF +0.0080 (3/3)
+  qatt, uniform attention (control)              AUROC +0.0016 (2/3)  AUPRC +0.0013  within-TF +0.0114 (3/3)
+
+== hESC + Geneformer
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero + Geneformer (w3_herogf)                  3   0.8904 ± 0.0013  0.6327 ± 0.0025  0.7495 ± 0.0018  0.7307 ± 0.0026  0.8921 ± 0.0005    0.25
+qatt + Geneformer                              3   0.8912 ± 0.0008  0.6337 ± 0.0004  0.7537 ± 0.0038  0.7365 ± 0.0011  0.8903 ± 0.0011    0.84
+paired per-TF tests vs hero (w3_herogf), seeds [42, 43, 44]:
+  qatt + Geneformer                              within-TF diff +0.0042  95% CI [-0.0046, +0.0116]  TFs better 20/33  p=0.0737
+same-seed differences vs hero (mean over seeds, seeds better):
+  qatt + Geneformer                              AUROC +0.0008 (2/3)  AUPRC +0.0010  within-TF +0.0042 (2/3)
+
+Held-out genes, per-TF gain of qatt_h1_emb_k0 over the hero (per-TF AUROC averaged over 5 folds x 2 seeds):
+  Spearman(gain, number of training targets of the TF) = -0.464, p = 0.00576, 34 TFs
+  Spearman(gain, mean pairwise cosine of the TF's targets (low = multi-modal)) = -0.286, p = 0.133, 29 TFs
+  TFs with fewer than the median number of targets (38): mean gain +0.0352 (n=17); with more: +0.0013 (n=17)
+
+== Stage 2
+held-out genes: 5 folds x seeds [42, 43]
+model                                    n             AUROC            AUPRC        within-TF        within>=8
+hero (w5)                                10   0.8467 ± 0.0064  0.5213 ± 0.0111  0.5461 ± 0.0305  0.5617 ± 0.0156
+qatt_h1_emb_k0                           10   0.8470 ± 0.0084  0.5244 ± 0.0100  0.5580 ± 0.0330  0.5659 ± 0.0198
+qattdrop                                 10   0.8491 ± 0.0060  0.5275 ± 0.0100  0.5588 ± 0.0342  0.5717 ± 0.0212
+qattuni                                  10   0.8473 ± 0.0076  0.5253 ± 0.0081  0.5572 ± 0.0311  0.5648 ± 0.0181
+  qatt_h1_emb_k0 (n=10)                          within-TF diff +0.0182  95% CI [+0.0052, +0.0334]  TFs better 25/34  p=0.00282
+  qattdrop (n=10)                                within-TF diff +0.0154  95% CI [-0.0002, +0.0309]  TFs better 27/34  p=0.00192
+  qattuni (n=10)                                 within-TF diff +0.0175  95% CI [+0.0044, +0.0330]  TFs better 27/34  p=0.00487
+  same, against the matched control hero + tf_drop 0.3 (earlier td01 runs):
+model                                    n             AUROC            AUPRC        within-TF        within>=8
+td01_hero_tfdrop0.3                      10   0.8469 ± 0.0045  0.5225 ± 0.0094  0.5431 ± 0.0287  0.5661 ± 0.0178
+qattdrop                                 10   0.8491 ± 0.0060  0.5275 ± 0.0100  0.5588 ± 0.0342  0.5717 ± 0.0212
+  qattdrop (n=10)                                within-TF diff +0.0236  95% CI [+0.0090, +0.0422]  TFs better 25/34  p=0.00261
+
+== Stage 2
+held-out tfs: 5 folds x seeds [42, 43]
+model                                    n             AUROC            AUPRC        within-TF        within>=8
+hero (w5)                                10   0.6304 ± 0.1127  0.2314 ± 0.0978  0.6855 ± 0.0643  0.6766 ± 0.0388
+qatt_h1_emb_k0                           10   0.6214 ± 0.0897  0.2142 ± 0.0829  0.6333 ± 0.0649  0.6422 ± 0.0420
+qattdrop                                 10   0.6034 ± 0.0401  0.1921 ± 0.0405  0.6613 ± 0.0563  0.6595 ± 0.0330
+qattuni                                  (no runs)
+  qatt_h1_emb_k0 (n=10)                          within-TF diff -0.0531  95% CI [-0.0893, -0.0227]  TFs better 9/34  p=0.000782
+  qattdrop (n=10)                                within-TF diff -0.0244  95% CI [-0.0413, -0.0088]  TFs better 12/34  p=0.0178
+  same, against the matched control hero + tf_drop 0.3 (earlier td01 runs):
+model                                    n             AUROC            AUPRC        within-TF        within>=8
+td01_hero_tfdrop0.3                      10   0.6488 ± 0.0597  0.2409 ± 0.0791  0.6598 ± 0.0360  0.6584 ± 0.0205
+qattdrop                                 10   0.6034 ± 0.0401  0.1921 ± 0.0405  0.6613 ± 0.0563  0.6595 ± 0.0330
+  qattdrop (n=10)                                within-TF diff +0.0018  95% CI [-0.0118, +0.0163]  TFs better 19/34  p=0.987

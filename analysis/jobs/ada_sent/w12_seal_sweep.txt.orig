@@ -1,0 +1,7 @@
+#mod src.seal 2
+w12_seal_h1tt_s42 --hops 1 --pool tt --workers 2 --seed 42
+w12_seal_h1mm_s42 --hops 1 --pool mm --workers 2 --seed 42
+w12_seal_h1sort_s42 --hops 1 --pool sort --workers 2 --seed 42
+w12_seal_h2c10_s42 --hops 2 --cap 10 --pool tt --workers 2 --seed 42
+w12_seal_h2c20_s42 --hops 2 --cap 20 --pool tt --workers 2 --seed 42
+w12_seal_h1tt_gcn_s42 --hops 1 --pool tt --conv gcn --workers 2 --seed 42

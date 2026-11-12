@@ -1,0 +1,131 @@
+W12 idea 9: positional encodings. hESC, random split, no Geneformer, hero settings, epoch chosen on validation AUROC, refit.
+
+== Screen, seed 42 only (n=1 per row; hero noise between identical GPU reruns is about 0.001 AUROC, 0.001 within-TF)
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (w3_hero)                                 1   0.8890 ± 0.0000  0.6264 ± 0.0000  0.7499 ± 0.0000  0.7292 ± 0.0000  0.8890 ± 0.0000    0.27
+pe_foldctl                                     1   0.8867 ± 0.0000  0.6196 ± 0.0000  0.7497 ± 0.0000  0.7199 ± 0.0000  0.8865 ± 0.0000    0.68
+pe_lap_coexp_k16                               1   0.8864 ± 0.0000  0.6224 ± 0.0000  0.7417 ± 0.0000  0.7199 ± 0.0000  0.8872 ± 0.0000    2.12
+pe_lap_coexp_k16_dist                          1   0.8887 ± 0.0000  0.6252 ± 0.0000  0.7495 ± 0.0000  0.7290 ± 0.0000  0.8884 ± 0.0000    1.60
+pe_lap_coexp_k16_prod                          1   0.8885 ± 0.0000  0.6253 ± 0.0000  0.7470 ± 0.0000  0.7271 ± 0.0000  0.8883 ± 0.0000    1.62
+pe_lap_coexp_k32                               1   0.8894 ± 0.0000  0.6255 ± 0.0000  0.7524 ± 0.0000  0.7272 ± 0.0000  0.8846 ± 0.0000    2.20
+pe_lap_coexp_k8                                1   0.8843 ± 0.0000  0.6196 ± 0.0000  0.7296 ± 0.0000  0.7114 ± 0.0000  0.8854 ± 0.0000    2.08
+pe_lap_grn_k16_fold                            1   0.8826 ± 0.0000  0.6146 ± 0.0000  0.7442 ± 0.0000  0.7180 ± 0.0000  0.8865 ± 0.0000    3.43
+pe_lap_grn_k16_leak                            1   0.8863 ± 0.0000  0.6209 ± 0.0000  0.7424 ± 0.0000  0.7156 ± 0.0000  0.8878 ± 0.0000    1.57
+pe_lap_ppi_k16                                 1   0.8899 ± 0.0000  0.6263 ± 0.0000  0.7545 ± 0.0000  0.7318 ± 0.0000  0.8875 ± 0.0000    1.65
+pe_rand_k16                                    1   0.8861 ± 0.0000  0.6223 ± 0.0000  0.7417 ± 0.0000  0.7172 ± 0.0000  0.8866 ± 0.0000    0.40
+pe_rw_coexp_k16                                1   0.8885 ± 0.0000  0.6254 ± 0.0000  0.7463 ± 0.0000  0.7278 ± 0.0000  0.8912 ± 0.0000    0.69
+pe_rw_coexp_k16_dist                           1   0.8891 ± 0.0000  0.6263 ± 0.0000  0.7507 ± 0.0000  0.7306 ± 0.0000  0.8876 ± 0.0000    0.54
+pe_rw_coexp_k16_prod                           1   0.8885 ± 0.0000  0.6248 ± 0.0000  0.7464 ± 0.0000  0.7290 ± 0.0000  0.8894 ± 0.0000    0.69
+pe_rw_coexp_k32                                1   0.8889 ± 0.0000  0.6223 ± 0.0000  0.7443 ± 0.0000  0.7273 ± 0.0000  0.8862 ± 0.0000    0.55
+pe_rw_coexp_k8                                 1   0.8880 ± 0.0000  0.6247 ± 0.0000  0.7407 ± 0.0000  0.7264 ± 0.0000  0.8887 ± 0.0000    0.56
+pe_rw_grn_k16_fold                             1   0.8879 ± 0.0000  0.6222 ± 0.0000  0.7385 ± 0.0000  0.7222 ± 0.0000  0.8873 ± 0.0000    0.60
+pe_rw_grn_k16_leak                             1   0.8867 ± 0.0000  0.6179 ± 0.0000  0.7391 ± 0.0000  0.7256 ± 0.0000  0.8891 ± 0.0000    0.58
+pe_rw_ppi_k16                                  1   0.8885 ± 0.0000  0.6262 ± 0.0000  0.7448 ± 0.0000  0.7277 ± 0.0000  0.8900 ± 0.0000    0.55
+paired per-TF tests vs hero (w3_hero), seeds [42]:
+  pe_foldctl                                     within-TF diff -0.0003  95% CI [-0.0100, +0.0104]  TFs better 11/33  p=0.437
+  pe_lap_coexp_k16                               within-TF diff -0.0083  95% CI [-0.0190, +0.0025]  TFs better 15/33  p=0.214
+  pe_lap_coexp_k16_dist                          within-TF diff -0.0004  95% CI [-0.0026, +0.0018]  TFs better 16/33  p=0.837
+  pe_lap_coexp_k16_prod                          within-TF diff -0.0030  95% CI [-0.0053, -0.0008]  TFs better 11/33  p=0.0185
+  pe_lap_coexp_k32                               within-TF diff +0.0024  95% CI [-0.0068, +0.0116]  TFs better 16/33  p=0.562
+  pe_lap_coexp_k8                                within-TF diff -0.0204  95% CI [-0.0334, -0.0075]  TFs better 9/33  p=0.00378
+  pe_lap_grn_k16_fold                            within-TF diff -0.0057  95% CI [-0.0227, +0.0108]  TFs better 13/33  p=0.339
+  pe_lap_grn_k16_leak                            within-TF diff -0.0075  95% CI [-0.0208, +0.0053]  TFs better 17/33  p=0.426
+  pe_lap_ppi_k16                                 within-TF diff +0.0046  95% CI [-0.0061, +0.0140]  TFs better 21/33  p=0.108
+  pe_rand_k16                                    within-TF diff -0.0082  95% CI [-0.0193, +0.0028]  TFs better 13/33  p=0.214
+  pe_rw_coexp_k16                                within-TF diff -0.0037  95% CI [-0.0149, +0.0052]  TFs better 16/33  p=0.874
+  pe_rw_coexp_k16_dist                           within-TF diff +0.0007  95% CI [-0.0025, +0.0035]  TFs better 20/33  p=0.272
+  pe_rw_coexp_k16_prod                           within-TF diff -0.0035  95% CI [-0.0082, +0.0002]  TFs better 11/33  p=0.183
+  pe_rw_coexp_k32                                within-TF diff -0.0057  95% CI [-0.0181, +0.0032]  TFs better 14/33  p=0.4
+  pe_rw_coexp_k8                                 within-TF diff -0.0092  95% CI [-0.0262, +0.0029]  TFs better 12/33  p=0.121
+  pe_rw_grn_k16_fold                             within-TF diff -0.0115  95% CI [-0.0347, +0.0067]  TFs better 14/33  p=0.339
+  pe_rw_grn_k16_leak                             within-TF diff -0.0108  95% CI [-0.0259, +0.0006]  TFs better 10/33  p=0.123
+  pe_rw_ppi_k16                                  within-TF diff -0.0051  95% CI [-0.0223, +0.0059]  TFs better 17/33  p=0.805
+same-seed differences vs hero (mean over seeds, seeds better):
+  pe_foldctl                                     AUROC -0.0023 (0/1)  AUPRC -0.0068  within-TF -0.0003 (0/1)
+  pe_lap_coexp_k16                               AUROC -0.0026 (0/1)  AUPRC -0.0041  within-TF -0.0083 (0/1)
+  pe_lap_coexp_k16_dist                          AUROC -0.0003 (0/1)  AUPRC -0.0012  within-TF -0.0004 (0/1)
+  pe_lap_coexp_k16_prod                          AUROC -0.0005 (0/1)  AUPRC -0.0011  within-TF -0.0030 (0/1)
+  pe_lap_coexp_k32                               AUROC +0.0005 (1/1)  AUPRC -0.0009  within-TF +0.0024 (1/1)
+  pe_lap_coexp_k8                                AUROC -0.0047 (0/1)  AUPRC -0.0068  within-TF -0.0204 (0/1)
+  pe_lap_grn_k16_fold                            AUROC -0.0063 (0/1)  AUPRC -0.0118  within-TF -0.0057 (0/1)
+  pe_lap_grn_k16_leak                            AUROC -0.0027 (0/1)  AUPRC -0.0055  within-TF -0.0075 (0/1)
+  pe_lap_ppi_k16                                 AUROC +0.0010 (1/1)  AUPRC -0.0001  within-TF +0.0046 (1/1)
+  pe_rand_k16                                    AUROC -0.0029 (0/1)  AUPRC -0.0041  within-TF -0.0082 (0/1)
+  pe_rw_coexp_k16                                AUROC -0.0004 (0/1)  AUPRC -0.0010  within-TF -0.0037 (0/1)
+  pe_rw_coexp_k16_dist                           AUROC +0.0002 (1/1)  AUPRC -0.0002  within-TF +0.0007 (1/1)
+  pe_rw_coexp_k16_prod                           AUROC -0.0005 (0/1)  AUPRC -0.0016  within-TF -0.0035 (0/1)
+  pe_rw_coexp_k32                                AUROC -0.0001 (0/1)  AUPRC -0.0041  within-TF -0.0057 (0/1)
+  pe_rw_coexp_k8                                 AUROC -0.0009 (0/1)  AUPRC -0.0018  within-TF -0.0092 (0/1)
+  pe_rw_grn_k16_fold                             AUROC -0.0010 (0/1)  AUPRC -0.0042  within-TF -0.0115 (0/1)
+  pe_rw_grn_k16_leak                             AUROC -0.0022 (0/1)  AUPRC -0.0085  within-TF -0.0108 (0/1)
+  pe_rw_ppi_k16                                  AUROC -0.0004 (0/1)  AUPRC -0.0002  within-TF -0.0051 (0/1)
+
+== Confirmation, seeds 42-44
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+hero (w3_hero)                                 3   0.8885 ± 0.0014  0.6254 ± 0.0015  0.7490 ± 0.0018  0.7273 ± 0.0018  0.8885 ± 0.0009    0.26
+pe_foldctl                                     3   0.8860 ± 0.0005  0.6176 ± 0.0014  0.7424 ± 0.0055  0.7209 ± 0.0012  0.8854 ± 0.0008    0.48
+pe_lap_coexp_k32                               3   0.8876 ± 0.0014  0.6260 ± 0.0010  0.7471 ± 0.0041  0.7246 ± 0.0019  0.8865 ± 0.0014    1.00
+pe_lap_grn_k16_fold                            3   0.8822 ± 0.0008  0.6147 ± 0.0009  0.7296 ± 0.0104  0.7129 ± 0.0036  0.8867 ± 0.0003    2.10
+pe_lap_grn_k16_leak                            3   0.8865 ± 0.0002  0.6235 ± 0.0020  0.7423 ± 0.0020  0.7184 ± 0.0023  0.8871 ± 0.0005    0.96
+pe_lap_ppi_k16                                 3   0.8875 ± 0.0018  0.6253 ± 0.0011  0.7458 ± 0.0061  0.7225 ± 0.0067  0.8867 ± 0.0009    0.81
+pe_rand_k16                                    3   0.8862 ± 0.0002  0.6243 ± 0.0019  0.7416 ± 0.0007  0.7172 ± 0.0017  0.8866 ± 0.0005    0.31
+pe_rw_coexp_k16                                3   0.8873 ± 0.0009  0.6238 ± 0.0025  0.7410 ± 0.0040  0.7245 ± 0.0047  0.8878 ± 0.0025    0.41
+pe_rw_grn_k16_fold                             3   0.8851 ± 0.0040  0.6179 ± 0.0084  0.7302 ± 0.0202  0.7117 ± 0.0181  0.8843 ± 0.0021    0.38
+pe_rw_grn_k16_leak                             3   0.8872 ± 0.0003  0.6192 ± 0.0009  0.7413 ± 0.0019  0.7254 ± 0.0034  0.8865 ± 0.0019    0.39
+paired per-TF tests vs hero (w3_hero), seeds [42, 43, 44]:
+  pe_foldctl                                     within-TF diff -0.0066  95% CI [-0.0191, +0.0040]  TFs better 14/33  p=0.443
+  pe_lap_coexp_k32                               within-TF diff -0.0018  95% CI [-0.0086, +0.0049]  TFs better 15/33  p=0.575
+  pe_lap_grn_k16_fold                            within-TF diff -0.0193  95% CI [-0.0300, -0.0099]  TFs better 10/33  p=0.000173
+  pe_lap_grn_k16_leak                            within-TF diff -0.0067  95% CI [-0.0154, +0.0022]  TFs better 14/33  p=0.13
+  pe_lap_ppi_k16                                 within-TF diff -0.0031  95% CI [-0.0102, +0.0038]  TFs better 15/33  p=0.367
+  pe_rand_k16                                    within-TF diff -0.0073  95% CI [-0.0155, +0.0008]  TFs better 14/33  p=0.204
+  pe_rw_coexp_k16                                within-TF diff -0.0080  95% CI [-0.0168, -0.0017]  TFs better 11/33  p=0.0397
+  pe_rw_grn_k16_fold                             within-TF diff -0.0188  95% CI [-0.0338, -0.0049]  TFs better 10/33  p=0.00783
+  pe_rw_grn_k16_leak                             within-TF diff -0.0076  95% CI [-0.0210, +0.0035]  TFs better 13/33  p=0.257
+same-seed differences vs hero (mean over seeds, seeds better):
+  pe_foldctl                                     AUROC -0.0025 (0/3)  AUPRC -0.0077  within-TF -0.0066 (0/3)
+  pe_lap_coexp_k32                               AUROC -0.0009 (1/3)  AUPRC +0.0006  within-TF -0.0018 (2/3)
+  pe_lap_grn_k16_fold                            AUROC -0.0062 (0/3)  AUPRC -0.0106  within-TF -0.0193 (0/3)
+  pe_lap_grn_k16_leak                            AUROC -0.0020 (1/3)  AUPRC -0.0019  within-TF -0.0067 (0/3)
+  pe_lap_ppi_k16                                 AUROC -0.0010 (1/3)  AUPRC -0.0001  within-TF -0.0031 (1/3)
+  pe_rand_k16                                    AUROC -0.0023 (0/3)  AUPRC -0.0011  within-TF -0.0073 (0/3)
+  pe_rw_coexp_k16                                AUROC -0.0012 (1/3)  AUPRC -0.0016  within-TF -0.0080 (0/3)
+  pe_rw_grn_k16_fold                             AUROC -0.0034 (0/3)  AUPRC -0.0075  within-TF -0.0188 (1/3)
+  pe_rw_grn_k16_leak                             AUROC -0.0013 (1/3)  AUPRC -0.0062  within-TF -0.0076 (0/3)
+
+Leak check, GRN positional encoding: per-fold graphs (fold-safe, own edge in no graph) vs full training graph (own edge inside), paired per-TF:
+  lap: leak minus fold-safe                      within-TF diff +0.0126  95% CI [+0.0036, +0.0228]  TFs better 22/33  p=0.0434
+  rw: leak minus fold-safe                       within-TF diff +0.0111  95% CI [+0.0024, +0.0200]  TFs better 24/33  p=0.0152
+Fold-batch control (same batching as the fold-safe PE, no PE):   foldctl - hero                                 within-TF diff -0.0066  95% CI [-0.0191, +0.0040]  TFs better 14/33  p=0.443
+Random-vector control vs each confirmed PE: 
+  pe_foldctl - random PE                         within-TF diff +0.0007  95% CI [-0.0125, +0.0128]  TFs better 15/33  p=0.55
+  pe_lap_coexp_k32 - random PE                   within-TF diff +0.0055  95% CI [-0.0009, +0.0124]  TFs better 20/33  p=0.166
+  pe_lap_grn_k16_fold - random PE                within-TF diff -0.0120  95% CI [-0.0232, -0.0021]  TFs better 11/33  p=0.0726
+  pe_lap_grn_k16_leak - random PE                within-TF diff +0.0006  95% CI [-0.0028, +0.0038]  TFs better 16/33  p=0.614
+  pe_lap_ppi_k16 - random PE                     within-TF diff +0.0042  95% CI [-0.0005, +0.0087]  TFs better 20/33  p=0.0353
+  pe_rw_coexp_k16 - random PE                    within-TF diff -0.0007  95% CI [-0.0105, +0.0081]  TFs better 18/33  p=0.64
+  pe_rw_grn_k16_fold - random PE                 within-TF diff -0.0114  95% CI [-0.0243, -0.0001]  TFs better 11/33  p=0.0463
+  pe_rw_grn_k16_leak - random PE                 within-TF diff -0.0003  95% CI [-0.0144, +0.0113]  TFs better 18/33  p=0.751
+
+Where the gain sits (best confirmed family by mean validation AUROC + within-TF: w12_pe_rw_coexp_k16; pooled test-pair AUROC, family vs hero, mean over seeds):
+  max cosine to the TF's known targets (low = far from any known target) [-0.35, 0.28) n=2241 pos=209: AUROC 0.8879 vs 0.8933 (diff -0.0054)
+  max cosine to the TF's known targets (low = far from any known target) [0.28, 0.42) n=2240 pos=462: AUROC 0.8717 vs 0.8722 (diff -0.0005)
+  max cosine to the TF's known targets (low = far from any known target) [0.42, 0.92) n=2241 pos=388: AUROC 0.8628 vs 0.8622 (diff +0.0005)
+  gene popularity (training in-degree) [0.00, 2.00) n=1925 pos=115: AUROC 0.9067 vs 0.9058 (diff +0.0009)
+  gene popularity (training in-degree) [2.00, 4.00) n=2262 pos=332: AUROC 0.8680 vs 0.8701 (diff -0.0021)
+  gene popularity (training in-degree) [4.00, 14.00) n=2955 pos=614: AUROC 0.8710 vs 0.8722 (diff -0.0012)
+  score/popularity Spearman over all genes (mean over TFs): hero +0.731, w12_pe_rw_coexp_k16 +0.738
+
+== Stage 2
+held-out genes: 5 folds x seeds [42, 43]
+model                                    n             AUROC            AUPRC        within-TF        within>=8
+hero (w5)                                10   0.8467 ± 0.0064  0.5213 ± 0.0111  0.5461 ± 0.0305  0.5617 ± 0.0156
+pe_lap_ppi_k16                           10   0.8462 ± 0.0079  0.5195 ± 0.0064  0.5394 ± 0.0337  0.5562 ± 0.0211
+  pe_lap_ppi_k16 (n=10)                          within-TF diff -0.0096  95% CI [-0.0225, +0.0031]  TFs better 11/34  p=0.0618
+
+== Stage 2
+held-out tfs: 5 folds x seeds [42, 43]
+model                                    n             AUROC            AUPRC        within-TF        within>=8
+hero (w5)                                10   0.6304 ± 0.1127  0.2314 ± 0.0978  0.6855 ± 0.0643  0.6766 ± 0.0388
+pe_lap_ppi_k16                           10   0.6348 ± 0.1010  0.2169 ± 0.0793  0.6763 ± 0.0533  0.6706 ± 0.0305
+  pe_lap_ppi_k16 (n=10)                          within-TF diff -0.0095  95% CI [-0.0220, +0.0015]  TFs better 14/34  p=0.168

@@ -945,3 +945,56 @@ rand (260 of 758, per seed)           0.8859 / 0.6170 / 0.7411 ± 0.0047
 all (758 cells, w3_hero)              0.8884 / 0.6255 / 0.7470 ± 0.0046
 Paired per-TF within-TF: early - rand -0.013 (13/33, p=0.21); late - rand -0.029 (12/33, p=0.005); early - late +0.016 (20/33, p=0.16; early better in 5/5 same-seed pairs); all - rand +0.006 (20/33, p=0.13).
 Per-TF check: Spearman(AUROC early - late, expression early - late) across 33 TFs = -0.20 (p=0.27). POU5F1 -0.056, NANOG -0.029, SOX2 -0.001 (all expressed higher early); SOX17 +0.137, GATA4 -0.006, GATA6 -0.026, EOMES +0.043.
+
+--- W11 task A (2026-11-12): reverse-edge leak. Test pairs (t,g) whose reverse (g,t) is a training positive (undirected edge already in the message-passing graph); saved logits, 5 seeds, no retraining; analysis/out/w11_reverse_leak.txt ---
+leaky test pairs / positives among them (of all test pairs / all positives): hESC 30/7 (of 7142/1061), hHEP 57/18 (6563/2300), mHSC-E 59/36 (4718/2672), mESC 429/167 (22736/6852). Same-direction duplicates of training rows: 0 in all cells.
+full test set -> cleaned set, AUROC / AUPRC / within-TF (mean over seeds):
+hESC   best w8_hESC_tuned    0.8915/0.6349/0.7598 -> 0.8915/0.6346/0.7604;   recipe f02_A_paper     0.8830/0.6155/0.7029 -> 0.8830/0.6148/0.7033
+hHEP   best w8_hHEP_gcngf    0.9023/0.8440/0.7885 -> 0.9029/0.8457/0.7901;   recipe w4_hHEP_A_paper 0.9023/0.8413/0.7870 -> 0.9023/0.8415/0.7878
+mHSC-E best w8_mHSC-E_gcngf  0.9260/0.9442/0.8054 -> 0.9263/0.9449/0.8081;   recipe w4_mHSC-E_A_paper 0.9196/0.9392/0.7219 -> 0.9192/0.9389/0.7225
+mESC   best w8_mESC_tuned    0.9413/0.8857/0.8297 -> 0.9422/0.8871/0.8300;   recipe w4_mESC_A_paper 0.9254/0.8587/0.7657 -> 0.9261/0.8596/0.7656
+Paired within-TF, best - recipe, full -> cleaned: hESC +0.0569 (p=2e-4) -> +0.0570 (p=2e-4); hHEP +0.0015 (p=0.53) -> +0.0024 (p=0.48); mHSC-E +0.0835 (p=5e-5) -> +0.0855 (p=1e-4); mESC +0.0640 (p=2e-8) -> +0.0644 (p=2e-8).
+Removing the leaky pairs does not lower any score (changes <= +0.003 within-TF, <= +0.001 AUROC); the leak does not inflate the reported numbers or the best-vs-recipe gaps.
+
+--- W11 task B (2026-11-12): edge checks, hESC, hero config without Geneformer, 5 seeds 42-46, Test_set, epoch on validation AUROC, refit; analysis/out/w11_edge_checks.txt ---
+B1 own-edge memorisation (random 10% of training-positive edges = 301 + 301 training negatives scored with their edges in vs out of the graph, after the refit):
+split batch: pos logit gap (present - removed) -0.059 ± 0.039; held-out-pos vs neg AUROC present 0.9297 / removed 0.9272.   split none: gap +0.385 ± 0.270 (5/5 seeds positive); AUROC present 0.8993 / removed 0.8517.
+B2 fixed 70/30 split (graph = fixed 70% of undirected training edges, supervision = other 30% of edges + all negatives; val/test graph = all training edges, same call as batch):
+split batch (w3_hero, rerun w11_own_batch identical)  0.8884 / 0.6255 / 0.7470 ± 0.0046      split none  0.8467 / 0.5444 / 0.6198 ± 0.0346      split fixed 0.7  0.8635 / 0.5785 / 0.6707 ± 0.0091
+Paired within-TF: fixed - batch -0.0763 (3/33 TFs, p=5e-7); none - batch -0.1272 (1/33, p=1e-7); fixed - none +0.0509 (26/33, p=3e-4).
+
+--- W12 B (2026-11-12): NBFNet and SEAL on hESC, random split, seeds 42-44, refit; AUROC / AUPRC / within-TF; hero w3_hero 0.8885 / 0.6254 / 0.7490 ---
+NBFNet (src/nbf.py) L6 PNA + TF-gene expression product: 0.8848 / 0.6074 / 0.6971; within-TF vs hero -0.0519 (9/33 TFs, p=0.0013). Pure paths 0.8729 / 0.6139 / 0.6576; no path layers (features only) 0.8670 / 0.5830 / 0.6839. Held-out TFs within-TF 0.6016 vs hero 0.6855 (p=8e-7); held-out genes 0.5433 vs 0.5461 (p=0.62).
+SEAL (src/seal.py) 1-hop cap 30, mean+max+target-node pooling: 0.8864 / 0.6195 / 0.7075; within-TF vs hero -0.0415 (11/33, p=0.027). No DRNL 0.8833 / 0.6077 / 0.6896; structure only 0.8816 / 0.6023 / 0.6990. Held-out TFs within-TF 0.6552 vs 0.6855 (p=0.12); held-out genes 0.5064 vs 0.5461 (p=2e-6).
+Both regress; write-ups analysis/out/W12_2_nbfnet.md, W12_3_seal.md; reports analysis/w12_nbf_report.py, w12_seal_report.py.
+
+--- W11 consolidated grid (2026-11-12): encoder {gcn, sage 1 layer; npanda 2 layers RCP} x decoder {add (TF + gene terms, no interaction), had} x split {none, batch} x Geneformer {0, 1}; hero hyper-parameters (Adam 1e-4, wd 1e-3), 4 cells x 5 seeds (42-46), epoch on validation AUROC, refit; full 24-row tables per cell in analysis/out/w11_grid.txt ---
+381 new runs (w11_grid_*), 0 failures; existing complete 5-seed matches reused. Older g*/h* runs have no saved logits and were rerun for hESC gcn/sage gf0 seeds 42-44.
+Main effects, within-TF, mean paired diff (pairs positive; Wilcoxon over TFs), hESC / hHEP / mHSC-E / mESC:
+ decoder had-add:    +0.004 (8/12, p=0.22) / -0.008 (4/12, p=0.37) / +0.043 (12/12, p=0.004) / +0.055 (12/12, p=3e-9)
+ split batch-none:   +0.039 (11/12, p=7e-7) / +0.004 (6/12, p=0.03) / +0.008 (7/12, p=0.31) / -0.003 (1/12, p=0.001)
+ Geneformer GF1-GF0: +0.006 (9/12, p=0.005) / +0.012 (12/12, p=0.01) / +0.014 (12/12, p=2e-6) / +0.006 (11/12, p=6e-4)
+ encoder sage-gcn:   -0.021 (p=0.005) / -0.008 (p=0.02) / -0.012 (p=0.38) / +0.012 (8/8, p=4e-9);  npanda-gcn: -0.011 (p=0.07) / -0.002 (p=0.82) / -0.013 (p=0.69) / +0.012 (8/8, p=2e-8);  npanda-sage: +0.010 (p=0.06) / +0.006 (p=5e-4) / -0.001 (p=0.78) / -0.000 (p=0.30)
+ (npanda at 2 layers is confounded with depth against the 1-layer gcn/sage.)
+Best grid config per cell by 5-seed within-TF (test-chosen, optimistic) and paired test vs the scRegNet recipe:
+ hESC   npanda had batch GF1  0.8912 / 0.6355 / 0.7549   vs recipe +0.0519 (p=0.002)
+ hHEP   npanda had batch GF1  0.9041 / 0.8468 / 0.7885   vs recipe +0.0014 (p=0.53)
+ mHSC-E gcn    had batch GF1  0.9260 / 0.9442 / 0.8054   vs recipe +0.0835 (p=5e-5)
+ mESC   sage   had none  GF1  0.9400 / 0.8831 / 0.8282   vs recipe +0.0625 (p=2e-8)
+
+W12 S: statistical network models vs popularity and GNN (CPU, seeds 42-44, knobs chosen on validation within-TF; analysis/out/w12_stat.txt, W12_S_stat.md)
+Within-TF AUROC, test, mean over 3 seeds:
+ cell    pop(smoothed) maineff  fixedDCSBM(best val)  learnedDCSBM  HPF     latent  hero    bestGNN
+ hESC    0.7176        0.7184   0.7014                0.7295        0.7033  0.7234  0.7490  0.7614
+ hHEP    0.7833        0.7871   0.7680                0.8006        0.7803  0.7998  0.7583  0.7898
+ mESC    0.7647        0.7668   0.7731                0.8332        0.8250  0.8229  0.8241  0.8281
+ mHSC-E  0.7194        0.7312   0.7444                0.7531        0.7218  0.7457  0.7575  0.8076
+Best statistical model by validation, paired per-TF vs popularity / hero / best GNN: hESC learned +0.012 (p=0.32) / -0.020 (p=0.54) / -0.032 (p=0.019); hHEP learned +0.017 (p=6e-4) / +0.042 (p=0.002) / +0.011 (p=0.48); mESC learned +0.069 (p=6e-11) / +0.009 (p=0.002) / +0.005 (p=0.06); mHSC-E fixed DC-SBM +0.025 (p=0.44) / -0.013 (p=0.13) / -0.063 (p=5e-4).
+Program term: GMM-cluster omega only 0.52-0.65 within-TF; fixed-cluster DC-SBM never significantly above popularity (p>=0.13); learned blocks minus K=1 main-effects control +0.011 / +0.014 / +0.066 / +0.022 (hESC/hHEP/mESC/mHSC-E).
+Held-out genes (hESC, 5 folds x seeds 42-43): DC-SBM Geneformer soft AUROC 0.8573 AUPRC 0.5379 within-TF 0.5753 vs hero 0.8467 / 0.5213 / 0.5461 (paired +0.029, p=0.008); theta-only 0.5214; latent space 0.5567. Held-out TFs skipped (no omega for an unseen TF).
+
+W12 worker A (hESC, 3 seeds 42-44, paired per-TF tests vs hero; hero within-TF 0.7490, AUROC 0.8885, AUPRC 0.6254; GPU reruns of the hero differ by <=0.001)
+Idea 9 positional encodings (within-TF diff vs hero, p): lap coexp k32 -0.0018 (0.58); lap ppi k16 -0.0031 (0.37); rw coexp k16 -0.0080 (0.04); random vectors k16 -0.0073 (0.20); GRN PE leak lap -0.0067 / rw -0.0076; GRN PE fold-safe lap -0.0193 (0.0002) / rw -0.0188 (0.008); fold-pure batching without PE -0.0066 (0.44). Held-out (lap ppi k16, 5 folds x 2 seeds): genes within-TF 0.5394 vs 0.5461 (p=0.06), TFs 0.6763 vs 0.6855 (p=0.17).
+Idea 6 hub control: hESC hubs mild (max in-degree 14; cap 20 removes no edge = null control, -0.0034, p=0.37). IDF b0.5 -0.0037 (0.22), IDF b1 -0.0044 (0.14); screen s42 cap3 -0.018, cap5 -0.018 (p=0.005), cap10 -0.012. Held-out IDF0.5: genes +0.0013 (p=0.80), TFs -0.0065 (p=0.26). Other cells vs w4 hero (IDF0.5 / IDF1 / cap10 / cap20): hHEP +0.001/+0.004/-0.001/0.000; mESC +0.001/+0.001/-0.009 (p=0.006)/-0.002; mHSC-E -0.005/-0.006/+0.002/+0.002. Score/popularity Spearman unchanged under IDF (0.731 vs 0.730-0.731).
+Idea 1 query-aware TF summary (--decoder qatt, h1 emb all targets): hESC AUROC 0.8893 within-TF 0.7506 (+0.0017, p=0.58); held-out genes within-TF 0.5580 vs 0.5461 (+0.0182, p=0.003); held-out TFs 0.6333 vs 0.6855 (-0.0531, p<0.001; with tf_drop 0.2: 0.6613, equal to hero+tf_drop 0.3 0.6598). Uniform attention (plain mean) gives the same: random split +0.0002, held-out genes +0.0175 (p=0.005). Other cells within-TF vs w4 hero: hHEP +0.0114 (p=0.003), mHSC-E +0.0080 (p=0.03), mESC -0.0148 (p=0.12); uniform: +0.0107 / +0.0114 / +0.0003. hESC + Geneformer +0.0042 (p=0.07).
+Idea 4 Correct & Smooth on the pair graph (hyperparameters on validation AUROC): hero 0.7488 -> 0.7343 within-TF (AUROC 0.8884 -> 0.8864, AUPRC 0.6255 -> 0.6177; paired -0.0144, p=0.69); hero + Geneformer 0.7496 -> 0.7271 (-0.0225, p=0.11). Correct only = neutral (0.7487), smooth only 0.7287; with mean(val AUROC, val within-TF) as criterion Geneformer pooled AUROC 0.8920 / AUPRC 0.6373 but within-TF 0.7459.

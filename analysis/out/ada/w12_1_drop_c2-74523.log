@@ -1,0 +1,10 @@
+NVIDIA GeForce RTX 2080 Ti
+w12_ho_gene1_qattdrop_s43	epoch 3	val AUROC 0.8666	REFIT TEST AUROC 0.8521 AUPRC 0.5118 withinTF 0.5913	0.8 min
+w12_ho_gene0_qattdrop_s42	epoch 3	val AUROC 0.8299	REFIT TEST AUROC 0.8526 AUPRC 0.5380 withinTF 0.5291	0.8 min
+w12_ho_tf3_qattdrop_s43	epoch 4	val AUROC 0.3239	REFIT TEST AUROC 0.6479 AUPRC 0.1390 withinTF 0.6669	0.8 min
+w12_qattdrop_s43	epoch 12	val AUROC 0.8887	REFIT TEST AUROC 0.8895 AUPRC 0.6297 withinTF 0.7444	1.4 min
+w12_ho_gene4_qattdrop_s43	epoch 3	val AUROC 0.8674	REFIT TEST AUROC 0.8498 AUPRC 0.5193 withinTF 0.5566	0.7 min
+w12_ho_tf0_qattdrop_s43	epoch 16	val AUROC 0.6233	REFIT TEST AUROC 0.6199 AUPRC 0.2354 withinTF 0.6728	1.7 min
+w12_ho_gene3_qattdrop_s42	epoch 4	val AUROC 0.8602	REFIT TEST AUROC 0.8411 AUPRC 0.5373 withinTF 0.5273	0.7 min
+w12_ho_tf2_qattdrop_s42	epoch 39	val AUROC 0.6419	REFIT TEST AUROC 0.5605 AUPRC 0.1693 withinTF 0.5768	3.1 min
+QUEUE_DONE analysis/jobs/ada_sent/w12_1_drop_c2.txt

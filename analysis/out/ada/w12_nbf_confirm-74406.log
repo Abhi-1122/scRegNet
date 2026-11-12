@@ -1,0 +1,30 @@
+NVIDIA GeForce RTX 2080 Ti
+w12_nbf_nopath_s42	epoch 6	val AUROC 0.8667	REFIT TEST AUROC 0.8690 AUPRC 0.5887 withinTF 0.6878	0.3 min
+w12_nbf_tfi_L6pna_s43	epoch 2	val AUROC 0.8773	REFIT TEST AUROC 0.8802 AUPRC 0.5982 withinTF 0.6855	1.8 min
+w12_nbf_paths_L6pna_s42	epoch 7	val AUROC 0.8674	REFIT TEST AUROC 0.8700 AUPRC 0.6094 withinTF 0.6499	2.6 min
+w12_nbf_nopath_s43	epoch 6	val AUROC 0.8757	REFIT TEST AUROC 0.8649 AUPRC 0.5775 withinTF 0.6843	0.3 min
+w12_nbf_tfi_L6pna_s44	epoch 3	val AUROC 0.8846	REFIT TEST AUROC 0.8874 AUPRC 0.6156 withinTF 0.6926	2.1 min
+w12_nbf_paths_L6pna_s43	epoch 18	val AUROC 0.8691	REFIT TEST AUROC 0.8752 AUPRC 0.6175 withinTF 0.6644	5.6 min
+w12_nbf_nopath_s44	epoch 6	val AUROC 0.8695	REFIT TEST AUROC 0.8672 AUPRC 0.5827 withinTF 0.6794	0.3 min
+w12_nbf_paths_L6pna_s44	epoch 11	val AUROC 0.8686	REFIT TEST AUROC 0.8735 AUPRC 0.6146 withinTF 0.6584	3.9 min
+w12_ho_tf0_nbf_tfi_L6pna_s42	epoch 15	val AUROC 0.6005	REFIT TEST AUROC 0.4996 AUPRC 0.1827 withinTF 0.5478	4.3 min
+w12_ho_tf1_nbf_tfi_L6pna_s42	epoch 1	val AUROC 0.7041	REFIT TEST AUROC 0.7099 AUPRC 0.3773 withinTF 0.7029	1.3 min
+w12_ho_tf0_nbf_tfi_L6pna_s43	epoch 18	val AUROC 0.6394	REFIT TEST AUROC 0.5933 AUPRC 0.2141 withinTF 0.5959	5.0 min
+w12_ho_tf1_nbf_tfi_L6pna_s43	epoch 1	val AUROC 0.7183	REFIT TEST AUROC 0.6864 AUPRC 0.2850 withinTF 0.6662	1.2 min
+w12_ho_tf2_nbf_tfi_L6pna_s42	epoch 8	val AUROC 0.6801	REFIT TEST AUROC 0.5779 AUPRC 0.1997 withinTF 0.5581	2.8 min
+w12_ho_tf2_nbf_tfi_L6pna_s43	epoch 4	val AUROC 0.6818	REFIT TEST AUROC 0.6079 AUPRC 0.2038 withinTF 0.5267	1.9 min
+w12_ho_tf3_nbf_tfi_L6pna_s42	epoch 3	val AUROC 0.5861	REFIT TEST AUROC 0.5526 AUPRC 0.1236 withinTF 0.6183	1.8 min
+w12_ho_tf3_nbf_tfi_L6pna_s43	epoch 2	val AUROC 0.5271	REFIT TEST AUROC 0.5620 AUPRC 0.1448 withinTF 0.6676	1.5 min
+w12_ho_tf4_nbf_tfi_L6pna_s42	epoch 11	val AUROC 0.5430	REFIT TEST AUROC 0.5602 AUPRC 0.2048 withinTF 0.5129	3.8 min
+w12_ho_tf4_nbf_tfi_L6pna_s43	epoch 20	val AUROC 0.5800	REFIT TEST AUROC 0.6253 AUPRC 0.2228 withinTF 0.6192	6.2 min
+w12_ho_gene0_nbf_tfi_L6pna_s42	epoch 3	val AUROC 0.7126	REFIT TEST AUROC 0.7353 AUPRC 0.3569 withinTF 0.5426	2.4 min
+w12_ho_gene0_nbf_tfi_L6pna_s43	epoch 1	val AUROC 0.7248	REFIT TEST AUROC 0.7579 AUPRC 0.3469 withinTF 0.5063	1.8 min
+w12_ho_gene1_nbf_tfi_L6pna_s42	epoch 2	val AUROC 0.7673	REFIT TEST AUROC 0.7589 AUPRC 0.3523 withinTF 0.5474	2.0 min
+w12_ho_gene1_nbf_tfi_L6pna_s43	epoch 3	val AUROC 0.7605	REFIT TEST AUROC 0.7305 AUPRC 0.3413 withinTF 0.5693	2.3 min
+w12_ho_gene2_nbf_tfi_L6pna_s42	epoch 3	val AUROC 0.7834	REFIT TEST AUROC 0.7237 AUPRC 0.3576 withinTF 0.5620	2.3 min
+w12_ho_gene3_nbf_tfi_L6pna_s42	epoch 1	val AUROC 0.7598	REFIT TEST AUROC 0.7515 AUPRC 0.4057 withinTF 0.5036	1.8 min
+w12_ho_gene2_nbf_tfi_L6pna_s43	epoch 2	val AUROC 0.7787	REFIT TEST AUROC 0.7452 AUPRC 0.3559 withinTF 0.5510	1.9 min
+w12_ho_gene3_nbf_tfi_L6pna_s43	epoch 2	val AUROC 0.7456	REFIT TEST AUROC 0.7228 AUPRC 0.3975 withinTF 0.5098	2.1 min
+w12_ho_gene4_nbf_tfi_L6pna_s42	epoch 5	val AUROC 0.7504	REFIT TEST AUROC 0.6979 AUPRC 0.3474 withinTF 0.5815	2.9 min
+w12_ho_gene4_nbf_tfi_L6pna_s43	epoch 1	val AUROC 0.7374	REFIT TEST AUROC 0.7466 AUPRC 0.3326 withinTF 0.5596	1.2 min
+QUEUE_DONE analysis/jobs/ada_sent/w12_nbf_confirm.txt

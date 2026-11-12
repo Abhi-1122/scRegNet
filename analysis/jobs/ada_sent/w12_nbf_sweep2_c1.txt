@@ -1,0 +1,6 @@
+#mod src.nbf 2
+w12_nbf_tfi_L3pna_s42 --tf_inter 1 --layers 3 --aggr pna --batch_size 512 --seed 42
+w12_nbf_tfi_L6pna_s42 --tf_inter 1 --layers 6 --aggr pna --batch_size 512 --seed 42
+w12_nbf_tfi_L3mean_s42 --tf_inter 1 --layers 3 --aggr mean --batch_size 512 --seed 42
+w12_nbf_tfi_L3pna_RCP_s42 --tf_inter 1 --rels RCP --layers 3 --aggr pna --batch_size 512 --seed 42
+w12_nbf_tfi_L3pna_layer_s42 --tf_inter 1 --feat layer --layers 3 --aggr pna --batch_size 512 --seed 42

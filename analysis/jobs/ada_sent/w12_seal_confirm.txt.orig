@@ -1,0 +1,12 @@
+#mod src.seal 2
+w12_seal_h1tt_s43 --hops 1 --pool tt --workers 2 --seed 43
+w12_seal_h1tt_s44 --hops 1 --pool tt --workers 2 --seed 44
+w12_seal_h1tt_nodrnl_s42 --hops 1 --pool tt --drnl 0 --workers 2 --seed 42
+w12_seal_h1tt_noexpr_s42 --hops 1 --pool tt --expr 0 --workers 2 --seed 42
+w12_seal_h1tt_nodeg_s42 --hops 1 --pool tt --deg 0 --workers 2 --seed 42
+w12_seal_h1tt_nodrnl_s43 --hops 1 --pool tt --drnl 0 --workers 2 --seed 43
+w12_seal_h1tt_noexpr_s43 --hops 1 --pool tt --expr 0 --workers 2 --seed 43
+w12_seal_h1tt_nodeg_s43 --hops 1 --pool tt --deg 0 --workers 2 --seed 43
+w12_seal_h1tt_nodrnl_s44 --hops 1 --pool tt --drnl 0 --workers 2 --seed 44
+w12_seal_h1tt_noexpr_s44 --hops 1 --pool tt --expr 0 --workers 2 --seed 44
+w12_seal_h1tt_nodeg_s44 --hops 1 --pool tt --deg 0 --workers 2 --seed 44

@@ -1,0 +1,397 @@
+W12 statistical network models (DC-SBM, Poisson factorisation, latent space) vs gene popularity and the GNN. CPU, 3 seeds (42-44) for the random split; held-out genes 5 folds x seeds 42-43.
+Every knob (GMM covariance type, K, smoothing strengths, DC normalisation, rank / dimension, L2, number of steps) was chosen on the validation slice by mean-over-seeds within-TF AUROC; the model was refit on all training rows and the test rows scored once.
+Test metrics are mean ± std over seeds. "val wTF" is the validation within-TF AUROC of the chosen config (mean over seeds).
+
+
+######## hESC
+model                              val wTF            AUROC            AUPRC        within-TF        within>=8  chosen config (on validation)
+-- reference GNNs (same test rows, same seeds)
+hero SAGE w3_hero                           0.8885 ± 0.0014  0.6254 ± 0.0015  0.7490 ± 0.0018  0.7273 ± 0.0018
+best GNN w8_hESC_tuned                      0.8916 ± 0.0011  0.6349 ± 0.0027  0.7614 ± 0.0017  0.7366 ± 0.0023
+-- controls
+pop_indeg                              nan  0.6415 ± 0.0000  0.2102 ± 0.0000  0.7068 ± 0.0000  0.6956 ± 0.0000  training in-degree
+pop                                 0.7193  0.8814 ± 0.0000  0.6033 ± 0.0000  0.7176 ± 0.0000  0.7054 ± 0.0000  {'alpha': 10}
+-- DC-SBM, fixed GMM clusters (K chosen on validation; rows ending _omegaonly / _thetaonly drop one factor of the selected model)
+dcsbm_gf_soft                       0.7253  0.8827 ± 0.0008  0.5924 ± 0.0017  0.7252 ± 0.0056  0.7211 ± 0.0021  {'alpha': 3, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 1}
+    omega only (no theta)           0.7253  0.8402 ± 0.0008  0.4376 ± 0.0008  0.5253 ± 0.0187  0.5233 ± 0.0010  {'alpha': 3, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 1}
+    theta only (no program)         0.7253  0.8817 ± 0.0001  0.5935 ± 0.0000  0.7182 ± 0.0003  0.7066 ± 0.0003  {'alpha': 3, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 1}
+dcsbm_gf_hard                       0.7250  0.8783 ± 0.0008  0.5846 ± 0.0020  0.7209 ± 0.0095  0.7196 ± 0.0021  {'alpha': 1, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 0}
+    omega only (no theta)           0.7250  0.8393 ± 0.0007  0.4444 ± 0.0029  0.5084 ± 0.0113  0.5157 ± 0.0036  {'alpha': 1, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 0}
+    theta only (no program)         0.7250  0.8776 ± 0.0001  0.5873 ± 0.0000  0.7182 ± 0.0004  0.7061 ± 0.0003  {'alpha': 1, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 0}
+dcsbm_ex_soft                       0.7286  0.8839 ± 0.0005  0.5995 ± 0.0017  0.7042 ± 0.0054  0.7204 ± 0.0022  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 1}
+    omega only (no theta)           0.7286  0.8533 ± 0.0002  0.5323 ± 0.0009  0.5495 ± 0.0063  0.5872 ± 0.0044  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 1}
+    theta only (no program)         0.7286  0.8819 ± 0.0000  0.5938 ± 0.0000  0.7191 ± 0.0003  0.7071 ± 0.0002  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 1}
+dcsbm_ex_hard                       0.7296  0.8834 ± 0.0008  0.5983 ± 0.0022  0.7014 ± 0.0063  0.7198 ± 0.0022  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 0}
+    omega only (no theta)           0.7296  0.8528 ± 0.0008  0.5270 ± 0.0009  0.5484 ± 0.0087  0.5849 ± 0.0030  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 0}
+    theta only (no program)         0.7296  0.8819 ± 0.0000  0.5937 ± 0.0000  0.7190 ± 0.0002  0.7071 ± 0.0002  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 0}
+-- DC-SBM per K (config chosen on validation within each K)
+  dcsbm_gf_soft: K=5: val 0.7253 test within 0.7252   K=10: val 0.7144 test within 0.7382   K=20: val 0.6979 test within 0.7137   K=40: val 0.7051 test within 0.7212
+  dcsbm_gf_hard: K=5: val 0.7250 test within 0.7209   K=10: val 0.7109 test within 0.7341   K=20: val 0.6985 test within 0.7138   K=40: val 0.7049 test within 0.7213
+  dcsbm_ex_soft: K=5: val 0.7279 test within 0.7148   K=10: val 0.7286 test within 0.7042   K=20: val 0.7179 test within 0.7012   K=40: val 0.7054 test within 0.7143
+  dcsbm_ex_hard: K=5: val 0.7281 test within 0.7145   K=10: val 0.7296 test within 0.7014   K=20: val 0.7206 test within 0.7021   K=40: val 0.7055 test within 0.7143
+-- learned block / factorisation / latent space
+dcsbm_learned                       0.7387  0.8741 ± 0.0006  0.6056 ± 0.0030  0.7295 ± 0.0036  0.7140 ± 0.0048  {'k': 5, 'l2': 10, 'ra': None, 'steps': 300}
+hpf                                 0.7313  0.8661 ± 0.0025  0.5134 ± 0.0092  0.7033 ± 0.0024  0.6935 ± 0.0028  {'k': 16, 'l2': 0.1, 'ra': None, 'steps': 750}
+lsm                                 0.7254  0.8655 ± 0.0001  0.5777 ± 0.0003  0.7234 ± 0.0006  0.7116 ± 0.0001  {'k': 8, 'l2': 10, 'ra': None, 'steps': 100}
+maineff (control: K=1, a_t + b_g only)  0.7244  0.8526 ± 0.0000  0.5434 ± 0.0000  0.7184 ± 0.0000  0.7079 ± 0.0000  {'k': 1, 'l2': 30, 'ra': None, 'steps': 200}
+
+best statistical model by validation: dcsbm_learned   (best fixed-cluster DC-SBM: dcsbm_ex_hard)
+
+Paired per-TF tests (per-TF test AUROC averaged over seeds 42-44, difference, TFs better, Wilcoxon p):
+  dcsbm_learned - popularity (smoothed)          within-TF diff +0.0119  95% CI [-0.0002, +0.0270]  TFs better 18/33  p=0.322
+  dcsbm_learned - popularity (in-degree)         within-TF diff +0.0227  95% CI [+0.0098, +0.0385]  TFs better 24/33  p=0.00245
+  dcsbm_learned - hero                           within-TF diff -0.0195  95% CI [-0.0477, +0.0041]  TFs better 16/33  p=0.537
+  dcsbm_learned - best GNN (w8_hESC_tuned)       within-TF diff -0.0319  95% CI [-0.0582, -0.0107]  TFs better 12/33  p=0.0194
+  popularity - hero                              within-TF diff -0.0314  95% CI [-0.0689, -0.0012]  TFs better 15/33  p=0.214
+  hero - popularity                              within-TF diff +0.0314  95% CI [+0.0012, +0.0689]  TFs better 18/33  p=0.214
+  best GNN - popularity                          within-TF diff +0.0438  95% CI [+0.0144, +0.0806]  TFs better 21/33  p=0.0104
+program term: selected model vs its own theta-only version, and vs popularity, for every fixed-cluster family:
+  dcsbm_gf_soft - theta-only                     within-TF diff +0.0070  95% CI [-0.0159, +0.0312]  TFs better 16/33  p=0.986
+  dcsbm_gf_soft - popularity                     within-TF diff +0.0076  95% CI [-0.0150, +0.0318]  TFs better 19/33  p=0.659
+  dcsbm_gf_hard - theta-only                     within-TF diff +0.0027  95% CI [-0.0194, +0.0258]  TFs better 15/33  p=0.852
+  dcsbm_gf_hard - popularity                     within-TF diff +0.0034  95% CI [-0.0187, +0.0260]  TFs better 18/33  p=0.916
+  dcsbm_ex_soft - theta-only                     within-TF diff -0.0148  95% CI [-0.0427, +0.0110]  TFs better 19/33  p=1
+  dcsbm_ex_soft - popularity                     within-TF diff -0.0133  95% CI [-0.0412, +0.0124]  TFs better 19/33  p=0.902
+  dcsbm_ex_hard - theta-only                     within-TF diff -0.0176  95% CI [-0.0453, +0.0077]  TFs better 17/33  p=0.659
+  dcsbm_ex_hard - popularity                     within-TF diff -0.0161  95% CI [-0.0435, +0.0093]  TFs better 19/33  p=0.724
+  dcsbm_learned - popularity                     within-TF diff +0.0119  95% CI [-0.0002, +0.0270]  TFs better 18/33  p=0.322
+  hpf - popularity                               within-TF diff -0.0142  95% CI [-0.0324, +0.0052]  TFs better 7/33  p=0.0159
+  lsm - popularity                               within-TF diff +0.0058  95% CI [-0.0089, +0.0214]  TFs better 20/33  p=0.246
+program term of the learned models: model minus the Bernoulli main-effects control (a_t + b_g, same l2 / steps selection):
+  maineff - popularity                           within-TF diff +0.0009  95% CI [-0.0059, +0.0086]  TFs better 18/33  p=0.926
+  dcsbm_learned - maineff                        within-TF diff +0.0111  95% CI [-0.0018, +0.0276]  TFs better 19/33  p=0.379
+  hpf - maineff                                  within-TF diff -0.0151  95% CI [-0.0349, +0.0053]  TFs better 10/33  p=0.0589
+  lsm - maineff                                  within-TF diff +0.0050  95% CI [-0.0080, +0.0208]  TFs better 19/33  p=0.501
+
+
+######## hHEP
+model                              val wTF            AUROC            AUPRC        within-TF        within>=8  chosen config (on validation)
+-- reference GNNs (same test rows, same seeds)
+hero SAGE m_hHEP_e_sage_d256                0.8988 ± 0.0006  0.8377 ± 0.0006  0.7583 ± 0.0012  0.7676 ± 0.0013
+best GNN w8_hHEP_gcngf                      0.9032 ± 0.0010  0.8451 ± 0.0002  0.7898 ± 0.0009  0.7889 ± 0.0005
+-- controls
+pop_indeg                              nan  0.6977 ± 0.0000  0.4913 ± 0.0000  0.7838 ± 0.0000  0.7677 ± 0.0000  training in-degree
+pop                                 0.7550  0.8969 ± 0.0000  0.8331 ± 0.0000  0.7833 ± 0.0000  0.7707 ± 0.0000  {'alpha': 10}
+-- DC-SBM, fixed GMM clusters (K chosen on validation; rows ending _omegaonly / _thetaonly drop one factor of the selected model)
+dcsbm_gf_soft                       0.7536  0.8992 ± 0.0008  0.8289 ± 0.0057  0.7738 ± 0.0055  0.7683 ± 0.0038  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 20, 'feat': 'gf', 'soft': 1}
+    omega only (no theta)           0.7536  0.7902 ± 0.0039  0.5743 ± 0.0135  0.4523 ± 0.0109  0.4346 ± 0.0088  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 20, 'feat': 'gf', 'soft': 1}
+    theta only (no program)         0.7536  0.8999 ± 0.0001  0.8333 ± 0.0002  0.7819 ± 0.0001  0.7703 ± 0.0003  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 20, 'feat': 'gf', 'soft': 1}
+dcsbm_gf_hard                       0.7523  0.8988 ± 0.0009  0.8281 ± 0.0059  0.7704 ± 0.0090  0.7675 ± 0.0043  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 20, 'feat': 'gf', 'soft': 0}
+    omega only (no theta)           0.7523  0.7896 ± 0.0042  0.5730 ± 0.0139  0.4523 ± 0.0146  0.4392 ± 0.0076  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 20, 'feat': 'gf', 'soft': 0}
+    theta only (no program)         0.7523  0.8999 ± 0.0001  0.8332 ± 0.0003  0.7819 ± 0.0004  0.7702 ± 0.0004  {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 20, 'feat': 'gf', 'soft': 0}
+dcsbm_ex_soft                       0.7766  0.8986 ± 0.0001  0.8372 ± 0.0002  0.7680 ± 0.0056  0.7762 ± 0.0019  {'alpha': 10, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'ex', 'soft': 1}
+    omega only (no theta)           0.7766  0.8154 ± 0.0003  0.6465 ± 0.0024  0.5194 ± 0.0051  0.5217 ± 0.0046  {'alpha': 10, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'ex', 'soft': 1}
+    theta only (no program)         0.7766  0.8976 ± 0.0001  0.8336 ± 0.0001  0.7835 ± 0.0005  0.7701 ± 0.0005  {'alpha': 10, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'ex', 'soft': 1}
+dcsbm_ex_hard                       0.7754  0.8986 ± 0.0002  0.8375 ± 0.0005  0.7664 ± 0.0101  0.7766 ± 0.0033  {'alpha': 10, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'ex', 'soft': 0}
+    omega only (no theta)           0.7754  0.8109 ± 0.0014  0.6338 ± 0.0045  0.4978 ± 0.0153  0.5062 ± 0.0031  {'alpha': 10, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'ex', 'soft': 0}
+    theta only (no program)         0.7754  0.8976 ± 0.0001  0.8335 ± 0.0000  0.7839 ± 0.0002  0.7702 ± 0.0005  {'alpha': 10, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'ex', 'soft': 0}
+-- DC-SBM per K (config chosen on validation within each K)
+  dcsbm_gf_soft: K=5: val 0.7489 test within 0.7834   K=10: val 0.7528 test within 0.7655   K=20: val 0.7536 test within 0.7738   K=40: val 0.7479 test within 0.7780
+  dcsbm_gf_hard: K=5: val 0.7491 test within 0.7833   K=10: val 0.7515 test within 0.7681   K=20: val 0.7523 test within 0.7704   K=40: val 0.7480 test within 0.7761
+  dcsbm_ex_soft: K=5: val 0.7766 test within 0.7680   K=10: val 0.7730 test within 0.7766   K=20: val 0.7699 test within 0.7607   K=40: val 0.7635 test within 0.7733
+  dcsbm_ex_hard: K=5: val 0.7754 test within 0.7664   K=10: val 0.7726 test within 0.7746   K=20: val 0.7700 test within 0.7607   K=40: val 0.7629 test within 0.7530
+-- learned block / factorisation / latent space
+dcsbm_learned                       0.7772  0.8948 ± 0.0000  0.8366 ± 0.0000  0.8006 ± 0.0001  0.7945 ± 0.0001  {'k': 5, 'l2': 10, 'ra': None, 'steps': 150}
+hpf                                 0.7660  0.9012 ± 0.0003  0.8387 ± 0.0003  0.7803 ± 0.0019  0.7749 ± 0.0018  {'k': 16, 'l2': 0.3, 'ra': None, 'steps': 100}
+lsm                                 0.7692  0.9029 ± 0.0001  0.8463 ± 0.0004  0.7998 ± 0.0005  0.7931 ± 0.0005  {'k': 4, 'l2': 1, 'ra': None, 'steps': 300}
+maineff (control: K=1, a_t + b_g only)  0.7572  0.8958 ± 0.0000  0.8356 ± 0.0000  0.7871 ± 0.0000  0.7782 ± 0.0000  {'k': 1, 'l2': 1, 'ra': None, 'steps': 100}
+
+best statistical model by validation: dcsbm_learned   (best fixed-cluster DC-SBM: dcsbm_ex_soft)
+
+Paired per-TF tests (per-TF test AUROC averaged over seeds 42-44, difference, TFs better, Wilcoxon p):
+  dcsbm_learned - popularity (smoothed)          within-TF diff +0.0174  95% CI [-0.0016, +0.0459]  TFs better 24/30  p=0.000555
+  dcsbm_learned - popularity (in-degree)         within-TF diff +0.0169  95% CI [-0.0056, +0.0470]  TFs better 26/30  p=0.000505
+  dcsbm_learned - hero                           within-TF diff +0.0423  95% CI [+0.0108, +0.0825]  TFs better 24/30  p=0.00158
+  dcsbm_learned - best GNN (w8_hHEP_gcngf)       within-TF diff +0.0109  95% CI [-0.0153, +0.0387]  TFs better 16/30  p=0.477
+  popularity - hero                              within-TF diff +0.0249  95% CI [-0.0010, +0.0603]  TFs better 18/30  p=0.262
+  hero - popularity                              within-TF diff -0.0249  95% CI [-0.0603, +0.0010]  TFs better 12/30  p=0.262
+  best GNN - popularity                          within-TF diff +0.0065  95% CI [-0.0246, +0.0364]  TFs better 20/30  p=0.124
+program term: selected model vs its own theta-only version, and vs popularity, for every fixed-cluster family:
+  dcsbm_gf_soft - theta-only                     within-TF diff -0.0081  95% CI [-0.0357, +0.0182]  TFs better 15/30  p=0.584
+  dcsbm_gf_soft - popularity                     within-TF diff -0.0094  95% CI [-0.0366, +0.0159]  TFs better 12/30  p=0.529
+  dcsbm_gf_hard - theta-only                     within-TF diff -0.0115  95% CI [-0.0380, +0.0124]  TFs better 13/30  p=0.428
+  dcsbm_gf_hard - popularity                     within-TF diff -0.0128  95% CI [-0.0394, +0.0106]  TFs better 12/30  p=0.393
+  dcsbm_ex_soft - theta-only                     within-TF diff -0.0155  95% CI [-0.0476, +0.0107]  TFs better 17/30  p=0.871
+  dcsbm_ex_soft - popularity                     within-TF diff -0.0153  95% CI [-0.0468, +0.0101]  TFs better 16/30  p=0.761
+  dcsbm_ex_hard - theta-only                     within-TF diff -0.0175  95% CI [-0.0528, +0.0098]  TFs better 19/30  p=0.626
+  dcsbm_ex_hard - popularity                     within-TF diff -0.0168  95% CI [-0.0512, +0.0093]  TFs better 16/30  p=0.903
+  dcsbm_learned - popularity                     within-TF diff +0.0174  95% CI [-0.0016, +0.0459]  TFs better 24/30  p=0.000555
+  hpf - popularity                               within-TF diff -0.0029  95% CI [-0.0169, +0.0076]  TFs better 18/30  p=0.808
+  lsm - popularity                               within-TF diff +0.0165  95% CI [+0.0040, +0.0300]  TFs better 26/30  p=0.00073
+program term of the learned models: model minus the Bernoulli main-effects control (a_t + b_g, same l2 / steps selection):
+  maineff - popularity                           within-TF diff +0.0038  95% CI [-0.0030, +0.0088]  TFs better 21/30  p=0.00664
+  dcsbm_learned - maineff                        within-TF diff +0.0136  95% CI [-0.0009, +0.0393]  TFs better 20/30  p=0.0405
+  hpf - maineff                                  within-TF diff -0.0067  95% CI [-0.0152, +0.0004]  TFs better 13/30  p=0.109
+  lsm - maineff                                  within-TF diff +0.0127  95% CI [+0.0024, +0.0237]  TFs better 24/30  p=0.00123
+
+
+######## mESC
+model                              val wTF            AUROC            AUPRC        within-TF        within>=8  chosen config (on validation)
+-- reference GNNs (same test rows, same seeds)
+hero SAGE w4_mESC_hero                      0.9390 ± 0.0010  0.8813 ± 0.0016  0.8241 ± 0.0013  0.8281 ± 0.0014
+best GNN w8_mESC_tuned                      0.9411 ± 0.0005  0.8854 ± 0.0006  0.8281 ± 0.0035  0.8330 ± 0.0013
+-- controls
+pop_indeg                              nan  0.6582 ± 0.0000  0.4039 ± 0.0000  0.7612 ± 0.0000  0.7589 ± 0.0000  training in-degree
+pop                                 0.7696  0.9240 ± 0.0000  0.8500 ± 0.0000  0.7647 ± 0.0000  0.7642 ± 0.0000  {'alpha': 0.3}
+-- DC-SBM, fixed GMM clusters (K chosen on validation; rows ending _omegaonly / _thetaonly drop one factor of the selected model)
+dcsbm_gf_soft                       0.7813  0.9228 ± 0.0001  0.8486 ± 0.0002  0.7669 ± 0.0050  0.7727 ± 0.0017  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'gf', 'soft': 1}
+    omega only (no theta)           0.7813  0.9010 ± 0.0005  0.8077 ± 0.0020  0.6739 ± 0.0055  0.6858 ± 0.0069  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'gf', 'soft': 1}
+    theta only (no program)         0.7813  0.9240 ± 0.0000  0.8502 ± 0.0000  0.7647 ± 0.0000  0.7642 ± 0.0000  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'gf', 'soft': 1}
+dcsbm_gf_hard                       0.7797  0.9219 ± 0.0003  0.8474 ± 0.0004  0.7605 ± 0.0015  0.7647 ± 0.0021  {'alpha': 1, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'gf', 'soft': 0}
+    omega only (no theta)           0.7797  0.8990 ± 0.0002  0.8047 ± 0.0011  0.6646 ± 0.0036  0.6735 ± 0.0033  {'alpha': 1, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'gf', 'soft': 0}
+    theta only (no program)         0.7797  0.9240 ± 0.0000  0.8503 ± 0.0000  0.7646 ± 0.0001  0.7642 ± 0.0000  {'alpha': 1, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'gf', 'soft': 0}
+dcsbm_ex_soft                       0.7892  0.9276 ± 0.0001  0.8563 ± 0.0001  0.7732 ± 0.0011  0.7812 ± 0.0020  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'ex', 'soft': 1}
+    omega only (no theta)           0.7892  0.8821 ± 0.0007  0.7587 ± 0.0019  0.6361 ± 0.0030  0.6487 ± 0.0058  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'ex', 'soft': 1}
+    theta only (no program)         0.7892  0.9240 ± 0.0000  0.8502 ± 0.0000  0.7647 ± 0.0000  0.7642 ± 0.0000  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'ex', 'soft': 1}
+dcsbm_ex_hard                       0.7892  0.9276 ± 0.0001  0.8563 ± 0.0001  0.7731 ± 0.0012  0.7810 ± 0.0022  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'ex', 'soft': 0}
+    omega only (no theta)           0.7892  0.8820 ± 0.0007  0.7585 ± 0.0019  0.6356 ± 0.0032  0.6478 ± 0.0059  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'ex', 'soft': 0}
+    theta only (no program)         0.7892  0.9240 ± 0.0000  0.8502 ± 0.0000  0.7647 ± 0.0000  0.7642 ± 0.0000  {'alpha': 1, 'shrink': 'global', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 40, 'feat': 'ex', 'soft': 0}
+-- DC-SBM per K (config chosen on validation within each K)
+  dcsbm_gf_soft: K=5: val 0.7777 test within 0.7750   K=10: val 0.7813 test within 0.7669   K=20: val 0.7789 test within 0.7629   K=40: val 0.7797 test within 0.7606
+  dcsbm_gf_hard: K=5: val 0.7742 test within 0.7702   K=10: val 0.7736 test within 0.7666   K=20: val 0.7780 test within 0.7620   K=40: val 0.7797 test within 0.7605
+  dcsbm_ex_soft: K=5: val 0.7830 test within 0.7800   K=10: val 0.7849 test within 0.7676   K=20: val 0.7873 test within 0.7677   K=40: val 0.7892 test within 0.7732
+  dcsbm_ex_hard: K=5: val 0.7832 test within 0.7782   K=10: val 0.7837 test within 0.7643   K=20: val 0.7873 test within 0.7675   K=40: val 0.7892 test within 0.7731
+-- learned block / factorisation / latent space
+dcsbm_learned                       0.8312  0.9356 ± 0.0006  0.8809 ± 0.0012  0.8332 ± 0.0018  0.8401 ± 0.0021  {'k': 10, 'l2': 3, 'ra': None, 'steps': 150}
+hpf                                 0.8205  0.9344 ± 0.0000  0.8757 ± 0.0012  0.8250 ± 0.0020  0.8307 ± 0.0011  {'k': 16, 'l2': 1, 'ra': None, 'steps': 1000}
+lsm                                 0.8284  0.9348 ± 0.0000  0.8786 ± 0.0000  0.8229 ± 0.0000  0.8334 ± 0.0000  {'k': 8, 'l2': 1, 'ra': None, 'steps': 650}
+maineff (control: K=1, a_t + b_g only)  0.7737  0.9175 ± 0.0000  0.8514 ± 0.0000  0.7668 ± 0.0000  0.7667 ± 0.0000  {'k': 1, 'l2': 1, 'ra': None, 'steps': 100}
+
+best statistical model by validation: dcsbm_learned   (best fixed-cluster DC-SBM: dcsbm_ex_hard)
+
+Paired per-TF tests (per-TF test AUROC averaged over seeds 42-44, difference, TFs better, Wilcoxon p):
+  dcsbm_learned - popularity (smoothed)          within-TF diff +0.0685  95% CI [+0.0472, +0.0921]  TFs better 69/85  p=5.53e-11
+  dcsbm_learned - popularity (in-degree)         within-TF diff +0.0720  95% CI [+0.0503, +0.0957]  TFs better 71/85  p=2.14e-11
+  dcsbm_learned - hero                           within-TF diff +0.0091  95% CI [-0.0018, +0.0192]  TFs better 54/85  p=0.00193
+  dcsbm_learned - best GNN (w8_mESC_tuned)       within-TF diff +0.0051  95% CI [-0.0073, +0.0165]  TFs better 48/85  p=0.0589
+  popularity - hero                              within-TF diff -0.0595  95% CI [-0.0847, -0.0363]  TFs better 23/85  p=1.39e-07
+  hero - popularity                              within-TF diff +0.0595  95% CI [+0.0363, +0.0847]  TFs better 60/85  p=1.39e-07
+  best GNN - popularity                          within-TF diff +0.0634  95% CI [+0.0387, +0.0902]  TFs better 62/85  p=6.56e-08
+program term: selected model vs its own theta-only version, and vs popularity, for every fixed-cluster family:
+  dcsbm_gf_soft - theta-only                     within-TF diff +0.0022  95% CI [-0.0165, +0.0211]  TFs better 37/85  p=0.737
+  dcsbm_gf_soft - popularity                     within-TF diff +0.0022  95% CI [-0.0165, +0.0211]  TFs better 37/85  p=0.737
+  dcsbm_gf_hard - theta-only                     within-TF diff -0.0041  95% CI [-0.0173, +0.0093]  TFs better 34/85  p=0.129
+  dcsbm_gf_hard - popularity                     within-TF diff -0.0042  95% CI [-0.0175, +0.0092]  TFs better 34/85  p=0.139
+  dcsbm_ex_soft - theta-only                     within-TF diff +0.0085  95% CI [-0.0051, +0.0227]  TFs better 47/85  p=0.232
+  dcsbm_ex_soft - popularity                     within-TF diff +0.0085  95% CI [-0.0051, +0.0227]  TFs better 47/85  p=0.232
+  dcsbm_ex_hard - theta-only                     within-TF diff +0.0085  95% CI [-0.0052, +0.0227]  TFs better 47/85  p=0.245
+  dcsbm_ex_hard - popularity                     within-TF diff +0.0085  95% CI [-0.0052, +0.0227]  TFs better 47/85  p=0.245
+  dcsbm_learned - popularity                     within-TF diff +0.0685  95% CI [+0.0472, +0.0921]  TFs better 69/85  p=5.53e-11
+  hpf - popularity                               within-TF diff +0.0604  95% CI [+0.0390, +0.0834]  TFs better 64/85  p=1.03e-07
+  lsm - popularity                               within-TF diff +0.0582  95% CI [+0.0391, +0.0780]  TFs better 73/85  p=1.36e-10
+program term of the learned models: model minus the Bernoulli main-effects control (a_t + b_g, same l2 / steps selection):
+  maineff - popularity                           within-TF diff +0.0021  95% CI [-0.0035, +0.0081]  TFs better 49/85  p=0.21
+  dcsbm_learned - maineff                        within-TF diff +0.0664  95% CI [+0.0453, +0.0899]  TFs better 67/85  p=1.04e-11
+  hpf - maineff                                  within-TF diff +0.0582  95% CI [+0.0377, +0.0808]  TFs better 65/85  p=1.62e-08
+  lsm - maineff                                  within-TF diff +0.0561  95% CI [+0.0390, +0.0751]  TFs better 71/85  p=2.2e-11
+
+
+######## mHSC-E
+model                              val wTF            AUROC            AUPRC        within-TF        within>=8  chosen config (on validation)
+-- reference GNNs (same test rows, same seeds)
+hero SAGE w4_mHSC-E_hero                    0.9233 ± 0.0016  0.9429 ± 0.0017  0.7575 ± 0.0062  0.8009 ± 0.0036
+best GNN w8_mHSC-E_gcngf                    0.9254 ± 0.0005  0.9442 ± 0.0006  0.8076 ± 0.0016  0.8104 ± 0.0015
+-- controls
+pop_indeg                              nan  0.6166 ± 0.0000  0.6354 ± 0.0000  0.7132 ± 0.0000  0.7666 ± 0.0000  training in-degree
+pop                                 0.7671  0.9174 ± 0.0000  0.9351 ± 0.0000  0.7194 ± 0.0000  0.7774 ± 0.0000  {'alpha': 3}
+-- DC-SBM, fixed GMM clusters (K chosen on validation; rows ending _omegaonly / _thetaonly drop one factor of the selected model)
+dcsbm_gf_soft                       0.7867  0.9185 ± 0.0005  0.9380 ± 0.0004  0.7500 ± 0.0037  0.7855 ± 0.0008  {'alpha': 10, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 1}
+    omega only (no theta)           0.7867  0.8617 ± 0.0004  0.8540 ± 0.0016  0.5029 ± 0.0078  0.5021 ± 0.0063  {'alpha': 10, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 1}
+    theta only (no program)         0.7867  0.9175 ± 0.0000  0.9370 ± 0.0002  0.7176 ± 0.0005  0.7776 ± 0.0005  {'alpha': 10, 'shrink': 'cluster', 'b': 10, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 1}
+dcsbm_gf_hard                       0.7843  0.9179 ± 0.0004  0.9370 ± 0.0004  0.7507 ± 0.0022  0.7821 ± 0.0006  {'alpha': 10, 'shrink': 'global', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 0}
+    omega only (no theta)           0.7843  0.8643 ± 0.0002  0.8616 ± 0.0008  0.5082 ± 0.0100  0.5055 ± 0.0075  {'alpha': 10, 'shrink': 'global', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 0}
+    theta only (no program)         0.7843  0.9168 ± 0.0000  0.9359 ± 0.0000  0.7215 ± 0.0000  0.7777 ± 0.0000  {'alpha': 10, 'shrink': 'global', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 0}
+dcsbm_ex_soft                       0.8200  0.9171 ± 0.0005  0.9360 ± 0.0004  0.7444 ± 0.0029  0.7937 ± 0.0009  {'alpha': 10, 'shrink': 'global', 'b': 10, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 1}
+    omega only (no theta)           0.8200  0.8874 ± 0.0010  0.9049 ± 0.0015  0.6532 ± 0.0020  0.6711 ± 0.0012  {'alpha': 10, 'shrink': 'global', 'b': 10, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 1}
+    theta only (no program)         0.8200  0.9168 ± 0.0000  0.9359 ± 0.0000  0.7215 ± 0.0000  0.7777 ± 0.0000  {'alpha': 10, 'shrink': 'global', 'b': 10, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 1}
+dcsbm_ex_hard                       0.8192  0.9145 ± 0.0008  0.9322 ± 0.0006  0.7372 ± 0.0051  0.7949 ± 0.0018  {'alpha': 3, 'shrink': 'global', 'b': 3, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 0}
+    omega only (no theta)           0.8192  0.8866 ± 0.0015  0.9031 ± 0.0013  0.6526 ± 0.0020  0.6666 ± 0.0044  {'alpha': 3, 'shrink': 'global', 'b': 3, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 0}
+    theta only (no program)         0.8192  0.9174 ± 0.0000  0.9351 ± 0.0000  0.7194 ± 0.0000  0.7774 ± 0.0000  {'alpha': 3, 'shrink': 'global', 'b': 3, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 0}
+-- DC-SBM per K (config chosen on validation within each K)
+  dcsbm_gf_soft: K=5: val 0.7867 test within 0.7500   K=10: val 0.7718 test within 0.7505   K=20: val 0.7635 test within 0.7525   K=40: val 0.7609 test within 0.7532
+  dcsbm_gf_hard: K=5: val 0.7843 test within 0.7507   K=10: val 0.7649 test within 0.7505   K=20: val 0.7619 test within 0.7443   K=40: val 0.7614 test within 0.7529
+  dcsbm_ex_soft: K=5: val 0.8000 test within 0.7548   K=10: val 0.8200 test within 0.7444   K=20: val 0.8127 test within 0.7487   K=40: val 0.8027 test within 0.7277
+  dcsbm_ex_hard: K=5: val 0.8001 test within 0.7563   K=10: val 0.8192 test within 0.7372   K=20: val 0.8094 test within 0.7415   K=40: val 0.8027 test within 0.7275
+-- learned block / factorisation / latent space
+dcsbm_learned                       0.8156  0.9128 ± 0.0005  0.9331 ± 0.0002  0.7531 ± 0.0012  0.8110 ± 0.0019  {'k': 5, 'l2': 10, 'ra': None, 'steps': 250}
+hpf                                 0.8046  0.9011 ± 0.0030  0.9032 ± 0.0068  0.7218 ± 0.0049  0.7718 ± 0.0020  {'k': 16, 'l2': 0.1, 'ra': None, 'steps': 300}
+lsm                                 0.8108  0.9246 ± 0.0000  0.9440 ± 0.0000  0.7457 ± 0.0005  0.8045 ± 0.0003  {'k': 4, 'l2': 1, 'ra': None, 'steps': 150}
+maineff (control: K=1, a_t + b_g only)  0.7808  0.9136 ± 0.0000  0.9345 ± 0.0000  0.7312 ± 0.0000  0.7870 ± 0.0000  {'k': 1, 'l2': 1, 'ra': None, 'steps': 50}
+
+best statistical model by validation: dcsbm_ex_soft   (best fixed-cluster DC-SBM: dcsbm_ex_soft)
+
+Paired per-TF tests (per-TF test AUROC averaged over seeds 42-44, difference, TFs better, Wilcoxon p):
+  dcsbm_ex_soft - popularity (smoothed)          within-TF diff +0.0250  95% CI [-0.0063, +0.0637]  TFs better 16/29  p=0.442
+  dcsbm_ex_soft - popularity (in-degree)         within-TF diff +0.0312  95% CI [-0.0044, +0.0693]  TFs better 21/29  p=0.0623
+  dcsbm_ex_soft - hero                           within-TF diff -0.0131  95% CI [-0.0382, +0.0103]  TFs better 10/29  p=0.132
+  dcsbm_ex_soft - best GNN (w8_mHSC-E_gcngf)     within-TF diff -0.0632  95% CI [-0.1209, -0.0173]  TFs better 7/29  p=0.000451
+  popularity - hero                              within-TF diff -0.0381  95% CI [-0.0806, -0.0063]  TFs better 10/29  p=0.0623
+  hero - popularity                              within-TF diff +0.0381  95% CI [+0.0063, +0.0806]  TFs better 19/29  p=0.0623
+  best GNN - popularity                          within-TF diff +0.0883  95% CI [+0.0261, +0.1687]  TFs better 23/29  p=0.000607
+program term: selected model vs its own theta-only version, and vs popularity, for every fixed-cluster family:
+  dcsbm_gf_soft - theta-only                     within-TF diff +0.0324  95% CI [-0.0067, +0.0924]  TFs better 16/29  p=0.831
+  dcsbm_gf_soft - popularity                     within-TF diff +0.0306  95% CI [-0.0087, +0.0916]  TFs better 14/29  p=0.766
+  dcsbm_gf_hard - theta-only                     within-TF diff +0.0292  95% CI [-0.0068, +0.0865]  TFs better 15/29  p=0.766
+  dcsbm_gf_hard - popularity                     within-TF diff +0.0314  95% CI [-0.0057, +0.0909]  TFs better 16/29  p=0.639
+  dcsbm_ex_soft - theta-only                     within-TF diff +0.0229  95% CI [-0.0080, +0.0609]  TFs better 16/29  p=0.468
+  dcsbm_ex_soft - popularity                     within-TF diff +0.0250  95% CI [-0.0063, +0.0637]  TFs better 16/29  p=0.442
+  dcsbm_ex_hard - theta-only                     within-TF diff +0.0178  95% CI [-0.0087, +0.0519]  TFs better 16/29  p=0.393
+  dcsbm_ex_hard - popularity                     within-TF diff +0.0178  95% CI [-0.0087, +0.0519]  TFs better 16/29  p=0.393
+  dcsbm_learned - popularity                     within-TF diff +0.0337  95% CI [+0.0099, +0.0697]  TFs better 23/29  p=0.000975
+  hpf - popularity                               within-TF diff +0.0024  95% CI [-0.0189, +0.0261]  TFs better 14/29  p=0.701
+  lsm - popularity                               within-TF diff +0.0263  95% CI [+0.0172, +0.0353]  TFs better 24/29  p=7.58e-06
+program term of the learned models: model minus the Bernoulli main-effects control (a_t + b_g, same l2 / steps selection):
+  maineff - popularity                           within-TF diff +0.0118  95% CI [+0.0064, +0.0174]  TFs better 23/29  p=0.000332
+  dcsbm_learned - maineff                        within-TF diff +0.0219  95% CI [+0.0001, +0.0579]  TFs better 20/29  p=0.0562
+  hpf - maineff                                  within-TF diff -0.0094  95% CI [-0.0318, +0.0155]  TFs better 11/29  p=0.121
+  lsm - maineff                                  within-TF diff +0.0145  95% CI [+0.0063, +0.0236]  TFs better 23/29  p=0.00122
+
+
+######## Where does the program term add over popularity? (per-TF gain of the selected fixed-cluster DC-SBM over smoothed popularity)
+entropy = normalised entropy of the TF cluster-preference profile (1 = flat); sd = mass-weighted sd of log lift (omega_tk / mean over TFs of omega_t.k), averaged over seeds.
+hESC: model dcsbm_ex_hard: mean per-TF gain -0.0161 over 33 TFs; Spearman(gain, #training targets) +0.46 (p=0.0075); (gain, entropy) +0.35 (p=0.044); (gain, sd of log preference) -0.34 (p=0.049)
+    gain for TFs with <= median (38) training targets: -0.0469; with more: +0.0128
+    top gains: TF793 (77 targets, +0.122), TF654 (22 targets, +0.094), TF624 (20 targets, +0.093), TF49 (16 targets, +0.074); worst: TF361 (1, +nan), TF305 (15, -0.214), TF805 (10, -0.184)
+hHEP: model dcsbm_ex_soft: mean per-TF gain -0.0153 over 30 TFs; Spearman(gain, #training targets) +0.32 (p=0.084); (gain, entropy) +0.14 (p=0.46); (gain, sd of log preference) -0.16 (p=0.41)
+    gain for TFs with <= median (225) training targets: -0.0376; with more: +0.0070
+    top gains: TF205 (23 targets, +0.158), TF853 (47 targets, +0.049), TF426 (414 targets, +0.038), TF681 (296 targets, +0.034); worst: TF439 (1, -0.295), TF942 (5, -0.252), TF485 (11, -0.059)
+mESC: model dcsbm_ex_hard: mean per-TF gain +0.0085 over 85 TFs; Spearman(gain, #training targets) +0.21 (p=0.053); (gain, entropy) +0.12 (p=0.29); (gain, sd of log preference) -0.11 (p=0.33)
+    gain for TFs with <= median (146) training targets: +0.0042; with more: +0.0125
+    top gains: TF93 (38 targets, +0.222), TF752 (118 targets, +0.194), TF926 (50 targets, +0.176), TF125 (2 targets, +0.163); worst: TF870 (1, +nan), TF151 (1, +nan), TF57 (1, +nan)
+mHSC-E: model dcsbm_ex_soft: mean per-TF gain +0.0250 over 29 TFs; Spearman(gain, #training targets) -0.13 (p=0.51); (gain, entropy) -0.24 (p=0.22); (gain, sd of log preference) +0.24 (p=0.22)
+    gain for TFs with <= median (314) training targets: +0.0410; with more: +0.0079
+    top gains: TF183 (28 targets, +0.357), TF98 (2 targets, +0.245), TF151 (2 targets, +0.218), TF338 (136 targets, +0.092); worst: TF674 (8, -0.161), TF644 (143, -0.062), TF114 (172, -0.055)
+
+Same for the learned-block DC-SBM (dcsbm_learned) and the latent space model (lsm) vs smoothed popularity:
+hESC dcsbm_learned: mean gain +0.0119; Spearman(gain, #training targets) -0.06 (p=0.72); gain for TFs with <= median (44) targets +0.0097, with more +0.0143
+hESC lsm: mean gain +0.0058; Spearman(gain, #training targets) +0.14 (p=0.45); gain for TFs with <= median (44) targets +0.0029, with more +0.0089
+hHEP dcsbm_learned: mean gain +0.0174; Spearman(gain, #training targets) +0.18 (p=0.33); gain for TFs with <= median (225) targets +0.0240, with more +0.0108
+hHEP lsm: mean gain +0.0165; Spearman(gain, #training targets) -0.01 (p=0.97); gain for TFs with <= median (225) targets +0.0202, with more +0.0128
+mESC dcsbm_learned: mean gain +0.0685; Spearman(gain, #training targets) -0.06 (p=0.56); gain for TFs with <= median (156) targets +0.0864, with more +0.0502
+mESC lsm: mean gain +0.0582; Spearman(gain, #training targets) -0.05 (p=0.65); gain for TFs with <= median (156) targets +0.0658, with more +0.0505
+mHSC-E dcsbm_learned: mean gain +0.0337; Spearman(gain, #training targets) -0.35 (p=0.062); gain for TFs with <= median (314) targets +0.0515, with more +0.0147
+mHSC-E lsm: mean gain +0.0263; Spearman(gain, #training targets) -0.30 (p=0.12); gain for TFs with <= median (314) targets +0.0324, with more +0.0198
+
+######## Why hHEP is popularity-dominated: the four cells side by side
+cell      pop wTF indeg wTF hero wTF   fixedDC  stat-pop omega-only  entropy  sd logq #targets/TF gini(indeg) TF-TF cosine pop share learned-pop
+hESC       0.7176    0.7068   0.7490    0.7014   -0.0161     0.5484    0.950    0.409        89.1       0.415        0.094     0.358     +0.0119
+hHEP       0.7833    0.7838   0.7583    0.7680   -0.0153     0.5194    0.947    0.300       221.4       0.358        0.252     0.283     +0.0174
+mESC       0.7647    0.7612   0.8241    0.7731   +0.0085     0.6356    0.981    0.251       225.1       0.283        0.190     0.326     +0.0685
+mHSC-E     0.7194    0.7132   0.7575    0.7444   +0.0250     0.6532    0.957    0.251       266.6       0.199        0.356     0.171     +0.0337
+(pop wTF = smoothed popularity; omega-only = program term alone; entropy and sd are for the selected fixed-cluster family of that cell; TF-TF cosine = mean pairwise cosine of the TFs' training target vectors;
+ pop share = mean over TFs of the fraction of training targets that lie in the 10% most popular genes.)
+
+Same comparison at fixed K=10, Geneformer clusters, soft assignment (config chosen on validation per cell):
+  hESC     entropy 0.956  sd log-preference 0.371  gain over popularity +0.0206  test within 0.7382
+  hHEP     entropy 0.930  sd log-preference 0.442  gain over popularity -0.0178  test within 0.7655
+  mESC     entropy 0.967  sd log-preference 0.280  gain over popularity +0.0022  test within 0.7669
+  mHSC-E   entropy 0.972  sd log-preference 0.233  gain over popularity +0.0311  test within 0.7505
+
+
+######## hESC: clusters preferred by key TFs (dcsbm_ex_hard, seed 42; preference = TF-normalised lift = (omega_tk / mean over TFs of omega_t.k) divided by the cluster-mass-weighted mean lift, so 1 = its own average; hard cluster = argmax posterior; members = the TF training targets in the cluster, most popular first)
+config {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'ex', 'soft': 0}; cluster sizes: [173, 62, 241, 29, 57, 125, 30, 25, 34, 134]
+  POU5F1 (58 training targets): cluster 8 (size 34, pref 1.40x): ZNF165,HESX1,DCLK1,ESRP1,NANOG [5/58 targets] | cluster 2 (size 241, pref 1.29x): FOXN3,HNRNPD,ANKRD28,NUP54,ZNF589,PHB2 [23/58 targets] | cluster 0 (size 173, pref 1.12x): RGPD2,ASXL1,NFAT5,KLF7,AFF1,WWTR1 [13/58 targets]
+      lowest preference: cluster 1 (0.62x), cluster 6 (0.65x)
+  NANOG (231 training targets): cluster 8 (size 34, pref 1.26x): ID1,HESX1,DCLK1,ASNS,ANXA3,EPCAM [16/231 targets] | cluster 1 (size 62, pref 1.14x): C4orf46,SKA3,CCNA2,DEPDC1B,EXO1,WDHD1 [23/231 targets] | cluster 5 (size 125, pref 1.11x): SNX18,VWA5A,ANKRD1,HNRNPK,SALL2,KAT7 [38/231 targets]
+      lowest preference: cluster 9 (0.81x), cluster 0 (0.85x)
+  SOX2 (170 training targets): cluster 8 (size 34, pref 1.06x): ID1,DCLK1,USP44,ESRP1,SFRP2,TFAP2A [9/170 targets] | cluster 0 (size 173, pref 1.02x): ASXL1,CCPG1,KLF7,PHLDB2,INSIG2,KAT6A [35/170 targets] | cluster 5 (size 125, pref 1.02x): TCF4,JMJD1C,CBX3,TLE3,SALL2,BAMBI [25/170 targets]
+      lowest preference: cluster 3 (0.73x), cluster 4 (0.97x)
+  SOX17 (15 training targets): cluster 2 (size 241, pref 1.39x): CSDE1,PHB2,PREPL,ILF2,DAXX,NUP35 [6/15 targets] | cluster 1 (size 62, pref 1.35x): C4orf46,KIF15 [2/15 targets] | cluster 0 (size 173, pref 1.14x): TMEM131,POLB,AIP,NR3C1 [4/15 targets]
+      lowest preference: cluster 4 (0.43x), cluster 8 (0.47x)
+  GATA6 (14 training targets): cluster 9 (size 134, pref 2.16x): PLAGL1,TNC,COLEC12,ALPK2,CCDC141 [5/14 targets] | cluster 6 (size 30, pref 1.61x): DMBX1 [1/14 targets] | cluster 8 (size 34, pref 1.20x): CALB1 [1/14 targets]
+      lowest preference: cluster 1 (0.38x), cluster 4 (0.53x)
+  EOMES (201 training targets): cluster 3 (size 29, pref 1.17x): AGL,MATN3,RIPPLY1,CCKBR,DKK4,GYPE [8/201 targets] | cluster 7 (size 25, pref 1.13x):  [0/201 targets] | cluster 6 (size 30, pref 1.11x): MDM4,VHL,MAFF,SCD5,CRX,SPIB [6/201 targets]
+      lowest preference: cluster 8 (0.81x), cluster 2 (0.90x)
+
+
+######## hESC: clusters preferred by key TFs (dcsbm_gf_soft_K10, seed 42; preference = TF-normalised lift = (omega_tk / mean over TFs of omega_t.k) divided by the cluster-mass-weighted mean lift, so 1 = its own average; hard cluster = argmax posterior; members = the TF training targets in the cluster, most popular first)
+config {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'diag', 'K': 10, 'feat': 'gf', 'soft': 1}; cluster sizes: [88, 93, 46, 80, 233, 39, 121, 49, 113, 48]
+  POU5F1 (58 training targets): cluster 3 (size 80, pref 1.33x): RGPD2,CER1,HESX1,AK4,ETV4,ESRP1 [9/58 targets] | cluster 2 (size 46, pref 1.30x): CASD1,TLE1,LGR4,LIPG [4/58 targets] | cluster 4 (size 233, pref 1.17x): FOXN3,TCF4,NCAM1,ANKRD28,NFAT5,DCLK1 [19/58 targets]
+      lowest preference: cluster 8 (0.75x), cluster 0 (0.78x)
+  NANOG (231 training targets): cluster 3 (size 80, pref 1.19x): RGPD2,CER1,HESX1,VWA5A,ASNS,INSIG2 [29/231 targets] | cluster 7 (size 49, pref 1.16x): ZNF589,ACOX3,TDRD7,DEPDC1B,KLHL12,SALL2 [16/231 targets] | cluster 9 (size 48, pref 1.12x): SKA3,CCNA2,EXO1,WDHD1,CDC7,NUSAP1 [18/231 targets]
+      lowest preference: cluster 1 (0.84x), cluster 2 (0.84x)
+  SOX2 (170 training targets): cluster 9 (size 48, pref 1.18x): MCM4,CCNA2,CDC7,NUSAP1,MCM7,E2F7 [13/170 targets] | cluster 4 (size 233, pref 1.07x): FOXN3,TCF4,TNC,PAM,ANKRD28,PALLD [48/170 targets] | cluster 1 (size 93, pref 1.04x): OTX2,ZNF219,DUSP4,SNAI2,MEF2D,LMO2 [13/170 targets]
+      lowest preference: cluster 6 (0.82x), cluster 7 (0.91x)
+  SOX17 (15 training targets): cluster 8 (size 113, pref 1.64x): CSDE1,PHB2,ILF2,AIP [4/15 targets] | cluster 6 (size 121, pref 1.32x): C4orf46,POLB,DAXX [3/15 targets] | cluster 7 (size 49, pref 1.08x): NUP35 [1/15 targets]
+      lowest preference: cluster 3 (0.36x), cluster 2 (0.61x)
+  GATA6 (14 training targets): cluster 3 (size 80, pref 1.81x): CALB1,VWA5A,TEAD4 [3/14 targets] | cluster 1 (size 93, pref 1.75x): DMBX1,CCDC141 [2/14 targets] | cluster 2 (size 46, pref 1.73x): BTBD10 [1/14 targets]
+      lowest preference: cluster 0 (0.38x), cluster 9 (0.43x)
+  EOMES (201 training targets): cluster 5 (size 39, pref 1.16x): RBFOX2,TCF7L1 [2/201 targets] | cluster 1 (size 93, pref 1.06x): OTX2,ZNF219,SNAI2,MAFF,RXRG,PRSS35 [15/201 targets] | cluster 8 (size 113, pref 1.04x): PLAGL1,HNRNPD,DCAF6,CCPG1,CSDE1,HIF1A [30/201 targets]
+      lowest preference: cluster 7 (0.75x), cluster 9 (0.83x)
+
+
+######## Score correlation with gene popularity (per-TF Spearman over the test rows between score and the gene training in-degree, mean over TFs and seeds)
+and mean per-TF Spearman between the model score and the hero logit on the test rows (seed-mean)
+hESC: hero 0.721   best GNN 0.748
+   pop                            pop-corr +0.982   corr with hero logit +0.723
+   dcsbm_gf_soft                  pop-corr +0.877   corr with hero logit +0.666
+   dcsbm_gf_hard                  pop-corr +0.874   corr with hero logit +0.661
+   dcsbm_ex_soft                  pop-corr +0.854   corr with hero logit +0.701
+   dcsbm_ex_hard                  pop-corr +0.846   corr with hero logit +0.696
+   dcsbm_gf_soft_omegaonly        pop-corr -0.085   corr with hero logit -0.056
+   dcsbm_gf_hard_omegaonly        pop-corr -0.086   corr with hero logit -0.062
+   dcsbm_ex_soft_omegaonly        pop-corr +0.051   corr with hero logit +0.198
+   dcsbm_ex_hard_omegaonly        pop-corr +0.047   corr with hero logit +0.193
+   dcsbm_learned                  pop-corr +0.887   corr with hero logit +0.727
+   hpf                            pop-corr +0.833   corr with hero logit +0.637
+   lsm                            pop-corr +0.912   corr with hero logit +0.715
+hHEP: hero 0.835   best GNN 0.821
+   pop                            pop-corr +0.975   corr with hero logit +0.851
+   dcsbm_gf_soft                  pop-corr +0.886   corr with hero logit +0.791
+   dcsbm_gf_hard                  pop-corr +0.881   corr with hero logit +0.787
+   dcsbm_ex_soft                  pop-corr +0.838   corr with hero logit +0.815
+   dcsbm_ex_hard                  pop-corr +0.853   corr with hero logit +0.819
+   dcsbm_gf_soft_omegaonly        pop-corr -0.226   corr with hero logit -0.198
+   dcsbm_gf_hard_omegaonly        pop-corr -0.212   corr with hero logit -0.187
+   dcsbm_ex_soft_omegaonly        pop-corr -0.022   corr with hero logit +0.086
+   dcsbm_ex_hard_omegaonly        pop-corr -0.066   corr with hero logit +0.030
+   dcsbm_learned                  pop-corr +0.899   corr with hero logit +0.833
+   hpf                            pop-corr +0.931   corr with hero logit +0.849
+   lsm                            pop-corr +0.914   corr with hero logit +0.846
+mESC: hero 0.717   best GNN 0.715
+   pop                            pop-corr +0.967   corr with hero logit +0.733
+   dcsbm_gf_soft                  pop-corr +0.809   corr with hero logit +0.689
+   dcsbm_gf_hard                  pop-corr +0.821   corr with hero logit +0.676
+   dcsbm_ex_soft                  pop-corr +0.829   corr with hero logit +0.726
+   dcsbm_ex_hard                  pop-corr +0.829   corr with hero logit +0.726
+   dcsbm_gf_soft_omegaonly        pop-corr +0.342   corr with hero logit +0.392
+   dcsbm_gf_hard_omegaonly        pop-corr +0.337   corr with hero logit +0.360
+   dcsbm_ex_soft_omegaonly        pop-corr +0.150   corr with hero logit +0.270
+   dcsbm_ex_hard_omegaonly        pop-corr +0.148   corr with hero logit +0.268
+   dcsbm_learned                  pop-corr +0.795   corr with hero logit +0.797
+   hpf                            pop-corr +0.791   corr with hero logit +0.769
+   lsm                            pop-corr +0.852   corr with hero logit +0.815
+mHSC-E: hero 0.638   best GNN 0.629
+   pop                            pop-corr +0.874   corr with hero logit +0.706
+   dcsbm_gf_soft                  pop-corr +0.714   corr with hero logit +0.689
+   dcsbm_gf_hard                  pop-corr +0.733   corr with hero logit +0.681
+   dcsbm_ex_soft                  pop-corr +0.661   corr with hero logit +0.726
+   dcsbm_ex_hard                  pop-corr +0.675   corr with hero logit +0.730
+   dcsbm_gf_soft_omegaonly        pop-corr -0.067   corr with hero logit -0.006
+   dcsbm_gf_hard_omegaonly        pop-corr -0.051   corr with hero logit +0.015
+   dcsbm_ex_soft_omegaonly        pop-corr +0.248   corr with hero logit +0.463
+   dcsbm_ex_hard_omegaonly        pop-corr +0.244   corr with hero logit +0.457
+   dcsbm_learned                  pop-corr +0.728   corr with hero logit +0.772
+   hpf                            pop-corr +0.625   corr with hero logit +0.591
+   lsm                            pop-corr +0.796   corr with hero logit +0.778
+
+
+######## Held-out genes (hESC, protocol gene, folds 0-4, seeds 42-43). Statistical models see only gene features of the unseen genes; no popularity is available for them (theta = cluster mean).
+Held-out TFs were skipped: an unseen TF has no omega row (and no latent position).
+model                                         AUROC            AUPRC        within-TF        within>=8   (mean ± std over fold x seed; 5 folds)
+hero (w5_ho_gene*_hero)             0.8467 ± 0.0064  0.5213 ± 0.0111  0.5461 ± 0.0305  0.5617 ± 0.0156
+dcsbm_gf_soft                       0.8573 ± 0.0057  0.5379 ± 0.0191  0.5753 ± 0.0277  0.5782 ± 0.0265
+dcsbm_gf_hard                       0.8518 ± 0.0097  0.5224 ± 0.0113  0.5564 ± 0.0194  0.5656 ± 0.0143
+dcsbm_gf_soft_thetaonly             0.8564 ± 0.0040  0.5392 ± 0.0177  0.5214 ± 0.0281  0.5331 ± 0.0156
+dcsbm_gf_soft_omegaonly             0.8526 ± 0.0063  0.5016 ± 0.0399  0.5603 ± 0.0333  0.5579 ± 0.0425
+lsm                                 0.8538 ± 0.0064  0.5360 ± 0.0230  0.5567 ± 0.0153  0.5846 ± 0.0221
+per fold within-TF (statistical model mean over seeds | hero): f0: gf_soft 0.566 lsm 0.542 | 0.510 ; f1: gf_soft 0.603 lsm 0.556 | 0.589 ; f2: gf_soft 0.565 lsm 0.552 | 0.543 ; f3: gf_soft 0.604 lsm 0.584 | 0.522 ; f4: gf_soft 0.539 lsm 0.549 | 0.568
+  fold 0 chosen: dcsbm_gf_soft {'alpha': 3, 'shrink': 'cluster', 'b': 30, 'dc': 1, 'cov': 'full', 'K': 10, 'feat': 'gf', 'soft': 1} (val 0.646); lsm {'k': 2, 'l2': 1, 'ra': 10, 'steps': 150} (val 0.592)
+  fold 1 chosen: dcsbm_gf_soft {'alpha': 1, 'shrink': 'cluster', 'b': 10, 'dc': 0, 'cov': 'diag', 'K': 10, 'feat': 'gf', 'soft': 1} (val 0.662); lsm {'k': 4, 'l2': 100, 'ra': 1000, 'steps': 50} (val 0.558)
+  fold 2 chosen: dcsbm_gf_soft {'alpha': 1, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'full', 'K': 20, 'feat': 'gf', 'soft': 1} (val 0.636); lsm {'k': 8, 'l2': 1, 'ra': 1000, 'steps': 50} (val 0.665)
+  fold 3 chosen: dcsbm_gf_soft {'alpha': 10, 'shrink': 'cluster', 'b': 3, 'dc': 1, 'cov': 'diag', 'K': 10, 'feat': 'gf', 'soft': 1} (val 0.635); lsm {'k': 2, 'l2': 1, 'ra': 100, 'steps': 200} (val 0.573)
+  fold 4 chosen: dcsbm_gf_soft {'alpha': 1, 'shrink': 'cluster', 'b': 30, 'dc': 0, 'cov': 'diag', 'K': 5, 'feat': 'gf', 'soft': 1} (val 0.654); lsm {'k': 4, 'l2': 30, 'ra': 1000, 'steps': 50} (val 0.622)
+  dcsbm_gf_soft - hero (per fold x TF)           within-TF diff +0.0289  95% CI [+0.0055, +0.0522]  TFs better 92/155  p=0.00806
+  dcsbm_gf_hard - hero (per fold x TF)           within-TF diff +0.0099  95% CI [-0.0143, +0.0339]  TFs better 83/155  p=0.363
+  lsm - hero (per fold x TF)                     within-TF diff +0.0104  95% CI [-0.0135, +0.0346]  TFs better 94/155  p=0.143
+  dcsbm_gf_soft - its theta-only (program term, unseen genes) within-TF diff +0.0534  95% CI [+0.0287, +0.0780]  TFs better 101/155  p=8.34e-06

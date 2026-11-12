@@ -1,0 +1,4 @@
+#mod src.nbf 2
+w12_nbf_tfi_L6pna_deg_s42 --tf_inter 1 --deg 1 --layers 6 --aggr pna --batch_size 512 --seed 42
+w12_nbf_tfi_L6pna_deg_s43 --tf_inter 1 --deg 1 --layers 6 --aggr pna --batch_size 512 --seed 43
+w12_nbf_tfi_L6pna_deg_s44 --tf_inter 1 --deg 1 --layers 6 --aggr pna --batch_size 512 --seed 44

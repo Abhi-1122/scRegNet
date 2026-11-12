@@ -1,0 +1,3 @@
+#mod src.nbf 2
+w12_nbf_L3sum_s42 --layers 3 --aggr sum --batch_size 512 --seed 42
+w12_nbf_L3pna_tfinter_s42 --layers 3 --aggr pna --tf_inter 1 --batch_size 512 --seed 42
