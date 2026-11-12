@@ -1,0 +1,33 @@
+Validation-only choice of the GNN configuration per cell (mean over seeds 42-46 of the best-epoch validation slice metrics; no test numbers).
+
+== hESC: top 6 of 24 by validation within-TF   (name, val within-TF, val AUROC; AUROC rank in brackets)
+  gcn     had  batch  gf1  val within 0.7437  val AUROC 0.8941 [2]   w8_hESC_gcngf
+  gcn     had  none   gf1  val within 0.7399  val AUROC 0.8836 [12]   w11_grid_hESC_gcn_had_none_gf1
+  gcn     had  batch  gf0  val within 0.7343  val AUROC 0.8836 [11]   w11_grid_hESC_gcn_had_batch_gf0
+  npanda  had  batch  gf1  val within 0.7269  val AUROC 0.8947 [1]   w5_nphad_gf
+  gcn     had  none   gf0  val within 0.7255  val AUROC 0.8656 [23]   w11_grid_hESC_gcn_had_none_gf0
+  npanda  had  batch  gf0  val within 0.7210  val AUROC 0.8918 [3]   w3_np_had
+
+== hHEP: top 6 of 24 by validation within-TF   (name, val within-TF, val AUROC; AUROC rank in brackets)
+  gcn     had  batch  gf1  val within 0.7842  val AUROC 0.9037 [2]   w8_hHEP_gcngf
+  npanda  had  batch  gf1  val within 0.7841  val AUROC 0.9028 [3]   w11_grid_hHEP_npanda_had_batch_gf1
+  gcn     had  none   gf1  val within 0.7838  val AUROC 0.9053 [1]   w11_grid_hHEP_gcn_had_none_gf1
+  gcn     had  batch  gf0  val within 0.7747  val AUROC 0.9026 [4]   m_hHEP_g08_had_nosf_batch_d256
+  npanda  had  batch  gf0  val within 0.7715  val AUROC 0.9019 [5]   w4_hHEP_np_had
+  sage    had  batch  gf1  val within 0.7701  val AUROC 0.9005 [6]   w4_hHEP_herogf
+
+== mHSC-E: top 6 of 24 by validation within-TF   (name, val within-TF, val AUROC; AUROC rank in brackets)
+  npanda  had  batch  gf1  val within 0.8397  val AUROC 0.9297 [1]   w11_grid_mHSC-E_npanda_had_batch_gf1
+  sage    had  batch  gf1  val within 0.8387  val AUROC 0.9291 [2]   w4_mHSC-E_herogf
+  npanda  had  batch  gf0  val within 0.8270  val AUROC 0.9273 [3]   w4_mHSC-E_np_had
+  npanda  had  none   gf1  val within 0.8249  val AUROC 0.9223 [7]   w11_grid_mHSC-E_npanda_had_none_gf1
+  sage    had  batch  gf0  val within 0.8239  val AUROC 0.9257 [6]   m_mHSC-E_e_sage_d256
+  sage    had  none   gf1  val within 0.8210  val AUROC 0.9220 [8]   w11_grid_mHSC-E_sage_had_none_gf1
+
+== mESC: top 6 of 24 by validation within-TF   (name, val within-TF, val AUROC; AUROC rank in brackets)
+  npanda  had  none   gf1  val within 0.8334  val AUROC 0.9415 [2]   w11_grid_mESC_npanda_had_none_gf1
+  npanda  had  batch  gf1  val within 0.8329  val AUROC 0.9413 [3]   w11_grid_mESC_npanda_had_batch_gf1
+  npanda  had  batch  gf0  val within 0.8302  val AUROC 0.9416 [1]   w4_mESC_np_had
+  npanda  had  none   gf0  val within 0.8296  val AUROC 0.9404 [4]   w11_grid_mESC_npanda_had_none_gf0
+  sage    had  batch  gf1  val within 0.8292  val AUROC 0.9394 [5]   w4_mESC_herogf
+  sage    had  none   gf1  val within 0.8252  val AUROC 0.9387 [6]   w11_grid_mESC_sage_had_none_gf1

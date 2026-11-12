@@ -1,0 +1,4 @@
+w15_diag_mESC_pure_K2_d256_s42 --optimizer Adam --eval_interval 1 --refit 1 --encoder lightgcn --split batch --decoder had --scfm 0 --emb_feat none --lr 0.001 --wd 0.001 --emb_l2 0.0001 --cell_type mESC --seed 42 --lgc_layers 2 --emb_dim 256
+w15_diag_mESC_pure_K2_d512_s42 --optimizer Adam --eval_interval 1 --refit 1 --encoder lightgcn --split batch --decoder had --scfm 0 --emb_feat none --lr 0.001 --wd 0.001 --emb_l2 0.0001 --cell_type mESC --seed 42 --lgc_layers 2 --emb_dim 512
+w15_diag_mESC_pure_K1_d256_s42 --optimizer Adam --eval_interval 1 --refit 1 --encoder lightgcn --split batch --decoder had --scfm 0 --emb_feat none --lr 0.001 --wd 0.001 --emb_l2 0.0001 --cell_type mESC --seed 42 --lgc_layers 1 --emb_dim 256
+w15_diag_mESC_pure_K2_d256_wd0_s42 --optimizer Adam --eval_interval 1 --refit 1 --encoder lightgcn --split batch --decoder had --scfm 0 --emb_feat none --lr 0.001 --wd 0 --emb_l2 0.0001 --cell_type mESC --seed 42 --lgc_layers 2 --emb_dim 256

@@ -1,0 +1,69 @@
+Idea 0: correlation across cells between the candidate gene and (a) the TF mRNA, (b) the mean of the TF's training targets, (c) least-squares TF activity. Test rows, random split, within-TF AUROC; no training.
+
+== hESC (34 TFs, 7142 test pairs)
+score            AUROC within-TF
+tf_mrna         0.4572    0.4909
+centroid        0.5765    0.5231
+tfa             0.5591    0.5068
+|tf_mrna|       0.5103    0.4236
+|centroid|      0.5577    0.5102
+|tfa|           0.5457    0.4964
+popularity      0.6422    0.7051
+  centroid - tf_mrna: +0.0322, TFs better 19/33, Wilcoxon p = 0.2
+  |centroid| - |tf_mrna|: +0.0866, TFs better 27/33, Wilcoxon p = 0.00022
+  tfa - centroid: -0.0163, TFs better 16/33, Wilcoxon p = 0.6
+  |tfa| - |centroid|: -0.0138, TFs better 12/33, Wilcoxon p = 0.22
+  popularity + centroid (within-TF rank sum): within-TF 0.6714
+  popularity + |centroid| (within-TF rank sum): within-TF 0.6624
+  popularity + tfa (within-TF rank sum): within-TF 0.6486
+
+== hHEP (30 TFs, 6563 test pairs)
+score            AUROC within-TF
+tf_mrna         0.5029    0.5476
+centroid        0.5825    0.5240
+tfa             0.5608    0.5016
+|tf_mrna|       0.4934    0.4923
+|centroid|      0.5866    0.5327
+|tfa|           0.4584    0.4995
+popularity      0.6980    0.7841
+  centroid - tf_mrna: -0.0236, TFs better 19/30, Wilcoxon p = 0.58
+  |centroid| - |tf_mrna|: +0.0404, TFs better 24/30, Wilcoxon p = 0.00028
+  tfa - centroid: -0.0223, TFs better 9/30, Wilcoxon p = 0.05
+  |tfa| - |centroid|: -0.0332, TFs better 6/30, Wilcoxon p = 0.0035
+  popularity + centroid (within-TF rank sum): within-TF 0.6994
+  popularity + |centroid| (within-TF rank sum): within-TF 0.7084
+  popularity + tfa (within-TF rank sum): within-TF 0.7012
+
+== mESC (88 TFs, 22736 test pairs)
+score            AUROC within-TF
+tf_mrna         0.5098    0.5067
+centroid        0.5955    0.6240
+tfa             0.5238    0.5481
+|tf_mrna|       0.5333    0.5443
+|centroid|      0.4763    0.5977
+|tfa|           0.5061    0.5469
+popularity      0.6579    0.7603
+  centroid - tf_mrna: +0.1173, TFs better 73/85, Wilcoxon p = 1.7e-12
+  |centroid| - |tf_mrna|: +0.0534, TFs better 62/85, Wilcoxon p = 1.5e-05
+  tfa - centroid: -0.0759, TFs better 16/85, Wilcoxon p = 1.7e-11
+  |tfa| - |centroid|: -0.0508, TFs better 20/85, Wilcoxon p = 1.4e-07
+  popularity + centroid (within-TF rank sum): within-TF 0.7513
+  popularity + |centroid| (within-TF rank sum): within-TF 0.7298
+  popularity + tfa (within-TF rank sum): within-TF 0.7154
+
+== mHSC-E (29 TFs, 4718 test pairs)
+score            AUROC within-TF
+tf_mrna         0.4931    0.4797
+centroid        0.6080    0.5765
+tfa             0.5745    0.5395
+|tf_mrna|       0.5251    0.4754
+|centroid|      0.5894    0.5303
+|tfa|           0.4049    0.4788
+popularity      0.6176    0.7143
+  centroid - tf_mrna: +0.0968, TFs better 18/29, Wilcoxon p = 0.0035
+  |centroid| - |tf_mrna|: +0.0550, TFs better 23/29, Wilcoxon p = 0.00027
+  tfa - centroid: -0.0371, TFs better 8/29, Wilcoxon p = 0.0032
+  |tfa| - |centroid|: -0.0516, TFs better 7/29, Wilcoxon p = 0.00012
+  popularity + centroid (within-TF rank sum): within-TF 0.6763
+  popularity + |centroid| (within-TF rank sum): within-TF 0.6608
+  popularity + tfa (within-TF rank sum): within-TF 0.6637

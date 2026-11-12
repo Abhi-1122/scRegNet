@@ -157,15 +157,22 @@ def parse():
     p = argparse.ArgumentParser()
     p.add_argument('--name', required=True)
     p.add_argument('--cell_type', default='hESC')
+    p.add_argument('--feat', default='full', choices=['full', 'cellperm', 'stats', 'rand'], help='W14 diagnostic on node features: full = standardised expression profile | cellperm = each gene\'s values shuffled across cells | stats = 14 per-gene summary statistics of the raw expression | rand = fixed i.i.d. Gaussian of the same width')
     p.add_argument('--num_TF', default='500')
     p.add_argument('--seed', type=int, default=42)
-    p.add_argument('--decoder', default='add', choices=['add', 'had', 'mlp', 'tani', 'tani_pure', 'qatt'], help='qatt = had + query-aware TF summary: attention of the pair gene over the TF\'s known targets (W12 idea 1)')
+    p.add_argument('--decoder', default='add', choices=['add', 'had', 'mlp', 'tani', 'tani_pure', 'qatt', 'dot'], help='dot = plain dot product of the final node embeddings + one bias (LightGCN scorer; no MLP, no learned decoder weights) | qatt = had + query-aware TF summary: attention of the pair gene over the TF\'s known targets (W12 idea 1)')
     p.add_argument('--split', default='none', choices=['none', 'batch', 'fixed'], help="none | batch (each batch's own edges leave the graph) | fixed (a fixed --mp_frac of the undirected training edges is the training graph, supervision = the other edges + all negatives; validation/test graph = all training edges, as for batch)")
     p.add_argument('--mp_frac', type=float, default=0.7, help='--split fixed: fraction of training-positive edges in the training message-passing graph')
     p.add_argument('--own_edge_diag', type=int, default=0, help='1: after the refit, score a random 10%% of training-positive edges (+ as many training negatives) with and without those edges in the graph; stored in the json')
     p.add_argument('--scfm', type=int, default=1, help='0 off, 1 Geneformer, 2 Geneformer vectors shuffled across genes (control)')
     p.add_argument('--scalar', default='none', help='none | panda | panda_old | contrast | contrast_raw')
-    p.add_argument('--encoder', default='gcn', choices=['gcn', 'sage', 'gat', 'gin', 'dir', 'npanda'])
+    p.add_argument('--encoder', default='gcn', choices=['gcn', 'sage', 'gat', 'gin', 'dir', 'npanda', 'lightgcn'])
+    p.add_argument('--lgc_layers', type=int, default=2, help='lightgcn: propagation steps K (output = mean of E_0..E_K)')
+    p.add_argument('--emb_dim', type=int, default=64, help='lightgcn: width of the free node embedding')
+    p.add_argument('--emb_std', type=float, default=0.1, help='lightgcn: std of the normal init of the free embedding')
+    p.add_argument('--emb_l2', type=float, default=0.0, help='lightgcn: L2 (Adam weight_decay) on the free embedding only; --wd then covers the rest')
+    p.add_argument('--emb_feat', default='none', choices=['none', 'expr', 'gf', 'stats'], help='lightgcn: add a linear projection of node features to E_0 (gf needs --scfm 1; stats = the 14 --feat stats columns)')
+    p.add_argument('--emb_free', type=int, default=1, help='lightgcn: 0 = no free embedding (features only; ablation)')
     p.add_argument('--tf_drop', type=float, default=0.0, help='per batch, hide ALL training edges of this fraction of TFs (teaches the model to cope with TFs that have no known targets)')
     p.add_argument('--mp_graph', default='grn', choices=['grn', 'panda', 'union'], help='message-passing graph: training-positive GRN (default) | PANDA top-K | both')
     p.add_argument('--panda_k', type=int, default=100, help='top-K genes per TF in the PANDA graph')
@@ -195,6 +202,7 @@ def parse():
     p.add_argument('--pe_rand', type=int, default=0, help='control: replace the PE by fixed random Gaussian vectors')
     p.add_argument('--fold_batches', type=int, default=0, help='1: fold-pure batches (as --pe_fold) even without a PE, as control')
     p.add_argument('--save_sel_grid', type=int, default=0, help='1: also save the best-validation-epoch model\'s TF x gene score grid, its gene embeddings and out-of-fold training scores (Correct&Smooth, W12 idea 4)')
+    p.add_argument('--dec_wd', type=float, default=-1.0, help='W16: >=0 sets the weight decay of everything after the GNN encoder (node projection mlp/mlp_t, pair decoder, qatt parts, dot bias) to this value; --wd then covers the GNN convolutions only (and lightgcn proj). -1 = --wd for everything (default)')
     p.add_argument('--roles', default='shared', choices=['shared', 'sep'])
     p.add_argument('--gnn_dims', type=int, nargs='+', default=[227, 29, 34])
     p.add_argument('--mlp_dim', type=int, default=198)
@@ -220,6 +228,21 @@ def parse():
     return p.parse_args()
 
 
+def feat_variant(kind, x, raw):
+    """W14: replace the node features (x: genes x cells, standardised per gene; raw: same shape, unstandardised). Seeds do not matter: every run sees the same matrix."""
+    if kind == 'cellperm':
+        return np.stack([x[i, np.random.RandomState(i).permutation(x.shape[1])] for i in range(x.shape[0])]).astype(np.float32)
+    if kind == 'rand':
+        return np.random.RandomState(0).randn(*x.shape).astype(np.float32)
+    from scipy.stats import skew
+    m, sd, nz = raw.mean(1), raw.std(1), (raw != 0).mean(1)
+    with np.errstate(all='ignore'):
+        mnz = np.where(nz > 0, raw.sum(1) / np.maximum(raw.shape[1] * nz, 1e-12), 0.0)
+        S = np.column_stack([m, sd, np.where(m > 0, sd / np.where(m > 0, m, 1), 0.0), nz, mnz, skew(raw, axis=1)] + [np.percentile(raw, q, axis=1) for q in (10, 25, 50, 75, 90, 99)])
+    S = np.nan_to_num(S)
+    return StandardScaler().fit_transform(S).astype(np.float32)
+
+
 def prepare(a, dev):
     path = f'{a.data_folder}/{a.cell_type}/TFs+{a.num_TF}/'
     tr = pd.read_csv(path + 'Train_set.csv', index_col=0)
@@ -227,6 +250,9 @@ def prepare(a, dev):
     expr_df = pd.read_csv(path + 'BL--ExpressionData.csv', index_col=0)
     x = StandardScaler().fit_transform(expr_df.values.T).T.astype(np.float32)  # same as src.utils.load_data
     n = x.shape[0]
+    xs = feat_variant('stats', x, expr_df.values.astype(np.float64)) if a.emb_feat == 'stats' else None
+    if a.feat != 'full':
+        x = feat_variant(a.feat, x, expr_df.values.astype(np.float64))
     if a.protocol != 'random':
         tr, te = heldout_split(pd.concat([tr, te], ignore_index=True), a, n)
     f = None
@@ -254,7 +280,7 @@ def prepare(a, dev):
     orient = P[pos_rows][first]  # (TF, target) orientation of each undirected edge
     uid = -np.ones(len(tr), dtype=np.int64)
     uid[pos_rows] = inv
-    return dict(tr=tr, te=te, x=x, f=f, n=n, tri=tri, vai=vai, U=(uniq // n, uniq % n), orient=orient, uid=uid, path=path)
+    return dict(tr=tr, te=te, x=x, xs=xs, f=f, n=n, tri=tri, vai=vai, U=(uniq // n, uniq % n), orient=orient, uid=uid, path=path)
 
 
 class PairGNN(nn.Module):
@@ -263,10 +289,17 @@ class PairGNN(nn.Module):
         s.a, s.ctx = a, ctx  # ctx: per-call state set by fit (current PE, degree feature, TF->target mask)
         s.convs = nn.ModuleList()
         prev = d_in
-        for h in a.gnn_dims:
+        s.lgc = a.encoder == 'lightgcn'
+        if s.lgc:
+            s.emb = nn.Embedding(ctx.n, a.emb_dim); nn.init.normal_(s.emb.weight, std=a.emb_std)
+            if not a.emb_free: s.emb.weight.requires_grad_(False); s.emb.weight.zero_()
+            s.proj = nn.Linear(ctx.d_feat, a.emb_dim) if a.emb_feat != 'none' else None
+            s.dot_b = nn.Parameter(torch.zeros(1))
+            s.featmat = None  # set by fit
+        for h in ([] if s.lgc else a.gnn_dims):
             s.convs.append(make_conv('wsage' if a.encoder == 'sage' and a.idf_beta > 0 else a.encoder, prev, h, a.relations))
             prev = h
-        fused = prev + (d_sf if a.scfm else 0)
+        fused = a.emb_dim if s.lgc else prev + (d_sf if a.scfm else 0)
         s.mlp = nn.Linear(fused, a.mlp_dim)
         s.mlp_t = nn.Linear(fused, a.mlp_dim) if a.roles == 'sep' else None
         D = a.mlp_dim
@@ -276,6 +309,8 @@ class PairGNN(nn.Module):
             n_scalar += 1 if a.pe_use == 'dist' else a.pe_dim
         if a.decoder == 'add':
             s.out = nn.Linear(2 * D + n_scalar, 1)
+        elif a.decoder == 'dot':
+            s.out = None
         elif a.decoder == 'had':
             s.out = nn.Linear(3 * D + n_scalar, 1)
         elif a.decoder == 'qatt':
@@ -292,7 +327,22 @@ class PairGNN(nn.Module):
             s.out = nn.Sequential(nn.Linear(2 * D + n_scalar, a.dec_hidden), nn.ReLU(), nn.Linear(a.dec_hidden, 1))
         s.aux = nn.Linear(3 * D, 1) if a.aux_panda > 0 else None
 
+    def lgc_nodes(s, ei):
+        """LightGCN: E_0 = free embedding (+ linear projection of features); E_{k+1} = D^-1/2 A D^-1/2 E_k on the current graph; output = mean of E_0..E_K"""
+        h = s.emb.weight + (s.proj(s.featmat) if s.proj is not None else 0)
+        src, dst = ei
+        deg = torch.zeros(len(h), device=h.device).index_add_(0, dst, torch.ones(len(dst), device=h.device))
+        w = (deg[src] * deg[dst]).clamp(min=1).rsqrt()[:, None]
+        out = h
+        for _ in range(s.a.lgc_layers):
+            h = torch.zeros_like(h).index_add_(0, dst, w * h[src]); out = out + h
+        return out / (s.a.lgc_layers + 1)
+
     def nodes(s, x, f, ei, ew=None):
+        if s.lgc:
+            h = s.lgc_nodes(ei)
+            if s.a.decoder == 'dot': return h, h
+            u = F.leaky_relu(s.mlp(h)); return u, u
         ex = ([s.ctx.pe] if s.a.pe != 'none' and s.a.pe_use == 'concat' else []) + ([s.ctx.deg[:, None]] if s.a.deg_feat else [])
         h = torch.cat([x] + ex, 1) if ex else x
         s.raw = h
@@ -331,6 +381,7 @@ class PairGNN(nn.Module):
     def score(s, ut, ug, pairs, scalar=None):
         a, b = ut[pairs[:, 0]], ug[pairs[:, 1]]
         sx = None if scalar is None else (scalar[:, None] if scalar.dim() == 1 else scalar)
+        if s.a.decoder == 'dot': return (a * b).sum(1) + s.dot_b
         parts = [a, b] + ([a * b] if s.a.decoder in ('had', 'qatt') else [])
         if s.a.decoder == 'qatt':
             c, ms, _, _ = s.qctx(ug, pairs)
@@ -468,8 +519,17 @@ def fit(a, D, dev, epochs, select):
     P_va = T(tr[['TF', 'Target']].values[vai], torch.long); y_va = tr.Label.values[vai]; tf_va = tr.TF.values[vai]
     P_te = T(te[['TF', 'Target']].values, torch.long); y_te = te.Label.values; tf_te = te.TF.values
 
+    ctx.n = n
+    if a.encoder == 'lightgcn' and a.emb_feat != 'none':
+        FM = {'expr': X, 'gf': Fe, 'stats': T(D['xs']) if D['xs'] is not None else None}[a.emb_feat]; ctx.d_feat = FM.shape[1]
     model = PairGNN(X.shape[1] + (a.pe_dim if a.pe != 'none' and a.pe_use == 'concat' else 0) + int(bool(a.deg_feat)), Fe.shape[1] if Fe is not None else 0, a, 0 if S_tr is None else (1 if S_tr.dim() == 2 else S_tr.shape[2]), ctx).to(dev)
-    groups = [{'params': [q for nm, q in model.named_parameters() if not nm.startswith('sw.')]}]
+    if a.encoder == 'lightgcn' and a.emb_feat != 'none': model.featmat = FM
+    groups = [{'params': [q for nm, q in model.named_parameters() if not nm.startswith('sw.') and not (a.encoder == 'lightgcn' and nm == 'emb.weight')]}]
+    if a.dec_wd >= 0:  # W16: decoder-side parameters get their own weight decay
+        is_dec = lambda nm: not nm.startswith(('sw.', 'convs.', 'emb.', 'proj.'))
+        groups = [{'params': [q for nm, q in model.named_parameters() if not is_dec(nm) and not nm.startswith('sw.') and nm != 'emb.weight']},
+                  {'params': [q for nm, q in model.named_parameters() if is_dec(nm)], 'weight_decay': a.dec_wd}]
+    if a.encoder == 'lightgcn': groups.append({'params': [model.emb.weight], 'weight_decay': a.emb_l2})
     if model.sw is not None:
         groups.append({'params': model.sw.parameters(), 'lr': a.lr * a.scalar_lr, 'weight_decay': 0.0})
     opt = getattr(torch.optim, a.optimizer)(groups, lr=a.lr, weight_decay=a.wd)

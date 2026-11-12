@@ -1,0 +1,235 @@
+W16 curated pipeline. Standard split, seeds 42-44; every choice below uses validation numbers only (best-epoch validation slice of the training rows; test is read only for the tables).
+
+== Choices on validation (mean over seeds 42-44; criterion = validation within-TF AUROC, validation AUROC shown for reference)
+hESC   wd: base val within 0.7441 (AUROC 0.8936)  decoder wd 0 0.7447 (0.8935) -> decoder wd 0
+hHEP   wd: base val within 0.7835 (AUROC 0.9040)  decoder wd 0 0.7846 (0.9041) -> decoder wd 0; second summary: without 0.7846 with 0.7766 (AUROC 0.9041 / 0.9036) -> skip
+mHSC-E wd: base val within 0.8381 (AUROC 0.9295)  decoder wd 0 0.8367 (0.9291) -> wd 1e-3; second summary: without 0.8381 with 0.8367 (AUROC 0.9295 / 0.9291) -> skip
+mESC   wd: base val within 0.8335 (AUROC 0.9413)  decoder wd 0 0.8287 (0.9401) -> wd 1e-3
+
+== Blend weight w (DC-SBM share of the within-TF rank average) chosen on validation; the DC-SBM validation scores come from a fit without the validation rows
+hESC   w=0.0: 0.7447  w=0.25: 0.7535  w=0.5: 0.7575  w=0.75: 0.7486   -> w = 0.5   (DC-SBM alone 0.7387; grid check 0.7447 vs recorded 0.7447)
+hHEP   w=0.0: 0.7846  w=0.25: 0.7884  w=0.5: 0.7888  w=0.75: 0.7857   -> w = 0.5   (DC-SBM alone 0.7772; grid check 0.7846 vs recorded 0.7846)
+mHSC-E w=0.0: 0.8381  w=0.25: 0.8407  w=0.5: 0.8381  w=0.75: 0.8285   -> w = 0.25   (DC-SBM alone 0.8156; grid check 0.8381 vs recorded 0.8381)
+mESC   w=0.0: 0.8335  w=0.25: 0.8411  w=0.5: 0.8425  w=0.75: 0.8382   -> w = 0.5   (DC-SBM alone 0.8312; grid check 0.8335 vs recorded 0.8335)
+
+==================== hESC: GCN 1 layer, Hadamard, batch split, Geneformer; decoder wd 0; second summary no; blend w = 0.5
+model                                                     AUROC            AUPRC        within-TF        within>=8
+-- per-seed mean (seeds 42-44)
+scRegNet published recipe                       0.8829 ± 0.0011  0.6147 ± 0.0022  0.7020 ± 0.0062  0.7003 ± 0.0025
+best single model (chosen config alone)         0.8892 ± 0.0015  0.6237 ± 0.0024  0.7360 ± 0.0042  0.7287 ± 0.0045
+chosen GNN variant, no blend                    0.8893 ± 0.0014  0.6268 ± 0.0052  0.7366 ± 0.0031  0.7281 ± 0.0039
+DC-SBM alone                                    0.8741 ± 0.0006  0.6056 ± 0.0030  0.7295 ± 0.0036  0.7140 ± 0.0048
+PIPELINE                                        0.8890 ± 0.0016  0.6336 ± 0.0040  0.7460 ± 0.0016  0.7342 ± 0.0019
+ref: test-picked grid best (optimistic)         0.8902 ± 0.0028  0.6345 ± 0.0034  0.7502 ± 0.0089  0.7294 ± 0.0098
+  pipeline - recipe (per-seed mean)              within-TF diff +0.0440  95% CI [+0.0174, +0.0747]  TFs better 24/33  p=0.000703
+  pipeline - best single model (per-seed mean)   within-TF diff +0.0100  95% CI [-0.0013, +0.0211]  TFs better 24/33  p=0.037
+  pipeline - test-picked grid best (per-seed mean) within-TF diff -0.0042  95% CI [-0.0304, +0.0187]  TFs better 16/33  p=0.916
+  best single model - recipe (per-seed mean)     within-TF diff +0.0340  95% CI [+0.0060, +0.0664]  TFs better 24/33  p=0.0484
+-- seed ensemble (seeds 42-44)
+scRegNet published recipe                                0.8836           0.6161           0.7034           0.7021
+best single model (chosen config alone)                  0.8920           0.6307           0.7421           0.7347
+chosen GNN variant, no blend                             0.8919           0.6338           0.7421           0.7347
+DC-SBM alone                                             0.8745           0.6068           0.7319           0.7174
+PIPELINE                                                 0.8900           0.6362           0.7478           0.7372
+ref: test-picked grid best (optimistic)                  0.8935           0.6421           0.7573           0.7364
+  pipeline - recipe (seed ensemble)              within-TF diff +0.0445  95% CI [+0.0181, +0.0761]  TFs better 24/33  p=0.00114
+  pipeline - best single model (seed ensemble)   within-TF diff +0.0057  95% CI [-0.0050, +0.0162]  TFs better 22/33  p=0.082
+  pipeline - test-picked grid best (seed ensemble) within-TF diff -0.0094  95% CI [-0.0362, +0.0146]  TFs better 14/33  p=0.4
+  best single model - recipe (seed ensemble)     within-TF diff +0.0388  95% CI [+0.0101, +0.0720]  TFs better 25/33  p=0.0129
+-- marginal effects in the pipeline context (within-TF; paired per-TF Wilcoxon)
+  DC-SBM blend (w=0.5 vs 0) [per-seed mean]      within-TF diff +0.0094  95% CI [-0.0015, +0.0200]  TFs better 24/33  p=0.037
+  chosen decoder wd vs the other value [per-seed mean] within-TF diff -0.0007  95% CI [-0.0020, +0.0006]  TFs better 15/33  p=0.304
+  DC-SBM blend (w=0.5 vs 0) [seed ensemble]      within-TF diff +0.0058  95% CI [-0.0042, +0.0158]  TFs better 20/33  p=0.147
+  chosen decoder wd vs the other value [seed ensemble] within-TF diff -0.0007  95% CI [-0.0022, +0.0007]  TFs better 13/33  p=0.262
+  seed ensemble vs per-seed mean (pipeline)      within-TF diff +0.0018  95% CI [-0.0002, +0.0039]  TFs better 26/33  p=0.00783
+  seed ensemble vs per-seed mean (recipe)        within-TF diff +0.0014  95% CI [-0.0000, +0.0027]  TFs better 24/33  p=0.00196
+   same-seed within-TF gaps pipeline - recipe: +0.0490, +0.0481, +0.0350
+   mean within-TF Spearman between the chosen GNN scores and the DC-SBM scores (test rows): 0.759; within-TF AUROC GNN 0.7366, DC-SBM 0.7295
+
+==================== hHEP: GCN 1 layer, Hadamard, batch split, Geneformer; decoder wd 0; second summary no; blend w = 0.5
+model                                                     AUROC            AUPRC        within-TF        within>=8
+-- per-seed mean (seeds 42-44)
+scRegNet published recipe                       0.9022 ± 0.0003  0.8410 ± 0.0006  0.7873 ± 0.0011  0.7789 ± 0.0006
+best single model (chosen config alone)         0.9031 ± 0.0012  0.8450 ± 0.0006  0.7900 ± 0.0010  0.7887 ± 0.0005
+chosen GNN variant, no blend                    0.9017 ± 0.0019  0.8432 ± 0.0014  0.7875 ± 0.0011  0.7865 ± 0.0027
+DC-SBM alone                                    0.8948 ± 0.0000  0.8366 ± 0.0000  0.8006 ± 0.0001  0.7945 ± 0.0001
+PIPELINE                                        0.9063 ± 0.0004  0.8499 ± 0.0007  0.8075 ± 0.0006  0.8004 ± 0.0003
+ref: test-picked grid best (optimistic)         0.9041 ± 0.0007  0.8467 ± 0.0010  0.7919 ± 0.0036  0.7867 ± 0.0025
+  pipeline - recipe (per-seed mean)              within-TF diff +0.0203  95% CI [-0.0028, +0.0515]  TFs better 23/30  p=0.012
+  pipeline - best single model (per-seed mean)   within-TF diff +0.0175  95% CI [+0.0032, +0.0348]  TFs better 20/30  p=0.0128
+  pipeline - test-picked grid best (per-seed mean) within-TF diff +0.0156  95% CI [+0.0013, +0.0351]  TFs better 21/30  p=0.0293
+  best single model - recipe (per-seed mean)     within-TF diff +0.0027  95% CI [-0.0295, +0.0342]  TFs better 17/30  p=0.428
+-- seed ensemble (seeds 42-44)
+scRegNet published recipe                                0.9024           0.8412           0.7870           0.7791
+best single model (chosen config alone)                  0.9045           0.8472           0.7925           0.7911
+chosen GNN variant, no blend                             0.9038           0.8466           0.7923           0.7899
+DC-SBM alone                                             0.8948           0.8366           0.8006           0.7944
+PIPELINE                                                 0.9069           0.8508           0.8097           0.8020
+ref: test-picked grid best (optimistic)                  0.9057           0.8493           0.7944           0.7888
+  pipeline - recipe (seed ensemble)              within-TF diff +0.0227  95% CI [-0.0011, +0.0551]  TFs better 24/30  p=0.00871
+  pipeline - best single model (seed ensemble)   within-TF diff +0.0172  95% CI [+0.0035, +0.0338]  TFs better 18/30  p=0.0185
+  pipeline - test-picked grid best (seed ensemble) within-TF diff +0.0152  95% CI [+0.0009, +0.0352]  TFs better 20/30  p=0.0577
+  best single model - recipe (seed ensemble)     within-TF diff +0.0055  95% CI [-0.0269, +0.0381]  TFs better 19/30  p=0.309
+-- marginal effects in the pipeline context (within-TF; paired per-TF Wilcoxon)
+  DC-SBM blend (w=0.5 vs 0) [per-seed mean]      within-TF diff +0.0200  95% CI [+0.0057, +0.0365]  TFs better 21/30  p=0.00761
+  chosen decoder wd vs the other value [per-seed mean] within-TF diff -0.0003  95% CI [-0.0019, +0.0013]  TFs better 14/30  p=0.824
+  second summary (with vs without) [per-seed mean] within-TF diff -0.0069  95% CI [-0.0155, -0.0001]  TFs better 9/30  p=0.0919
+  DC-SBM blend (w=0.5 vs 0) [seed ensemble]      within-TF diff +0.0174  95% CI [+0.0033, +0.0331]  TFs better 18/30  p=0.0405
+  chosen decoder wd vs the other value [seed ensemble] within-TF diff +0.0004  95% CI [-0.0011, +0.0020]  TFs better 17/30  p=0.336
+  second summary (with vs without) [seed ensemble] within-TF diff -0.0075  95% CI [-0.0170, -0.0002]  TFs better 10/30  p=0.0879
+  seed ensemble vs per-seed mean (pipeline)      within-TF diff +0.0021  95% CI [+0.0011, +0.0033]  TFs better 23/30  p=7.91e-05
+  seed ensemble vs per-seed mean (recipe)        within-TF diff -0.0003  95% CI [-0.0017, +0.0008]  TFs better 14/30  p=0.824
+   same-seed within-TF gaps pipeline - recipe: +0.0225, +0.0194, +0.0189
+   mean within-TF Spearman between the chosen GNN scores and the DC-SBM scores (test rows): 0.818; within-TF AUROC GNN 0.7875, DC-SBM 0.8006
+
+==================== mHSC-E: neural PANDA 2 layers, Hadamard, batch split, Geneformer; decoder wd 1e-3; second summary no; blend w = 0.25
+model                                                     AUROC            AUPRC        within-TF        within>=8
+-- per-seed mean (seeds 42-44)
+scRegNet published recipe                       0.9196 ± 0.0001  0.9392 ± 0.0001  0.7210 ± 0.0004  0.7757 ± 0.0004
+best single model (chosen config alone)         0.9240 ± 0.0022  0.9432 ± 0.0017  0.7707 ± 0.0032  0.8150 ± 0.0007
+chosen GNN variant, no blend                    0.9240 ± 0.0022  0.9432 ± 0.0017  0.7707 ± 0.0032  0.8150 ± 0.0007
+DC-SBM alone                                    0.9128 ± 0.0005  0.9331 ± 0.0002  0.7531 ± 0.0012  0.8110 ± 0.0019
+PIPELINE                                        0.9271 ± 0.0008  0.9461 ± 0.0006  0.7700 ± 0.0024  0.8197 ± 0.0008
+ref: test-picked grid best (optimistic)         0.9254 ± 0.0005  0.9442 ± 0.0006  0.8076 ± 0.0016  0.8104 ± 0.0015
+  pipeline - recipe (per-seed mean)              within-TF diff +0.0490  95% CI [+0.0188, +0.0922]  TFs better 25/29  p=5.52e-06
+  pipeline - best single model (per-seed mean)   within-TF diff -0.0007  95% CI [-0.0089, +0.0056]  TFs better 20/29  p=0.0877
+  pipeline - test-picked grid best (per-seed mean) within-TF diff -0.0376  95% CI [-0.1058, +0.0103]  TFs better 16/29  p=0.508
+  best single model - recipe (per-seed mean)     within-TF diff +0.0497  95% CI [+0.0178, +0.0937]  TFs better 25/29  p=9.82e-05
+-- seed ensemble (seeds 42-44)
+scRegNet published recipe                                0.9197           0.9393           0.7208           0.7760
+best single model (chosen config alone)                  0.9263           0.9450           0.7729           0.8184
+chosen GNN variant, no blend                             0.9263           0.9450           0.7729           0.8184
+DC-SBM alone                                             0.9130           0.9332           0.7558           0.8141
+PIPELINE                                                 0.9285           0.9472           0.7713           0.8226
+ref: test-picked grid best (optimistic)                  0.9265           0.9452           0.8107           0.8128
+  pipeline - recipe (seed ensemble)              within-TF diff +0.0505  95% CI [+0.0186, +0.0966]  TFs better 24/29  p=3.41e-05
+  pipeline - best single model (seed ensemble)   within-TF diff -0.0016  95% CI [-0.0105, +0.0053]  TFs better 19/29  p=0.213
+  pipeline - test-picked grid best (seed ensemble) within-TF diff -0.0394  95% CI [-0.1115, +0.0114]  TFs better 19/29  p=0.508
+  best single model - recipe (seed ensemble)     within-TF diff +0.0521  95% CI [+0.0192, +0.0980]  TFs better 25/29  p=7.73e-05
+-- marginal effects in the pipeline context (within-TF; paired per-TF Wilcoxon)
+  DC-SBM blend (w=0.25 vs 0) [per-seed mean]     within-TF diff -0.0007  95% CI [-0.0089, +0.0056]  TFs better 20/29  p=0.0877
+  chosen decoder wd vs the other value [per-seed mean] within-TF diff +0.0008  95% CI [-0.0053, +0.0073]  TFs better 18/29  p=0.0877
+  second summary (with vs without) [per-seed mean] within-TF diff +0.0002  95% CI [-0.0036, +0.0051]  TFs better 13/29  p=0.565
+  DC-SBM blend (w=0.25 vs 0) [seed ensemble]     within-TF diff -0.0016  95% CI [-0.0105, +0.0053]  TFs better 19/29  p=0.213
+  chosen decoder wd vs the other value [seed ensemble] within-TF diff +0.0005  95% CI [-0.0056, +0.0070]  TFs better 18/29  p=0.247
+  second summary (with vs without) [seed ensemble] within-TF diff +0.0002  95% CI [-0.0040, +0.0057]  TFs better 13/29  p=0.468
+  seed ensemble vs per-seed mean (pipeline)      within-TF diff +0.0013  95% CI [-0.0018, +0.0045]  TFs better 19/29  p=0.0506
+  seed ensemble vs per-seed mean (recipe)        within-TF diff -0.0002  95% CI [-0.0012, +0.0006]  TFs better 18/29  p=0.325
+   same-seed within-TF gaps pipeline - recipe: +0.0514, +0.0463, +0.0493
+   mean within-TF Spearman between the chosen GNN scores and the DC-SBM scores (test rows): 0.818; within-TF AUROC GNN 0.7707, DC-SBM 0.7531
+
+==================== mESC: neural PANDA 2 layers, Hadamard, no split, Geneformer; decoder wd 1e-3; second summary no; blend w = 0.5
+model                                                     AUROC            AUPRC        within-TF        within>=8
+-- per-seed mean (seeds 42-44)
+scRegNet published recipe                       0.9254 ± 0.0001  0.8587 ± 0.0000  0.7658 ± 0.0002  0.7652 ± 0.0001
+best single model (chosen config alone)         0.9412 ± 0.0019  0.8864 ± 0.0035  0.8252 ± 0.0047  0.8334 ± 0.0029
+chosen GNN variant, no blend                    0.9412 ± 0.0019  0.8864 ± 0.0035  0.8252 ± 0.0047  0.8334 ± 0.0029
+DC-SBM alone                                    0.9356 ± 0.0006  0.8809 ± 0.0012  0.8332 ± 0.0018  0.8401 ± 0.0021
+PIPELINE                                        0.9445 ± 0.0010  0.8933 ± 0.0019  0.8403 ± 0.0030  0.8485 ± 0.0025
+ref: test-picked grid best (optimistic)         0.9399 ± 0.0001  0.8830 ± 0.0001  0.8284 ± 0.0007  0.8334 ± 0.0008
+  pipeline - recipe (per-seed mean)              within-TF diff +0.0745  95% CI [+0.0516, +0.0986]  TFs better 72/85  p=3.83e-11
+  pipeline - best single model (per-seed mean)   within-TF diff +0.0151  95% CI [+0.0105, +0.0201]  TFs better 67/85  p=2.24e-09
+  pipeline - test-picked grid best (per-seed mean) within-TF diff +0.0119  95% CI [+0.0033, +0.0198]  TFs better 62/85  p=4.73e-06
+  best single model - recipe (per-seed mean)     within-TF diff +0.0594  95% CI [+0.0362, +0.0844]  TFs better 62/85  p=1.87e-07
+-- seed ensemble (seeds 42-44)
+scRegNet published recipe                                0.9254           0.8588           0.7659           0.7651
+best single model (chosen config alone)                  0.9434           0.8907           0.8291           0.8378
+chosen GNN variant, no blend                             0.9434           0.8907           0.8291           0.8378
+DC-SBM alone                                             0.9367           0.8838           0.8373           0.8447
+PIPELINE                                                 0.9453           0.8950           0.8428           0.8515
+ref: test-picked grid best (optimistic)                  0.9413           0.8859           0.8318           0.8364
+  pipeline - recipe (seed ensemble)              within-TF diff +0.0769  95% CI [+0.0539, +0.1010]  TFs better 73/85  p=2.2e-11
+  pipeline - best single model (seed ensemble)   within-TF diff +0.0137  95% CI [+0.0086, +0.0187]  TFs better 66/85  p=2.89e-08
+  pipeline - test-picked grid best (seed ensemble) within-TF diff +0.0110  95% CI [+0.0017, +0.0194]  TFs better 64/85  p=5.87e-06
+  best single model - recipe (seed ensemble)     within-TF diff +0.0632  95% CI [+0.0395, +0.0882]  TFs better 63/85  p=2.67e-08
+-- marginal effects in the pipeline context (within-TF; paired per-TF Wilcoxon)
+  DC-SBM blend (w=0.5 vs 0) [per-seed mean]      within-TF diff +0.0151  95% CI [+0.0105, +0.0201]  TFs better 67/85  p=2.24e-09
+  chosen decoder wd vs the other value [per-seed mean] within-TF diff +0.0019  95% CI [+0.0001, +0.0040]  TFs better 49/85  p=0.0694
+  DC-SBM blend (w=0.5 vs 0) [seed ensemble]      within-TF diff +0.0137  95% CI [+0.0086, +0.0187]  TFs better 66/85  p=2.89e-08
+  chosen decoder wd vs the other value [seed ensemble] within-TF diff +0.0015  95% CI [+0.0003, +0.0029]  TFs better 46/85  p=0.0512
+  seed ensemble vs per-seed mean (pipeline)      within-TF diff +0.0025  95% CI [+0.0017, +0.0033]  TFs better 75/85  p=3.83e-11
+  seed ensemble vs per-seed mean (recipe)        within-TF diff +0.0001  95% CI [-0.0001, +0.0003]  TFs better 41/85  p=0.596
+   same-seed within-TF gaps pipeline - recipe: +0.0699, +0.0764, +0.0771
+   mean within-TF Spearman between the chosen GNN scores and the DC-SBM scores (test rows): 0.806; within-TF AUROC GNN 0.8252, DC-SBM 0.8332
+
+==================== hESC held-out genes (5 folds x seeds 42, 43; GCN 1 layer, Hadamard, batch split, Geneformer)
+validation (held-out validation genes), within-TF of the blend, mean over 10 runs: w=0.0: 0.6142  w=0.25: 0.6399  w=0.5: 0.6635  w=0.75: 0.6610   -> w = 0.5
+model                                                     AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + DC-SBM w=0.5)                   0.8598 ± 0.0054  0.5517 ± 0.0120  0.5783 ± 0.0325  0.5944 ± 0.0186
+GNN alone (chosen decoder wd)                   0.8380 ± 0.0115  0.5180 ± 0.0138  0.5576 ± 0.0401  0.5832 ± 0.0159
+DC-SBM Geneformer soft alone                    0.8573 ± 0.0057  0.5379 ± 0.0191  0.5753 ± 0.0277  0.5782 ± 0.0265
+GNN, other decoder wd                           0.8381 ± 0.0114  0.5187 ± 0.0138  0.5570 ± 0.0401  0.5833 ± 0.0161
+scRegNet design, Adam-tuned (recipe baseline)   0.8328 ± 0.0103  0.5275 ± 0.0181  0.5241 ± 0.0405  0.5591 ± 0.0260
+hero (SAGE, no Geneformer)                      0.8467 ± 0.0064  0.5213 ± 0.0111  0.5461 ± 0.0305  0.5617 ± 0.0156
+  pipeline - GNN alone (chosen decoder wd)       within-TF diff +0.0189  95% CI [+0.0057, +0.0322]  TFs better 23/34  p=0.00384
+  pipeline - DC-SBM Geneformer soft alone        within-TF diff -0.0070  95% CI [-0.0423, +0.0231]  TFs better 21/34  p=0.37
+  pipeline - GNN, other decoder wd               within-TF diff +0.0195  95% CI [+0.0060, +0.0329]  TFs better 24/34  p=0.00265
+  pipeline - scRegNet design, Adam-tuned (recipe baseline) within-TF diff +0.0620  95% CI [+0.0246, +0.1080]  TFs better 23/34  p=0.00205
+  pipeline - hero (SAGE, no Geneformer)          within-TF diff +0.0161  95% CI [-0.0190, +0.0487]  TFs better 22/34  p=0.113
+seed ensemble over the 2 seeds per fold:
+pipeline (ensemble)                             0.8609 ± 0.0055  0.5544 ± 0.0126  0.5802 ± 0.0305  0.5977 ± 0.0169
+recipe (ensemble)                               0.8333 ± 0.0103  0.5287 ± 0.0183  0.5244 ± 0.0414  0.5601 ± 0.0266
+  pipeline ens - recipe ens                      within-TF diff +0.0642  95% CI [+0.0265, +0.1105]  TFs better 24/34  p=0.00218
+
+==================== hESC held-out tfs (5 folds x seeds 42, 43; GCN 1 layer, Hadamard, batch split, Geneformer)
+model                                                     AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN alone)                            0.5576 ± 0.0989  0.1918 ± 0.0495  0.6850 ± 0.0482  0.6657 ± 0.0236
+GNN, other decoder wd                           0.5616 ± 0.0931  0.1924 ± 0.0508  0.6816 ± 0.0471  0.6630 ± 0.0262
+scRegNet design, Adam-tuned (recipe baseline)   0.6009 ± 0.0918  0.2303 ± 0.0821  0.7163 ± 0.0626  0.7045 ± 0.0366
+hero (SAGE, no Geneformer)                      0.6304 ± 0.1127  0.2314 ± 0.0978  0.6855 ± 0.0643  0.6766 ± 0.0388
+  pipeline - GNN, other decoder wd               within-TF diff +0.0035  95% CI [-0.0012, +0.0082]  TFs better 22/34  p=0.121
+  pipeline - scRegNet design, Adam-tuned (recipe baseline) within-TF diff -0.0320  95% CI [-0.0471, -0.0150]  TFs better 6/34  p=0.000126
+  pipeline - hero (SAGE, no Geneformer)          within-TF diff -0.0014  95% CI [-0.0228, +0.0222]  TFs better 14/34  p=0.397
+
+==================== Sensitivity: the grid configuration picked on TEST in section 24 (hESC/hHEP neural PANDA, mHSC-E GCN, mESC SAGE no split) instead of the validation choice; decoder wd 1e-3, no second summary, w chosen on validation
+hESC   neural PANDA 2 layers; validation within-TF of the blend w=0.0: 0.7326  w=0.25: 0.7401  w=0.5: 0.7426  w=0.75: 0.7425 -> w = 0.5; validation within-TF of this config alone 0.7326 (the validation-chosen config: 0.7447)
+   [per-seed mean] config alone 0.7491, + blend 0.7507, recipe 0.7020, main pipeline 0.7460
+     sensitivity pipeline - recipe [per-seed mean] within-TF diff +0.0487  95% CI [+0.0210, +0.0794]  TFs better 25/33  p=0.000189
+     sensitivity pipeline - its config alone [per-seed mean] within-TF diff +0.0016  95% CI [-0.0131, +0.0150]  TFs better 19/33  p=0.204
+     sensitivity pipeline - main pipeline [per-seed mean] within-TF diff +0.0047  95% CI [-0.0103, +0.0214]  TFs better 20/33  p=0.348
+   [seed ensemble] config alone 0.7533, + blend 0.7522, recipe 0.7034, main pipeline 0.7478
+     sensitivity pipeline - recipe [seed ensemble] within-TF diff +0.0488  95% CI [+0.0209, +0.0800]  TFs better 23/33  p=0.000622
+     sensitivity pipeline - its config alone [seed ensemble] within-TF diff -0.0011  95% CI [-0.0166, +0.0128]  TFs better 18/33  p=0.422
+     sensitivity pipeline - main pipeline [seed ensemble] within-TF diff +0.0043  95% CI [-0.0110, +0.0213]  TFs better 16/33  p=0.638
+hHEP   neural PANDA 2 layers; validation within-TF of the blend w=0.0: 0.7870  w=0.25: 0.7887  w=0.5: 0.7889  w=0.75: 0.7846 -> w = 0.5; validation within-TF of this config alone 0.7870 (the validation-chosen config: 0.7846)
+   [per-seed mean] config alone 0.7917, + blend 0.8039, recipe 0.7873, main pipeline 0.8075
+     sensitivity pipeline - recipe [per-seed mean] within-TF diff +0.0166  95% CI [-0.0018, +0.0393]  TFs better 24/30  p=0.00172
+     sensitivity pipeline - its config alone [per-seed mean] within-TF diff +0.0122  95% CI [+0.0008, +0.0261]  TFs better 24/30  p=0.00664
+     sensitivity pipeline - main pipeline [per-seed mean] within-TF diff -0.0036  95% CI [-0.0134, +0.0035]  TFs better 14/30  p=0.556
+   [seed ensemble] config alone 0.7943, + blend 0.8050, recipe 0.7870, main pipeline 0.8097
+     sensitivity pipeline - recipe [seed ensemble] within-TF diff +0.0180  95% CI [-0.0005, +0.0410]  TFs better 24/30  p=0.00123
+     sensitivity pipeline - its config alone [seed ensemble] within-TF diff +0.0107  95% CI [-0.0010, +0.0248]  TFs better 20/30  p=0.0248
+     sensitivity pipeline - main pipeline [seed ensemble] within-TF diff -0.0047  95% CI [-0.0149, +0.0028]  TFs better 10/30  p=0.309
+mHSC-E GCN 1 layer; validation within-TF of the blend w=0.0: 0.8192  w=0.25: 0.8264  w=0.5: 0.8294  w=0.75: 0.8244 -> w = 0.5; validation within-TF of this config alone 0.8192 (the validation-chosen config: 0.8381)
+   [per-seed mean] config alone 0.8074, + blend 0.7867, recipe 0.7210, main pipeline 0.7700
+     sensitivity pipeline - recipe [per-seed mean] within-TF diff +0.0657  95% CI [+0.0302, +0.1107]  TFs better 29/29  p=3.73e-09
+     sensitivity pipeline - its config alone [per-seed mean] within-TF diff -0.0207  95% CI [-0.0620, +0.0099]  TFs better 21/29  p=0.149
+     sensitivity pipeline - main pipeline [per-seed mean] within-TF diff +0.0167  95% CI [-0.0022, +0.0435]  TFs better 18/29  p=0.143
+   [seed ensemble] config alone 0.8101, + blend 0.7891, recipe 0.7208, main pipeline 0.7713
+     sensitivity pipeline - recipe [seed ensemble] within-TF diff +0.0683  95% CI [+0.0322, +0.1146]  TFs better 26/29  p=5.26e-06
+     sensitivity pipeline - its config alone [seed ensemble] within-TF diff -0.0210  95% CI [-0.0628, +0.0100]  TFs better 19/29  p=0.238
+     sensitivity pipeline - main pipeline [seed ensemble] within-TF diff +0.0178  95% CI [-0.0033, +0.0474]  TFs better 17/29  p=0.11
+mESC   SAGE 1 layer; validation within-TF of the blend w=0.0: 0.8238  w=0.25: 0.8337  w=0.5: 0.8393  w=0.75: 0.8373 -> w = 0.5; validation within-TF of this config alone 0.8238 (the validation-chosen config: 0.8335)
+   [per-seed mean] config alone 0.8288, + blend 0.8425, recipe 0.7658, main pipeline 0.8403
+     sensitivity pipeline - recipe [per-seed mean] within-TF diff +0.0767  95% CI [+0.0545, +0.1006]  TFs better 70/85  p=1.82e-12
+     sensitivity pipeline - its config alone [per-seed mean] within-TF diff +0.0138  95% CI [+0.0084, +0.0191]  TFs better 68/85  p=4.25e-08
+     sensitivity pipeline - main pipeline [per-seed mean] within-TF diff +0.0022  95% CI [-0.0015, +0.0068]  TFs better 41/85  p=0.792
+   [seed ensemble] config alone 0.8318, + blend 0.8454, recipe 0.7659, main pipeline 0.8428
+     sensitivity pipeline - recipe [seed ensemble] within-TF diff +0.0795  95% CI [+0.0572, +0.1034]  TFs better 70/85  p=9.33e-13
+     sensitivity pipeline - its config alone [seed ensemble] within-TF diff +0.0136  95% CI [+0.0081, +0.0190]  TFs better 68/85  p=4.79e-08
+     sensitivity pipeline - main pipeline [seed ensemble] within-TF diff +0.0027  95% CI [-0.0016, +0.0081]  TFs better 40/85  p=0.953
+
+==================== VERDICT (rule: PASS if the pipeline beats the recipe on within-TF in all 4 cells and on hESC held-out genes and TFs, and is not below the best single model anywhere)
+-- standard split, per-seed mean: within-TF pipeline / recipe / best single model; pipeline - recipe (p); pipeline - best single (p)
+  hESC    0.7460 / 0.7020 / 0.7360   vs recipe +0.0440 (p=0.000703)   vs best single +0.0100 (p=0.037)
+  hHEP    0.8075 / 0.7873 / 0.7900   vs recipe +0.0203 (p=0.012)   vs best single +0.0175 (p=0.0128)
+  mHSC-E  0.7700 / 0.7210 / 0.7707   vs recipe +0.0490 (p=5.52e-06)   vs best single -0.0007 (p=0.0877)
+  mESC    0.8403 / 0.7658 / 0.8252   vs recipe +0.0745 (p=3.83e-11)   vs best single +0.0151 (p=2.24e-09)
+-- standard split, seed ensemble: within-TF pipeline / recipe / best single model; pipeline - recipe (p); pipeline - best single (p)
+  hESC    0.7478 / 0.7034 / 0.7421   vs recipe +0.0445 (p=0.00114)   vs best single +0.0057 (p=0.082)
+  hHEP    0.8097 / 0.7870 / 0.7925   vs recipe +0.0227 (p=0.00871)   vs best single +0.0172 (p=0.0185)
+  mHSC-E  0.7713 / 0.7208 / 0.7729   vs recipe +0.0505 (p=3.41e-05)   vs best single -0.0016 (p=0.213)
+  mESC    0.8428 / 0.7659 / 0.8291   vs recipe +0.0769 (p=2.2e-11)   vs best single +0.0137 (p=2.89e-08)
+-- hESC held-out genes, within-TF: pipeline 0.5783; GNN alone (chosen decoder wd) 0.5576 (diff +0.0189, p=0.00384); scRegNet design, Adam-tuned (recipe baseline) 0.5241 (diff +0.0620, p=0.00205); hero (SAGE, no Geneformer) 0.5461 (diff +0.0161, p=0.113)
+-- hESC held-out tfs, within-TF: pipeline 0.6850; scRegNet design, Adam-tuned (recipe baseline) 0.7163 (diff -0.0320, p=0.000126); hero (SAGE, no Geneformer) 0.6855 (diff -0.0014, p=0.397)
+VERDICT: FAIL; mHSC-E below the best single model (per-seed mean) by -0.0007 (p=0.088); mHSC-E below the best single model (seed ensemble) by -0.0016 (p=0.21); held-out tfs below scRegNet design, Adam-tuned by -0.0320 (p=0.00013); held-out tfs below hero by -0.0014 (p=0.4)

@@ -1,0 +1,137 @@
+W13 leads. Best grid configuration of each cell (Hadamard decoder, Geneformer on, hero hyper-parameters), epoch chosen on validation AUROC, refit on all training rows; seeds 42-44;
+paired per-TF Wilcoxon (per-TF test AUROC averaged over the three seeds) against the matching baseline run of the grid. qs = second TF summary (qatt, uniform, 1 head, post-GNN embeddings);
+dc = learned DC-SBM score as a decoder input (--scalar dcsbm, out-of-fold for training rows); dclr10 = same with a separate linear term at 10x learning rate.
+
+== Choice of the dcsbm variant per cell (validation AUROC at seed 42)
+hESC     dc val AUROC 0.8950  dclr10 val AUROC 0.8965  -> dclr10
+hHEP     dc val AUROC 0.9028  dclr10 val AUROC 0.9050  -> dclr10
+mHSC-E   dc val AUROC 0.9248  dclr10 val AUROC 0.9258  -> dclr10
+mESC     dc val AUROC 0.9389  dclr10 val AUROC 0.9396  -> dclr10
+
+== hESC
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+baseline (npanda 2 layers, batch split)        3   0.8902 ± 0.0028  0.6345 ± 0.0034  0.7502 ± 0.0089  0.7294 ± 0.0098  0.8944 ± 0.0006    0.90
++ summary (qs)                                 3   0.8905 ± 0.0025  0.6324 ± 0.0033  0.7513 ± 0.0074  0.7299 ± 0.0085  0.8947 ± 0.0003    0.97
++ dcsbm scalar (dclr10)                        3   0.8922 ± 0.0006  0.6380 ± 0.0033  0.7516 ± 0.0020  0.7332 ± 0.0034  0.8955 ± 0.0008    0.99
++ both (qs + dclr10)                           3   0.8905 ± 0.0012  0.6339 ± 0.0018  0.7476 ± 0.0059  0.7281 ± 0.0032  0.8948 ± 0.0002    1.29
+paired per-TF tests vs baseline (w5_nphad_gf), seeds [42, 43, 44]:
+  + summary (qs)                                 within-TF diff +0.0011  95% CI [-0.0023, +0.0046]  TFs better 16/33  p=0.48
+  + dcsbm scalar (dclr10)                        within-TF diff +0.0015  95% CI [-0.0038, +0.0067]  TFs better 18/33  p=0.501
+  + both (qs + dclr10)                           within-TF diff -0.0025  95% CI [-0.0059, +0.0007]  TFs better 15/33  p=0.242
+same-seed differences vs baseline (mean over seeds, seeds better):
+  + summary (qs)                                 AUROC +0.0003 (2/3)  AUPRC -0.0021  within-TF +0.0011 (2/3)
+  + dcsbm scalar (dclr10)                        AUROC +0.0020 (1/3)  AUPRC +0.0035  within-TF +0.0015 (1/3)
+  + both (qs + dclr10)                           AUROC +0.0003 (1/3)  AUPRC -0.0007  within-TF -0.0025 (1/3)
+
+== hHEP
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+baseline (npanda 2 layers, batch split)        3   0.9041 ± 0.0007  0.8467 ± 0.0010  0.7919 ± 0.0036  0.7867 ± 0.0025  0.9032 ± 0.0007    2.00
++ summary (qs)                                 3   0.9039 ± 0.0012  0.8458 ± 0.0018  0.7885 ± 0.0018  0.7852 ± 0.0012  0.9026 ± 0.0003    1.49
++ dcsbm scalar (dclr10)                        3   0.9048 ± 0.0016  0.8476 ± 0.0026  0.7937 ± 0.0020  0.7895 ± 0.0005  0.9037 ± 0.0010    1.65
++ both (qs + dclr10)                           3   0.9050 ± 0.0010  0.8477 ± 0.0015  0.7903 ± 0.0015  0.7889 ± 0.0013  0.9034 ± 0.0010    3.13
+  not chosen: dcsbm (dc)                       3   0.9032 ± 0.0015  0.8453 ± 0.0019  0.7917 ± 0.0036  0.7873 ± 0.0030  0.9032 ± 0.0008    1.38
+paired per-TF tests vs baseline (w11_grid_hHEP_npanda_had_batch_gf1), seeds [42, 43, 44]:
+  + summary (qs)                                 within-TF diff -0.0034  95% CI [-0.0101, +0.0019]  TFs better 15/30  p=0.612
+  + dcsbm scalar (dclr10)                        within-TF diff +0.0018  95% CI [-0.0038, +0.0082]  TFs better 20/30  p=0.23
+  + both (qs + dclr10)                           within-TF diff -0.0016  95% CI [-0.0077, +0.0032]  TFs better 18/30  p=0.349
+    not chosen: dcsbm (dc)                       within-TF diff -0.0002  95% CI [-0.0020, +0.0012]  TFs better 18/30  p=0.327
+same-seed differences vs baseline (mean over seeds, seeds better):
+  + summary (qs)                                 AUROC -0.0003 (2/3)  AUPRC -0.0009  within-TF -0.0034 (0/3)
+  + dcsbm scalar (dclr10)                        AUROC +0.0007 (2/3)  AUPRC +0.0009  within-TF +0.0018 (3/3)
+  + both (qs + dclr10)                           AUROC +0.0008 (3/3)  AUPRC +0.0010  within-TF -0.0016 (1/3)
+    not chosen: dcsbm (dc)                       AUROC -0.0009 (2/3)  AUPRC -0.0014  within-TF -0.0002 (2/3)
+
+== mHSC-E
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+baseline (GCN 1 layer, batch split)            3   0.9254 ± 0.0005  0.9442 ± 0.0006  0.8076 ± 0.0016  0.8104 ± 0.0015  0.9264 ± 0.0004    0.62
++ summary (qs)                                 3   0.9259 ± 0.0008  0.9434 ± 0.0017  0.7930 ± 0.0044  0.8114 ± 0.0006  0.9256 ± 0.0009    1.33
++ dcsbm scalar (dclr10)                        3   0.9236 ± 0.0011  0.9429 ± 0.0009  0.8016 ± 0.0061  0.8093 ± 0.0031  0.9262 ± 0.0003    1.68
++ both (qs + dclr10)                           3   0.9268 ± 0.0002  0.9449 ± 0.0001  0.7924 ± 0.0042  0.8111 ± 0.0006  0.9258 ± 0.0004    1.65
+  not chosen: dcsbm (dc)                       3   0.9253 ± 0.0004  0.9441 ± 0.0005  0.8035 ± 0.0023  0.8079 ± 0.0027  0.9261 ± 0.0009    1.11
+paired per-TF tests vs baseline (w8_mHSC-E_gcngf), seeds [42, 43, 44]:
+  + summary (qs)                                 within-TF diff -0.0147  95% CI [-0.0369, +0.0013]  TFs better 13/29  p=0.508
+  + dcsbm scalar (dclr10)                        within-TF diff -0.0061  95% CI [-0.0134, -0.0006]  TFs better 15/29  p=0.294
+  + both (qs + dclr10)                           within-TF diff -0.0153  95% CI [-0.0384, +0.0015]  TFs better 16/29  p=0.983
+    not chosen: dcsbm (dc)                       within-TF diff -0.0042  95% CI [-0.0113, +0.0024]  TFs better 9/29  p=0.0502
+same-seed differences vs baseline (mean over seeds, seeds better):
+  + summary (qs)                                 AUROC +0.0005 (2/3)  AUPRC -0.0009  within-TF -0.0147 (0/3)
+  + dcsbm scalar (dclr10)                        AUROC -0.0017 (0/3)  AUPRC -0.0013  within-TF -0.0061 (1/3)
+  + both (qs + dclr10)                           AUROC +0.0015 (3/3)  AUPRC +0.0007  within-TF -0.0153 (0/3)
+    not chosen: dcsbm (dc)                       AUROC -0.0001 (0/3)  AUPRC -0.0001  within-TF -0.0042 (0/3)
+
+== mESC
+model                                          n             AUROC            AUPRC        within-TF        within>=8        val AUROC min/run
+baseline (SAGE 1 layer, no split)              3   0.9399 ± 0.0001  0.8830 ± 0.0001  0.8284 ± 0.0007  0.8334 ± 0.0008  0.9387 ± 0.0006    3.53
++ summary (qs)                                 3   0.9399 ± 0.0006  0.8831 ± 0.0007  0.8287 ± 0.0026  0.8332 ± 0.0018  0.9393 ± 0.0006    3.85
++ dcsbm scalar (dclr10)                        3   0.9420 ± 0.0003  0.8875 ± 0.0005  0.8335 ± 0.0005  0.8400 ± 0.0013  0.9403 ± 0.0005    2.08
++ both (qs + dclr10)                           3   0.9425 ± 0.0003  0.8885 ± 0.0004  0.8352 ± 0.0013  0.8408 ± 0.0016  0.9406 ± 0.0002    4.25
+paired per-TF tests vs baseline (w11_grid_mESC_sage_had_none_gf1), seeds [42, 43, 44]:
+  + summary (qs)                                 within-TF diff +0.0003  95% CI [-0.0037, +0.0047]  TFs better 43/85  p=0.6
+  + dcsbm scalar (dclr10)                        within-TF diff +0.0051  95% CI [+0.0010, +0.0090]  TFs better 57/85  p=0.000227
+  + both (qs + dclr10)                           within-TF diff +0.0068  95% CI [+0.0015, +0.0114]  TFs better 62/85  p=4.09e-06
+same-seed differences vs baseline (mean over seeds, seeds better):
+  + summary (qs)                                 AUROC -0.0000 (1/3)  AUPRC +0.0001  within-TF +0.0003 (2/3)
+  + dcsbm scalar (dclr10)                        AUROC +0.0021 (3/3)  AUPRC +0.0045  within-TF +0.0051 (3/3)
+  + both (qs + dclr10)                           AUROC +0.0026 (3/3)  AUPRC +0.0055  within-TF +0.0068 (3/3)
+
+== Diagnostic (not a method): 50/50 rank average of baseline GNN and learned DC-SBM test scores (global ranks over the test pairs), seeds 42-44
+cell    model                                AUROC           AUPRC       within-TF
+hESC    GNN baseline               0.8902 ± 0.0028 0.6345 ± 0.0034 0.7502 ± 0.0089
+hESC    DC-SBM alone               0.8741 ± 0.0006 0.6056 ± 0.0030 0.7295 ± 0.0036
+hESC    rank average               0.8897 ± 0.0011 0.6369 ± 0.0010 0.7538 ± 0.0074
+  hESC: rank average - GNN baseline              within-TF diff +0.0036  95% CI [+0.0003, +0.0069]  TFs better 20/33  p=0.033
+  hESC: rank average - DC-SBM alone              within-TF diff +0.0243  95% CI [-0.0003, +0.0524]  TFs better 19/33  p=0.135
+  hESC: DC-SBM alone - GNN baseline              within-TF diff -0.0207  95% CI [-0.0511, +0.0062]  TFs better 18/33  p=0.525
+   Spearman between the two models' test scores: 0.863
+hHEP    GNN baseline               0.9041 ± 0.0007 0.8467 ± 0.0010 0.7919 ± 0.0036
+hHEP    DC-SBM alone               0.8948 ± 0.0000 0.8366 ± 0.0000 0.8006 ± 0.0001
+hHEP    rank average               0.9061 ± 0.0005 0.8496 ± 0.0008 0.7975 ± 0.0044
+  hHEP: rank average - GNN baseline              within-TF diff +0.0056  95% CI [+0.0025, +0.0087]  TFs better 24/30  p=0.00123
+  hHEP: rank average - DC-SBM alone              within-TF diff -0.0032  95% CI [-0.0258, +0.0185]  TFs better 18/30  p=0.477
+  hHEP: DC-SBM alone - GNN baseline              within-TF diff +0.0087  95% CI [-0.0149, +0.0339]  TFs better 17/30  p=0.318
+   Spearman between the two models' test scores: 0.904
+mHSC-E  GNN baseline               0.9254 ± 0.0005 0.9442 ± 0.0006 0.8076 ± 0.0016
+mHSC-E  DC-SBM alone               0.9128 ± 0.0005 0.9331 ± 0.0002 0.7531 ± 0.0012
+mHSC-E  rank average               0.9258 ± 0.0002 0.9450 ± 0.0002 0.7986 ± 0.0025
+  mHSC-E: rank average - GNN baseline            within-TF diff -0.0091  95% CI [-0.0336, +0.0073]  TFs better 22/29  p=0.0258
+  mHSC-E: rank average - DC-SBM alone            within-TF diff +0.0454  95% CI [+0.0047, +0.0974]  TFs better 20/29  p=0.0229
+  mHSC-E: DC-SBM alone - GNN baseline            within-TF diff -0.0545  95% CI [-0.1302, +0.0020]  TFs better 14/29  p=0.654
+   Spearman between the two models' test scores: 0.931
+mESC    GNN baseline               0.9399 ± 0.0001 0.8830 ± 0.0001 0.8284 ± 0.0007
+mESC    DC-SBM alone               0.9356 ± 0.0006 0.8809 ± 0.0012 0.8332 ± 0.0018
+mESC    rank average               0.9436 ± 0.0004 0.8919 ± 0.0008 0.8428 ± 0.0008
+  mESC: rank average - GNN baseline              within-TF diff +0.0144  95% CI [+0.0108, +0.0182]  TFs better 72/85  p=3.72e-11
+  mESC: rank average - DC-SBM alone              within-TF diff +0.0096  95% CI [+0.0020, +0.0184]  TFs better 61/85  p=0.000532
+  mESC: DC-SBM alone - GNN baseline              within-TF diff +0.0048  95% CI [-0.0062, +0.0151]  TFs better 51/85  p=0.0498
+   Spearman between the two models' test scores: 0.911
+
+== Where the gain sits (per-TF test AUROC, seed-averaged). n_t = number of training targets of the TF; adv = DC-SBM minus baseline per-TF AUROC
+hESC    qs       gain vs n_t: Spearman -0.119 (p=0.51);  gain vs DC-SBM advantage: Spearman +0.668 (p=2.2e-05) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: -0.149 (p=0.41)];  mean gain TFs below / above median n_t (44): +0.0016 / +0.0007
+hESC    dclr10   gain vs n_t: Spearman +0.143 (p=0.43);  gain vs DC-SBM advantage: Spearman +0.526 (p=0.0017) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: -0.156 (p=0.39)];  mean gain TFs below / above median n_t (44): +0.0001 / +0.0028
+hESC    both     gain vs n_t: Spearman +0.184 (p=0.31);  gain vs DC-SBM advantage: Spearman +0.289 (p=0.1) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: +0.079 (p=0.66)];  mean gain TFs below / above median n_t (44): -0.0054 / +0.0001
+hHEP    qs       gain vs n_t: Spearman +0.308 (p=0.098);  gain vs DC-SBM advantage: Spearman +0.240 (p=0.2) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: +0.010 (p=0.96)];  mean gain TFs below / above median n_t (225): -0.0080 / +0.0012
+hHEP    dclr10   gain vs n_t: Spearman -0.056 (p=0.77);  gain vs DC-SBM advantage: Spearman +0.163 (p=0.39) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: +0.100 (p=0.6)];  mean gain TFs below / above median n_t (225): +0.0015 / +0.0021
+hHEP    both     gain vs n_t: Spearman +0.079 (p=0.68);  gain vs DC-SBM advantage: Spearman +0.385 (p=0.036) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: -0.193 (p=0.31)];  mean gain TFs below / above median n_t (225): -0.0044 / +0.0012
+mHSC-E  qs       gain vs n_t: Spearman +0.199 (p=0.3);  gain vs DC-SBM advantage: Spearman +0.380 (p=0.042) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: +0.030 (p=0.88)];  mean gain TFs below / above median n_t (314): -0.0306 / +0.0002
+mHSC-E  dclr10   gain vs n_t: Spearman +0.231 (p=0.23);  gain vs DC-SBM advantage: Spearman +0.569 (p=0.0013) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: +0.197 (p=0.31)];  mean gain TFs below / above median n_t (314): -0.0121 / -0.0005
+mHSC-E  both     gain vs n_t: Spearman +0.090 (p=0.64);  gain vs DC-SBM advantage: Spearman +0.390 (p=0.036) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: +0.036 (p=0.85)];  mean gain TFs below / above median n_t (314): -0.0323 / +0.0006
+mESC    qs       gain vs n_t: Spearman +0.044 (p=0.69);  gain vs DC-SBM advantage: Spearman +0.043 (p=0.69) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: -0.031 (p=0.78)];  mean gain TFs below / above median n_t (156): +0.0015 / -0.0009
+mESC    dclr10   gain vs n_t: Spearman -0.074 (p=0.5);  gain vs DC-SBM advantage: Spearman +0.608 (p=7e-10) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: +0.151 (p=0.17)];  mean gain TFs below / above median n_t (156): +0.0050 / +0.0052
+mESC    both     gain vs n_t: Spearman -0.204 (p=0.061);  gain vs DC-SBM advantage: Spearman +0.438 (p=2.7e-05) [shares -baseline with gain; vs DC-SBM per-TF AUROC alone: -0.025 (p=0.82)];  mean gain TFs below / above median n_t (156): +0.0076 / +0.0060
+
+== Diagnostic on hHEP: the summary (qs) on top of four baselines that differ in encoder and Geneformer (batch split, Hadamard; seeds 42-44)
+  sage 1 layer, no Geneformer (section 25)     baseline within-TF 0.7587, +qs 0.7694
+       + qs - baseline                             within-TF diff +0.0107  95% CI [+0.0012, +0.0258]  TFs better 21/30  p=0.0137
+  sage 1 layer, Geneformer                     baseline within-TF 0.7794, +qs 0.7858
+       + qs - baseline                             within-TF diff +0.0064  95% CI [-0.0020, +0.0184]  TFs better 20/30  p=0.135
+  npanda 2 layers, no Geneformer               baseline within-TF 0.7720, +qs 0.7777
+       + qs - baseline                             within-TF diff +0.0057  95% CI [+0.0010, +0.0114]  TFs better 20/30  p=0.00993
+  npanda 2 layers, Geneformer (best config)    baseline within-TF 0.7919, +qs 0.7885
+       + qs - baseline                             within-TF diff -0.0034  95% CI [-0.0101, +0.0019]  TFs better 15/30  p=0.612
+
+== hHEP held-out genes (5 folds x seeds 42, 43; best hHEP configuration with and without the summary)
+model            n             AUROC            AUPRC        within-TF
+baseline         10   0.8375 ± 0.0085  0.7075 ± 0.0166  0.6563 ± 0.0161
++ summary        10   0.8385 ± 0.0086  0.7082 ± 0.0149  0.6503 ± 0.0138
+  hHEP held-out genes: + summary - baseline      within-TF diff -0.0068  95% CI [-0.0111, -0.0029]  TFs better 8/30  p=0.00664
+  gain vs number of training targets: Spearman +0.440 (p=0.015); below / above median (225): -0.0108 / -0.0029

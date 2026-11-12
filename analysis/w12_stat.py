@@ -51,7 +51,7 @@ class Split:
 
 def load(a):
     """val-mode split (train = train rows minus the validation slice, eval = validation) and full-mode split (train = all, eval = test)"""
-    base = dict(cell_type=a.cell, num_TF='500', scfm_folder='scFM', data_folder='data', protocol=a.protocol, fold=a.fold, split_seed=0)
+    base = dict(cell_type=a.cell, num_TF='500', scfm_folder='scFM', data_folder='data', protocol=a.protocol, fold=a.fold, split_seed=0, emb_feat='none', feat='full')
     D = prepare(NS(**base, scfm=1, val_frac=0.1), 'cpu')
     D2 = prepare(NS(**base, scfm=0, val_frac=0.0), 'cpu')
     tr, te, n = D['tr'], D['te'], D['n']
@@ -274,6 +274,7 @@ def run(a):
     Fg = F['gf']
     models = [('dcsbm_learned', 'sbm', (5, 10, 20), (1, 3, 10, 30, 100)), ('lsm', 'lsm', (2, 4, 8), (1, 3, 10, 30, 100))]
     if not gene: models.insert(1, ('hpf', 'hpf', (4, 8, 16), (0.03, 0.1, 0.3, 1)))
+    if gene and a.skip_lsm: models = []
     if only: models = [('maineff', 'sbm', (1,), (1, 3, 10, 30, 100))] if 'maineff' in only else []  # K=1: no program term, logit = a_t + b_g (+ TF constant)
     for name, kind, ks, l2s in models:
         ras = (10, 100, 1000) if (gene and kind == 'lsm') else (None,)
@@ -294,5 +295,6 @@ if __name__ == '__main__':
     p.add_argument('--cell', default='hESC')
     p.add_argument('--protocol', default='random', choices=['random', 'gene'])
     p.add_argument('--fold', type=int, default=0)
+    p.add_argument('--skip_lsm', type=int, default=0, help='W17: gene protocol, stop after the fixed-cluster DC-SBM (skip the learned latent-space model)')
     p.add_argument('--only', default='', help='comma list; maineff = Bernoulli main-effects control (K=1 block model)')
     run(p.parse_args())

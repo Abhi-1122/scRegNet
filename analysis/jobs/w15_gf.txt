@@ -1,0 +1,22 @@
+w15_gf_hESC_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type hESC --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --seed 42
+w15_gf_hHEP_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type hHEP --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --seed 42
+w15_gf_mHSC-E_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type mHSC-E --encoder gcn --gnn_dims 256 --split batch --seed 42
+w15_gf_mESC_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type mESC --encoder sage --gnn_dims 256 --split none --seed 42
+w15_gf_hESC_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type hESC --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --seed 43
+w15_gf_hHEP_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type hHEP --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --seed 43
+w15_gf_mHSC-E_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type mHSC-E --encoder gcn --gnn_dims 256 --split batch --seed 43
+w15_gf_mESC_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type mESC --encoder sage --gnn_dims 256 --split none --seed 43
+w15_gf_hESC_shuf_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type hESC --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --seed 44
+w15_gf_hHEP_shuf_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type hHEP --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --seed 44
+w15_gf_mHSC-E_shuf_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type mHSC-E --encoder gcn --gnn_dims 256 --split batch --seed 44
+w15_gf_mESC_shuf_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --cell_type mESC --encoder sage --gnn_dims 256 --split none --seed 44
+w15_ho_gene0_herogf_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 0 --seed 42
+w15_ho_gene0_herogf_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 0 --seed 43
+w15_ho_gene1_herogf_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 1 --seed 42
+w15_ho_gene1_herogf_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 1 --seed 43
+w15_ho_gene2_herogf_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 2 --seed 42
+w15_ho_gene2_herogf_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 2 --seed 43
+w15_ho_gene3_herogf_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 3 --seed 42
+w15_ho_gene3_herogf_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 3 --seed 43
+w15_ho_gene4_herogf_shuf_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 4 --seed 42
+w15_ho_gene4_herogf_shuf_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --decoder had --scfm 2 --encoder sage --split batch --gnn_dims 256 --protocol gene --fold 4 --seed 43

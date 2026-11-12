@@ -1,0 +1,77 @@
+W14: node-feature variants of the SAGE hero (no Geneformer). Test_set, seeds 42-44, mean ± std; within-TF p = paired per-TF Wilcoxon (per-TF AUROC averaged over seeds).
+kept share = (variant - rand) / (full - rand).
+
+== hESC
+features       n             AUROC            AUPRC        within-TF   vs full: within-TF diff (TFs better, p)    vs rand: diff (p)    kept share AUROC / AUPRC / within-TF
+full (hero)    3   0.8885 ± 0.0014  0.6254 ± 0.0015  0.7490 ± 0.0018
+cellperm       3   0.8773 ± 0.0007  0.6050 ± 0.0007  0.7141 ± 0.0058   -0.0349 (12/33, p=0.0169)   -0.0072 (p=0.695)   -0.21 / -0.73 / -0.26
+stats          3   0.8621 ± 0.0016  0.5749 ± 0.0026  0.6287 ± 0.0046   -0.1203 (4/33, p=2.1e-07)   -0.0925 (p=4.98e-06)   -1.86 / -3.28 / -3.34
+rand           3   0.8792 ± 0.0005  0.6136 ± 0.0011  0.7213 ± 0.0066   -0.0277 (12/33, p=0.0387)                    
+  full - rand within-TF: +0.0277 (TFs better 21/33, p=0.0387)
+
+== hHEP
+features       n             AUROC            AUPRC        within-TF   vs full: within-TF diff (TFs better, p)    vs rand: diff (p)    kept share AUROC / AUPRC / within-TF
+full (hero)    3   0.8990 ± 0.0006  0.8378 ± 0.0006  0.7587 ± 0.0020
+cellperm       3   0.8984 ± 0.0009  0.8330 ± 0.0017  0.7731 ± 0.0018   +0.0144 (15/30, p=0.984)   +0.0053 (p=0.968)    0.54 / -0.45 / -0.58
+stats          3   0.8795 ± 0.0004  0.7960 ± 0.0003  0.7375 ± 0.0039   -0.0212 (5/30, p=0.00277)   -0.0303 (p=0.00186)   -13.39 / -11.62 /  3.32
+rand           3   0.8977 ± 0.0009  0.8345 ± 0.0006  0.7678 ± 0.0018   +0.0091 (15/30, p=0.968)                    
+  full - rand within-TF: -0.0091 (TFs better 15/30, p=0.968)
+
+== mESC
+features       n             AUROC            AUPRC        within-TF   vs full: within-TF diff (TFs better, p)    vs rand: diff (p)    kept share AUROC / AUPRC / within-TF
+full (hero)    3   0.9390 ± 0.0010  0.8813 ± 0.0016  0.8241 ± 0.0013
+cellperm       3   0.9356 ± 0.0005  0.8764 ± 0.0003  0.8059 ± 0.0017   -0.0182 (27/85, p=0.000426)   +0.0009 (p=0.698)    0.14 /  0.23 /  0.05
+stats          3   0.9045 ± 0.0020  0.8189 ± 0.0043  0.7338 ± 0.0022   -0.0903 (3/85, p=1.24e-12)   -0.0712 (p=5.07e-12)   -7.70 / -8.73 / -3.74
+rand           3   0.9350 ± 0.0001  0.8749 ± 0.0006  0.8051 ± 0.0028   -0.0191 (28/85, p=0.000271)                    
+  full - rand within-TF: +0.0191 (TFs better 55/85, p=0.000271)
+
+== mHSC-E
+features       n             AUROC            AUPRC        within-TF   vs full: within-TF diff (TFs better, p)    vs rand: diff (p)    kept share AUROC / AUPRC / within-TF
+full (hero)    3   0.9233 ± 0.0016  0.9429 ± 0.0017  0.7575 ± 0.0062
+cellperm       3   0.9226 ± 0.0014  0.9427 ± 0.0009  0.7539 ± 0.0060   -0.0036 (16/29, p=0.949)   -0.0064 (p=0.733)    0.78 /  0.83 /  2.29
+stats          3   0.9049 ± 0.0003  0.9226 ± 0.0003  0.6945 ± 0.0020   -0.0630 (4/29, p=0.000124)   -0.0658 (p=0.000174)   -5.40 / -15.83 / 23.47
+rand           3   0.9204 ± 0.0012  0.9417 ± 0.0007  0.7603 ± 0.0110   +0.0028 (15/29, p=0.848)                    
+  full - rand within-TF: -0.0028 (TFs better 14/29, p=0.848)
+
+== Held-out genes, hESC: 5 folds x seeds 42,43 (n = 10 runs per row); the test genes were never in the training graph
+features         n             AUROC            AUPRC        within-TF   vs full: within-TF diff (TFs better, p)
+full (hero, w5)  10   0.8467 ± 0.0064  0.5213 ± 0.0111  0.5461 ± 0.0305
+cellperm         10   0.8439 ± 0.0056  0.5005 ± 0.0203  0.4839 ± 0.0343   -0.0819 (8/34, p=0.000628)
+stats            10   0.8524 ± 0.0045  0.5392 ± 0.0130  0.5598 ± 0.0246   +0.0119 (22/34, p=0.0548)
+rand             10   0.8450 ± 0.0035  0.5043 ± 0.0177  0.4908 ± 0.0174   -0.0382 (8/34, p=0.0161)
+kept share of the within-TF gain over rand (variant - rand) / (full - rand): cellperm -0.13, stats 1.25
+(a new gene has training in-degree 0, so popularity gives 0.5 here; anything above 0.5 comes from the features and the structure of the known genes)
+
+== Single raw statistic as a score: within-TF AUROC of ranking each TF's test genes by the statistic alone (signed; below 0.5 = the opposite direction ranks better), and Spearman of the statistic with gene training in-degree (popularity)
+statistic          hESC within rho(pop)   hHEP within rho(pop)   mESC within rho(pop) mHSC-E within rho(pop)
+mean                    0.5191    0.085        0.5883    0.224        0.5367    0.148        0.5711    0.160
+std                     0.4834   -0.120        0.4562   -0.025        0.4329   -0.203        0.4452   -0.090
+CV                      0.4720   -0.105        0.3907   -0.264        0.4173   -0.326        0.4154   -0.193
+detection rate          0.5456    0.136        0.6102    0.261        0.6069    0.398        0.5855    0.175
+mean of nonzero         0.4959    0.025        0.5337    0.084        0.5006    0.038        0.5523    0.126
+skewness                0.4905   -0.080        0.3918   -0.267        0.4659   -0.163        0.4229   -0.196
+p10                     0.5236    0.150        0.5510    0.155        0.5845    0.319        0.5587    0.115
+p25                     0.5232    0.119        0.5798    0.192        0.5712    0.270        0.5866    0.182
+p50                     0.5156    0.072        0.5959    0.240        0.5474    0.184        0.5712    0.176
+p75                     0.5153    0.064        0.5734    0.196        0.5202    0.090        0.5675    0.142
+p90                     0.5139    0.058        0.5344    0.103        0.5032    0.026        0.5073    0.049
+p99                     0.5191    0.033        0.5109    0.054        0.4798   -0.045        0.4809   -0.033
+popularity              0.7051    1.000        0.7841    1.000        0.7603    1.000        0.7143    1.000
+  best single statistic hESC: detection rate (within-TF 0.5456); popularity 0.7051
+  best single statistic hHEP: detection rate (within-TF 0.6102); popularity 0.7841
+  best single statistic mESC: detection rate (within-TF 0.6069); popularity 0.7603
+  best single statistic mHSC-E: p25 (within-TF 0.5866); popularity 0.7143
+
+== Spearman of test scores with gene popularity (training in-degree), within TF (test genes of one TF), mean over TFs; mean over seeds
+features            hESC      hHEP      mESC    mHSC-E
+full (hero)        0.721     0.830     0.717     0.638
+cellperm           0.753     0.862     0.707     0.654
+stats              0.505     0.718     0.588     0.550
+rand               0.763     0.867     0.718     0.634
+popularity         1.000     1.000     1.000     1.000
+
+== Kept share of the full model's within-TF gain over rand (rule: >= 0.80 = reads gene-level properties; near 0 = needs the co-expression pattern)
+  hESC: cellperm -0.26, stats -3.34
+  hHEP: cellperm -0.58, stats 3.32
+  mESC: cellperm 0.05, stats -3.74
+  mHSC-E: cellperm 2.29, stats 23.47

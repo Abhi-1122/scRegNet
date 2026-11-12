@@ -5,7 +5,7 @@ PROGRESS.md under 7 Nov), `open` (not tried), `done` (result in PROGRESS.md, sec
 Preferred: methods proven in another domain (recommender systems, knowledge graphs, molecules,
 citation networks) that have not been applied to single-cell GRN inference.
 
-## Tested (7 Nov), results in PROGRESS.md sections 25-31
+## Tested (7-13 Nov), results in PROGRESS.md sections 25-36
 
 | # | Idea | Origin | Result (within-TF vs hero) | Section |
 |---|---|---|---|---|
@@ -16,6 +16,9 @@ citation networks) that have not been applied to single-cell GRN inference.
 | 6 | Hub caps and inverse-degree weights | Topping et al. 2022; recsys popularity bias | ±0.004, mESC cap −0.009 | 29 |
 | 9 | Positional encodings | Dwivedi et al. 2020/2022; PEG | −0.002 to −0.019 | 30 |
 | S | Degree-corrected block model, learned blocks (no neural network) | Karrer & Newman 2011 | Ties best GNN on hHEP (+0.009) and mESC (+0.005); new genes +0.029. **Keep for the per-cell pipeline** | 31 |
+| G | Geneformer shuffled across genes (identity control) | Permutation control | Shuffled keeps none of the gain (mESC −0.010, new genes −0.012 vs none); real GF helps through content, significant on mHSC-E only (+0.033) | 34 |
+| LG | LightGCN, free embeddings (+ feature hybrids) | He et al., SIGIR 2020 | Ties random-feature SAGE; hHEP +0.016 vs hero but below best GNN/DC-SBM; mESC −0.058 (decoder wd 0 recovers it at one seed); new genes hybrids +0.015 ns | 35 |
+| P | Curated per-cell pipeline (validation-chosen config + DC-SBM blend; popularity for new TFs) | Late fusion (week 3) | Beats scRegNet in 9/12 cell x protocol, ties 2 (hESC, mESC new TFs), loses hHEP new genes −0.013. **Current best method** | 36 |
 
 ## Open (from the 7 Nov brainstorm)
 

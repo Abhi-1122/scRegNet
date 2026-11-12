@@ -998,3 +998,83 @@ Idea 9 positional encodings (within-TF diff vs hero, p): lap coexp k32 -0.0018 (
 Idea 6 hub control: hESC hubs mild (max in-degree 14; cap 20 removes no edge = null control, -0.0034, p=0.37). IDF b0.5 -0.0037 (0.22), IDF b1 -0.0044 (0.14); screen s42 cap3 -0.018, cap5 -0.018 (p=0.005), cap10 -0.012. Held-out IDF0.5: genes +0.0013 (p=0.80), TFs -0.0065 (p=0.26). Other cells vs w4 hero (IDF0.5 / IDF1 / cap10 / cap20): hHEP +0.001/+0.004/-0.001/0.000; mESC +0.001/+0.001/-0.009 (p=0.006)/-0.002; mHSC-E -0.005/-0.006/+0.002/+0.002. Score/popularity Spearman unchanged under IDF (0.731 vs 0.730-0.731).
 Idea 1 query-aware TF summary (--decoder qatt, h1 emb all targets): hESC AUROC 0.8893 within-TF 0.7506 (+0.0017, p=0.58); held-out genes within-TF 0.5580 vs 0.5461 (+0.0182, p=0.003); held-out TFs 0.6333 vs 0.6855 (-0.0531, p<0.001; with tf_drop 0.2: 0.6613, equal to hero+tf_drop 0.3 0.6598). Uniform attention (plain mean) gives the same: random split +0.0002, held-out genes +0.0175 (p=0.005). Other cells within-TF vs w4 hero: hHEP +0.0114 (p=0.003), mHSC-E +0.0080 (p=0.03), mESC -0.0148 (p=0.12); uniform: +0.0107 / +0.0114 / +0.0003. hESC + Geneformer +0.0042 (p=0.07).
 Idea 4 Correct & Smooth on the pair graph (hyperparameters on validation AUROC): hero 0.7488 -> 0.7343 within-TF (AUROC 0.8884 -> 0.8864, AUPRC 0.6255 -> 0.6177; paired -0.0144, p=0.69); hero + Geneformer 0.7496 -> 0.7271 (-0.0225, p=0.11). Correct only = neutral (0.7487), smooth only 0.7287; with mean(val AUROC, val within-TF) as criterion Geneformer pooled AUROC 0.8920 / AUPRC 0.6373 but within-TF 0.7459.
+
+=== 2026-11-12 idea 0: TF activity from known targets vs TF mRNA (analysis/w13_activity.py -> analysis/out/w13_activity.txt) ===
+within-TF of a single correlation across cells (no training), test rows, random split; hESC / hHEP / mESC / mHSC-E
+corr(gene, TF mRNA)                 0.491 / 0.548 / 0.507 / 0.480
+corr(gene, mean of TF's targets)    0.523 / 0.524 / 0.624 / 0.577   |corr| beats |TF mRNA| in all 4 (p <= 3e-4)
+corr(gene, least-squares TFA)       0.507 / 0.502 / 0.548 / 0.540   worse than the plain mean in all 4
+popularity                          0.705 / 0.784 / 0.760 / 0.714
+
+=== 2026-11-12 W13 leads on each cell's best grid configuration (seeds 42-44, within-TF; paired per-TF Wilcoxon vs the matching grid baseline; analysis/w13_report.py -> analysis/out/w13_leads.txt) ===
+Lead A, second TF summary (--decoder qatt --qatt_uniform 1): hESC 0.7502 -> 0.7513 (+0.0011, p=0.48); hHEP 0.7919 -> 0.7885 (-0.0034, p=0.61); mHSC-E 0.8076 -> 0.7930 (-0.0147, p=0.51); mESC 0.8284 -> 0.8287 (+0.0003, p=0.60). hHEP held-out genes (5 folds x seeds 42,43) 0.6563 -> 0.6503 (-0.0068, p=0.007).
+  hHEP qs minus baseline by configuration: sage no GF +0.0107 (p=0.014), sage GF +0.0064 (p=0.14), npanda no GF +0.0057 (p=0.010), npanda GF -0.0034 (p=0.61): the section-25 gain vanishes as the baseline strengthens.
+  own-edge check (mESC, split none, seed 42): positive logit gap +0.132 baseline, +0.127 with the summary; no new leak.
+Lead B, learned DC-SBM score as decoder input (--scalar dcsbm, out-of-fold for training rows; variant chosen on seed-42 validation: scalar_lr 10 in all cells): hESC 0.7516 (+0.0015, p=0.50); hHEP 0.7937 (+0.0018, p=0.23; not above 0.789 significantly); mHSC-E 0.8016 (-0.0061, p=0.29); mESC 0.8335 (+0.0051, 57/85 TFs, p=2e-4).
+  both ideas together: hESC 0.7476 (-0.0025, p=0.24); hHEP 0.7903 (-0.0016, p=0.35); mHSC-E 0.7924 (-0.0153, p=0.98); mESC 0.8352 (+0.0068, 62/85, p=4e-6). mESC AUROC/AUPRC 0.9399/0.8830 -> 0.9420/0.8875 (scalar) -> 0.9425/0.8885 (both).
+  diagnostic, 50/50 rank average of baseline GNN and learned DC-SBM test scores: hESC 0.7538 (+0.0036, p=0.03), hHEP 0.7975 (+0.0056, p=0.001), mHSC-E 0.7986 (-0.0091, p=0.03), mESC 0.8428 (+0.0144, p=4e-11).
+
+== W14 (2026-11-12): node features, gene-level properties vs co-expression (SAGE hero, no Geneformer, seeds 42-44; within-TF)
+hESC    full 0.7490  cellperm 0.7141 (p=0.017)  stats 0.6287 (p=2e-7)  rand 0.7213 (p=0.04)   AUROC 0.8885/0.8773/0.8621/0.8792  AUPRC 0.6254/0.6050/0.5749/0.6136
+hHEP    full 0.7587  cellperm 0.7731 (p=0.98)   stats 0.7375 (p=0.003) rand 0.7678 (p=0.97)   AUROC 0.8990/0.8984/0.8795/0.8977  AUPRC 0.8378/0.8330/0.7960/0.8345
+mESC    full 0.8241  cellperm 0.8059 (p=4e-4)   stats 0.7338 (p=1e-12) rand 0.8051 (p=3e-4)   AUROC 0.9390/0.9356/0.9045/0.9350  AUPRC 0.8813/0.8764/0.8189/0.8749
+mHSC-E  full 0.7575  cellperm 0.7539 (p=0.95)   stats 0.6945 (p=1e-4)  rand 0.7603 (p=0.85)   AUROC 0.9233/0.9226/0.9049/0.9204  AUPRC 0.9429/0.9427/0.9226/0.9417
+held-out genes hESC (10 runs): full 0.5461  cellperm 0.4839 (p=6e-4)  stats 0.5598 (p=0.055)  rand 0.4908 (p=0.016)
+best single raw statistic within-TF: detection rate hESC 0.546, hHEP 0.610, mESC 0.607; p25 mHSC-E 0.587; popularity 0.705/0.784/0.760/0.714
+write-up analysis/out/W14_feat.md, report analysis/out/w14_feat.txt
+
+== W15 part 3 (2026-11-13): Geneformer none / real / shuffled across genes (best grid configuration per cell, seeds 42-44; within-TF, paired per-TF Wilcoxon)
+hESC    none 0.7430  real 0.7504  shuffled 0.7360   real-none +0.0073 (p=0.25)  shuffled-none -0.0071 (p=0.79)  shuffled-real -0.0144 (p=0.25)   AUROC 0.8900/0.8902/0.8877  AUPRC 0.6312/0.6346/0.6254
+hHEP    none 0.7720  real 0.7919  shuffled 0.7750   real-none +0.0200 (p=0.14)  shuffled-none +0.0030 (p=0.58)  shuffled-real -0.0169 (p=0.53)   AUROC 0.9021/0.9041/0.9023  AUPRC 0.8434/0.8467/0.8433
+mHSC-E  none 0.7751  real 0.8081  shuffled 0.7694   real-none +0.0330 (p=0.002) shuffled-none -0.0057 (p=0.11)  shuffled-real -0.0387 (p=0.011)  AUROC 0.9195/0.9259/0.9228  AUPRC 0.9397/0.9445/0.9410
+mESC    none 0.8247  real 0.8286  shuffled 0.8144   real-none +0.0039 (p=0.32)  shuffled-none -0.0103 (p=0.009) shuffled-real -0.0142 (p=6e-5)   AUROC 0.9381/0.9398/0.9368  AUPRC 0.8801/0.8830/0.8785
+held-out genes hESC (10 runs, SAGE hero config) none 0.5461  real 0.5679  shuffled 0.5342   real-none +0.0177 (p=0.07)  shuffled-none -0.0124 (p=0.017)  shuffled-real -0.0300 (p=6e-4)
+Shuffled vectors keep none of the real-Geneformer gain (at or below the no-Geneformer level in every cell and on held-out genes): Geneformer helps through its content, not as an identity. Configs: hESC/hHEP npanda 2L RCP batch; mHSC-E gcn batch; mESC sage none; all had, hero hyper-parameters.
+write-up analysis/out/W15_gf.md, report analysis/out/w15_gf.txt
+
+== W15 part 2 (2026-11-13): LightGCN (free embedding, parameter-free symmetric-normalised propagation, mean of layers; hESC seed-42 sweep of 144 runs chosen on validation AUROC; seeds 42-44; within-TF, paired per-TF Wilcoxon)
+chosen (validation): pure K2 d128 had L2 1e-4 lr 1e-3 (val AUROC 0.8864); hybrid expr K2 d64 had L2 1e-4 lr 1e-4 (0.8854); dot decoder best val 0.8265 (had 0.8864); sweep means: K2 0.809 > K3 0.779 > K1 0.759, had 0.881 vs dot 0.684
+within-TF     hESC   hHEP   mESC   mHSC-E
+pure          0.7241 0.7756 0.7661 0.7436
+hyb expr      0.7046 0.7742 0.7978 0.7439
+hyb gf        0.7220 0.7722 0.7997 0.7786
+hyb stats     0.7032 0.7726 0.7974 (not run)
+hero          0.7490 0.7587 0.8241 0.7575
+rand SAGE     0.7213 0.7678 0.8051 0.7603
+best grid GNN 0.7504 0.7919 0.8284 0.8081
+DC-SBM learned 0.7295 0.8006 0.8332 0.7531
+pure vs hero: hESC -0.025 (p=0.83), hHEP +0.017 (0.09), mESC -0.058 (1e-8), mHSC-E -0.014 (0.70); pure vs DC-SBM: hESC -0.005 (0.84), hHEP -0.025 (0.02), mESC -0.067 (6e-12), mHSC-E -0.010 (0.78); hyb expr vs hero hHEP +0.016 (p=0.005)
+AUROC/AUPRC pure: hESC 0.8859/0.6216, hHEP 0.9011/0.8411, mESC 0.9245/0.8554, mHSC-E 0.9233/0.9428; hESC dot decoder 0.8559/0.5453 within 0.7103
+hESC held-out genes (10 runs): hero 0.5461, pure 0.5017 (-0.041, p=0.015), hyb expr 0.5644 (+0.014, p=0.09), hyb gf 0.5673 (+0.016, p=0.13), hyb stats 0.5455 (+0.001)
+hESC held-out TFs (10 runs): hero 0.6855, pure 0.6700 (p=0.91), hyb expr 0.4811 (-0.206, p=4e-9), hyb gf 0.6727 (p=0.53), hyb stats 0.6903 (+0.004, p=0.47)
+hESC ablation: free embedding only 0.7241, expression only 0.7007, Geneformer only 0.7170, free+expr 0.7046, free+gf 0.7220; score/popularity Spearman pure 0.916 vs hero 0.721, rand SAGE 0.763
+mESC diagnostic (seed 42, not chosen on): decoder wd 0 with d256 -> within 0.8229 (val 0.9418) vs 0.7682 at wd 1e-3
+write-up analysis/out/W15_lightgcn.md, report analysis/out/w15_lgc.txt
+
+=== 2026-11-13 W16 curated pipeline (analysis/w16_pipeline.py -> analysis/out/w16_pipeline.txt; write-up analysis/out/W16_pipeline.md) ===
+Per cell: GNN config chosen on validation within-TF among the 24 grid configs (w16_choose.py): hESC GCN had batch GF, hHEP GCN had batch GF, mHSC-E npanda had batch GF, mESC npanda had none GF; decoder wd 0 (new --dec_wd) vs 1e-3 and uniform second summary (hHEP, mHSC-E) chosen on validation (wd 0 on hESC, hHEP; summary skipped); within-TF rank blend with learned DC-SBM, w in {0,.25,.5,.75} on validation (DC-SBM refit without validation rows): hESC .5, hHEP .5, mHSC-E .25, mESC .5; seed average of logits. Seeds 42-44.
+VERDICT: FAIL (held-out TFs below the Adam-tuned scRegNet design by -0.0320, p=1e-4, and below the hero by -0.0014; mHSC-E pipeline -0.0007 below its chosen config alone).
+Standard split, AUROC / AUPRC / within-TF, seed mean (recipe | best single = chosen config alone | pipeline), pipeline - recipe (p), pipeline - single (p):
+ hESC   0.8829/0.6147/0.7020 | 0.8892/0.6237/0.7360 | 0.8890/0.6336/0.7460   +0.0440 (7e-4)   +0.0100 (0.037)
+ hHEP   0.9022/0.8410/0.7873 | 0.9031/0.8450/0.7900 | 0.9063/0.8499/0.8075   +0.0203 (0.012)  +0.0175 (0.013)
+ mHSC-E 0.9196/0.9392/0.7210 | 0.9240/0.9432/0.7707 | 0.9271/0.9461/0.7700   +0.0490 (6e-6)   -0.0007 (0.088)
+ mESC   0.9254/0.8587/0.7658 | 0.9412/0.8864/0.8252 | 0.9445/0.8933/0.8403   +0.0745 (4e-11)  +0.0151 (2e-9)
+Seed ensemble within-TF (recipe | single | pipeline): hESC 0.7034|0.7421|0.7478; hHEP 0.7870|0.7925|0.8097; mHSC-E 0.7208|0.7729|0.7713; mESC 0.7659|0.8291|0.8428 (pipeline - recipe +0.0445/+0.0227/+0.0505/+0.0769; pipeline - single +0.0057/+0.0172/-0.0016/+0.0137).
+Marginal effects within-TF (seed mean) hESC/hHEP/mHSC-E/mESC: DC-SBM blend +0.0094/+0.0200/-0.0007/+0.0151; decoder wd 0 minus 1e-3 -0.0007/-0.0003/-0.0008/-0.0019 (none significant); second summary -/-0.0069/+0.0002/-; seed ensemble +0.0018/+0.0021/+0.0013/+0.0025 (recipe +0.0014/-0.0003/-0.0002/+0.0001). Validation-chosen config minus test-picked grid config (each with its blend) -0.0047/+0.0036/-0.0167/-0.0022; with test-picked configs the pipeline still beats the recipe in all 4 cells (+0.049/+0.017/+0.066/+0.077).
+hESC held-out genes (5 folds x seeds 42,43; GNN = chosen GCN config, DC-SBM Geneformer soft, w=.5 from held-out validation genes) AUROC/AUPRC/within-TF: pipeline 0.8598/0.5517/0.5783; GNN alone 0.8380/0.5180/0.5576; DC-SBM alone 0.8573/0.5379/0.5753; scRegNet design Adam-tuned 0.8328/0.5275/0.5241 (pipeline +0.0620, p=0.002); hero 0.8467/0.5213/0.5461 (+0.0161, p=0.11). Published SGD recipe has no held-out runs.
+hESC held-out TFs (GNN alone): pipeline 0.5576/0.1918/0.6850 (within8 0.6657); scRegNet design Adam-tuned 0.6009/0.2303/0.7163 (within8 0.7045; pipeline -0.0320, p=1e-4); hero 0.6304/0.2314/0.6855 (-0.0014, p=0.40).
+
+=== 2026-11-13 W17 pipeline on held-out genes and TFs, all 4 cells (analysis/w17_report.py -> analysis/out/w17_heldout.txt; write-up analysis/out/W17_heldout.md) ===
+5 folds x seeds 42,43. Pipeline GNN per cell as chosen in W16 (hESC/hHEP GCN 1 layer dec_wd 0; mHSC-E/mESC neural PANDA 2 layers; Hadamard, Geneformer). Genes: rank blend with the Geneformer-soft fixed-cluster DC-SBM, w chosen on validation genes (0.5 in all cells). TFs: rank blend with gene popularity (training positives only), w in {0,.25,.5,.75,1} chosen per fold on the 3 validation TFs. Baselines: scRegNet design Adam-tuned (ho_*_f01_A_tuned args) and hero (SAGE, no GF). AUROC/AUPRC/within-TF/within>=8:
+PART 1 hESC held-out TFs, pipeline = GNN + popularity (w per fold 0.75,1,1,1,1): 0.6685/0.2332/0.7248/0.7130; pooled-choice w=1: 0.7244; GNN alone 0.6860; popularity alone 0.6689/0.2316/0.7244/0.7120; fixed w=0.5 (not validation-chosen) 0.7193; scRegNet design 0.6009/0.2303/0.7163/0.7045 (pipeline +0.0084, p=0.053); hero 0.6855 (+0.0391, p=1e-6).
+Held-out genes (pipeline | GNN alone | DC-SBM alone | scRegNet design | hero):
+ hESC   0.8598/0.5517/0.5783/0.5944 | 0.5576 | 0.5753 | 0.8328/0.5275/0.5241/0.5591 | 0.8467/0.5213/0.5461/0.5617   pipeline-design +0.0620 (0.002), -hero +0.0161 (0.11)
+ hHEP   0.8426/0.7205/0.6377/0.6377 | 0.6314 | 0.5981 | 0.8447/0.7226/0.6477/0.6600 | 0.8246/0.6850/0.5908/0.6039   -design -0.0125 (0.012) LOSS, -hero +0.0464 (9.5e-4)
+ mHSC-E 0.8874/0.9068/0.6881/0.6939 | 0.6905 | 0.6359 | 0.8831/0.8977/0.6461/0.6681 | 0.8796/0.9003/0.6688/0.6758   -design +0.0434 (0.023), -hero +0.0118 (0.037)
+ mESC   0.8961/0.7966/0.6724/0.6864 | 0.6559 | 0.6597 | 0.8692/0.7468/0.6094/0.6266 | 0.8515/0.6876/0.6247/0.6326   -design +0.0682 (2e-12), -hero +0.0441 (2e-7)
+Held-out TFs (pipeline per-fold w | GNN alone | popularity alone | scRegNet design | hero):
+ hESC   0.6685/0.2332/0.7248/0.7130 | 0.6860 | 0.7244 | 0.6009/0.2303/0.7163/0.7045 | 0.6304/0.2314/0.6855/0.6766   -design +0.0084 (0.053), -hero +0.0391 (1e-6)
+ hHEP   0.7189/0.5083/0.7748/0.7731 | 0.7246 | 0.7785 | 0.6187/0.4332/0.7405/0.7393 | 0.6789/0.4912/0.7460/0.7473   -design +0.0343 (0.016), -hero +0.0288 (1e-6), -popularity -0.0037 (0.022)
+ mHSC-E 0.6678/0.6535/0.7554/0.7722 | 0.7336 | 0.7609 | 0.6406/0.6533/0.7254/0.7430 | 0.6425/0.6634/0.7187/0.7296   -design +0.0315 (0.001), -hero +0.0354 (0.003), -popularity -0.0059 (0.30)
+ mESC   0.6493/0.3994/0.7555/0.7466 | 0.7364 | 0.7690 | 0.6433/0.4272/0.7506/0.7444 | 0.6313/0.3919/0.7269/0.7170   -design +0.0045 (0.96), -hero +0.0293 (1e-4), -popularity -0.0134 (0.002); pooled-choice w=0.5 gives 0.7658
+Summary vs the scRegNet baseline (standard split = published recipe from W16, held-out = Adam-tuned design), within-TF, 12 combinations: 9 beats, 2 ties (hESC TFs, mESC TFs), 1 loss (hHEP genes). On held-out TFs the gain comes from popularity: popularity alone beats the scRegNet design on all 4 cells (p 0.04, 3e-4, 2e-4, 1e-5) and the GNN adds nothing on top.

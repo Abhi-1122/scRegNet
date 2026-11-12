@@ -1,0 +1,1 @@
+{"name": "w16_dcv_std_hHEP_s43", "args": {"name": "w16_dcv_std_hHEP_s43", "kind": "std", "cell": "hHEP", "fold": 0, "seed": 43, "out": "analysis/out/pair"}, "cfg": {"k": 5, "l2": 10, "ra": null, "steps": 150}, "val": {"auc": 0.8892737481859532, "aupr": 0.8417395199241443, "within": 0.7773055447770094, "within8": 0.8105044725172149}, "minutes": 0.01572451591491699}

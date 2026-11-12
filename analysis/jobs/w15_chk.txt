@@ -1,0 +1,3 @@
+w15_chk_hero_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder sage --split batch --decoder had --gnn_dims 256 --scfm 0 --seed 42
+w15_smoke_lgc_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder lightgcn --split batch --decoder had --scfm 0 --lgc_layers 2 --emb_dim 64 --emb_l2 0.001 --seed 42
+w15_smoke_lgcdot_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --encoder lightgcn --split batch --decoder dot --scfm 0 --lgc_layers 2 --emb_dim 64 --emb_l2 0.001 --emb_feat stats --seed 42

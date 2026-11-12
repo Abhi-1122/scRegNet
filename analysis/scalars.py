@@ -3,6 +3,7 @@
 kinds:
   contrast : z-scored co-expression of gene g with the TF's known targets minus with its non-targets
   panda    : PANDA score (prior = known targets, co-expression, TF-TF PPI)
+  dcsbm    : learned degree-corrected block model (analysis/w12_stat.py model 2), fitted on all labelled training pairs; out-of-fold for training rows
 Validation/test rows use a prior built from ALL graph positives (training rows minus the validation
 slice). Training rows (positives AND negatives) are scored out-of-fold: a row in fold k is scored
 with a prior that excludes the positives of fold k ("symmetric" out-of-fold).
@@ -11,10 +12,10 @@ Run once to fill the cache:  python3.12 analysis/scalars.py hESC 500
 import contextlib, glob, io, os, sys
 import numpy as np
 import pandas as pd
-from netZooPy.panda import calculations as calc
 
 
 def _fn_contrast(x, n):
+    from netZooPy.panda import calculations as calc  # lazy: the dcsbm kind needs no netZooPy (not installed on ada)
     C = np.nan_to_num(np.corrcoef(x))
     np.fill_diagonal(C, 1)
     Cz = calc.normalize_network(C)
@@ -30,6 +31,7 @@ def _fn_contrast(x, n):
 
 
 def _fn_panda(x, n, D, gp):
+    from netZooPy.panda import calculations as calc
     path = D['path']
     genes = pd.read_csv(path + 'Target.csv', index_col=0).set_index('index')['Gene']
     idx = {g: i for i, g in genes.items()}
@@ -59,6 +61,35 @@ def _fn_panda(x, n, D, gp):
     return fn
 
 
+# learned DC-SBM (w12_stat.py model 2) hyper-parameters chosen on validation there: (blocks k, l2, steps)
+DCSBM_HP = {'hESC': (5, 10, 300), 'hHEP': (5, 10, 150), 'mHSC-E': (5, 10, 250), 'mESC': (10, 3, 150)}
+
+
+def _dcsbm(a, D, cache):
+    """logit of the learned DC-SBM fitted on ALL labelled training rows (positives and negatives; unlabelled = missing), n x n (rows = TF ids).
+    ev = fit on the training rows (validation rows excluded when val_frac > 0); tr = out-of-fold: a row in fold k is scored by a refit without fold k's rows."""
+    import w12_stat as st
+    assert getattr(a, 'protocol', 'random') == 'random', 'dcsbm scalar: a new gene/TF has no fitted row'
+    k, l2, steps = DCSBM_HP[a.cell_type]
+    tr, tri, n = D['tr'], D['tri'], D['n']
+    tfids = np.unique(tr.TF.values)
+    trn = tr.iloc[tri]
+
+    def fit(rows):
+        g = st.fit_torch('sbm', st.Split(rows, rows.iloc[:1], tfids, n), dict(k=k, l2=l2, ra=None), 42, [steps])[steps]
+        full = np.zeros((n, n), np.float32); full[tfids] = g
+        return full
+    full = fit(trn)
+    oof = full.copy()
+    for held in np.array_split(np.random.RandomState(42).permutation(len(trn)), 5):  # same folds as the other kinds
+        rows = trn.iloc[held]
+        oof[rows.TF.values, rows.Target.values] = fit(trn.drop(index=rows.index))[rows.TF.values, rows.Target.values]
+    scale = full[tfids].std() + 1e-8
+    os.makedirs(os.path.dirname(cache), exist_ok=True)
+    np.save(cache + '_ev.npy', full / scale); np.save(cache + '_tr.npy', oof / scale)
+    return full / scale, oof / scale
+
+
 def get(a, D):
     tr, tri, n = D['tr'], D['tri'], D['n']
     kind = a.scalar
@@ -66,6 +97,8 @@ def get(a, D):
     cache = f"{D['path']}scalars/{kind}_v{a.val_frac}_s{a.split_seed}" + ('' if pr == 'random' else f"_{pr}{a.fold}")
     if os.path.exists(cache + '_ev.npy') and (kind != 'panda' or os.path.exists(cache + '_fold4.npy')):
         return np.load(cache + '_ev.npy'), np.load(cache + '_tr.npy')
+    if kind == 'dcsbm':
+        return _dcsbm(a, D, cache)
     trn = tr.iloc[tri]
     gp = trn[trn.Label == 1]
     fn = _fn_contrast(D['x'], n) if kind == 'contrast' else _fn_panda(D['x'], n, D, gp)

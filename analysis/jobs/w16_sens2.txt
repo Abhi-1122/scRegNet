@@ -1,0 +1,6 @@
+w16_mHSC-E_gcnbase_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --scfm 1 --save_sel_grid 1 --decoder had --cell_type mHSC-E --encoder gcn --gnn_dims 256 --split batch --seed 42
+w16_mHSC-E_gcnbase_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --scfm 1 --save_sel_grid 1 --decoder had --cell_type mHSC-E --encoder gcn --gnn_dims 256 --split batch --seed 43
+w16_mHSC-E_gcnbase_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --scfm 1 --save_sel_grid 1 --decoder had --cell_type mHSC-E --encoder gcn --gnn_dims 256 --split batch --seed 44
+w16_mESC_sagebase_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --scfm 1 --save_sel_grid 1 --decoder had --cell_type mESC --encoder sage --gnn_dims 256 --split none --seed 42
+w16_mESC_sagebase_s43 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --scfm 1 --save_sel_grid 1 --decoder had --cell_type mESC --encoder sage --gnn_dims 256 --split none --seed 43
+w16_mESC_sagebase_s44 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --scfm 1 --save_sel_grid 1 --decoder had --cell_type mESC --encoder sage --gnn_dims 256 --split none --seed 44

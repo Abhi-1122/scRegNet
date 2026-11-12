@@ -1,0 +1,22 @@
+03:33:05 mHSC-E_hog0: n=704 T=29 train labelled pairs val-mode 13244 full 14711 eval rows 1467/3639
+03:33:10   dcsbm val search gf diag K=5 done
+03:33:16   dcsbm val search gf diag K=10 done
+03:33:21   dcsbm val search gf diag K=20 done
+03:33:26   dcsbm val search gf diag K=40 done
+03:33:32   dcsbm val search gf full K=5 done
+03:33:39   dcsbm val search gf full K=10 done
+03:33:46   dcsbm val search gf full K=20 done
+03:33:54   dcsbm val search gf full K=40 done
+03:33:54   mHSC-E_hog0  dcsbm_gf_soft K=5            val within 0.6464  test within 0.6323  auc 0.8659  aupr 0.8746
+03:33:54   mHSC-E_hog0  dcsbm_gf_soft K=10           val within 0.6395  test within 0.6054  auc 0.8623  aupr 0.8611
+03:33:55   mHSC-E_hog0  dcsbm_gf_soft K=20 *         val within 0.6940  test within 0.6426  auc 0.8718  aupr 0.8797
+03:33:55   mHSC-E_hog0  dcsbm_gf_soft omega-only     val within 0.6940  test within 0.5258  auc 0.8462  aupr 0.8256
+03:33:55   mHSC-E_hog0  dcsbm_gf_soft theta-only     val within 0.6940  test within 0.6159  auc 0.8712  aupr 0.8794
+03:33:55   mHSC-E_hog0  dcsbm_gf_soft K=40           val within 0.6212  test within 0.6455  auc 0.8657  aupr 0.8712
+03:33:55   mHSC-E_hog0  dcsbm_gf_hard K=5            val within 0.6390  test within 0.6045  auc 0.8613  aupr 0.8672
+03:33:55   mHSC-E_hog0  dcsbm_gf_hard K=10           val within 0.6257  test within 0.6264  auc 0.8662  aupr 0.8709
+03:33:56   mHSC-E_hog0  dcsbm_gf_hard K=20 *         val within 0.6803  test within 0.6325  auc 0.8703  aupr 0.8749
+03:33:56   mHSC-E_hog0  dcsbm_gf_hard omega-only     val within 0.6803  test within 0.6325  auc 0.8703  aupr 0.8749
+03:33:56   mHSC-E_hog0  dcsbm_gf_hard theta-only     val within 0.6803  test within 0.5000  auc 0.8514  aupr 0.8470
+03:33:57   mHSC-E_hog0  dcsbm_gf_hard K=40           val within 0.6237  test within 0.6405  auc 0.8660  aupr 0.8697
+03:33:57 mHSC-E_hog0 done in 0.9 min

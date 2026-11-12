@@ -1,0 +1,270 @@
+
+==================== hESC held-out TFs (5 folds x seeds 42, 43): pipeline = chosen GNN + gene-popularity rank blend; w in (0.0, 0.25, 0.5, 0.75, 1.0) chosen on the 3 validation TFs of each fold
+validation within-TF of the blend (mean over the 2 seeds), per fold:
+fold       w=0.0    w=0.25     w=0.5    w=0.75     w=1.0   chosen w
+0         0.6786    0.7040    0.7235    0.7289    0.7224   0.75
+1         0.6668    0.6929    0.7151    0.7261    0.7263   1.0
+2         0.7895    0.8056    0.8170    0.8237    0.8245   1.0
+3         0.6716    0.7148    0.7613    0.7969    0.8175   1.0
+4         0.6776    0.6963    0.7118    0.7215    0.7224   1.0
+mean      0.6968    0.7227    0.7457    0.7594    0.7626   pooled choice 1.0
+
+model                                                         AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + popularity, w chosen per fold on validation)  0.6685 ± 0.0164  0.2332 ± 0.0323  0.7248 ± 0.0642  0.7130 ± 0.0376
+  w chosen on validation pooled over folds (w=1.0)  0.6689 ± 0.0168  0.2316 ± 0.0299  0.7244 ± 0.0643  0.7120 ± 0.0379
+GNN alone (w=0)                                     0.5585 ± 0.0977  0.1921 ± 0.0493  0.6860 ± 0.0493  0.6665 ± 0.0242
+popularity alone (w=1)                              0.6689 ± 0.0168  0.2316 ± 0.0299  0.7244 ± 0.0643  0.7120 ± 0.0379
+sensitivity: fixed w=0.5 (NOT validation-chosen)    0.6261 ± 0.0653  0.2179 ± 0.0460  0.7193 ± 0.0584  0.7034 ± 0.0321
+scRegNet design, Adam-tuned                         0.6009 ± 0.0918  0.2303 ± 0.0821  0.7163 ± 0.0626  0.7045 ± 0.0366
+hero (SAGE, no Geneformer)                          0.6304 ± 0.1127  0.2314 ± 0.0978  0.6855 ± 0.0643  0.6766 ± 0.0388
+chosen w per fold: fold 0: 0.75, fold 1: 1.0, fold 2: 1.0, fold 3: 1.0, fold 4: 1.0
+  pipeline - w chosen on validation pooled over folds (w=1.0) [all TFs] +0.0004  better 3/34  p=1
+  pipeline - w chosen on validation pooled over folds (w=1.0) [TFs with >= 8 test positives] +0.0010  better 3/29  p=0.6
+  pipeline - GNN alone (w=0) [all TFs]                         +0.0395  better 28/34  p=3.49e-05
+  pipeline - GNN alone (w=0) [TFs with >= 8 test positives]    +0.0453  better 25/29  p=8.84e-06
+  pipeline - popularity alone (w=1) [all TFs]                  +0.0004  better 3/34  p=1
+  pipeline - popularity alone (w=1) [TFs with >= 8 test positives] +0.0010  better 3/29  p=0.6
+  pipeline - sensitivity: fixed w=0.5 (NOT validation-chosen) [all TFs] +0.0058  better 26/34  p=0.0178
+  pipeline - sensitivity: fixed w=0.5 (NOT validation-chosen) [TFs with >= 8 test positives] +0.0091  better 23/29  p=0.00299
+  pipeline - scRegNet design, Adam-tuned [all TFs]             +0.0084  better 24/34  p=0.0526
+  pipeline - scRegNet design, Adam-tuned [TFs with >= 8 test positives] +0.0084  better 20/29  p=0.0724
+  pipeline - hero (SAGE, no Geneformer) [all TFs]              +0.0391  better 29/34  p=1.01e-06
+  pipeline - hero (SAGE, no Geneformer) [TFs with >= 8 test positives] +0.0360  better 25/29  p=5.52e-06
+  popularity alone - scRegNet design, Adam-tuned [all TFs]     +0.0081  better 25/34  p=0.0445
+  popularity alone - scRegNet design, Adam-tuned [TFs with >= 8 test positives] +0.0074  better 21/29  p=0.0655
+
+==================== hHEP held-out TFs (5 folds x seeds 42, 43): pipeline = chosen GNN + gene-popularity rank blend; w in (0.0, 0.25, 0.5, 0.75, 1.0) chosen on the 3 validation TFs of each fold
+validation within-TF of the blend (mean over the 2 seeds), per fold:
+fold       w=0.0    w=0.25     w=0.5    w=0.75     w=1.0   chosen w
+0         0.7435    0.7566    0.7662    0.7713    0.7714   1.0
+1         0.7547    0.7669    0.7752    0.7788    0.7763   0.75
+2         0.7990    0.8100    0.8150    0.8126    0.8043   0.5
+3         0.7755    0.7993    0.8173    0.8278    0.8292   1.0
+4         0.8031    0.8287    0.8452    0.8477    0.8385   0.75
+mean      0.7752    0.7923    0.8038    0.8076    0.8039   pooled choice 0.75
+
+model                                                         AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + popularity, w chosen per fold on validation)  0.7189 ± 0.0231  0.5083 ± 0.1457  0.7748 ± 0.0372  0.7731 ± 0.0358
+  w chosen on validation pooled over folds (w=0.75)  0.7251 ± 0.0332  0.5203 ± 0.1593  0.7760 ± 0.0409  0.7743 ± 0.0397
+GNN alone (w=0)                                     0.6367 ± 0.0576  0.4492 ± 0.0994  0.7246 ± 0.0394  0.7211 ± 0.0355
+popularity alone (w=1)                              0.7349 ± 0.0443  0.5269 ± 0.1798  0.7785 ± 0.0405  0.7771 ± 0.0395
+sensitivity: fixed w=0.5 (NOT validation-chosen)    0.7024 ± 0.0291  0.5005 ± 0.1355  0.7650 ± 0.0399  0.7629 ± 0.0382
+scRegNet design, Adam-tuned                         0.6187 ± 0.0901  0.4332 ± 0.1751  0.7405 ± 0.0754  0.7393 ± 0.0743
+hero (SAGE, no Geneformer)                          0.6789 ± 0.0880  0.4912 ± 0.2027  0.7460 ± 0.0407  0.7473 ± 0.0411
+chosen w per fold: fold 0: 1.0, fold 1: 0.75, fold 2: 0.5, fold 3: 1.0, fold 4: 0.75
+  pipeline - w chosen on validation pooled over folds (w=0.75) [all TFs] -0.0012  better 9/30  p=0.42
+  pipeline - w chosen on validation pooled over folds (w=0.75) [TFs with >= 8 test positives] -0.0013  better 9/28  p=0.42
+  pipeline - GNN alone (w=0) [all TFs]                         +0.0502  better 27/30  p=5.72e-07
+  pipeline - GNN alone (w=0) [TFs with >= 8 test positives]    +0.0525  better 26/28  p=1.04e-07
+  pipeline - popularity alone (w=1) [all TFs]                  -0.0037  better 3/30  p=0.0222
+  pipeline - popularity alone (w=1) [TFs with >= 8 test positives] -0.0042  better 2/28  p=0.00613
+  pipeline - sensitivity: fixed w=0.5 (NOT validation-chosen) [all TFs] +0.0098  better 20/30  p=0.000441
+  pipeline - sensitivity: fixed w=0.5 (NOT validation-chosen) [TFs with >= 8 test positives] +0.0102  better 19/28  p=0.000177
+  pipeline - scRegNet design, Adam-tuned [all TFs]             +0.0343  better 16/30  p=0.0155
+  pipeline - scRegNet design, Adam-tuned [TFs with >= 8 test positives] +0.0365  better 15/28  p=0.0179
+  pipeline - hero (SAGE, no Geneformer) [all TFs]              +0.0288  better 25/30  p=1.42e-06
+  pipeline - hero (SAGE, no Geneformer) [TFs with >= 8 test positives] +0.0250  better 24/28  p=1.26e-06
+  popularity alone - scRegNet design, Adam-tuned [all TFs]     +0.0381  better 20/30  p=0.000313
+  popularity alone - scRegNet design, Adam-tuned [TFs with >= 8 test positives] +0.0407  better 19/28  p=0.000381
+
+==================== mHSC-E held-out TFs (5 folds x seeds 42, 43): pipeline = chosen GNN + gene-popularity rank blend; w in (0.0, 0.25, 0.5, 0.75, 1.0) chosen on the 3 validation TFs of each fold
+validation within-TF of the blend (mean over the 2 seeds), per fold:
+fold       w=0.0    w=0.25     w=0.5    w=0.75     w=1.0   chosen w
+0         0.7360    0.7411    0.7427    0.7414    0.7367   0.5
+1         0.8007    0.7943    0.7821    0.7650    0.7452   0.0
+2         0.7940    0.8223    0.8429    0.8493    0.8445   0.75
+3         0.8260    0.8448    0.8581    0.8654    0.8661   1.0
+4         0.7914    0.7960    0.7976    0.7955    0.7894   0.5
+mean      0.7896    0.7997    0.8047    0.8033    0.7964   pooled choice 0.5
+
+model                                                         AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + popularity, w chosen per fold on validation)  0.6678 ± 0.0827  0.6535 ± 0.2098  0.7554 ± 0.1022  0.7722 ± 0.0867
+  w chosen on validation pooled over folds (w=0.5)  0.6620 ± 0.0952  0.6516 ± 0.2259  0.7551 ± 0.1080  0.7720 ± 0.0927
+GNN alone (w=0)                                     0.6228 ± 0.1036  0.6276 ± 0.2354  0.7336 ± 0.1058  0.7490 ± 0.0926
+popularity alone (w=1)                              0.6828 ± 0.0777  0.6710 ± 0.2040  0.7609 ± 0.1053  0.7765 ± 0.0902
+sensitivity: fixed w=0.5 (NOT validation-chosen)    0.6620 ± 0.0952  0.6516 ± 0.2259  0.7551 ± 0.1080  0.7720 ± 0.0927
+scRegNet design, Adam-tuned                         0.6406 ± 0.1358  0.6533 ± 0.2196  0.7254 ± 0.1055  0.7430 ± 0.0927
+hero (SAGE, no Geneformer)                          0.6425 ± 0.0640  0.6634 ± 0.1797  0.7187 ± 0.0742  0.7296 ± 0.0660
+chosen w per fold: fold 0: 0.5, fold 1: 0.0, fold 2: 0.75, fold 3: 1.0, fold 4: 0.5
+  pipeline - w chosen on validation pooled over folds (w=0.5) [all TFs] +0.0003  better 11/29  p=0.616
+  pipeline - w chosen on validation pooled over folds (w=0.5) [TFs with >= 8 test positives] -0.0004  better 10/27  p=0.642
+  pipeline - GNN alone (w=0) [all TFs]                         +0.0220  better 21/29  p=0.000526
+  pipeline - GNN alone (w=0) [TFs with >= 8 test positives]    +0.0227  better 20/27  p=0.000106
+  pipeline - popularity alone (w=1) [all TFs]                  -0.0059  better 11/29  p=0.301
+  pipeline - popularity alone (w=1) [TFs with >= 8 test positives] -0.0049  better 11/27  p=0.465
+  pipeline - sensitivity: fixed w=0.5 (NOT validation-chosen) [all TFs] +0.0003  better 11/29  p=0.616
+  pipeline - sensitivity: fixed w=0.5 (NOT validation-chosen) [TFs with >= 8 test positives] -0.0004  better 10/27  p=0.642
+  pipeline - scRegNet design, Adam-tuned [all TFs]             +0.0315  better 19/29  p=0.000975
+  pipeline - scRegNet design, Adam-tuned [TFs with >= 8 test positives] +0.0321  better 17/27  p=0.00297
+  pipeline - hero (SAGE, no Geneformer) [all TFs]              +0.0354  better 24/29  p=0.00324
+  pipeline - hero (SAGE, no Geneformer) [TFs with >= 8 test positives] +0.0439  better 24/27  p=9.6e-05
+  popularity alone - scRegNet design, Adam-tuned [all TFs]     +0.0373  better 21/29  p=0.000242
+  popularity alone - scRegNet design, Adam-tuned [TFs with >= 8 test positives] +0.0370  better 19/27  p=0.000744
+
+==================== mESC held-out TFs (5 folds x seeds 42, 43): pipeline = chosen GNN + gene-popularity rank blend; w in (0.0, 0.25, 0.5, 0.75, 1.0) chosen on the 3 validation TFs of each fold
+validation within-TF of the blend (mean over the 2 seeds), per fold:
+fold       w=0.0    w=0.25     w=0.5    w=0.75     w=1.0   chosen w
+0         0.6862    0.7000    0.7103    0.7146    0.7129   0.75
+1         0.7768    0.7866    0.7872    0.7871    0.7798   0.5
+2         0.7664    0.7561    0.7369    0.7214    0.7067   0.0
+3         0.7611    0.7885    0.8121    0.8287    0.8345   1.0
+4         0.7266    0.7265    0.7148    0.6945    0.6744   0.0
+mean      0.7434    0.7515    0.7523    0.7492    0.7417   pooled choice 0.5
+
+model                                                         AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + popularity, w chosen per fold on validation)  0.6493 ± 0.0441  0.3994 ± 0.0774  0.7555 ± 0.0221  0.7466 ± 0.0303
+  w chosen on validation pooled over folds (w=0.5)  0.6789 ± 0.0306  0.4265 ± 0.0666  0.7658 ± 0.0229  0.7580 ± 0.0250
+GNN alone (w=0)                                     0.6527 ± 0.0525  0.4057 ± 0.0865  0.7364 ± 0.0280  0.7283 ± 0.0294
+popularity alone (w=1)                              0.6759 ± 0.0094  0.4210 ± 0.0425  0.7690 ± 0.0206  0.7609 ± 0.0244
+sensitivity: fixed w=0.5 (NOT validation-chosen)    0.6789 ± 0.0306  0.4265 ± 0.0666  0.7658 ± 0.0229  0.7580 ± 0.0250
+scRegNet design, Adam-tuned                         0.6433 ± 0.0542  0.4272 ± 0.1161  0.7506 ± 0.0299  0.7444 ± 0.0341
+hero (SAGE, no Geneformer)                          0.6313 ± 0.0874  0.3919 ± 0.1069  0.7269 ± 0.0552  0.7170 ± 0.0524
+chosen w per fold: fold 0: 0.75, fold 1: 0.5, fold 2: 0.0, fold 3: 1.0, fold 4: 0.0
+  pipeline - w chosen on validation pooled over folds (w=0.5) [all TFs] -0.0102  better 26/88  p=0.00305
+  pipeline - w chosen on validation pooled over folds (w=0.5) [TFs with >= 8 test positives] -0.0113  better 25/80  p=0.00645
+  pipeline - GNN alone (w=0) [all TFs]                         +0.0192  better 41/88  p=0.000143
+  pipeline - GNN alone (w=0) [TFs with >= 8 test positives]    +0.0188  better 39/80  p=2.61e-05
+  pipeline - popularity alone (w=1) [all TFs]                  -0.0134  better 23/88  p=0.00226
+  pipeline - popularity alone (w=1) [TFs with >= 8 test positives] -0.0145  better 23/80  p=0.00307
+  pipeline - sensitivity: fixed w=0.5 (NOT validation-chosen) [all TFs] -0.0102  better 26/88  p=0.00305
+  pipeline - sensitivity: fixed w=0.5 (NOT validation-chosen) [TFs with >= 8 test positives] -0.0113  better 25/80  p=0.00645
+  pipeline - scRegNet design, Adam-tuned [all TFs]             +0.0045  better 42/88  p=0.957
+  pipeline - scRegNet design, Adam-tuned [TFs with >= 8 test positives] +0.0012  better 37/80  p=0.733
+  pipeline - hero (SAGE, no Geneformer) [all TFs]              +0.0293  better 59/88  p=0.000122
+  pipeline - hero (SAGE, no Geneformer) [TFs with >= 8 test positives] +0.0322  better 56/80  p=3.56e-05
+  popularity alone - scRegNet design, Adam-tuned [all TFs]     +0.0180  better 59/88  p=1.12e-05
+  popularity alone - scRegNet design, Adam-tuned [TFs with >= 8 test positives] +0.0156  better 53/80  p=4.66e-05
+
+==================== hESC held-out genes (5 folds x seeds 42, 43): pipeline = chosen GNN + DC-SBM (Geneformer soft blocks) rank blend; w in (0, .25, .5, .75) chosen on the validation genes, pooled over the 10 runs
+validation within-TF of the blend, mean over 10 runs: w=0.0: 0.6142  w=0.25: 0.6399  w=0.5: 0.6635  w=0.75: 0.6610   -> w = 0.5   (DC-SBM alone 0.6467)
+
+model                                                         AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + DC-SBM, w=0.5)                      0.8598 ± 0.0054  0.5517 ± 0.0120  0.5783 ± 0.0325  0.5944 ± 0.0186
+GNN alone                                           0.8380 ± 0.0115  0.5180 ± 0.0138  0.5576 ± 0.0401  0.5832 ± 0.0159
+DC-SBM Geneformer soft alone                        0.8573 ± 0.0057  0.5379 ± 0.0191  0.5753 ± 0.0277  0.5782 ± 0.0265
+scRegNet design, Adam-tuned                         0.8328 ± 0.0103  0.5275 ± 0.0181  0.5241 ± 0.0405  0.5591 ± 0.0260
+hero (SAGE, no Geneformer)                          0.8467 ± 0.0064  0.5213 ± 0.0111  0.5461 ± 0.0305  0.5617 ± 0.0156
+  pipeline - GNN alone                                         +0.0189  better 23/34  p=0.00384
+  pipeline - DC-SBM Geneformer soft alone                      -0.0070  better 21/34  p=0.37
+  pipeline - scRegNet design, Adam-tuned                       +0.0620  better 23/34  p=0.00205
+  pipeline - hero (SAGE, no Geneformer)                        +0.0161  better 22/34  p=0.113
+
+==================== hHEP held-out genes (5 folds x seeds 42, 43): pipeline = chosen GNN + DC-SBM (Geneformer soft blocks) rank blend; w in (0, .25, .5, .75) chosen on the validation genes, pooled over the 10 runs
+validation within-TF of the blend, mean over 10 runs: w=0.0: 0.6297  w=0.25: 0.6469  w=0.5: 0.6580  w=0.75: 0.6537   -> w = 0.5   (DC-SBM alone 0.6410)
+
+model                                                         AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + DC-SBM, w=0.5)                      0.8426 ± 0.0058  0.7205 ± 0.0070  0.6377 ± 0.0101  0.6377 ± 0.0120
+GNN alone                                           0.8356 ± 0.0115  0.7112 ± 0.0127  0.6314 ± 0.0236  0.6414 ± 0.0146
+DC-SBM Geneformer soft alone                        0.8263 ± 0.0066  0.6810 ± 0.0102  0.5981 ± 0.0222  0.5893 ± 0.0211
+scRegNet design, Adam-tuned                         0.8447 ± 0.0068  0.7226 ± 0.0119  0.6477 ± 0.0155  0.6600 ± 0.0042
+hero (SAGE, no Geneformer)                          0.8246 ± 0.0102  0.6850 ± 0.0245  0.5908 ± 0.0179  0.6039 ± 0.0179
+  pipeline - GNN alone                                         +0.0111  better 17/30  p=0.935
+  pipeline - DC-SBM Geneformer soft alone                      +0.0385  better 27/30  p=1.4e-05
+  pipeline - scRegNet design, Adam-tuned                       -0.0125  better 6/30  p=0.012
+  pipeline - hero (SAGE, no Geneformer)                        +0.0464  better 24/30  p=0.000952
+
+==================== mHSC-E held-out genes (5 folds x seeds 42, 43): pipeline = chosen GNN + DC-SBM (Geneformer soft blocks) rank blend; w in (0, .25, .5, .75) chosen on the validation genes, pooled over the 10 runs
+validation within-TF of the blend, mean over 10 runs: w=0.0: 0.7070  w=0.25: 0.7202  w=0.5: 0.7243  w=0.75: 0.7100   -> w = 0.5   (DC-SBM alone 0.6828)
+
+model                                                         AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + DC-SBM, w=0.5)                      0.8874 ± 0.0033  0.9068 ± 0.0051  0.6881 ± 0.0271  0.6939 ± 0.0205
+GNN alone                                           0.8861 ± 0.0031  0.9060 ± 0.0039  0.6905 ± 0.0284  0.6996 ± 0.0271
+DC-SBM Geneformer soft alone                        0.8757 ± 0.0053  0.8890 ± 0.0069  0.6359 ± 0.0211  0.6360 ± 0.0171
+scRegNet design, Adam-tuned                         0.8831 ± 0.0034  0.8977 ± 0.0074  0.6461 ± 0.0299  0.6681 ± 0.0361
+hero (SAGE, no Geneformer)                          0.8796 ± 0.0039  0.9003 ± 0.0073  0.6688 ± 0.0147  0.6758 ± 0.0158
+  pipeline - GNN alone                                         -0.0036  better 11/29  p=0.412
+  pipeline - DC-SBM Geneformer soft alone                      +0.0476  better 25/29  p=0.00011
+  pipeline - scRegNet design, Adam-tuned                       +0.0434  better 18/29  p=0.0229
+  pipeline - hero (SAGE, no Geneformer)                        +0.0118  better 19/29  p=0.0365
+
+==================== mESC held-out genes (5 folds x seeds 42, 43): pipeline = chosen GNN + DC-SBM (Geneformer soft blocks) rank blend; w in (0, .25, .5, .75) chosen on the validation genes, pooled over the 10 runs
+validation within-TF of the blend, mean over 10 runs: w=0.0: 0.6840  w=0.25: 0.6969  w=0.5: 0.7059  w=0.75: 0.7043   -> w = 0.5   (DC-SBM alone 0.6926)
+
+model                                                         AUROC            AUPRC        within-TF        within>=8
+PIPELINE (GNN + DC-SBM, w=0.5)                      0.8961 ± 0.0074  0.7966 ± 0.0113  0.6724 ± 0.0127  0.6864 ± 0.0179
+GNN alone                                           0.8635 ± 0.0089  0.6998 ± 0.0191  0.6559 ± 0.0167  0.6701 ± 0.0213
+DC-SBM Geneformer soft alone                        0.8968 ± 0.0081  0.8000 ± 0.0119  0.6597 ± 0.0150  0.6707 ± 0.0149
+scRegNet design, Adam-tuned                         0.8692 ± 0.0092  0.7468 ± 0.0158  0.6094 ± 0.0329  0.6266 ± 0.0251
+hero (SAGE, no Geneformer)                          0.8515 ± 0.0095  0.6876 ± 0.0176  0.6247 ± 0.0215  0.6326 ± 0.0205
+  pipeline - GNN alone                                         +0.0223  better 59/86  p=3.16e-05
+  pipeline - DC-SBM Geneformer soft alone                      +0.0018  better 60/86  p=0.00416
+  pipeline - scRegNet design, Adam-tuned                       +0.0682  better 76/86  p=1.62e-12
+  pipeline - hero (SAGE, no Geneformer)                        +0.0441  better 66/86  p=1.51e-07
+
+==================== PART 2 TABLE: AUROC / AUPRC / within-TF / within>=8 (mean over 5 folds x seeds 42, 43)
+
+-- held-out genes
+hESC   PIPELINE (GNN + DC-SBM, w=0.5)                                0.8598 / 0.5517 / 0.5783 / 0.5944
+hESC   GNN alone                                                     0.8380 / 0.5180 / 0.5576 / 0.5832
+hESC   DC-SBM Geneformer soft alone                                  0.8573 / 0.5379 / 0.5753 / 0.5782
+hESC   scRegNet design, Adam-tuned                                   0.8328 / 0.5275 / 0.5241 / 0.5591
+hESC   hero (SAGE, no Geneformer)                                    0.8467 / 0.5213 / 0.5461 / 0.5617
+
+hHEP   PIPELINE (GNN + DC-SBM, w=0.5)                                0.8426 / 0.7205 / 0.6377 / 0.6377
+hHEP   GNN alone                                                     0.8356 / 0.7112 / 0.6314 / 0.6414
+hHEP   DC-SBM Geneformer soft alone                                  0.8263 / 0.6810 / 0.5981 / 0.5893
+hHEP   scRegNet design, Adam-tuned                                   0.8447 / 0.7226 / 0.6477 / 0.6600
+hHEP   hero (SAGE, no Geneformer)                                    0.8246 / 0.6850 / 0.5908 / 0.6039
+
+mHSC-E PIPELINE (GNN + DC-SBM, w=0.5)                                0.8874 / 0.9068 / 0.6881 / 0.6939
+mHSC-E GNN alone                                                     0.8861 / 0.9060 / 0.6905 / 0.6996
+mHSC-E DC-SBM Geneformer soft alone                                  0.8757 / 0.8890 / 0.6359 / 0.6360
+mHSC-E scRegNet design, Adam-tuned                                   0.8831 / 0.8977 / 0.6461 / 0.6681
+mHSC-E hero (SAGE, no Geneformer)                                    0.8796 / 0.9003 / 0.6688 / 0.6758
+
+mESC   PIPELINE (GNN + DC-SBM, w=0.5)                                0.8961 / 0.7966 / 0.6724 / 0.6864
+mESC   GNN alone                                                     0.8635 / 0.6998 / 0.6559 / 0.6701
+mESC   DC-SBM Geneformer soft alone                                  0.8968 / 0.8000 / 0.6597 / 0.6707
+mESC   scRegNet design, Adam-tuned                                   0.8692 / 0.7468 / 0.6094 / 0.6266
+mESC   hero (SAGE, no Geneformer)                                    0.8515 / 0.6876 / 0.6247 / 0.6326
+
+
+-- held-out tfs
+hESC   PIPELINE (GNN + popularity, w chosen per fold on validation)  0.6685 / 0.2332 / 0.7248 / 0.7130
+hESC   w chosen on validation pooled over folds (w=1.0)              0.6689 / 0.2316 / 0.7244 / 0.7120
+hESC   GNN alone (w=0)                                               0.5585 / 0.1921 / 0.6860 / 0.6665
+hESC   popularity alone (w=1)                                        0.6689 / 0.2316 / 0.7244 / 0.7120
+hESC   sensitivity: fixed w=0.5 (NOT validation-chosen)              0.6261 / 0.2179 / 0.7193 / 0.7034
+hESC   scRegNet design, Adam-tuned                                   0.6009 / 0.2303 / 0.7163 / 0.7045
+hESC   hero (SAGE, no Geneformer)                                    0.6304 / 0.2314 / 0.6855 / 0.6766
+
+hHEP   PIPELINE (GNN + popularity, w chosen per fold on validation)  0.7189 / 0.5083 / 0.7748 / 0.7731
+hHEP   w chosen on validation pooled over folds (w=0.75)             0.7251 / 0.5203 / 0.7760 / 0.7743
+hHEP   GNN alone (w=0)                                               0.6367 / 0.4492 / 0.7246 / 0.7211
+hHEP   popularity alone (w=1)                                        0.7349 / 0.5269 / 0.7785 / 0.7771
+hHEP   sensitivity: fixed w=0.5 (NOT validation-chosen)              0.7024 / 0.5005 / 0.7650 / 0.7629
+hHEP   scRegNet design, Adam-tuned                                   0.6187 / 0.4332 / 0.7405 / 0.7393
+hHEP   hero (SAGE, no Geneformer)                                    0.6789 / 0.4912 / 0.7460 / 0.7473
+
+mHSC-E PIPELINE (GNN + popularity, w chosen per fold on validation)  0.6678 / 0.6535 / 0.7554 / 0.7722
+mHSC-E w chosen on validation pooled over folds (w=0.5)              0.6620 / 0.6516 / 0.7551 / 0.7720
+mHSC-E GNN alone (w=0)                                               0.6228 / 0.6276 / 0.7336 / 0.7490
+mHSC-E popularity alone (w=1)                                        0.6828 / 0.6710 / 0.7609 / 0.7765
+mHSC-E sensitivity: fixed w=0.5 (NOT validation-chosen)              0.6620 / 0.6516 / 0.7551 / 0.7720
+mHSC-E scRegNet design, Adam-tuned                                   0.6406 / 0.6533 / 0.7254 / 0.7430
+mHSC-E hero (SAGE, no Geneformer)                                    0.6425 / 0.6634 / 0.7187 / 0.7296
+
+mESC   PIPELINE (GNN + popularity, w chosen per fold on validation)  0.6493 / 0.3994 / 0.7555 / 0.7466
+mESC   w chosen on validation pooled over folds (w=0.5)              0.6789 / 0.4265 / 0.7658 / 0.7580
+mESC   GNN alone (w=0)                                               0.6527 / 0.4057 / 0.7364 / 0.7283
+mESC   popularity alone (w=1)                                        0.6759 / 0.4210 / 0.7690 / 0.7609
+mESC   sensitivity: fixed w=0.5 (NOT validation-chosen)              0.6789 / 0.4265 / 0.7658 / 0.7580
+mESC   scRegNet design, Adam-tuned                                   0.6433 / 0.4272 / 0.7506 / 0.7444
+mESC   hero (SAGE, no Geneformer)                                    0.6313 / 0.3919 / 0.7269 / 0.7170
+
+
+==================== SUMMARY: pipeline vs the scRegNet baseline on every cell and protocol (within-TF AUROC; paired per-TF Wilcoxon)
+standard split (W16, seeds 42-44, baseline = published scRegNet recipe, parsed from analysis/out/w16_pipeline.txt) and held-out (seeds 42, 43 x 5 folds, baseline = scRegNet design Adam-tuned)
+cell    protocol        pipeline  baseline     diff        p  verdict   |  vs hero: diff (p)
+hESC    standard          0.7460    0.7020  +0.0440 0.000703  beats
+hESC    held-out genes    0.5783    0.5241  +0.0620  0.00205  beats   |  +0.0161 (0.11) ties
+hESC    held-out tfs      0.7248    0.7163  +0.0084   0.0526  ties   |  +0.0391 (1e-06) beats
+hHEP    standard          0.8075    0.7873  +0.0203    0.012  beats
+hHEP    held-out genes    0.6377    0.6477  -0.0125    0.012  loses   |  +0.0464 (0.00095) beats
+hHEP    held-out tfs      0.7748    0.7405  +0.0343   0.0155  beats   |  +0.0288 (1.4e-06) beats
+mHSC-E  standard          0.7700    0.7210  +0.0490 5.52e-06  beats
+mHSC-E  held-out genes    0.6881    0.6461  +0.0434   0.0229  beats   |  +0.0118 (0.037) beats
+mHSC-E  held-out tfs      0.7554    0.7254  +0.0315 0.000975  beats   |  +0.0354 (0.0032) beats
+mESC    standard          0.8403    0.7658  +0.0745 3.83e-11  beats
+mESC    held-out genes    0.6724    0.6094  +0.0682 1.62e-12  beats   |  +0.0441 (1.5e-07) beats
+mESC    held-out tfs      0.7555    0.7506  +0.0045    0.957  ties   |  +0.0293 (0.00012) beats

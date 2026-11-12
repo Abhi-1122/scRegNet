@@ -1,0 +1,1 @@
+{"name": "w16_dcv_std_mHSC-E_s44", "args": {"name": "w16_dcv_std_mHSC-E_s44", "kind": "std", "cell": "mHSC-E", "fold": 0, "seed": 44, "out": "analysis/out/pair"}, "cfg": {"k": 5, "l2": 10, "ra": null, "steps": 250}, "val": {"auc": 0.9029102614636711, "aupr": 0.9255706165960755, "within": 0.8156318439151464, "within8": 0.8166587889438861}, "minutes": 0.019211248556772868}

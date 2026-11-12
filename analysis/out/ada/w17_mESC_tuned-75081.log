@@ -1,0 +1,22 @@
+NVIDIA GeForce RTX 2080 Ti
+w17_mESC_ho_tf0_tuned_s43	epoch 20	val AUROC 0.8535	REFIT TEST AUROC 0.5947 AUPRC 0.3471 withinTF 0.7565	1.5 min
+w17_mESC_ho_tf1_tuned_s43	epoch 47	val AUROC 0.5008	REFIT TEST AUROC 0.6694 AUPRC 0.4853 withinTF 0.7611	3.1 min
+w17_mESC_ho_tf2_tuned_s42	epoch 20	val AUROC 0.9900	REFIT TEST AUROC 0.6089 AUPRC 0.2738 withinTF 0.7248	1.5 min
+w17_mESC_ho_tf1_tuned_s42	epoch 57	val AUROC 0.5159	REFIT TEST AUROC 0.6663 AUPRC 0.4754 withinTF 0.7600	3.7 min
+w17_mESC_ho_tf0_tuned_s42	epoch 69	val AUROC 0.8446	REFIT TEST AUROC 0.6094 AUPRC 0.3599 withinTF 0.7647	4.3 min
+w17_mESC_ho_tf3_tuned_s42	epoch 16	val AUROC 0.6522	REFIT TEST AUROC 0.7255 AUPRC 0.6034 withinTF 0.7683	1.3 min
+w17_mESC_ho_tf2_tuned_s43	epoch 20	val AUROC 0.9901	REFIT TEST AUROC 0.6124 AUPRC 0.2821 withinTF 0.7239	1.5 min
+w17_mESC_ho_tf4_tuned_s43	epoch 2	val AUROC 0.6060	REFIT TEST AUROC 0.5667 AUPRC 0.3843 withinTF 0.6816	0.5 min
+w17_mESC_ho_gene0_tuned_s42	epoch 3	val AUROC 0.8699	REFIT TEST AUROC 0.8715 AUPRC 0.7459 withinTF 0.5912	0.6 min
+w17_mESC_ho_gene0_tuned_s43	epoch 3	val AUROC 0.8648	REFIT TEST AUROC 0.8667 AUPRC 0.7371 withinTF 0.5741	0.6 min
+w17_mESC_ho_tf4_tuned_s42	epoch 26	val AUROC 0.6650	REFIT TEST AUROC 0.6371 AUPRC 0.4321 withinTF 0.7832	1.7 min
+w17_mESC_ho_gene1_tuned_s42	epoch 4	val AUROC 0.8760	REFIT TEST AUROC 0.8489 AUPRC 0.7157 withinTF 0.5620	0.6 min
+w17_mESC_ho_tf3_tuned_s43	epoch 43	val AUROC 0.6271	REFIT TEST AUROC 0.7423 AUPRC 0.6287 withinTF 0.7817	2.7 min
+w17_mESC_ho_gene1_tuned_s43	epoch 4	val AUROC 0.8770	REFIT TEST AUROC 0.8559 AUPRC 0.7212 withinTF 0.5681	0.6 min
+w17_mESC_ho_gene2_tuned_s42	epoch 3	val AUROC 0.8699	REFIT TEST AUROC 0.8712 AUPRC 0.7545 withinTF 0.6143	0.5 min
+w17_mESC_ho_gene2_tuned_s43	epoch 4	val AUROC 0.8745	REFIT TEST AUROC 0.8703 AUPRC 0.7579 withinTF 0.6240	0.5 min
+w17_mESC_ho_gene3_tuned_s42	epoch 4	val AUROC 0.8814	REFIT TEST AUROC 0.8787 AUPRC 0.7607 withinTF 0.6587	0.6 min
+w17_mESC_ho_gene3_tuned_s43	epoch 5	val AUROC 0.8771	REFIT TEST AUROC 0.8777 AUPRC 0.7601 withinTF 0.6566	0.6 min
+w17_mESC_ho_gene4_tuned_s42	epoch 4	val AUROC 0.8632	REFIT TEST AUROC 0.8745 AUPRC 0.7560 withinTF 0.6186	0.5 min
+w17_mESC_ho_gene4_tuned_s43	epoch 5	val AUROC 0.8673	REFIT TEST AUROC 0.8762 AUPRC 0.7586 withinTF 0.6268	0.5 min
+QUEUE_DONE analysis/jobs/w17_mESC_tuned.txt

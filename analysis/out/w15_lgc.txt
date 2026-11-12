@@ -1,0 +1,205 @@
+W15 part 2: LightGCN on hESC (seed 42 sweep, chosen on validation AUROC; hero hyper-parameters otherwise: Adam, wd 1e-3 on the decoder, batch split, scfm 0).
+
+== Sweep: 144 runs (K x d x decoder x embedding L2 x lr x emb_feat), default init std 0.1, patience 10. Mean validation AUROC by level (all other factors pooled), then the top 10.
+  K     1: 0.7594   2: 0.8087   3: 0.7791
+  d     64: 0.7795   128: 0.7853
+  dec   dot: 0.6836   had: 0.8812
+  l2    0.0001: 0.8064   0.001: 0.7814   0.01: 0.7594
+  lr    0.0001: 0.7727   0.001: 0.7921
+  feat  expr: 0.7805   none: 0.7843
+  best validation AUROC per cell of the grid: dot/expr 0.7898; dot/none 0.8212; had/expr 0.8854; had/none 0.8864
+run                                                  val AUROC val within epoch
+w15_sw_none_K2_d128_had_l0.0001_lr0.001_s42             0.8864     0.7264 24
+w15_sw_none_K2_d64_had_l0.0001_lr0.001_s42              0.8857     0.7267 29
+w15_sw_expr_K2_d64_had_l0.0001_lr0.0001_s42             0.8854     0.7195 29
+w15_sw_expr_K2_d64_had_l0.001_lr0.0001_s42              0.8846     0.7191 29
+w15_sw_expr_K2_d64_had_l0.01_lr0.0001_s42               0.8846     0.7171 29
+w15_sw_expr_K3_d64_had_l0.0001_lr0.001_s42              0.8842     0.7210 4
+w15_sw_none_K3_d128_had_l0.0001_lr0.001_s42             0.8842     0.7147 18
+w15_sw_expr_K2_d64_had_l0.0001_lr0.001_s42              0.8841     0.7165 3
+w15_sw_expr_K3_d64_had_l0.0001_lr0.0001_s42             0.8841     0.7230 26
+w15_sw_expr_K1_d64_had_l0.0001_lr0.0001_s42             0.8841     0.7284 14
+
+== Extra dot-decoder sweep (init std 0.5 / 1.0, patience 30; the default init stalls the dot product): 16 runs, best validation AUROC 0.8265 (w15_swdot_K2_std0.5_l0.0001_lr0.01_s42); best had run 0.8864
+  runs whose refit test AUROC fell more than 0.1 below the validation AUROC (refit instability): w15_swdot_K2_std0.5_l0.001_lr0.001_s42 (val 0.824, test 0.628), w15_sw_expr_K2_d128_dot_l0.001_lr0.001_s42 (val 0.779, test 0.673), w15_sw_expr_K2_d128_dot_l0.01_lr0.001_s42 (val 0.778, test 0.673), w15_sw_none_K3_d128_dot_l0.001_lr0.001_s42 (val 0.766, test 0.594), w15_sw_none_K1_d128_dot_l0.001_lr0.0001_s42 (val 0.753, test 0.584), w15_sw_none_K3_d128_dot_l0.01_lr0.0001_s42 (val 0.750, test 0.626), w15_sw_none_K1_d64_dot_l0.001_lr0.0001_s42 (val 0.730, test 0.503), w15_sw_none_K2_d64_dot_l0.001_lr0.001_s42 (val 0.687, test 0.521), w15_sw_none_K2_d64_dot_l0.001_lr0.0001_s42 (val 0.682, test 0.557), w15_sw_none_K2_d128_dot_l0.01_lr0.0001_s42 (val 0.677, test 0.574), w15_sw_none_K3_d64_dot_l0.01_lr0.0001_s42 (val 0.646, test 0.508)
+
+== hESC: seeds 42-44, test, mean ± sd
+model                                        n             AUROC            AUPRC        within-TF        val AUROC
+LightGCN (free embedding only)               3   0.8859 ± 0.0002  0.6216 ± 0.0015  0.7241 ± 0.0039  0.8859 ± 0.0004
+hybrid, + projected expression               3   0.8805 ± 0.0003  0.5998 ± 0.0037  0.7046 ± 0.0033  0.8851 ± 0.0003
+hybrid, + projected Geneformer               3   0.8860 ± 0.0030  0.6108 ± 0.0065  0.7220 ± 0.0143  0.8896 ± 0.0007
+hybrid, + projected 14 statistics            3   0.8846 ± 0.0008  0.6114 ± 0.0015  0.7032 ± 0.0016  0.8859 ± 0.0009
+ablation: expression only (no free emb.)     3   0.8792 ± 0.0003  0.5958 ± 0.0034  0.7007 ± 0.0022  0.8843 ± 0.0001
+ablation: Geneformer only (no free emb.)     3   0.8847 ± 0.0018  0.6130 ± 0.0048  0.7170 ± 0.0033  0.8895 ± 0.0004
+LightGCN, dot decoder                        3   0.8559 ± 0.0004  0.5453 ± 0.0003  0.7103 ± 0.0012  0.8265 ± 0.0000
+hero (SAGE, expression)                      3   0.8885 ± 0.0014  0.6254 ± 0.0015  0.7490 ± 0.0018  0.8885 ± 0.0009
+SAGE random features (w14)                   3   0.8792 ± 0.0005  0.6136 ± 0.0011  0.7213 ± 0.0066  0.8814 ± 0.0012
+best grid GNN (npanda, scfm 1)               3   0.8902 ± 0.0027  0.6346 ± 0.0033  0.7504 ± 0.0086  0.8945 ± 0.0007
+DC-SBM learned (section 31)                  3                                     0.7295 ± 0.0036
+paired per-TF within-TF tests (diff, TFs better, Wilcoxon p):
+  LightGCN (free embedding only):
+      vs hero (SAGE, expression)              -0.0249 (16/33, p=0.832)
+      vs SAGE random features (w14)           +0.0028 (21/33, p=0.501)
+      vs best grid GNN (npanda, scfm 1)       -0.0263 (15/33, p=0.322)
+      vs DC-SBM learned                       -0.0054 (15/33, p=0.837)
+  hybrid, + projected expression:
+      vs hero (SAGE, expression)              -0.0444 (5/33, p=2e-05)
+      vs SAGE random features (w14)           -0.0166 (12/33, p=0.208)
+      vs best grid GNN (npanda, scfm 1)       -0.0458 (9/33, p=0.00311)
+      vs DC-SBM learned                       -0.0249 (12/33, p=0.101)
+      vs LightGCN (free embedding only)       -0.0194 (8/33, p=0.0093)
+  hybrid, + projected Geneformer:
+      vs hero (SAGE, expression)              -0.0270 (17/33, p=0.832)
+      vs SAGE random features (w14)           +0.0007 (19/33, p=0.313)
+      vs best grid GNN (npanda, scfm 1)       -0.0284 (12/33, p=0.239)
+      vs DC-SBM learned                       -0.0075 (16/33, p=0.911)
+      vs LightGCN (free embedding only)       -0.0020 (15/33, p=0.896)
+  hybrid, + projected 14 statistics:
+      vs hero (SAGE, expression)              -0.0458 (15/33, p=0.06)
+      vs SAGE random features (w14)           -0.0180 (18/33, p=0.754)
+      vs best grid GNN (npanda, scfm 1)       -0.0472 (11/33, p=0.0496)
+      vs DC-SBM learned                       -0.0263 (13/33, p=0.0924)
+      vs LightGCN (free embedding only)       -0.0208 (10/33, p=0.0346)
+
+== hHEP: seeds 42-44, test, mean ± sd
+model                                        n             AUROC            AUPRC        within-TF        val AUROC
+LightGCN (free embedding only)               3   0.9011 ± 0.0012  0.8411 ± 0.0008  0.7756 ± 0.0033  0.9007 ± 0.0007
+hybrid, + projected expression               3   0.9029 ± 0.0006  0.8438 ± 0.0005  0.7742 ± 0.0035  0.9008 ± 0.0003
+hybrid, + projected Geneformer               3   0.8992 ± 0.0029  0.8380 ± 0.0070  0.7722 ± 0.0073  0.8983 ± 0.0017
+hybrid, + projected 14 statistics            3   0.9012 ± 0.0010  0.8403 ± 0.0002  0.7726 ± 0.0059  0.8982 ± 0.0003
+ablation: expression only (no free emb.)     3   0.9007 ± 0.0006  0.8399 ± 0.0020  0.7766 ± 0.0013  0.8989 ± 0.0007
+ablation: Geneformer only (no free emb.)     3   0.8965 ± 0.0045  0.8312 ± 0.0065  0.7748 ± 0.0127  0.8979 ± 0.0015
+hero (SAGE, expression)                      3   0.8990 ± 0.0006  0.8378 ± 0.0006  0.7587 ± 0.0020  0.8983 ± 0.0008
+SAGE random features (w14)                   3   0.8977 ± 0.0009  0.8345 ± 0.0006  0.7678 ± 0.0018  0.8916 ± 0.0009
+best grid GNN (npanda, scfm 1)               3   0.9041 ± 0.0007  0.8467 ± 0.0010  0.7919 ± 0.0036  0.9032 ± 0.0007
+DC-SBM learned (section 31)                  3                                     0.8006 ± 0.0001
+paired per-TF within-TF tests (diff, TFs better, Wilcoxon p):
+  LightGCN (free embedding only):
+      vs hero (SAGE, expression)              +0.0169 (17/30, p=0.0879)
+      vs SAGE random features (w14)           +0.0078 (21/30, p=0.0767)
+      vs best grid GNN (npanda, scfm 1)       -0.0164 (12/30, p=0.171)
+      vs DC-SBM learned                       -0.0251 (10/30, p=0.0175)
+  hybrid, + projected expression:
+      vs hero (SAGE, expression)              +0.0156 (21/30, p=0.00538)
+      vs SAGE random features (w14)           +0.0065 (22/30, p=0.0234)
+      vs best grid GNN (npanda, scfm 1)       -0.0177 (10/30, p=0.237)
+      vs DC-SBM learned                       -0.0264 (11/30, p=0.14)
+      vs LightGCN (free embedding only)       -0.0013 (18/30, p=0.198)
+  hybrid, + projected Geneformer:
+      vs hero (SAGE, expression)              +0.0136 (16/30, p=0.393)
+      vs SAGE random features (w14)           +0.0045 (20/30, p=0.28)
+      vs best grid GNN (npanda, scfm 1)       -0.0197 (9/30, p=0.0185)
+      vs DC-SBM learned                       -0.0284 (8/30, p=0.00186)
+      vs LightGCN (free embedding only)       -0.0033 (11/30, p=0.452)
+  hybrid, + projected 14 statistics:
+      vs hero (SAGE, expression)              +0.0139 (16/30, p=0.213)
+      vs SAGE random features (w14)           +0.0048 (21/30, p=0.0606)
+      vs best grid GNN (npanda, scfm 1)       -0.0194 (10/30, p=0.0262)
+      vs DC-SBM learned                       -0.0281 (7/30, p=0.000418)
+      vs LightGCN (free embedding only)       -0.0030 (14/30, p=0.935)
+
+== mESC: seeds 42-44, test, mean ± sd
+model                                        n             AUROC            AUPRC        within-TF        val AUROC
+LightGCN (free embedding only)               3   0.9245 ± 0.0006  0.8554 ± 0.0014  0.7661 ± 0.0016  0.9263 ± 0.0003
+hybrid, + projected expression               3   0.9333 ± 0.0019  0.8695 ± 0.0032  0.7978 ± 0.0039  0.9337 ± 0.0017
+hybrid, + projected Geneformer               3   0.9330 ± 0.0026  0.8676 ± 0.0064  0.7997 ± 0.0053  0.9346 ± 0.0027
+hybrid, + projected 14 statistics            3   0.9336 ± 0.0004  0.8708 ± 0.0012  0.7974 ± 0.0004  0.9336 ± 0.0004
+ablation: expression only (no free emb.)     (no runs)
+ablation: Geneformer only (no free emb.)     (no runs)
+hero (SAGE, expression)                      3   0.9390 ± 0.0010  0.8813 ± 0.0016  0.8241 ± 0.0013  0.9382 ± 0.0006
+SAGE random features (w14)                   3   0.9350 ± 0.0001  0.8749 ± 0.0006  0.8051 ± 0.0028  0.9343 ± 0.0001
+best grid GNN (sage, scfm 1)                 3   0.9399 ± 0.0001  0.8830 ± 0.0001  0.8284 ± 0.0007  0.9387 ± 0.0006
+DC-SBM learned (section 31)                  3                                     0.8332 ± 0.0018
+paired per-TF within-TF tests (diff, TFs better, Wilcoxon p):
+  LightGCN (free embedding only):
+      vs hero (SAGE, expression)              -0.0580 (19/85, p=1.37e-08)
+      vs SAGE random features (w14)           -0.0389 (24/85, p=8.85e-05)
+      vs best grid GNN (sage, scfm 1)         -0.0623 (19/85, p=5.58e-09)
+      vs DC-SBM learned                       -0.0671 (14/85, p=6.51e-12)
+  hybrid, + projected expression:
+      vs hero (SAGE, expression)              -0.0263 (21/85, p=1.53e-06)
+      vs SAGE random features (w14)           -0.0072 (35/85, p=0.205)
+      vs best grid GNN (sage, scfm 1)         -0.0306 (12/85, p=9.48e-09)
+      vs DC-SBM learned                       -0.0354 (16/85, p=1.03e-07)
+      vs LightGCN (free embedding only)       +0.0317 (59/85, p=5.33e-05)
+  hybrid, + projected Geneformer:
+      vs hero (SAGE, expression)              -0.0244 (17/85, p=2.56e-07)
+      vs SAGE random features (w14)           -0.0054 (30/85, p=0.113)
+      vs best grid GNN (sage, scfm 1)         -0.0287 (18/85, p=1.5e-07)
+      vs DC-SBM learned                       -0.0335 (17/85, p=1.54e-08)
+      vs LightGCN (free embedding only)       +0.0336 (54/85, p=0.000892)
+  hybrid, + projected 14 statistics:
+      vs hero (SAGE, expression)              -0.0267 (27/85, p=0.000569)
+      vs SAGE random features (w14)           -0.0077 (42/85, p=0.782)
+      vs best grid GNN (sage, scfm 1)         -0.0310 (25/85, p=2.78e-05)
+      vs DC-SBM learned                       -0.0358 (23/85, p=7.91e-06)
+      vs LightGCN (free embedding only)       +0.0313 (63/85, p=2.01e-07)
+
+== mHSC-E: seeds 42-44, test, mean ± sd
+model                                        n             AUROC            AUPRC        within-TF        val AUROC
+LightGCN (free embedding only)               3   0.9233 ± 0.0006  0.9428 ± 0.0003  0.7436 ± 0.0015  0.9224 ± 0.0005
+hybrid, + projected expression               3   0.9239 ± 0.0004  0.9430 ± 0.0005  0.7439 ± 0.0004  0.9225 ± 0.0005
+hybrid, + projected Geneformer               3   0.9250 ± 0.0004  0.9434 ± 0.0006  0.7786 ± 0.0021  0.9259 ± 0.0021
+hybrid, + projected 14 statistics            (no runs)
+ablation: expression only (no free emb.)     (no runs)
+ablation: Geneformer only (no free emb.)     (no runs)
+hero (SAGE, expression)                      3   0.9233 ± 0.0016  0.9429 ± 0.0017  0.7575 ± 0.0062  0.9257 ± 0.0010
+SAGE random features (w14)                   3   0.9204 ± 0.0012  0.9417 ± 0.0007  0.7603 ± 0.0110  0.9255 ± 0.0002
+best grid GNN (gcn, scfm 1)                  3   0.9259 ± 0.0004  0.9445 ± 0.0001  0.8081 ± 0.0027  0.9262 ± 0.0010
+DC-SBM learned (section 31)                  3                                     0.7531 ± 0.0012
+paired per-TF within-TF tests (diff, TFs better, Wilcoxon p):
+  LightGCN (free embedding only):
+      vs hero (SAGE, expression)              -0.0139 (16/29, p=0.701)
+      vs SAGE random features (w14)           -0.0167 (16/29, p=0.966)
+      vs best grid GNN (gcn, scfm 1)          -0.0646 (13/29, p=0.205)
+      vs DC-SBM learned                       -0.0096 (16/29, p=0.782)
+  hybrid, + projected expression:
+      vs hero (SAGE, expression)              -0.0136 (15/29, p=0.624)
+      vs SAGE random features (w14)           -0.0164 (14/29, p=0.733)
+      vs best grid GNN (gcn, scfm 1)          -0.0642 (12/29, p=0.0689)
+      vs DC-SBM learned                       -0.0092 (13/29, p=0.325)
+      vs LightGCN (free embedding only)       +0.0003 (14/29, p=0.455)
+  hybrid, + projected Geneformer:
+      vs hero (SAGE, expression)              +0.0212 (15/29, p=0.393)
+      vs SAGE random features (w14)           +0.0184 (17/29, p=0.238)
+      vs best grid GNN (gcn, scfm 1)          -0.0295 (12/29, p=0.126)
+      vs DC-SBM learned                       +0.0255 (12/29, p=0.782)
+      vs LightGCN (free embedding only)       +0.0351 (18/29, p=0.325)
+
+== hESC held-out genes: 5 folds x seeds 42,43 (n = 10)
+model                                    n             AUROC            AUPRC        within-TF        within>=8   vs hero (w5): within-TF diff (TFs better, p)
+hero (w5)                                10   0.8467 ± 0.0064  0.5213 ± 0.0111  0.5461 ± 0.0305  0.5617 ± 0.0156
+SAGE random features (w14)               10   0.8450 ± 0.0035  0.5043 ± 0.0177  0.4908 ± 0.0174  0.4964 ± 0.0231   -0.0382 (8/34, p=0.0161)
+LightGCN (free embedding only)           10   0.8467 ± 0.0038  0.4928 ± 0.0181  0.5017 ± 0.0267  0.4972 ± 0.0248   -0.0413 (10/34, p=0.0146)
+hybrid, + projected expression           10   0.8481 ± 0.0055  0.5131 ± 0.0169  0.5644 ± 0.0456  0.5781 ± 0.0223   +0.0135 (24/34, p=0.0874)
+hybrid, + projected Geneformer           10   0.8299 ± 0.0120  0.4895 ± 0.0257  0.5673 ± 0.0279  0.5826 ± 0.0170   +0.0161 (23/34, p=0.125)
+hybrid, + projected 14 statistics        10   0.8506 ± 0.0043  0.5227 ± 0.0202  0.5455 ± 0.0267  0.5733 ± 0.0142   +0.0008 (23/34, p=0.0907)
+
+== hESC held-out tfs: 5 folds x seeds 42,43 (n = 10)
+model                                    n             AUROC            AUPRC        within-TF        within>=8   vs hero (w5): within-TF diff (TFs better, p)
+hero (w5)                                10   0.6304 ± 0.1127  0.2314 ± 0.0978  0.6855 ± 0.0643  0.6766 ± 0.0388
+LightGCN (free embedding only)           10   0.6283 ± 0.0709  0.2246 ± 0.0490  0.6700 ± 0.0826  0.6719 ± 0.0637   -0.0176 (20/34, p=0.906)
+hybrid, + projected expression           10   0.5101 ± 0.1090  0.1694 ± 0.0507  0.4811 ± 0.0976  0.5166 ± 0.0703   -0.2064 (2/34, p=3.84e-09)
+hybrid, + projected Geneformer           10   0.6049 ± 0.0465  0.1938 ± 0.0313  0.6727 ± 0.0599  0.6640 ± 0.0380   -0.0130 (15/34, p=0.532)
+hybrid, + projected 14 statistics        10   0.6433 ± 0.0476  0.2221 ± 0.0497  0.6903 ± 0.0515  0.6753 ± 0.0189   +0.0039 (21/34, p=0.467)
+
+== Explanation (hESC)
+  per-TF gain LightGCN (free embedding only) - hero (SAGE, expression): Spearman with number of training targets rho=+0.24 (p=0.18); TFs with <= median targets (44): -0.0427, with more: -0.0061
+  per-TF gain LightGCN (free embedding only) - SAGE random features (w14): Spearman with number of training targets rho=+0.33 (p=0.064); TFs with <= median targets (44): -0.0136, with more: +0.0202
+  per-TF gain hybrid, + projected expression - hero (SAGE, expression): Spearman with number of training targets rho=+0.24 (p=0.18); TFs with <= median targets (44): -0.0686, with more: -0.0186
+  Spearman of the test scores with gene popularity (training in-degree), within TF, mean over TFs and seeds:
+      LightGCN (free embedding only)               0.916
+      hybrid, + projected expression               0.627
+      hybrid, + projected Geneformer               0.702
+      hybrid, + projected 14 statistics            0.847
+      ablation: expression only (no free emb.)     0.600
+      ablation: Geneformer only (no free emb.)     0.686
+      hero                                         0.721
+      SAGE random features                         0.763
+
+== Diagnostic (mESC, seed 42; pure LightGCN trails the hero there): wider embedding, one layer, no decoder weight decay. Not used for any choice.
+  w15_diag_mESC_pure_K1_d256_s42           K=1 d=256 wd=0.001  val AUROC 0.9385  test within-TF 0.8027  AUROC 0.9339  epoch 81
+  w15_diag_mESC_pure_K2_d256_s42           K=2 d=256 wd=0.001  val AUROC 0.9264  test within-TF 0.7675  AUROC 0.9248  epoch 27
+  w15_diag_mESC_pure_K2_d256_wd0_s42       K=2 d=256 wd=0.0  val AUROC 0.9418  test within-TF 0.8229  AUROC 0.9425  epoch 21
+  w15_diag_mESC_pure_K2_d512_s42           K=2 d=512 wd=0.001  val AUROC 0.9265  test within-TF 0.7680  AUROC 0.9251  epoch 27
+  w15_lgc_mESC_pure_s42                    K=2 d=128 wd=0.001  val AUROC 0.9265  test within-TF 0.7682  AUROC 0.9251  epoch 49

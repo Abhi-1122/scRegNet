@@ -1,0 +1,1 @@
+{"name": "w16_dcv_std_mESC_s44", "args": {"name": "w16_dcv_std_mESC_s44", "kind": "std", "cell": "mESC", "fold": 0, "seed": 44, "out": "analysis/out/pair"}, "cfg": {"k": 10, "l2": 3, "ra": null, "steps": 150}, "val": {"auc": 0.9332257005667532, "aupr": 0.8761921743169405, "within": 0.8345265072820313, "within8": 0.8308823149647225}, "minutes": 0.020443952083587645}

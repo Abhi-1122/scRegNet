@@ -1,0 +1,1 @@
+{"name": "w16_dcv_std_hESC_s43", "args": {"name": "w16_dcv_std_hESC_s43", "kind": "std", "cell": "hESC", "fold": 0, "seed": 43, "out": "analysis/out/pair"}, "cfg": {"k": 5, "l2": 10, "ra": null, "steps": 300}, "val": {"auc": 0.8790171935040529, "aupr": 0.6350844817631295, "within": 0.7387184947386153, "within8": 0.7456083344465209}, "minutes": 0.020002957185109457}

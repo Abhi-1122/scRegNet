@@ -1,0 +1,23 @@
+NVIDIA GeForce RTX 2080 Ti
+NVIDIA GeForce RTX 2080 Ti
+w16_ho_gene0_base_s43	epoch 2	val AUROC 0.8164	REFIT TEST AUROC 0.8448 AUPRC 0.5309 withinTF 0.5077	1.2 min
+w16_ho_gene1_base_s43	epoch 3	val AUROC 0.8633	REFIT TEST AUROC 0.8557 AUPRC 0.5377 withinTF 0.6182	1.4 min
+w16_ho_gene0_base_s42	epoch 2	val AUROC 0.8268	REFIT TEST AUROC 0.8495 AUPRC 0.5398 withinTF 0.5104	1.8 min
+w16_ho_gene1_base_s42	epoch 4	val AUROC 0.8497	REFIT TEST AUROC 0.8412 AUPRC 0.5185 withinTF 0.6187	2.2 min
+w16_ho_gene2_base_s43	epoch 2	val AUROC 0.8810	REFIT TEST AUROC 0.8386 AUPRC 0.5260 withinTF 0.5636	1.5 min
+w16_ho_gene2_base_s42	epoch 3	val AUROC 0.8752	REFIT TEST AUROC 0.8368 AUPRC 0.5181 withinTF 0.5764	1.9 min
+w16_ho_gene3_base_s43	epoch 3	val AUROC 0.8526	REFIT TEST AUROC 0.8266 AUPRC 0.5081 withinTF 0.5107	1.8 min
+w16_ho_gene3_base_s42	epoch 5	val AUROC 0.8580	REFIT TEST AUROC 0.8125 AUPRC 0.5012 withinTF 0.5263	2.2 min
+w16_ho_gene4_base_s42	epoch 2	val AUROC 0.8650	REFIT TEST AUROC 0.8402 AUPRC 0.5029 withinTF 0.5773	1.3 min
+w16_ho_gene4_base_s43	epoch 2	val AUROC 0.8627	REFIT TEST AUROC 0.8349 AUPRC 0.5036 withinTF 0.5604	2.0 min
+w16_ho_gene0_dwd0_s43	epoch 2	val AUROC 0.8160	REFIT TEST AUROC 0.8447 AUPRC 0.5298 withinTF 0.5070	1.2 min
+w16_ho_gene0_dwd0_s42	epoch 2	val AUROC 0.8268	REFIT TEST AUROC 0.8493 AUPRC 0.5386 withinTF 0.5101	1.3 min
+w16_ho_gene1_dwd0_s43	epoch 3	val AUROC 0.8639	REFIT TEST AUROC 0.8557 AUPRC 0.5368 withinTF 0.6197	1.4 min
+w16_ho_gene2_dwd0_s42	epoch 3	val AUROC 0.8746	REFIT TEST AUROC 0.8368 AUPRC 0.5167 withinTF 0.5751	1.4 min
+w16_ho_gene1_dwd0_s42	epoch 4	val AUROC 0.8495	REFIT TEST AUROC 0.8406 AUPRC 0.5173 withinTF 0.6175	2.6 min
+w16_ho_gene2_dwd0_s43	epoch 2	val AUROC 0.8812	REFIT TEST AUROC 0.8389 AUPRC 0.5272 withinTF 0.5668	2.1 min
+w16_ho_gene3_dwd0_s43	epoch 3	val AUROC 0.8525	REFIT TEST AUROC 0.8270 AUPRC 0.5088 withinTF 0.5125	1.5 min
+w16_ho_gene4_dwd0_s42	epoch 2	val AUROC 0.8646	REFIT TEST AUROC 0.8401 AUPRC 0.5027 withinTF 0.5772	1.4 min
+w16_ho_gene3_dwd0_s42	epoch 5	val AUROC 0.8578	REFIT TEST AUROC 0.8115 AUPRC 0.4994 withinTF 0.5268	2.0 min
+w16_ho_gene4_dwd0_s43	epoch 2	val AUROC 0.8623	REFIT TEST AUROC 0.8351 AUPRC 0.5028 withinTF 0.5629	1.4 min
+QUEUE_DONE analysis/jobs/w16_ho_gene.txt

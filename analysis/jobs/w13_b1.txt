@@ -1,0 +1,8 @@
+w13_hESC_dc_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --cell_type hESC --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --scfm 1 --decoder had --scalar dcsbm --seed 42
+w13_hESC_dclr10_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --cell_type hESC --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --scfm 1 --decoder had --scalar dcsbm --scalar_lr 10 --seed 42
+w13_hHEP_dc_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --cell_type hHEP --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --scfm 1 --decoder had --scalar dcsbm --seed 42
+w13_hHEP_dclr10_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --cell_type hHEP --encoder npanda --gnn_dims 256 256 --relations RCP --split batch --scfm 1 --decoder had --scalar dcsbm --scalar_lr 10 --seed 42
+w13_mHSC-E_dc_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --cell_type mHSC-E --encoder gcn --gnn_dims 256 --split batch --scfm 1 --decoder had --scalar dcsbm --seed 42
+w13_mHSC-E_dclr10_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --cell_type mHSC-E --encoder gcn --gnn_dims 256 --split batch --scfm 1 --decoder had --scalar dcsbm --scalar_lr 10 --seed 42
+w13_mESC_dc_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --cell_type mESC --encoder sage --gnn_dims 256 --split none --scfm 1 --decoder had --scalar dcsbm --seed 42
+w13_mESC_dclr10_s42 --optimizer Adam --lr 0.0001 --wd 0.001 --eval_interval 1 --refit 1 --cell_type mESC --encoder sage --gnn_dims 256 --split none --scfm 1 --decoder had --scalar dcsbm --scalar_lr 10 --seed 42

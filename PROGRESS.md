@@ -2808,9 +2808,11 @@ product.
   hidden units did not help either.
 - A new TF has no edges, so no path leaves it and NBFNet falls back to the expression term (−0.084 on
   held-out TFs).
-- Untested reading: the hero's SAGE layer averages the expression of a gene's known regulators and of
-  a TF's known targets at full width, and that average carries most of the signal. NBFNet states start
-  at zero and see the expression only through a 64-wide projection.
+- Untested reading at the time: the hero's SAGE layer averages the expression of a gene's known
+  regulators and of a TF's known targets, and that average carries most of the signal. Section 33
+  revises this: random node features score almost as well, so the hero's edge comes from giving every
+  gene its own learnable identity next to the graph, which NBFNet's 64-wide projection and zero-start
+  states do not.
 
 **Verdict.** Path information beyond the hero's neighbour averages is small on this graph. Not worth
 tuning further.
@@ -2858,8 +2860,9 @@ positives found no own edge left in any subgraph.
 - A new gene has no edges, so its subgraph is nearly empty (−0.040 on held-out genes).
 
 **Verdict.** No gain, and no setting moved it. The two architectures from general link prediction
-(sections 26, 27) both lose to a 1-layer SAGE for the same reason: on this graph the averaged
-expression of a node's known partners matters more than path or subgraph structure.
+(sections 26, 27) both lose to a 1-layer SAGE. Section 33 shows why: the SAGE hero works like
+collaborative filtering, with each gene's features acting as an identity it can learn from, and path
+or subgraph structure adds nothing to that.
 
 Code `src/seal.py`; report `python3.12 analysis/w12_seal_report.py` -> `analysis/out/w12_seal_report.txt`;
 write-up `analysis/out/W12_3_seal.md`.
@@ -3042,3 +3045,312 @@ input to the GNN decoder, since the two models err in different places.
 
 Code `analysis/w12_stat.py`; report `python3.12 analysis/w12_stat_report.py` -> `analysis/out/w12_stat.txt`;
 write-up `analysis/out/W12_S_stat.md`; scores `analysis/out/stat/`.
+
+## 32. TF activity, and the two leads on each cell's best model
+
+**TF activity read from known targets (idea 0).** A 1-layer SAGE makes a TF's embedding from the
+average expression profile of its known targets, which is the usual estimate of a TF's activity in
+each cell (AUCell, VIPER, Inferelator). If the model mainly asks "does this gene co-vary with the TF's
+activity", a single correlation across cells should carry much of the signal. Each test pair was
+scored without training (`analysis/w13_activity.py`):
+
+| Score (within-TF) | hESC | hHEP | mESC | mHSC-E |
+|---|---|---|---|---|
+| corr(gene, TF mRNA) | 0.491 | 0.548 | 0.507 | 0.480 |
+| corr(gene, mean of the TF's training targets) | 0.523 | 0.524 | 0.624 | 0.577 |
+| corr(gene, least-squares TF activity, X ~ P A) | 0.507 | 0.502 | 0.548 | 0.540 |
+| Popularity | 0.705 | 0.784 | 0.760 | 0.714 |
+
+- The known-target mean beats the TF's own mRNA: with the sign dropped in all four cells (p <= 3e-4),
+  and with the sign on mESC (+0.117, 73/85 TFs) and mHSC-E (+0.097).
+- It stays far below popularity and the GNN, and adding it to popularity by rank lowers within-TF. The
+  GNN does not get its signal mainly from co-variation with TF activity across cells.
+- The least-squares activity, which separates TFs that share targets, is worse than the plain mean in
+  every cell, so an Inferelator-style estimate is not a promising route.
+
+**Lead A: the second TF summary (section 25) on each cell's best configuration.** **Lead B: the learned
+DC-SBM score (section 31) as a decoder input**, out-of-fold for training rows (`--scalar dcsbm`, a new
+kind in `analysis/scalars.py`; the variant was chosen on seed-42 validation, a separate linear term at
+10x learning rate in every cell). Within-TF, seeds 42-44, paired per-TF Wilcoxon against the same
+configuration without the addition:
+
+| Cell (best configuration) | Baseline | + second summary | + DC-SBM input | + both |
+|---|---|---|---|---|
+| hESC (neural PANDA, Geneformer) | 0.750 | +0.001 (p = 0.48) | +0.002 (p = 0.50) | −0.003 (p = 0.24) |
+| hHEP (neural PANDA, Geneformer) | 0.792 | −0.003 (p = 0.61) | +0.002 (20/30, p = 0.23) | −0.002 (p = 0.35) |
+| mHSC-E (GCN, Geneformer) | 0.808 | −0.015 (p = 0.51) | −0.006 (p = 0.29) | −0.015 (p = 0.98) |
+| mESC (SAGE, no split, Geneformer) | 0.828 | +0.000 (p = 0.60) | **+0.005 (57/85, p = 2e-4)** | **+0.007 (62/85, p = 4e-6)** |
+
+A diagnostic, not a method: a 50/50 rank average of the baseline GNN's and the DC-SBM's test scores
+gains +0.014 on mESC (p = 4e-11) and +0.006 on hHEP (p = 0.001), and loses 0.009 on mHSC-E.
+
+- The second summary helps only weak models. Its hHEP gain falls as the baseline gets stronger: +0.011
+  over SAGE without Geneformer, +0.006 with Geneformer or over neural PANDA, −0.003 over neural PANDA
+  with Geneformer. Geneformer and the extra relations already give what the second summary added.
+- The DC-SBM score helps where the statistical model is strongest (mESC). Inside the network it gains
+  less than outside it: the rank average beats the decoder input on mESC (+0.014 against +0.005) and on
+  hHEP (+0.006 against +0.002). The decoder learns a small weight for a score that, on training rows,
+  comes from five out-of-fold fits and is noisier than the full fit used at test time.
+- An own-edge check on mESC (split none) shows the second summary adds no leak (positive logit gap
+  +0.132 without, +0.127 with).
+
+**Run-to-run noise.** 28 runs ran on both the laptop and ada. Most agree within ±0.002 within-TF
+(median −0.0002), so the machines carry no bias. A few differ by 0.015-0.024: GPU rounding moves
+validation AUROC by about 0.001, early stopping picks a different epoch (for example 9 against 13),
+and the refit changes with it. Single runs therefore carry occasional ±0.02 swings, which is the size
+of most effects in sections 25-32.
+
+Scripts: `analysis/w13_activity.py`, `analysis/w13_report.py`. Outputs: `analysis/out/w13_activity.txt`,
+`analysis/out/w13_leads.txt`; write-up `analysis/out/W13_leads.md`. Jobs: `analysis/jobs/w13_*.txt`.
+
+## 33. What the model reads from the expression features
+
+**Question.** Every graph idea in sections 25-32 failed, and the TF-activity test (section 32) showed
+that co-variation with a TF's activity explains little. Does the hero read gene-level properties of
+the expression profile (level, detection rate, spread), or the co-expression pattern across cells?
+
+**Method.** A new flag `--feat` changes only the node features of the hero (SAGE, Hadamard decoder,
+batch split, no Geneformer), at seeds 42-44:
+- `full`: the standardised expression across cells (the hero).
+- `cellperm`: each gene's values shuffled across cells on its own. Each gene keeps its distribution;
+  all co-expression between genes is gone.
+- `stats`: 14 summary statistics per gene (mean, std, coefficient of variation, detection rate, mean
+  over expressing cells, skewness, six percentiles).
+- `rand`: fixed random Gaussian vectors of the same width. No expression at all.
+
+**Results** (within-TF; difference against `full`, paired per-TF Wilcoxon):
+
+| Features | hESC | hHEP | mESC | mHSC-E |
+|---|---|---|---|---|
+| Full expression | 0.749 | 0.759 | 0.824 | 0.758 |
+| Shuffled across cells | 0.714 (−0.035, p = 0.02) | 0.773 (p = 0.98) | 0.806 (−0.018, p = 4e-4) | 0.754 (p = 0.95) |
+| Summary statistics | 0.629 (−0.120, p = 2e-7) | 0.738 (−0.021, p = 0.003) | 0.734 (−0.090, p = 1e-12) | 0.695 (−0.063, p = 1e-4) |
+| **Random vectors** | **0.721 (−0.028, p = 0.04)** | **0.768 (p = 0.97)** | **0.805 (−0.019, p = 3e-4)** | **0.760 (p = 0.85)** |
+
+| Held-out genes (hESC, 5 folds x 2 seeds) | Within-TF | vs full (p) |
+|---|---|---|
+| Full expression | 0.546 | |
+| Shuffled across cells | 0.484 | −0.082 (6e-4) |
+| Summary statistics | 0.560 | +0.012 (0.055) |
+| Random vectors | 0.491 | −0.038 (0.02) |
+
+Single statistics as scores rank genes within a TF far below popularity: the best is the detection
+rate (0.546 hESC, 0.610 hHEP, 0.607 mESC), against popularity at 0.705-0.784.
+
+**Why.**
+- On the standard split, random features reproduce almost all of the hero. They tie it on hHEP and
+  mHSC-E and trail it by 0.028 on hESC and 0.019 on mESC. The within-TF signal comes from the training
+  graph. A unique random vector per gene acts as an identity: the decoder learns a per-gene term (a
+  learned popularity), and a TF's SAGE average over its targets' vectors encodes which genes it
+  targets. The model works as collaborative filtering over the known edges.
+- That explains three earlier results. The learned DC-SBM (section 31), also collaborative filtering
+  on the edges, ties the GNN. Richer structure (paths, subgraphs, sections 26-27) adds nothing a
+  per-gene identity does not already give. Popularity-reducing changes (sections 28-29) remove the
+  main signal.
+- Expression adds a real but small co-expression signal on hESC (+0.028) and mESC (+0.019). It needs
+  the true alignment of cells: shuffling removes it.
+- Summary statistics fall below random vectors because many genes get near-identical vectors, so the
+  model cannot tell genes apart and loses the identity it relies on.
+- For new genes the picture flips: no edges, no learned identity, so random and shuffled features sit
+  at chance. Gene-level statistics carry the signal there and match or beat the full profile.
+
+**Verdict.** The "averaged expression of known partners" reading (sections 26-27) was wrong. On the
+benchmark split the model is collaborative filtering over known edges plus a small co-expression term
+on hESC and mESC. Feature engineering has little room on that split. It matters for new genes, where
+a few summary statistics do as well as the whole profile. Geneformer's gain (section 24) may come
+partly from the same identity effect; section 34 tests this and rejects it.
+
+Report `python3.12 analysis/w14_report.py` -> `analysis/out/w14_feat.txt`; write-up
+`analysis/out/W14_feat.md`. Jobs: `analysis/jobs/w14_feat.txt`, `analysis/jobs/w14_feat_ho_rand.txt`.
+
+## 34. Does Geneformer help through biology or as a gene identity?
+
+**Question.** Section 33 showed that a unique random vector per gene does almost as well as expression
+on the standard split. Geneformer is the one ingredient that helps in every cell (section 24). If it
+helps only because it gives each gene one more distinct vector, then vectors that are distinct but
+wrong should help just as much.
+
+**Method.** A new flag value `--scfm 2` shuffles the Geneformer vectors across genes with one fixed
+permutation (seed 0), so every gene gets another gene's vector. It uses no labels. Three arms
+were compared on each cell's best grid configuration (section 24): no Geneformer, real and shuffled.
+The configurations were neural PANDA with 2 layers and batch split for hESC and hHEP, GCN with batch
+split for mHSC-E, and SAGE with no split for mESC. All used the Hadamard decoder and hero
+hyperparameters at seeds 42-44. The hero on hESC held-out genes (5 folds x seeds 42, 43) was run in
+the same three arms. The no-Geneformer and real arms are earlier runs matched on every argument. All
+runs are laptop runs.
+
+**Results** (within-TF; paired per-TF Wilcoxon p in brackets):
+
+| Cell | None | Real | Shuffled | Real − none | Shuffled − none | Shuffled − real |
+|---|---|---|---|---|---|---|
+| hESC | 0.743 | 0.750 | 0.736 | +0.007 (0.25) | −0.007 (0.79) | −0.014 (0.25) |
+| hHEP | 0.772 | 0.792 | 0.775 | +0.020 (0.14) | +0.003 (0.58) | −0.017 (0.53) |
+| mHSC-E | 0.775 | 0.808 | 0.769 | **+0.033 (0.002)** | −0.006 (0.11) | −0.039 (0.011) |
+| mESC | 0.825 | 0.829 | 0.814 | +0.004 (0.32) | −0.010 (0.009) | −0.014 (6e-5) |
+| hESC held-out genes | 0.546 | 0.568 | 0.534 | +0.018 (0.07) | −0.012 (0.017) | −0.030 (6e-4) |
+
+AUROC and AUPRC differ by at most 0.007 between arms on the standard split.
+
+**Why.**
+- Shuffled vectors keep none of the gain. They sit at or below the no-Geneformer level in all four
+  cells and on held-out genes, and significantly below it on mESC and held-out genes. An identity
+  effect would put the shuffled arm next to the real one; it lands next to "none" or below.
+- The models already have an identity from the expression vectors and the graph (section 33). A
+  second set of unique vectors adds nothing, and wrong biology adds a little noise.
+- The gene-specific content of Geneformer is what helps, on the standard split and on new genes
+  alike. The gain itself is small. With three seeds it is significant only on mHSC-E (22 of 29 TFs
+  better); hHEP shows +0.020 without significance, and hESC and mESC are within noise.
+- Measured: the three arms and the paired tests. A guess, not tested: on mHSC-E Geneformer carries
+  co-regulation information that the GCN cannot get from the expression of that cell type.
+
+**Verdict.** Geneformer helps through what it knows about each gene, not as a label. Its gain is
+real but small, confirmed on mHSC-E only. It stays in the pipeline.
+
+Report `python3.12 analysis/w15_gf_report.py` -> `analysis/out/w15_gf.txt`; write-up
+`analysis/out/W15_gf.md`. Jobs: `analysis/jobs/w15_gf.txt`.
+
+## 35. LightGCN: a collaborative-filtering GNN from recommender systems
+
+**Origin.** LightGCN (He et al., SIGIR 2020) is a standard recommender model. Each node gets a free
+learned embedding. The embeddings pass along the known edges through fixed normalised sums, with no
+weights and no non-linearity, and the layer outputs are averaged. Section 33 found that the hero
+already works as collaborative filtering, with features acting as a gene identity. LightGCN learns
+that identity directly. No GRN use of it was found.
+
+**Method.**
+- New flags in `src/pair_gnn.py`: `--encoder lightgcn --lgc_layers K --emb_dim d`. E0 is a free
+  embedding per gene. With `--emb_feat {expr, gf, stats}`, a linear projection of expression,
+  Geneformer or the 14 summary statistics of section 33 is added to E0. This hybrid gives new genes
+  an input, since their free embedding never trains. E(k+1) = D^-1/2 A D^-1/2 E(k) on the current
+  message-passing graph; the output is the mean of E0..EK. Scorer: the Hadamard decoder or a plain
+  dot product (`--decoder dot`). `--emb_l2` regularises the embedding; `--emb_free 0` drops it, which
+  gives a feature-only ablation.
+- Leaks: under `--split batch` the pair's own edge leaves the graph, as for SAGE. No labels enter the
+  features. All flags default off; a `w3_hero` rerun reproduces within-TF to 1e-4 at the same epoch.
+- Sweep on hESC seed 42 (144 runs, chosen on validation AUROC): layers 1-3, size 64/128, decoder,
+  embedding L2, learning rate, with and without expression. Chosen: K 2, d 128, Hadamard, L2 1e-4,
+  lr 1e-3 (pure); K 2, d 64, lr 1e-4 (expression hybrid). The dot scorer reached 0.83 validation at
+  best against 0.89 and was unstable on refit, so it was dropped.
+- Final: seeds 42-44 on all four cells; held-out genes and TFs on hESC (5 folds x seeds 42, 43).
+
+**Results** (within-TF; "best GNN" = best grid configuration with Geneformer, section 24):
+
+| Model | hESC | hHEP | mESC | mHSC-E |
+|---|---|---|---|---|
+| LightGCN, free embedding only | 0.724 | 0.776 | 0.766 | 0.744 |
+| + expression | 0.705 | 0.774 | 0.798 | 0.744 |
+| + Geneformer | 0.722 | 0.772 | 0.800 | 0.779 |
+| + statistics | 0.703 | 0.773 | 0.797 | not run |
+| Hero (SAGE, expression) | 0.749 | 0.759 | 0.824 | 0.758 |
+| SAGE, random features (section 33) | 0.721 | 0.768 | 0.805 | 0.760 |
+| Best grid GNN | 0.750 | 0.792 | 0.828 | 0.808 |
+| Learned DC-SBM (section 31) | 0.730 | 0.801 | 0.833 | 0.753 |
+
+Pure LightGCN against the hero: hESC −0.025 (p = 0.83), hHEP +0.017 (p = 0.09), mESC −0.058
+(p = 1e-8), mHSC-E −0.014 (p = 0.70). The expression hybrid beats the hero on hHEP (+0.016,
+p = 0.005) but trails the best GNN there (−0.018, p = 0.24) and the DC-SBM (−0.026, p = 0.14).
+
+| hESC held-out | Genes | TFs |
+|---|---|---|
+| Hero | 0.546 | 0.686 |
+| LightGCN, free embedding only | 0.502 (p = 0.015) | 0.670 (p = 0.91) |
+| + expression | 0.564 (p = 0.09) | 0.481 (p = 4e-9) |
+| + Geneformer | 0.567 (p = 0.13) | 0.673 (p = 0.53) |
+| + statistics | 0.546 (p = 0.09) | 0.690 (p = 0.47) |
+
+**Why.**
+- The free embedding carries the signal. On hESC, features alone give 0.701 (expression) and 0.717
+  (Geneformer); the free embedding alone gives 0.724. Adding expression to it lowers the score by
+  0.019 (p = 0.009). The likely reason, not tested, is that the 758-wide projection overfits.
+- LightGCN scores follow gene popularity within a TF: Spearman 0.92, against 0.72 for the hero and
+  0.76 for random-feature SAGE. It is a learned popularity plus a low-rank interaction, section 33's
+  reading taken to its end. It ties random-feature SAGE on hESC (+0.003) and so misses the hero's
+  co-expression term (+0.028).
+- Against the hero, it loses most on TFs with few training targets (−0.043 at or below the median
+  of 44 targets, −0.006 above it). A TF's embedding is built from its targets' embeddings, and a
+  few targets give little to build from.
+- mESC (one-seed diagnostic, not used for any choice): wider embeddings change nothing. Decoder
+  weight decay 0 instead of the hero's 1e-3 gives 0.823, level with the hero. The mESC loss comes
+  mostly from that setting, which the sweep did not vary.
+- New genes: the free embedding never trains, so the pure model sits at the random-feature level.
+  The hybrids recover the hero level and slightly above (+0.014 to +0.016, not significant). New
+  TFs: the expression projection, fitted on known TFs, misreads a new TF's profile and falls below
+  chance. The statistics hybrid matches the hero.
+
+**Verdict.** LightGCN works as a learned-popularity collaborative filter and sets no new best on any
+cell. It beats the hero on hHEP only, where the best GNN and the DC-SBM are higher. It confirms
+section 33: on this benchmark most of the within-TF signal is which genes are popular among known
+edges. Open knob: decoder weight decay 0, which closed the mESC gap at one seed.
+
+Report `python3.12 analysis/w15_lgc_report.py` -> `analysis/out/w15_lgc.txt`; write-up
+`analysis/out/W15_lightgcn.md`. Jobs: `analysis/jobs/w15_sw_*.txt`, `w15_swdot.txt`, `w15_lgc.txt`,
+`w15_lgc_ho.txt`, `w15_lgc_diag.txt`.
+
+## 36. The curated pipeline: working pieces combined, tested on every cell and protocol
+
+**Question.** Each piece in sections 24-35 was tested against a baseline on its own. Do the pieces
+that worked still help when combined, and does the result beat scRegNet on every cell type, on the
+standard split and on new genes and new TFs?
+
+**Method.** One recipe per cell type, every choice made on validation:
+- GNN configuration: chosen among the grid runs (section 24) by validation, not test. Validation
+  picked GCN 1 layer for hESC and hHEP and neural PANDA 2 layers for mHSC-E and mESC (mESC without
+  the batch split). All use the Hadamard decoder and Geneformer.
+- Candidate pieces, kept only if validation picks them: decoder weight decay 0 (new flag
+  `--dec_wd`), the uniform second TF summary (section 25) on hHEP and mHSC-E, and a within-TF rank
+  blend with the learned DC-SBM (section 31), weight in {0, 0.25, 0.5, 0.75}. The blend weight uses
+  the GNN's best-epoch validation scores before refit (`--save_sel_grid 1`) and a DC-SBM refit
+  without the validation rows. A rerun with the flag reproduces the original runs to 1e-4.
+- Seed ensemble over seeds 42-44.
+- New genes: blend with the Geneformer-soft DC-SBM. New TFs: blend with gene popularity (number of
+  training TFs that target the gene), weight in {0, ..., 1} chosen on the 3 validation TFs per fold.
+- Baselines: the published scRegNet recipe on the standard split. No held-out runs of the published
+  recipe exist, so new genes and new TFs use the Adam-tuned scRegNet design (`ho_*_A_tuned`
+  arguments), run on the same folds for every cell. Held-out protocols: 5 folds x seeds 42, 43.
+
+**Results** (within-TF; paired per-TF Wilcoxon p against the scRegNet baseline):
+
+| Cell | Standard split | New genes | New TFs |
+|---|---|---|---|
+| hESC | **0.746** vs 0.702 (7e-4) | **0.578** vs 0.524 (0.002) | 0.725 vs 0.716 (0.053), tie |
+| hHEP | **0.808** vs 0.787 (0.012) | 0.638 vs **0.648** (0.012), loses | **0.775** vs 0.741 (0.016) |
+| mHSC-E | **0.770** vs 0.721 (6e-6) | **0.688** vs 0.646 (0.023) | **0.755** vs 0.725 (0.001) |
+| mESC | **0.840** vs 0.766 (4e-11) | **0.672** vs 0.609 (2e-12) | 0.756 vs 0.751 (0.96), tie |
+
+The pipeline beats the scRegNet baseline in 9 of 12 combinations, ties in 2 and loses in 1. Against
+the hero it wins 7 of the 8 held-out combinations and ties hESC new genes.
+
+Marginal effects on the standard split (within-TF, hESC / hHEP / mHSC-E / mESC):
+- DC-SBM blend: +0.009 / +0.020 / −0.001 / +0.015. The only piece with a consistent gain.
+- Decoder weight decay 0: −0.001 to −0.002, none significant. The second TF summary: hHEP −0.007
+  (p = 0.09), mHSC-E 0.000. Seed ensemble: +0.002. Validation dropped or never needed these.
+- On mHSC-E the pipeline sits 0.0007 below its GNN alone (p = 0.09): the blend weight of 0.25
+  chosen on validation adds nothing there.
+
+**Why.**
+- Standard split: the GNN and the DC-SBM both act as collaborative filters (sections 31, 33), but
+  their errors differ enough that the blend helps wherever the DC-SBM alone is as strong as the
+  GNN (hHEP, mESC, hESC). On mHSC-E the DC-SBM trails the GNN by 0.05 and adds nothing.
+- New TFs: popularity carries all the gain. Popularity alone beats the scRegNet design on all four
+  cells (p = 0.04, 3e-4, 2e-4, 1e-5). Validation set the blend weight to popularity alone in most
+  folds, and the blend is never above popularity alone. It is significantly below on hHEP and mESC,
+  where the 3-TF validation choice is noisy (on mESC it costs 0.010 against a fixed 50/50 weight).
+  No GNN has transferred anything to a new TF beyond popularity since section 15.
+- New genes: the DC-SBM blend helps on hESC and mESC and adds nothing on hHEP and mHSC-E. The
+  scRegNet design wins on hHEP new genes. A guess, not tested: its additive decoder with deeper
+  propagation transfers better to unseen genes in that cell.
+
+**Caveats.** The held-out baseline is the Adam-tuned design, not the published SGD recipe. Held-out
+rows use 2 seeds per fold without seed ensembling. No correction for 12 comparisons: the hHEP loss
+(p = 0.012) and the two ties near p = 0.05 could move.
+
+**Verdict.** The combined recipe beats scRegNet on all four cells on the standard split (+0.020
+to +0.075) and in most held-out settings, and loses only on hHEP new genes (−0.013). Most of the
+gain over scRegNet comes from the per-batch split, Geneformer, the per-cell configuration and the
+DC-SBM blend; for new TFs it comes from popularity, which says the benchmark rewards popularity
+there and no model in this project has learned a transferable TF-specific signal.
+
+Reports `python3.12 analysis/w16_pipeline.py` -> `analysis/out/w16_pipeline.txt`,
+`python3.12 analysis/w17_report.py` -> `analysis/out/w17_heldout.txt`; write-ups
+`analysis/out/W16_pipeline.md`, `analysis/out/W17_heldout.md`; choice table
+`analysis/out/w16_choose.txt`. Jobs `analysis/jobs/w16_*.txt`, `analysis/jobs/w17_*.txt`.
