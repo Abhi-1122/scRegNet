@@ -1078,3 +1078,35 @@ Held-out TFs (pipeline per-fold w | GNN alone | popularity alone | scRegNet desi
  mHSC-E 0.6678/0.6535/0.7554/0.7722 | 0.7336 | 0.7609 | 0.6406/0.6533/0.7254/0.7430 | 0.6425/0.6634/0.7187/0.7296   -design +0.0315 (0.001), -hero +0.0354 (0.003), -popularity -0.0059 (0.30)
  mESC   0.6493/0.3994/0.7555/0.7466 | 0.7364 | 0.7690 | 0.6433/0.4272/0.7506/0.7444 | 0.6313/0.3919/0.7269/0.7170   -design +0.0045 (0.96), -hero +0.0293 (1e-4), -popularity -0.0134 (0.002); pooled-choice w=0.5 gives 0.7658
 Summary vs the scRegNet baseline (standard split = published recipe from W16, held-out = Adam-tuned design), within-TF, 12 combinations: 9 beats, 2 ties (hESC TFs, mESC TFs), 1 loss (hHEP genes). On held-out TFs the gain comes from popularity: popularity alone beats the scRegNet design on all 4 cells (p 0.04, 3e-4, 2e-4, 1e-5) and the GNN adds nothing on top.
+
+2026-11-13 W18 popularity-matched within-TF AUROC (saved test scores, seeds 42-44; a positive and a negative of one TF are compared only when their genes have the same training in-degree). Format: within-TF / matched. Full table analysis/out/w18_pop_matched.txt
+ hESC   popularity 0.706/0.509 | additive SAGE 0.713/0.584 | additive GCN+GF 0.718/0.581 | hero 0.732/0.632 | random features 0.707/0.592 | DC-SBM learned 0.726/0.596 | scRegNet recipe 0.695/0.551
+ hHEP   popularity 0.774/0.504 | additive SAGE 0.778/0.576 | additive GCN+GF 0.784/0.597 | hero 0.775/0.585 | random features 0.774/0.572 | DC-SBM learned 0.800/0.598
+ mESC   popularity 0.763/0.512 | additive SAGE 0.765/0.551 | additive GCN+GF 0.765/0.546 | SAGE had no split 0.824/0.705 | random features 0.800/0.661 | DC-SBM learned 0.836/0.702
+ mHSC-E popularity 0.762/0.505 | additive SAGE 0.768/0.597 | additive GCN+GF 0.777/0.617 | SAGE had no split +GF 0.800/0.674 | random features 0.791/0.661 | DC-SBM learned 0.802/0.646
+ Additive models (one gene ranking for all TFs) reach 0.55-0.62 matched, so that is the floor, not 0.5 (training degree is a noisy estimate of true degree). Signal above the floor: mESC +0.15, mHSC-E +0.06, hESC +0.05, hHEP none.
+ Cross-context copy of the same TF's targets (TFs+1000, upper-cased symbols): hESC<->hHEP 3 shared TFs; mESC->hESC 10 shared TFs, 289 genes, copy 0.548, matched 0.533 (p=0.38); hESC->mESC 0.542, matched 0.549 (p=0.23). Too small to conclude.
+
+2026-11-14 W19: motif-only prior, all labelled pairs (Train+Test), within-TF AUROC over TFs with a JASPAR motif (no training, no ChIP input)
+ hESC   motif_max 0.619 (26/29 TFs above chance) | motif_hits 0.583
+ hHEP   motif_max 0.571 (20/22) | motif_hits 0.558
+ mHSC-E motif_max 0.576 (19/21) | motif_hits 0.552
+ mESC   motif_max 0.591 (32/34) | motif_hits 0.569
+
+2026-11-16 W20 learned PANDA, complete network inference across cell types (src/xcell_gnn.py; analysis/w20_xcell_report.py -> analysis/out/w20_xcell.txt; write-up analysis/out/W20_learned_panda.md)
+Label-free inputs only (motif graph + motif pair features, STRING TF-TF, 12 expression stats, Geneformer, is-TF/has-motif); trained on source cell labels, tested on every labelled target pair. Config and epoch on source-validation TFs. Seeds 42-44.
+Within-TF, all labelled target TFs: motif_max | |Pearson| | PANDA (motif prior) | feature-only MLP | full ; p full vs motif / PANDA / MLP (paired per-TF Wilcoxon)
+ hESC->hHEP     0.552 | 0.504 | 0.543 | 0.579 | 0.562 ; 0.37 / 0.58 / 0.013 (MLP better)
+ hHEP->hESC     0.602 | 0.464 | 0.535 | 0.529 | 0.512 ; 0.002 (motif better) / 0.30 / 0.10
+ mESC->mHSC-E   0.555 | 0.487 | 0.530 | 0.575 | 0.588 ; 0.023 / 0.048 / 0.18
+ mHSC-E->mESC   0.535 | 0.538 | 0.514 | 0.598 | 0.596 ; 6e-5 / 4e-4 / 0.044 (MLP better)
+ others->hESC   0.602 | 0.464 | 0.535 | 0.581 | 0.582 ; 0.32 / 0.20 / 0.58
+ others->hHEP   0.552 | 0.504 | 0.543 | 0.606 | 0.596 ; 0.002 / 2e-4 / 0.72
+ others->mESC   0.535 | 0.538 | 0.514 | 0.595 | 0.592 ; 1e-7 / 4e-5 / 0.32
+ others->mHSC-E 0.555 | 0.487 | 0.530 | 0.621 | 0.630 ; 0.001 / 7e-4 / 0.36
+ TFs with a motif, full vs motif_max: beats only others->hHEP 0.612 vs 0.571 (p 0.016) and others->mHSC-E 0.625 vs 0.576 (p 0.013); loses hHEP->hESC 0.524 vs 0.619 (p 0.001).
+ Pooled AUROC on human targets below motif: hHEP 0.536 (same species) / 0.569 (LOO) vs 0.659; hESC 0.531 / 0.627 vs 0.656.
+ Gene-only diagnostic (scores averaged over TFs) loses at most 0.024 within-TF; equal or better on mESC targets.
+ Within-cell TF-disjoint CV bound (CV full | CV MLP | in-cell popularity, not label-free): hESC 0.694|0.699|0.729, hHEP 0.756|0.733|0.779, mESC 0.741|0.698|0.770, mHSC-E 0.741|0.713|0.765; gap to best transfer 0.11-0.16.
+ Ablations (same species, delta within-TF): no P +0.001..+0.009; no M -0.003..+0.009; no motif pair feats -0.001..-0.011; +C -0.029..+0.032; +corr -0.001..+0.010; ranking loss +0.007..+0.035; no Geneformer -0.047..+0.042.
+Result: FAIL. Beats motif alone in 5/8 settings only through a gene prior that the feature-only MLP learns as well; message passing over motif and PPI adds nothing across cells.

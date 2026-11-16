@@ -3,17 +3,22 @@ JASPAR 2024 CORE vertebrates non-redundant PFMs (data/external/jaspar2024) mappe
 canonical transcript of each of the 910 genes (hg38, strand-aware), fetched per gene through Ensembl REST and cached raw in data/external/promoters_hg38/.
 Writes data/hESC/TFs+500/motif/motif_max.npy (best log2-odds over the promoter, both strands, max over the TF's motifs) and motif_hits.npy
 (hits at p < 1e-4, summed over the TF's motifs); (910, 910) float32, row = TF gene index, col = target gene index, NaN = no motif / no promoter.
-Run from the repo root:  python3.12 -P analysis/w9_motif_build.py   (-P: nothing from the cwd is importable; the data files are only read as text/JSON)"""
-import json, os, re, time
+Run from the repo root:  python3.12 -P analysis/w9_motif_build.py [cell]   (cell defaults to hESC; cells starting with 'm' use mouse GRCm39 promoters; -P: nothing from the cwd is importable; the data files are only read as text/JSON)"""
+import json, os, re, sys, time
 import numpy as np, pandas as pd, requests
 
-P = 'data/hESC/TFs+500/'
-CACHE = 'data/external/promoters_hg38/'
+CELL = sys.argv[1] if len(sys.argv) > 1 else 'hESC'
+MOUSE = CELL.startswith('m')
+SPECIES, REGION = ('mus_musculus', 'mouse') if MOUSE else ('homo_sapiens', 'human')
+CHROMS = [str(c) for c in range(1, 20 if MOUSE else 23)] + ['X', 'Y']
+P = f'data/{CELL}/TFs+500/'
+# the cache files are keyed by position in the gene list, so each cell needs its own folder (hESC keeps its original one)
+CACHE = 'data/external/promoters_hg38/' if CELL == 'hESC' else f'data/external/promoters_{"mm39" if MOUSE else "hg38"}/{CELL}/'
 UP, DOWN, PV, BATCH, LBATCH = 1000, 200, 1e-4, 50, 100
 os.makedirs(CACHE, exist_ok=True)
 os.makedirs(P + 'motif', exist_ok=True)
 sess = requests.Session()
-sess.headers.update({'Content-Type': 'application/json', 'Accept': 'application/json', 'User-Agent': 'scRegNet-motif-prior (research; garimella.abhishek@research.iiit.ac.in)'})
+sess.headers.update({'Content-Type': 'application/json', 'Accept': 'application/json', 'User-Agent': 'scRegNet-motif-prior (research)'})
 
 
 def post(path, body, fn):
@@ -41,7 +46,7 @@ n = len(genes)
 info, canon = {}, {}
 for k in range(0, n, LBATCH):
     print('lookup', k, flush=True)
-    res = post('/lookup/symbol/homo_sapiens', {'symbols': genes[k:k + LBATCH]}, f'sym_{k:04d}.json')
+    res = post(f'/lookup/symbol/{SPECIES}', {'symbols': genes[k:k + LBATCH]}, f'sym_{k:04d}.json')
     for s, g in res.items():
         if g and g.get('canonical_transcript'): canon[s.upper()] = g['canonical_transcript'].split('.')[0]
 ids = sorted(set(canon.values()))
@@ -51,7 +56,7 @@ for k in range(0, len(ids), LBATCH):
     trs.update(post('/lookup/id', {'ids': ids[k:k + LBATCH]}, f'tr_{k:04d}.json'))
 for s, i in canon.items():
     t = trs.get(i)
-    if t and t['seq_region_name'] in [str(c) for c in range(1, 23)] + ['X', 'Y']:
+    if t and t['seq_region_name'] in CHROMS:
         info[s] = (t['seq_region_name'], t['start'], t['end'], t['strand'])
 # 2. promoter sequence (gene orientation)
 reg = {}
@@ -62,7 +67,7 @@ syms = sorted(reg)
 seq = {}
 for k in range(0, len(syms), BATCH):
     chunk = syms[k:k + BATCH]
-    res = post('/sequence/region/human', {'regions': [reg[s] for s in chunk]}, f'seq_{k:04d}.json')
+    res = post(f'/sequence/region/{REGION}', {'regions': [reg[s] for s in chunk]}, f'seq_{k:04d}.json')
     assert len(res) == len(chunk)
     for s, r in zip(chunk, res):  # the response keeps the request order
         assert r['query'].split(':')[0] == reg[s].split(':')[0]

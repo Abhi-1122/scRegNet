@@ -40,3 +40,5 @@ analysis/out/*.nohup
 analysis/out/pair/*.npz
 analysis/out/pair/*.out
 analysis/out/slots/
+analysis/out/xcell*/*.npz
+analysis/out/xcell*/*.log

@@ -3354,3 +3354,85 @@ Reports `python3.12 analysis/w16_pipeline.py` -> `analysis/out/w16_pipeline.txt`
 `python3.12 analysis/w17_report.py` -> `analysis/out/w17_heldout.txt`; write-ups
 `analysis/out/W16_pipeline.md`, `analysis/out/W17_heldout.md`; choice table
 `analysis/out/w16_choose.txt`. Jobs `analysis/jobs/w16_*.txt`, `analysis/jobs/w17_*.txt`.
+
+****** 15 Nov ******
+
+## 37. Learned PANDA: complete network inference across cell types
+
+From here on the task is complete network inference: predict a cell type's whole TF -> gene network
+from the motif prior, PPI, the cell's expression and Geneformer. ChIP-seq labels serve only as the
+training loss on source cells and for scoring the target. Sections 1-36 completed a partly known
+network: the training ChIP edges of the same cell were in the graph and in statistics such as gene
+popularity, so their numbers are not comparable with the ones below.
+
+**Question.** Can a PANDA-like GNN, trained on source cell types and applied unchanged to a target
+cell, beat the raw motif prior, original PANDA with the motif prior and a feature-only MLP?
+
+**Method.**
+- One graph per cell from label-free files only. Node features: 12 expression statistics,
+  Geneformer (896), is-TF and has-motif flags, standardised per dataset. Relations: TF -> gene motif
+  edges and their reverse (motif_hits > 0, or top-k genes per TF by motif_max, k 50/100/200), STRING
+  edges among TFs. Pair features: motif_max, log motif hits, missing flag.
+- Encoder: 2 neural-PANDA layers, hidden 256. Decoder: MLP on the Hadamard product plus the pair
+  features. Feature-only MLP: the same network without relations. BCE on all labelled source pairs.
+- 20% of source TFs held out; epoch, learning rate and motif graph chosen on their within-TF AUROC.
+  Nothing chosen on the target.
+- Settings: same species both ways, leave one cell out (train on three, test on the fourth), and a
+  within-cell 5-fold TF-disjoint CV as the upper bound. Seeds 42-44. Six ablations plus no Geneformer.
+- A guard makes any read of a label file fail while graphs and features are built; target labels are
+  read only inside the evaluation function.
+
+**Results** (within-TF over all labelled target TFs; paired per-TF Wilcoxon p of the full model):
+
+| Setting | motif | PANDA | MLP | full | p vs motif | p vs PANDA | p vs MLP |
+|---|---|---|---|---|---|---|---|
+| hESC -> hHEP | 0.552 | 0.543 | **0.579** | 0.562 | 0.37 | 0.58 | 0.013, MLP better |
+| hHEP -> hESC | **0.602** | 0.535 | 0.529 | 0.512 | 0.002, motif better | 0.30 | 0.10 |
+| mESC -> mHSC-E | 0.555 | 0.530 | 0.575 | **0.588** | 0.023 | 0.048 | 0.18 |
+| mHSC-E -> mESC | 0.535 | 0.514 | **0.598** | 0.596 | 6e-5 | 4e-4 | 0.044, MLP better |
+| others -> hESC | **0.602** | 0.535 | 0.581 | 0.582 | 0.32 | 0.20 | 0.58 |
+| others -> hHEP | 0.552 | 0.543 | **0.606** | 0.596 | 0.002 | 2e-4 | 0.72 |
+| others -> mESC | 0.535 | 0.514 | **0.595** | 0.592 | 1e-7 | 4e-5 | 0.32 |
+| others -> mHSC-E | 0.555 | 0.530 | 0.621 | **0.630** | 0.001 | 7e-4 | 0.36 |
+
+|Pearson| scores 0.46-0.54. TFs without a motif score 0.5 for motif alone. On TFs with a motif the
+full model beats motif_max only in others -> hHEP (0.612 vs 0.571, p = 0.016) and others -> mHSC-E
+(0.625 vs 0.576, p = 0.013), and loses in hHEP -> hESC (0.524 vs 0.619, p = 0.001). Removing the TFs
+labelled in a source cell changes none of these conclusions. Pooled AUROC on the human targets stays
+below motif alone (hHEP 0.54-0.57 vs 0.66; hESC 0.53-0.63 vs 0.66).
+
+Within-cell upper bound (TF-disjoint CV): full 0.694 / 0.756 / 0.741 / 0.741 (hESC / hHEP / mESC /
+mHSC-E), MLP 0.699 / 0.733 / 0.698 / 0.713. In-cell gene popularity, which uses labels, reaches
+0.729 / 0.779 / 0.770 / 0.765. The gap from the bound to the best transfer is 0.11-0.16.
+
+Ablations (same species, change in within-TF): without PPI +0.001 to +0.009; without motif edges
+-0.003 to +0.009; without motif pair features -0.001 to -0.011; ranking loss +0.007 to +0.035;
+co-expression relation -0.029 to +0.032; without Geneformer -0.047 to +0.042.
+
+**Why.**
+- Measured: the models learned mostly a gene prior. With each run's scores averaged over TFs, so
+  that every TF gets the same gene ranking, within-TF drops by at most 0.024 and not at all on the
+  mESC targets. Most gains over motif alone come from TFs without a motif.
+- Measured: message passing over motif and PPI edges adds nothing across cells. The full model
+  never beats the MLP, and removing either relation does not hurt.
+- Measured: inside one cell message passing helps (CV full beats CV MLP on three cells, p 0.022 to
+  1e-9), but in-cell popularity beats both. The bound is mostly "which genes are frequent targets in
+  this cell", and that does not transfer.
+- Guess, not tested: target frequency reflects each dataset's ChIP protocol and peak calling more
+  than gene properties visible in expression or Geneformer, so the source-cell gene prior is the
+  wrong prior for a new cell.
+
+**Caveats.** Source validation is small (6-7 TFs for a single human source). No refit on all
+source TFs. In leave-one-out mESC dominates the loss. The ranking loss and the co-expression relation
+helped on some targets, but adopting them now would be a target-based choice. No multiplicity
+correction. Two of four runner processes hung for about 3 hours during the first phase. The
+remaining jobs were rerun by other workers, and every run now has a per-job timeout.
+
+**Verdict.** Fail. The learned PANDA beats the motif prior in 5 of 8 transfer settings, but only
+through a gene prior that a feature-only MLP learns equally well. It beats motif_max on TFs with a
+motif in 2 of 8 settings and loses badly on hHEP -> hESC. Message passing over motif and PPI graphs
+does not transfer anything TF-specific.
+
+Report `python3.12 analysis/w20_xcell_report.py` -> `analysis/out/w20_xcell.txt`; write-up
+`analysis/out/W20_learned_panda.md`; runs `analysis/out/xcell/`; jobs `analysis/jobs/w20_p1.txt`,
+`analysis/jobs/w20_p2.txt`; code `src/xcell_gnn.py` (`--selfcheck`, `--baselines <cell>`).

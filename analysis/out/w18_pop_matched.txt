@@ -1,0 +1,48 @@
+
+== hESC
+  full_expr        seeds 3  within-TF 0.732   popularity-matched 0.632  (26/31 TFs > 0.5, p=8.4e-07)
+  random_feat      seeds 3  within-TF 0.707   popularity-matched 0.592  (29/31 TFs > 0.5, p=4.6e-06)
+  cell_shuffled    seeds 3  within-TF 0.703   popularity-matched 0.591  (25/31 TFs > 0.5, p=1.8e-04)
+  add_gf0          seeds 3  within-TF 0.713   popularity-matched 0.584  (25/31 TFs > 0.5, p=7.8e-05)
+  had_gf0          seeds 3  within-TF 0.709   popularity-matched 0.604  (25/31 TFs > 0.5, p=3.6e-05)
+  add_gf1          seeds 3  within-TF 0.718   popularity-matched 0.581  (27/31 TFs > 0.5, p=2.9e-04)
+  had_nosplit_gf0  no files
+  had_nosplit_gf1  seeds 3  within-TF 0.629   popularity-matched 0.544  (20/31 TFs > 0.5, p=2.1e-02)
+  dcsbm            seeds 3  within-TF 0.726   popularity-matched 0.596  (27/31 TFs > 0.5, p=2.2e-05)
+  popularity          within-TF 0.707   popularity-matched 0.494
+
+== hHEP
+  full_expr        seeds 3  within-TF 0.775   popularity-matched 0.585  (24/27 TFs > 0.5, p=2.1e-07)
+  random_feat      seeds 3  within-TF 0.774   popularity-matched 0.572  (25/27 TFs > 0.5, p=6.7e-06)
+  cell_shuffled    seeds 3  within-TF 0.774   popularity-matched 0.581  (24/27 TFs > 0.5, p=4.6e-06)
+  add_gf0          seeds 3  within-TF 0.778   popularity-matched 0.576  (25/27 TFs > 0.5, p=1.3e-06)
+  had_gf0          no files
+  add_gf1          seeds 3  within-TF 0.784   popularity-matched 0.597  (27/27 TFs > 0.5, p=1.5e-08)
+  had_nosplit_gf0  seeds 3  within-TF 0.755   popularity-matched 0.569  (23/27 TFs > 0.5, p=6.7e-06)
+  had_nosplit_gf1  seeds 3  within-TF 0.772   popularity-matched 0.594  (25/27 TFs > 0.5, p=3.7e-07)
+  dcsbm            seeds 3  within-TF 0.800   popularity-matched 0.598  (25/27 TFs > 0.5, p=6.7e-06)
+  popularity          within-TF 0.775   popularity-matched 0.499
+
+== mESC
+  full_expr        seeds 3  within-TF 0.783   popularity-matched 0.616  (66/74 TFs > 0.5, p=1.5e-11)
+  random_feat      seeds 3  within-TF 0.800   popularity-matched 0.661  (67/74 TFs > 0.5, p=5.3e-12)
+  cell_shuffled    seeds 3  within-TF 0.804   popularity-matched 0.665  (69/74 TFs > 0.5, p=3.5e-12)
+  add_gf0          seeds 3  within-TF 0.765   popularity-matched 0.551  (56/74 TFs > 0.5, p=1.1e-05)
+  had_gf0          no files
+  add_gf1          seeds 3  within-TF 0.765   popularity-matched 0.546  (55/74 TFs > 0.5, p=2.8e-05)
+  had_nosplit_gf0  seeds 3  within-TF 0.824   popularity-matched 0.705  (73/74 TFs > 0.5, p=9.1e-14)
+  had_nosplit_gf1  seeds 3  within-TF 0.826   popularity-matched 0.704  (72/74 TFs > 0.5, p=2.9e-13)
+  dcsbm            seeds 3  within-TF 0.836   popularity-matched 0.702  (68/74 TFs > 0.5, p=1.7e-12)
+  popularity          within-TF 0.762   popularity-matched 0.517
+
+== mHSC-E
+  full_expr        seeds 3  within-TF 0.773   popularity-matched 0.627  (22/27 TFs > 0.5, p=1.8e-04)
+  random_feat      seeds 3  within-TF 0.791   popularity-matched 0.661  (24/27 TFs > 0.5, p=1.7e-05)
+  cell_shuffled    seeds 3  within-TF 0.798   popularity-matched 0.661  (24/27 TFs > 0.5, p=1.9e-05)
+  add_gf0          seeds 3  within-TF 0.768   popularity-matched 0.597  (23/27 TFs > 0.5, p=6.0e-04)
+  had_gf0          no files
+  add_gf1          seeds 3  within-TF 0.777   popularity-matched 0.617  (22/27 TFs > 0.5, p=6.7e-04)
+  had_nosplit_gf0  seeds 3  within-TF 0.789   popularity-matched 0.664  (25/27 TFs > 0.5, p=3.1e-06)
+  had_nosplit_gf1  seeds 3  within-TF 0.800   popularity-matched 0.674  (26/27 TFs > 0.5, p=2.8e-07)
+  dcsbm            seeds 3  within-TF 0.802   popularity-matched 0.646  (23/27 TFs > 0.5, p=1.2e-04)
+  popularity          within-TF 0.762   popularity-matched 0.502

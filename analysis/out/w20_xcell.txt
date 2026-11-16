@@ -1,0 +1,110 @@
+W20 learned PANDA: complete network inference across cell types (src/xcell_gnn.py, analysis/w20_xcell_report.py)
+within-TF AUROC = mean over target TFs with both classes of the AUROC of that TF's labelled genes; model per-TF AUROC averaged over seeds 42-44
+configs and epochs chosen on source-validation within-TF (20% of source TFs held out); nothing chosen on the target. Wilcoxon: paired per-TF, two-sided, no multiplicity correction.
+
+== Baselines on each cell, all labelled pairs (within all TFs | TFs with motif | TFs without motif ; pooled AUROC / AUPRC)
+hESC: labelled TFs 34 (motif 29, none 5; in PANDA network 33)
+   motif  0.6016 | 0.6191 | 0.5000 ; 0.6557 / 0.2209
+   corr   0.4643 | 0.4621 | 0.4768 ; 0.5217 / 0.1557
+   panda  0.5345 | 0.5405 | 0.5002 ; 0.6629 / 0.2221
+hHEP: labelled TFs 30 (motif 22, none 8; in PANDA network 30)
+   motif  0.5523 | 0.5714 | 0.5000 ; 0.6590 / 0.4817
+   corr   0.5039 | 0.4963 | 0.5247 ; 0.5028 / 0.3570
+   panda  0.5429 | 0.5730 | 0.4602 ; 0.6172 / 0.4495
+mESC: labelled TFs 88 (motif 34, none 54; in PANDA network 86)
+   motif  0.5353 | 0.5913 | 0.5000 ; 0.5397 / 0.3417
+   corr   0.5381 | 0.5393 | 0.5374 ; 0.5324 / 0.3262
+   panda  0.5143 | 0.5692 | 0.4797 ; 0.5320 / 0.3369
+mHSC-E: labelled TFs 29 (motif 21, none 8; in PANDA network 29)
+   motif  0.5548 | 0.5757 | 0.5000 ; 0.5233 / 0.5877
+   corr   0.4873 | 0.4802 | 0.5058 ; 0.5334 / 0.5754
+   panda  0.5301 | 0.5657 | 0.4364 ; 0.5213 / 0.5834
+
+== Chosen configs (source-validation within-TF, mean over seeds; best epochs per seed)
+ss_hESC-hHEP     full full_lr3e-4_mk50       val 0.7098 epochs [4, 18, 5]
+ss_hESC-hHEP     mlp  mlp_lr3e-4             val 0.7027 epochs [6, 13, 8]
+ss_hHEP-hESC     full full_lr1e-4_mk100      val 0.7880 epochs [15, 12, 17]
+ss_hHEP-hESC     mlp  mlp_lr1e-4             val 0.7537 epochs [18, 12, 18]
+ss_mESC-mHSC-E   full full_lr1e-4_mk50       val 0.7572 epochs [13, 9, 18]
+ss_mESC-mHSC-E   mlp  mlp_lr1e-3             val 0.6904 epochs [7, 6, 13]
+ss_mHSC-E-mESC   full full_lr3e-4_mk0        val 0.7383 epochs [10, 14, 10]
+ss_mHSC-E-mESC   mlp  mlp_lr1e-3             val 0.7159 epochs [7, 6, 4]
+loo_hESC         full full_lr1e-4_mk0        val 0.7602 epochs [15, 11, 19]
+loo_hESC         mlp  mlp_lr1e-4             val 0.7118 epochs [25, 10, 4]
+loo_hHEP         full full_lr1e-3_mk200      val 0.7396 epochs [19, 5, 16]
+loo_hHEP         mlp  mlp_lr1e-3             val 0.6960 epochs [19, 10, 23]
+loo_mESC         full full_lr1e-4_mk100      val 0.7470 epochs [15, 12, 18]
+loo_mESC         mlp  mlp_lr1e-4             val 0.7233 epochs [34, 28, 35]
+loo_mHSC-E       full full_lr1e-4_mk0        val 0.7554 epochs [19, 29, 17]
+loo_mHSC-E       mlp  mlp_lr1e-4             val 0.7138 epochs [22, 20, 6]
+
+== Main table: within-TF AUROC over all labelled target TFs; p = Wilcoxon full vs motif / PANDA / MLP
+setting          nTF  motif   corr  PANDA    MLP   full   p(motif)  p(PANDA)  p(MLP)
+ss_hESC-hHEP      30 0.5523 0.5039 0.5429 0.5794 0.5622   0.37  0.58  0.013
+ss_hHEP-hESC      34 0.6016 0.4643 0.5345 0.5291 0.5118   0.0019  0.3  0.1
+ss_mESC-mHSC-E    29 0.5548 0.4873 0.5301 0.5745 0.5876   0.023  0.048  0.18
+ss_mHSC-E-mESC    88 0.5353 0.5381 0.5143 0.5984 0.5956   6.3e-05  0.00037  0.044
+loo_hESC          34 0.6016 0.4643 0.5345 0.5808 0.5822   0.32  0.2  0.58
+loo_hHEP          30 0.5523 0.5039 0.5429 0.6059 0.5955   0.0022  0.00019  0.72
+loo_mESC          88 0.5353 0.5381 0.5143 0.5950 0.5922   1.3e-07  3.6e-05  0.32
+loo_mHSC-E        29 0.5548 0.4873 0.5301 0.6206 0.6303   0.0014  0.00074  0.36
+
+== Diagnostic: the same full / MLP runs with each run's scores averaged over all TF rows (a gene-only ranking, no TF-specific part); within-TF
+ss_hESC-hHEP     full 0.5622 gene-only 0.5481 (p 0.11) | MLP 0.5794 gene-only 0.5677 (p 0.12)
+ss_hHEP-hESC     full 0.5118 gene-only 0.4958 (p 0.1) | MLP 0.5291 gene-only 0.5105 (p 0.16)
+ss_mESC-mHSC-E   full 0.5876 gene-only 0.5782 (p 0.59) | MLP 0.5745 gene-only 0.5603 (p 0.28)
+ss_mHSC-E-mESC   full 0.5956 gene-only 0.6007 (p 0.84) | MLP 0.5984 gene-only 0.6061 (p 0.66)
+loo_hESC         full 0.5822 gene-only 0.5581 (p 0.0005) | MLP 0.5808 gene-only 0.5560 (p 0.00011)
+loo_hHEP         full 0.5955 gene-only 0.5772 (p 0.073) | MLP 0.6059 gene-only 0.5878 (p 0.04)
+loo_mESC         full 0.5922 gene-only 0.5955 (p 0.89) | MLP 0.5950 gene-only 0.6053 (p 0.25)
+loo_mHSC-E       full 0.6303 gene-only 0.6208 (p 0.27) | MLP 0.6206 gene-only 0.6082 (p 0.54)
+
+== Pooled AUROC / AUPRC on all labelled target pairs
+ss_hESC-hHEP     motif 0.6590/0.4817  corr 0.5028/0.3570  PANDA 0.6172/0.4495  MLP 0.5445/0.4065  full 0.5355/0.4031
+ss_hHEP-hESC     motif 0.6557/0.2209  corr 0.5217/0.1557  PANDA 0.6629/0.2221  MLP 0.5200/0.2150  full 0.5313/0.2048
+ss_mESC-mHSC-E   motif 0.5233/0.5877  corr 0.5334/0.5754  PANDA 0.5213/0.5834  MLP 0.4858/0.5579  full 0.5295/0.6077
+ss_mHSC-E-mESC   motif 0.5397/0.3417  corr 0.5324/0.3262  PANDA 0.5320/0.3369  MLP 0.5601/0.3432  full 0.5614/0.3427
+loo_hESC         motif 0.6557/0.2209  corr 0.5217/0.1557  PANDA 0.6629/0.2221  MLP 0.6232/0.2020  full 0.6269/0.2216
+loo_hHEP         motif 0.6590/0.4817  corr 0.5028/0.3570  PANDA 0.6172/0.4495  MLP 0.5535/0.3945  full 0.5685/0.4201
+loo_mESC         motif 0.5397/0.3417  corr 0.5324/0.3262  PANDA 0.5320/0.3369  MLP 0.5492/0.3429  full 0.5421/0.3412
+loo_mHSC-E       motif 0.5233/0.5877  corr 0.5334/0.5754  PANDA 0.5213/0.5834  MLP 0.4883/0.5667  full 0.5277/0.5837
+
+== Breakdown: within-TF on target TFs with a motif | without a motif | not labelled in any source cell (motif / PANDA / MLP / full; p full vs MLP; pm = p full vs motif)
+ss_hESC-hHEP     motif n=22 0.571/0.573/0.584/0.566 p=0.021 pm=0.73  |  nomotif n=8 0.500/0.460/0.567/0.551 p=0.25 pm=0.0078  |  notinsrc n=27 0.551/0.539/0.580/0.561 p=0.013 pm=0.37
+ss_hHEP-hESC     motif n=29 0.619/0.540/0.538/0.524 p=0.12 pm=0.0012  |  nomotif n=5 0.500/0.500/0.477/0.444 p=0.81 pm=1  |  notinsrc n=31 0.603/0.534/0.519/0.501 p=0.13 pm=0.00083
+ss_mESC-mHSC-E   motif n=21 0.576/0.566/0.575/0.587 p=0.43 pm=0.12  |  nomotif n=8 0.500/0.436/0.573/0.589 p=0.2 pm=0.15  |  notinsrc n=23 0.563/0.534/0.557/0.574 p=0.098 pm=0.16
+ss_mHSC-E-mESC   motif n=34 0.591/0.569/0.592/0.588 p=0.12 pm=0.93  |  nomotif n=54 0.500/0.480/0.603/0.601 p=0.2 pm=2.5e-06  |  notinsrc n=82 0.535/0.512/0.597/0.596 p=0.15 pm=7.2e-05
+loo_hESC         motif n=29 0.619/0.540/0.585/0.584 p=0.95 pm=0.084  |  nomotif n=5 0.500/0.500/0.554/0.570 p=0.62 pm=0.12  |  notinsrc n=20 0.599/0.514/0.578/0.581 p=0.33 pm=0.43
+loo_hHEP         motif n=22 0.571/0.573/0.603/0.612 p=0.15 pm=0.016  |  nomotif n=8 0.500/0.460/0.615/0.551 p=0.25 pm=0.11  |  notinsrc n=21 0.549/0.543/0.606/0.589 p=0.86 pm=0.014
+loo_mESC         motif n=34 0.591/0.569/0.609/0.610 p=0.87 pm=0.15  |  nomotif n=54 0.500/0.480/0.586/0.581 p=0.18 pm=2.2e-07  |  notinsrc n=69 0.534/0.514/0.588/0.589 p=0.97 pm=1.1e-05
+loo_mHSC-E       motif n=21 0.576/0.566/0.616/0.625 p=0.34 pm=0.013  |  nomotif n=8 0.500/0.436/0.633/0.644 p=0.95 pm=0.055  |  notinsrc n=21 0.568/0.537/0.609/0.619 p=0.56 pm=0.026
+
+== Upper bound: within-cell 5-fold TF-disjoint CV (same model, config chosen per fold on seed-42 source-validation, seeds 42-44) vs transfer
+CV popularity = fraction of the training-fold TFs that target the gene (uses in-cell labels; shows how much of the bound a per-gene ranking alone gives)
+cell     motif  PANDA  CV pop  CV MLP CV full same-sp    LOO  p(CV full vs CV MLP)  p(CV full vs same-species full)
+hESC    0.6016 0.5345 0.7292  0.6986  0.6941  0.5118  0.5822  0.75  6.7e-07
+hHEP    0.5523 0.5429 0.7793  0.7334  0.7564  0.5622  0.5955  0.022  5.7e-07
+mESC    0.5353 0.5143 0.7699  0.6980  0.7411  0.5956  0.5922  1.1e-09  1.5e-14
+mHSC-E  0.5548 0.5301 0.7651  0.7130  0.7413  0.5876  0.6303  0.0069  6.5e-06
+
+== Ablations of the full model, same-species settings (within-TF all target TFs; delta vs full; p Wilcoxon vs full)
+setting            full                  noP                  noM            nomotifpf                plusC             pluscorr                 rank                 noGF
+ss_hESC-hHEP     0.5622 0.5713 +0.0091 (0.038) 0.5589 -0.0033 (0.97) 0.5550 -0.0072 (0.15) 0.5660 +0.0038 (0.28) 0.5617 -0.0005 (0.87) 0.5693 +0.0071 (0.19) 0.5360 -0.0262 (0.067)
+ss_hHEP-hESC     0.5118 0.5158 +0.0040 (0.16) 0.5176 +0.0058 (0.21) 0.5063 -0.0055 (0.075) 0.5438 +0.0320 (0.0013) 0.5192 +0.0074 (0.17) 0.5411 +0.0293 (0.00084) 0.5541 +0.0423 (0.026)
+ss_mESC-mHSC-E   0.5876 0.5884 +0.0008 (0.98) 0.5964 +0.0088 (0.21) 0.5769 -0.0107 (0.1) 0.6083 +0.0206 (0.0003) 0.5892 +0.0015 (0.33) 0.6225 +0.0349 (0.00019) 0.5407 -0.0469 (0.002)
+ss_mHSC-E-mESC   0.5956 0.6012 +0.0056 (0.0027) 0.6011 +0.0056 (0.0017) 0.5948 -0.0008 (0.86) 0.5665 -0.0291 (1.4e-09) 0.6059 +0.0104 (1.2e-06) 0.6170 +0.0214 (2.1e-07) 0.6045 +0.0090 (0.99)
+
+== Leak audit
+build_cell() runs under no_labels(): pd.read_csv / np.load / open raise on Train_set.csv, Test_set.csv, Label.csv, BL--network.csv; --selfcheck asserts the guard fires and every cell builds.
+load_labels() is the only label reader; run() calls it for source cells (training loss; CV: test-fold TFs removed, asserted) and evaluate() for the target; transfer runs assert target not in sources.
+Shared labelled TFs (upper-cased symbols) and shared genes between source(s) and target; result with shared labelled TFs removed is the "notinsrc" column above:
+ss_hESC-hHEP     shared labelled TFs 3: EZH2,JUND,TEAD4; shared genes 264 of 948
+ss_hHEP-hESC     shared labelled TFs 3: EZH2,JUND,TEAD4; shared genes 264 of 910
+ss_mESC-mHSC-E   shared labelled TFs 6: CBX7,HCFC1,HDAC2,JUN,MYC,NR4A1; shared genes 130 of 704
+ss_mHSC-E-mESC   shared labelled TFs 6: CBX7,HCFC1,HDAC2,JUN,MYC,NR4A1; shared genes 130 of 1120
+loo_hESC         shared labelled TFs 14: EZH2,GATA2,GATA4,JUND,NANOG,OTX2,POU5F1,SMAD2,SOX17,SOX2,STAT3,TEAD4,TRIM28,ZFP42; shared genes 390 of 910
+loo_hHEP         shared labelled TFs 9: EZH2,HDAC2,JUN,JUND,MYC,REST,SMARCA4,SMARCC1,TEAD4; shared genes 445 of 948
+loo_mESC         shared labelled TFs 19: CBX7,EZH2,GATA4,HCFC1,HDAC2,JUN,MYC,NANOG,NR4A1,OTX2,POU5F1,REST,SMAD2,SMARCA4,SMARCC1,SOX17,SOX2,TRIM28,ZFP42; shared genes 417 of 1120
+loo_mHSC-E       shared labelled TFs 8: CBX7,GATA2,HCFC1,HDAC2,JUN,MYC,NR4A1,STAT3; shared genes 221 of 704
+
+== Compute: 824 runs, 371 GPU-process minutes in total (sum of per-run wall time; 4 processes in parallel)

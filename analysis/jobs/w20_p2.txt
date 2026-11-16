@@ -1,0 +1,164 @@
+--name w20_ss_hESC-hHEP__abl-noP_lr3e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --lr 3e-4 --mk 50 --rels M
+--name w20_ss_hESC-hHEP__abl-noP_lr3e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --lr 3e-4 --mk 50 --rels M
+--name w20_ss_hESC-hHEP__abl-noP_lr3e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --lr 3e-4 --mk 50 --rels M
+--name w20_ss_hESC-hHEP__abl-noM_lr3e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --lr 3e-4 --mk 50 --rels P
+--name w20_ss_hESC-hHEP__abl-noM_lr3e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --lr 3e-4 --mk 50 --rels P
+--name w20_ss_hESC-hHEP__abl-noM_lr3e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --lr 3e-4 --mk 50 --rels P
+--name w20_ss_hESC-hHEP__abl-nomotifpf_lr3e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --lr 3e-4 --mk 50 --motif_pf 0
+--name w20_ss_hESC-hHEP__abl-nomotifpf_lr3e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --lr 3e-4 --mk 50 --motif_pf 0
+--name w20_ss_hESC-hHEP__abl-nomotifpf_lr3e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --lr 3e-4 --mk 50 --motif_pf 0
+--name w20_ss_hESC-hHEP__abl-plusC_lr3e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --lr 3e-4 --mk 50 --rels MPC
+--name w20_ss_hESC-hHEP__abl-plusC_lr3e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --lr 3e-4 --mk 50 --rels MPC
+--name w20_ss_hESC-hHEP__abl-plusC_lr3e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --lr 3e-4 --mk 50 --rels MPC
+--name w20_ss_hESC-hHEP__abl-pluscorr_lr3e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --lr 3e-4 --mk 50 --corr_pf 1
+--name w20_ss_hESC-hHEP__abl-pluscorr_lr3e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --lr 3e-4 --mk 50 --corr_pf 1
+--name w20_ss_hESC-hHEP__abl-pluscorr_lr3e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --lr 3e-4 --mk 50 --corr_pf 1
+--name w20_ss_hESC-hHEP__abl-rank_lr3e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --lr 3e-4 --mk 50 --loss rank
+--name w20_ss_hESC-hHEP__abl-rank_lr3e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --lr 3e-4 --mk 50 --loss rank
+--name w20_ss_hESC-hHEP__abl-rank_lr3e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --lr 3e-4 --mk 50 --loss rank
+--name w20_ss_hESC-hHEP__abl-noGF_lr3e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --lr 3e-4 --mk 50 --gf 0
+--name w20_ss_hESC-hHEP__abl-noGF_lr3e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --lr 3e-4 --mk 50 --gf 0
+--name w20_ss_hESC-hHEP__abl-noGF_lr3e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --lr 3e-4 --mk 50 --gf 0
+--name w20_ss_hHEP-hESC__abl-noP_lr1e-4_mk100__s42 --src hHEP --tgt hESC --seed 42 --lr 1e-4 --mk 100 --rels M
+--name w20_ss_hHEP-hESC__abl-noP_lr1e-4_mk100__s43 --src hHEP --tgt hESC --seed 43 --lr 1e-4 --mk 100 --rels M
+--name w20_ss_hHEP-hESC__abl-noP_lr1e-4_mk100__s44 --src hHEP --tgt hESC --seed 44 --lr 1e-4 --mk 100 --rels M
+--name w20_ss_hHEP-hESC__abl-noM_lr1e-4_mk100__s42 --src hHEP --tgt hESC --seed 42 --lr 1e-4 --mk 100 --rels P
+--name w20_ss_hHEP-hESC__abl-noM_lr1e-4_mk100__s43 --src hHEP --tgt hESC --seed 43 --lr 1e-4 --mk 100 --rels P
+--name w20_ss_hHEP-hESC__abl-noM_lr1e-4_mk100__s44 --src hHEP --tgt hESC --seed 44 --lr 1e-4 --mk 100 --rels P
+--name w20_ss_hHEP-hESC__abl-nomotifpf_lr1e-4_mk100__s42 --src hHEP --tgt hESC --seed 42 --lr 1e-4 --mk 100 --motif_pf 0
+--name w20_ss_hHEP-hESC__abl-nomotifpf_lr1e-4_mk100__s43 --src hHEP --tgt hESC --seed 43 --lr 1e-4 --mk 100 --motif_pf 0
+--name w20_ss_hHEP-hESC__abl-nomotifpf_lr1e-4_mk100__s44 --src hHEP --tgt hESC --seed 44 --lr 1e-4 --mk 100 --motif_pf 0
+--name w20_ss_hHEP-hESC__abl-plusC_lr1e-4_mk100__s42 --src hHEP --tgt hESC --seed 42 --lr 1e-4 --mk 100 --rels MPC
+--name w20_ss_hHEP-hESC__abl-plusC_lr1e-4_mk100__s43 --src hHEP --tgt hESC --seed 43 --lr 1e-4 --mk 100 --rels MPC
+--name w20_ss_hHEP-hESC__abl-plusC_lr1e-4_mk100__s44 --src hHEP --tgt hESC --seed 44 --lr 1e-4 --mk 100 --rels MPC
+--name w20_ss_hHEP-hESC__abl-pluscorr_lr1e-4_mk100__s42 --src hHEP --tgt hESC --seed 42 --lr 1e-4 --mk 100 --corr_pf 1
+--name w20_ss_hHEP-hESC__abl-pluscorr_lr1e-4_mk100__s43 --src hHEP --tgt hESC --seed 43 --lr 1e-4 --mk 100 --corr_pf 1
+--name w20_ss_hHEP-hESC__abl-pluscorr_lr1e-4_mk100__s44 --src hHEP --tgt hESC --seed 44 --lr 1e-4 --mk 100 --corr_pf 1
+--name w20_ss_hHEP-hESC__abl-rank_lr1e-4_mk100__s42 --src hHEP --tgt hESC --seed 42 --lr 1e-4 --mk 100 --loss rank
+--name w20_ss_hHEP-hESC__abl-rank_lr1e-4_mk100__s43 --src hHEP --tgt hESC --seed 43 --lr 1e-4 --mk 100 --loss rank
+--name w20_ss_hHEP-hESC__abl-rank_lr1e-4_mk100__s44 --src hHEP --tgt hESC --seed 44 --lr 1e-4 --mk 100 --loss rank
+--name w20_ss_hHEP-hESC__abl-noGF_lr1e-4_mk100__s42 --src hHEP --tgt hESC --seed 42 --lr 1e-4 --mk 100 --gf 0
+--name w20_ss_hHEP-hESC__abl-noGF_lr1e-4_mk100__s43 --src hHEP --tgt hESC --seed 43 --lr 1e-4 --mk 100 --gf 0
+--name w20_ss_hHEP-hESC__abl-noGF_lr1e-4_mk100__s44 --src hHEP --tgt hESC --seed 44 --lr 1e-4 --mk 100 --gf 0
+--name w20_ss_mESC-mHSC-E__abl-noP_lr1e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --lr 1e-4 --mk 50 --rels M
+--name w20_ss_mESC-mHSC-E__abl-noP_lr1e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --lr 1e-4 --mk 50 --rels M
+--name w20_ss_mESC-mHSC-E__abl-noP_lr1e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --lr 1e-4 --mk 50 --rels M
+--name w20_ss_mESC-mHSC-E__abl-noM_lr1e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --lr 1e-4 --mk 50 --rels P
+--name w20_ss_mESC-mHSC-E__abl-noM_lr1e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --lr 1e-4 --mk 50 --rels P
+--name w20_ss_mESC-mHSC-E__abl-noM_lr1e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --lr 1e-4 --mk 50 --rels P
+--name w20_ss_mESC-mHSC-E__abl-nomotifpf_lr1e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --lr 1e-4 --mk 50 --motif_pf 0
+--name w20_ss_mESC-mHSC-E__abl-nomotifpf_lr1e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --lr 1e-4 --mk 50 --motif_pf 0
+--name w20_ss_mESC-mHSC-E__abl-nomotifpf_lr1e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --lr 1e-4 --mk 50 --motif_pf 0
+--name w20_ss_mESC-mHSC-E__abl-plusC_lr1e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --lr 1e-4 --mk 50 --rels MPC
+--name w20_ss_mESC-mHSC-E__abl-plusC_lr1e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --lr 1e-4 --mk 50 --rels MPC
+--name w20_ss_mESC-mHSC-E__abl-plusC_lr1e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --lr 1e-4 --mk 50 --rels MPC
+--name w20_ss_mESC-mHSC-E__abl-pluscorr_lr1e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --lr 1e-4 --mk 50 --corr_pf 1
+--name w20_ss_mESC-mHSC-E__abl-pluscorr_lr1e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --lr 1e-4 --mk 50 --corr_pf 1
+--name w20_ss_mESC-mHSC-E__abl-pluscorr_lr1e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --lr 1e-4 --mk 50 --corr_pf 1
+--name w20_ss_mESC-mHSC-E__abl-rank_lr1e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --lr 1e-4 --mk 50 --loss rank
+--name w20_ss_mESC-mHSC-E__abl-rank_lr1e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --lr 1e-4 --mk 50 --loss rank
+--name w20_ss_mESC-mHSC-E__abl-rank_lr1e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --lr 1e-4 --mk 50 --loss rank
+--name w20_ss_mESC-mHSC-E__abl-noGF_lr1e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --lr 1e-4 --mk 50 --gf 0
+--name w20_ss_mESC-mHSC-E__abl-noGF_lr1e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --lr 1e-4 --mk 50 --gf 0
+--name w20_ss_mESC-mHSC-E__abl-noGF_lr1e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --lr 1e-4 --mk 50 --gf 0
+--name w20_ss_mHSC-E-mESC__abl-noP_lr3e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --lr 3e-4 --mk 0 --rels M
+--name w20_ss_mHSC-E-mESC__abl-noP_lr3e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --lr 3e-4 --mk 0 --rels M
+--name w20_ss_mHSC-E-mESC__abl-noP_lr3e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --lr 3e-4 --mk 0 --rels M
+--name w20_ss_mHSC-E-mESC__abl-noM_lr3e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --lr 3e-4 --mk 0 --rels P
+--name w20_ss_mHSC-E-mESC__abl-noM_lr3e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --lr 3e-4 --mk 0 --rels P
+--name w20_ss_mHSC-E-mESC__abl-noM_lr3e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --lr 3e-4 --mk 0 --rels P
+--name w20_ss_mHSC-E-mESC__abl-nomotifpf_lr3e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --lr 3e-4 --mk 0 --motif_pf 0
+--name w20_ss_mHSC-E-mESC__abl-nomotifpf_lr3e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --lr 3e-4 --mk 0 --motif_pf 0
+--name w20_ss_mHSC-E-mESC__abl-nomotifpf_lr3e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --lr 3e-4 --mk 0 --motif_pf 0
+--name w20_ss_mHSC-E-mESC__abl-plusC_lr3e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --lr 3e-4 --mk 0 --rels MPC
+--name w20_ss_mHSC-E-mESC__abl-plusC_lr3e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --lr 3e-4 --mk 0 --rels MPC
+--name w20_ss_mHSC-E-mESC__abl-plusC_lr3e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --lr 3e-4 --mk 0 --rels MPC
+--name w20_ss_mHSC-E-mESC__abl-pluscorr_lr3e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --lr 3e-4 --mk 0 --corr_pf 1
+--name w20_ss_mHSC-E-mESC__abl-pluscorr_lr3e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --lr 3e-4 --mk 0 --corr_pf 1
+--name w20_ss_mHSC-E-mESC__abl-pluscorr_lr3e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --lr 3e-4 --mk 0 --corr_pf 1
+--name w20_ss_mHSC-E-mESC__abl-rank_lr3e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --lr 3e-4 --mk 0 --loss rank
+--name w20_ss_mHSC-E-mESC__abl-rank_lr3e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --lr 3e-4 --mk 0 --loss rank
+--name w20_ss_mHSC-E-mESC__abl-rank_lr3e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --lr 3e-4 --mk 0 --loss rank
+--name w20_ss_mHSC-E-mESC__abl-noGF_lr3e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --lr 3e-4 --mk 0 --gf 0
+--name w20_ss_mHSC-E-mESC__abl-noGF_lr3e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --lr 3e-4 --mk 0 --gf 0
+--name w20_ss_mHSC-E-mESC__abl-noGF_lr3e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --lr 3e-4 --mk 0 --gf 0
+--name w20_cv_hESC_f0__full_lr3e-4_mk200__s43 --cv_cell hESC --fold 0 --seed 43 --lr 3e-4 --mk 200
+--name w20_cv_hESC_f0__full_lr3e-4_mk200__s44 --cv_cell hESC --fold 0 --seed 44 --lr 3e-4 --mk 200
+--name w20_cv_hESC_f0__mlp_lr1e-4__s43 --cv_cell hESC --fold 0 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_hESC_f0__mlp_lr1e-4__s44 --cv_cell hESC --fold 0 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_hESC_f1__full_lr1e-3_mk50__s43 --cv_cell hESC --fold 1 --seed 43 --lr 1e-3 --mk 50
+--name w20_cv_hESC_f1__full_lr1e-3_mk50__s44 --cv_cell hESC --fold 1 --seed 44 --lr 1e-3 --mk 50
+--name w20_cv_hESC_f1__mlp_lr1e-3__s43 --cv_cell hESC --fold 1 --seed 43 --lr 1e-3 --model mlp
+--name w20_cv_hESC_f1__mlp_lr1e-3__s44 --cv_cell hESC --fold 1 --seed 44 --lr 1e-3 --model mlp
+--name w20_cv_hESC_f2__full_lr1e-4_mk100__s43 --cv_cell hESC --fold 2 --seed 43 --lr 1e-4 --mk 100
+--name w20_cv_hESC_f2__full_lr1e-4_mk100__s44 --cv_cell hESC --fold 2 --seed 44 --lr 1e-4 --mk 100
+--name w20_cv_hESC_f2__mlp_lr1e-4__s43 --cv_cell hESC --fold 2 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_hESC_f2__mlp_lr1e-4__s44 --cv_cell hESC --fold 2 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_hESC_f3__full_lr1e-4_mk200__s43 --cv_cell hESC --fold 3 --seed 43 --lr 1e-4 --mk 200
+--name w20_cv_hESC_f3__full_lr1e-4_mk200__s44 --cv_cell hESC --fold 3 --seed 44 --lr 1e-4 --mk 200
+--name w20_cv_hESC_f3__mlp_lr1e-4__s43 --cv_cell hESC --fold 3 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_hESC_f3__mlp_lr1e-4__s44 --cv_cell hESC --fold 3 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_hESC_f4__full_lr1e-3_mk100__s43 --cv_cell hESC --fold 4 --seed 43 --lr 1e-3 --mk 100
+--name w20_cv_hESC_f4__full_lr1e-3_mk100__s44 --cv_cell hESC --fold 4 --seed 44 --lr 1e-3 --mk 100
+--name w20_cv_hESC_f4__mlp_lr1e-4__s43 --cv_cell hESC --fold 4 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_hESC_f4__mlp_lr1e-4__s44 --cv_cell hESC --fold 4 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_hHEP_f0__full_lr1e-4_mk100__s43 --cv_cell hHEP --fold 0 --seed 43 --lr 1e-4 --mk 100
+--name w20_cv_hHEP_f0__full_lr1e-4_mk100__s44 --cv_cell hHEP --fold 0 --seed 44 --lr 1e-4 --mk 100
+--name w20_cv_hHEP_f0__mlp_lr1e-4__s43 --cv_cell hHEP --fold 0 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_hHEP_f0__mlp_lr1e-4__s44 --cv_cell hHEP --fold 0 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_hHEP_f1__full_lr1e-4_mk0__s43 --cv_cell hHEP --fold 1 --seed 43 --lr 1e-4 --mk 0
+--name w20_cv_hHEP_f1__full_lr1e-4_mk0__s44 --cv_cell hHEP --fold 1 --seed 44 --lr 1e-4 --mk 0
+--name w20_cv_hHEP_f1__mlp_lr3e-4__s43 --cv_cell hHEP --fold 1 --seed 43 --lr 3e-4 --model mlp
+--name w20_cv_hHEP_f1__mlp_lr3e-4__s44 --cv_cell hHEP --fold 1 --seed 44 --lr 3e-4 --model mlp
+--name w20_cv_hHEP_f2__full_lr3e-4_mk0__s43 --cv_cell hHEP --fold 2 --seed 43 --lr 3e-4 --mk 0
+--name w20_cv_hHEP_f2__full_lr3e-4_mk0__s44 --cv_cell hHEP --fold 2 --seed 44 --lr 3e-4 --mk 0
+--name w20_cv_hHEP_f2__mlp_lr1e-4__s43 --cv_cell hHEP --fold 2 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_hHEP_f2__mlp_lr1e-4__s44 --cv_cell hHEP --fold 2 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_hHEP_f3__full_lr3e-4_mk100__s43 --cv_cell hHEP --fold 3 --seed 43 --lr 3e-4 --mk 100
+--name w20_cv_hHEP_f3__full_lr3e-4_mk100__s44 --cv_cell hHEP --fold 3 --seed 44 --lr 3e-4 --mk 100
+--name w20_cv_hHEP_f3__mlp_lr1e-4__s43 --cv_cell hHEP --fold 3 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_hHEP_f3__mlp_lr1e-4__s44 --cv_cell hHEP --fold 3 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_hHEP_f4__full_lr1e-3_mk100__s43 --cv_cell hHEP --fold 4 --seed 43 --lr 1e-3 --mk 100
+--name w20_cv_hHEP_f4__full_lr1e-3_mk100__s44 --cv_cell hHEP --fold 4 --seed 44 --lr 1e-3 --mk 100
+--name w20_cv_hHEP_f4__mlp_lr3e-4__s43 --cv_cell hHEP --fold 4 --seed 43 --lr 3e-4 --model mlp
+--name w20_cv_hHEP_f4__mlp_lr3e-4__s44 --cv_cell hHEP --fold 4 --seed 44 --lr 3e-4 --model mlp
+--name w20_cv_mESC_f0__full_lr3e-4_mk100__s43 --cv_cell mESC --fold 0 --seed 43 --lr 3e-4 --mk 100
+--name w20_cv_mESC_f0__full_lr3e-4_mk100__s44 --cv_cell mESC --fold 0 --seed 44 --lr 3e-4 --mk 100
+--name w20_cv_mESC_f0__mlp_lr3e-4__s43 --cv_cell mESC --fold 0 --seed 43 --lr 3e-4 --model mlp
+--name w20_cv_mESC_f0__mlp_lr3e-4__s44 --cv_cell mESC --fold 0 --seed 44 --lr 3e-4 --model mlp
+--name w20_cv_mESC_f1__full_lr3e-4_mk100__s43 --cv_cell mESC --fold 1 --seed 43 --lr 3e-4 --mk 100
+--name w20_cv_mESC_f1__full_lr3e-4_mk100__s44 --cv_cell mESC --fold 1 --seed 44 --lr 3e-4 --mk 100
+--name w20_cv_mESC_f1__mlp_lr1e-4__s43 --cv_cell mESC --fold 1 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_mESC_f1__mlp_lr1e-4__s44 --cv_cell mESC --fold 1 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_mESC_f2__full_lr1e-3_mk200__s43 --cv_cell mESC --fold 2 --seed 43 --lr 1e-3 --mk 200
+--name w20_cv_mESC_f2__full_lr1e-3_mk200__s44 --cv_cell mESC --fold 2 --seed 44 --lr 1e-3 --mk 200
+--name w20_cv_mESC_f2__mlp_lr1e-4__s43 --cv_cell mESC --fold 2 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_mESC_f2__mlp_lr1e-4__s44 --cv_cell mESC --fold 2 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_mESC_f3__full_lr1e-4_mk200__s43 --cv_cell mESC --fold 3 --seed 43 --lr 1e-4 --mk 200
+--name w20_cv_mESC_f3__full_lr1e-4_mk200__s44 --cv_cell mESC --fold 3 --seed 44 --lr 1e-4 --mk 200
+--name w20_cv_mESC_f3__mlp_lr1e-4__s43 --cv_cell mESC --fold 3 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_mESC_f3__mlp_lr1e-4__s44 --cv_cell mESC --fold 3 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_mESC_f4__full_lr1e-3_mk200__s43 --cv_cell mESC --fold 4 --seed 43 --lr 1e-3 --mk 200
+--name w20_cv_mESC_f4__full_lr1e-3_mk200__s44 --cv_cell mESC --fold 4 --seed 44 --lr 1e-3 --mk 200
+--name w20_cv_mESC_f4__mlp_lr1e-3__s43 --cv_cell mESC --fold 4 --seed 43 --lr 1e-3 --model mlp
+--name w20_cv_mESC_f4__mlp_lr1e-3__s44 --cv_cell mESC --fold 4 --seed 44 --lr 1e-3 --model mlp
+--name w20_cv_mHSC-E_f0__full_lr3e-4_mk0__s43 --cv_cell mHSC-E --fold 0 --seed 43 --lr 3e-4 --mk 0
+--name w20_cv_mHSC-E_f0__full_lr3e-4_mk0__s44 --cv_cell mHSC-E --fold 0 --seed 44 --lr 3e-4 --mk 0
+--name w20_cv_mHSC-E_f0__mlp_lr1e-3__s43 --cv_cell mHSC-E --fold 0 --seed 43 --lr 1e-3 --model mlp
+--name w20_cv_mHSC-E_f0__mlp_lr1e-3__s44 --cv_cell mHSC-E --fold 0 --seed 44 --lr 1e-3 --model mlp
+--name w20_cv_mHSC-E_f1__full_lr1e-4_mk0__s43 --cv_cell mHSC-E --fold 1 --seed 43 --lr 1e-4 --mk 0
+--name w20_cv_mHSC-E_f1__full_lr1e-4_mk0__s44 --cv_cell mHSC-E --fold 1 --seed 44 --lr 1e-4 --mk 0
+--name w20_cv_mHSC-E_f1__mlp_lr1e-4__s43 --cv_cell mHSC-E --fold 1 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_mHSC-E_f1__mlp_lr1e-4__s44 --cv_cell mHSC-E --fold 1 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_mHSC-E_f2__full_lr1e-4_mk0__s43 --cv_cell mHSC-E --fold 2 --seed 43 --lr 1e-4 --mk 0
+--name w20_cv_mHSC-E_f2__full_lr1e-4_mk0__s44 --cv_cell mHSC-E --fold 2 --seed 44 --lr 1e-4 --mk 0
+--name w20_cv_mHSC-E_f2__mlp_lr1e-4__s43 --cv_cell mHSC-E --fold 2 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_mHSC-E_f2__mlp_lr1e-4__s44 --cv_cell mHSC-E --fold 2 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_mHSC-E_f3__full_lr1e-4_mk100__s43 --cv_cell mHSC-E --fold 3 --seed 43 --lr 1e-4 --mk 100
+--name w20_cv_mHSC-E_f3__full_lr1e-4_mk100__s44 --cv_cell mHSC-E --fold 3 --seed 44 --lr 1e-4 --mk 100
+--name w20_cv_mHSC-E_f3__mlp_lr1e-4__s43 --cv_cell mHSC-E --fold 3 --seed 43 --lr 1e-4 --model mlp
+--name w20_cv_mHSC-E_f3__mlp_lr1e-4__s44 --cv_cell mHSC-E --fold 3 --seed 44 --lr 1e-4 --model mlp
+--name w20_cv_mHSC-E_f4__full_lr1e-3_mk100__s43 --cv_cell mHSC-E --fold 4 --seed 43 --lr 1e-3 --mk 100
+--name w20_cv_mHSC-E_f4__full_lr1e-3_mk100__s44 --cv_cell mHSC-E --fold 4 --seed 44 --lr 1e-3 --mk 100
+--name w20_cv_mHSC-E_f4__mlp_lr3e-4__s43 --cv_cell mHSC-E --fold 4 --seed 43 --lr 3e-4 --model mlp
+--name w20_cv_mHSC-E_f4__mlp_lr3e-4__s44 --cv_cell mHSC-E --fold 4 --seed 44 --lr 3e-4 --model mlp

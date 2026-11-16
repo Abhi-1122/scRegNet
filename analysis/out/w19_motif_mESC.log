@@ -1,0 +1,29 @@
+lookup 0
+lookup 100
+lookup 200
+lookup 300
+lookup 400
+lookup 500
+lookup 600
+lookup 700
+lookup 800
+lookup 900
+lookup 1000
+lookup 1100
+transcripts 0
+transcripts 100
+transcripts 200
+transcripts 300
+transcripts 400
+transcripts 500
+transcripts 600
+transcripts 700
+transcripts 800
+transcripts 900
+transcripts 1000
+promoters: 1051/1120 genes; background ACGT [0.234 0.266 0.266 0.234]
+genes with a promoter: 1051/1120 (unresolved symbols: 69, e.g. ['CRAMP1L', 'GM22862', 'FAM129B', 'GM26092', 'HIST1H2AK', 'GM17545', 'GM25701', 'GM27326', 'GM25787', 'GM26426', 'GM20721', 'GM23651'])
+TFs in TF.csv with a JASPAR motif: 205/627 (289 motif-TF links, 276 distinct matrices)
+labelled TFs with a motif: 34/88: ['CTCF', 'E2F1', 'E2F4', 'ESRRB', 'GATA4', 'GLI1', 'GLI2', 'JUN', 'KLF2', 'KLF4', 'MAFK', 'MYC', 'MYCN', 'NANOG', 'NFYA', 'NFYB', 'NR4A1', 'NRF1', 'OTX2', 'POU5F1', 'PRDM14', 'RARA', 'REST', 'SMAD2', 'SMAD3', 'SOX17', 'SOX2', 'TBX3', 'TCF12', 'TFE3', 'TGIF1', 'ZFP42', 'ZFP57', 'ZIC3']
+labelled TFs without a motif: ['ARID1A', 'BAZ1A', 'BTAF1', 'CBX7', 'CBX8', 'CHD4', 'CHD7', 'CNOT3', 'DAXX', 'DPPA2', 'DPPA4', 'DR1', 'EED', 'EHMT2', 'ELL2', 'ELL3', 'EP300', 'EP400', 'EZH2', 'GABBR1', 'GTF3C1', 'HCFC1', 'HDAC1', 'HDAC2', 'HDAC3', 'HEXIM1', 'JARID2', 'KDM5B', 'MAPK8', 'MED12', 'MEN1', 'MPHOSPH8', 'MTF2', 'NACC1', 'NONO', 'NR0B1', 'PARP1', 'PHC1', 'RIF1', 'RNF2', 'RYBP', 'SALL1', 'SALL4', 'SIN3A', 'SMARCA4', 'SMARCAD1', 'SMARCC1', 'SUZ12', 'TET1', 'TET2', 'TRIM28', 'UTF1', 'YEATS4', 'ZFP281']
+motif_max finite fraction in covered rows: 0.938; mean hits per pair 0.50

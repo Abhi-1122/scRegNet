@@ -1,0 +1,21 @@
+lookup 0
+lookup 100
+lookup 200
+lookup 300
+lookup 400
+lookup 500
+lookup 600
+lookup 700
+transcripts 0
+transcripts 100
+transcripts 200
+transcripts 300
+transcripts 400
+transcripts 500
+transcripts 600
+promoters: 687/704 genes; background ACGT [0.24 0.26 0.26 0.24]
+genes with a promoter: 687/704 (unresolved symbols: 17, e.g. ['TARS', 'GM8995', 'PQLC3', 'NARFL', 'HIST1H1C', 'DDX58', 'SEPT8', 'IARS', 'D10WSU102E', 'PQLC1', '2210016F16RIK', 'WARS'])
+TFs in TF.csv with a JASPAR motif: 73/205 (108 motif-TF links, 106 distinct matrices)
+labelled TFs with a motif: 21/29: ['EBF1', 'ELF4', 'ESR1', 'ETS1', 'FOS', 'FOXO1', 'GATA2', 'GFI1', 'GFI1B', 'IKZF1', 'IRF1', 'IRF8', 'JUN', 'MEF2C', 'MEIS1', 'MYC', 'NFAT5', 'NR4A1', 'SATB1', 'SPI1', 'STAT3']
+labelled TFs without a motif: ['BMI1', 'CBFB', 'CBX7', 'HCFC1', 'HDAC2', 'NOTCH1', 'RAD51', 'WDR5']
+motif_max finite fraction in covered rows: 0.976; mean hits per pair 0.52
