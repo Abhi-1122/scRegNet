@@ -42,3 +42,5 @@ analysis/out/pair/*.out
 analysis/out/slots/
 analysis/out/xcell*/*.npz
 analysis/out/xcell*/*.log
+analysis/out/xcell*/*.claim
+analysis/out/xcell*/*.out
