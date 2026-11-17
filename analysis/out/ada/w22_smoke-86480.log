@@ -1,0 +1,12 @@
+NVIDIA GeForce RTX 2080 Ti
+label readers in src/xcell_base.py: {'run_scr'}
+hESC ok; motif graph undirected edges 31340 ; motif_max within-TF 0.6016
+hHEP ok; motif graph undirected edges 34459 ; motif_max within-TF 0.5523
+mESC ok; motif graph undirected edges 58043 ; motif_max within-TF 0.5353
+mHSC-E ok; motif graph undirected edges 14231 ; motif_max within-TF 0.5548
+selfcheck passed
+['w22_panda_mHSC-E\ttarget AUROC 0.5307 AUPRC 0.5873 within 0.5405\t0.0 min']
+['w22_smoke_hESC-hHEP__scr-tuned__s42\ttarget AUROC 0.4225 AUPRC 0.3523 within 0.6072\t0.1 min']
+['w22_smoke_loo_mHSC-E__scr-paper__s42\ttarget AUROC 0.5944 AUPRC 0.6297 within 0.6260\t0.4 min']
+['w22_genie3-gbm-soft_mHSC-E\ttarget AUROC 0.5162 AUPRC 0.5855 within 0.5389\t0.4 min']
+QUEUE_DONE

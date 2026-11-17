@@ -1,0 +1,6 @@
+NVIDIA GeForce RTX 2080 Ti
+w21_smoke_early	ep 5	val 0.6695	target AUROC 0.5688 AUPRC 0.3424 within 0.6209	0.1 min
+w21_smoke_concat	ep 5	val 0.6054	target AUROC 0.5118 AUPRC 0.3779 within 0.5659	0.1 min
+w21_smoke_B	ep 2	val 0.6697	target AUROC 0.5399 AUPRC 0.6065 within 0.6290	0.1 min
+w21_smoke_loo_tgtcons	ep 4	val 0.6693	target AUROC 0.5654 AUPRC 0.6163 within 0.6313	0.6 min
+QUEUE_DONE analysis/jobs/w21_smoke.txt

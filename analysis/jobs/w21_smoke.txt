@@ -1,0 +1,4 @@
+--name w21_smoke_concat --src hESC --tgt hHEP --model concat --mk 0 --ck 10 --epochs 5 --seed 42
+--name w21_smoke_loo_tgtcons --src hESC hHEP mESC --tgt mHSC-E --model gate --mk 50 --ck 20 --cabs 1 --cons 0.5 --cons_tgt 1 --epochs 5 --seed 42
+--name w21_smoke_B --src mESC --tgt mHSC-E --model B --ck 5 --epochs 5
+--name w21_smoke_early --src mHSC-E --tgt mESC --model early --loss bce --epochs 5

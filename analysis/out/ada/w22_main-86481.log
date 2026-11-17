@@ -1,0 +1,15 @@
+NVIDIA GeForce RTX 2080 Ti
+label readers in src/xcell_base.py: {'run_scr'}
+hESC ok; motif graph undirected edges 31340 ; motif_max within-TF 0.6016
+hHEP ok; motif graph undirected edges 34459 ; motif_max within-TF 0.5523
+mESC ok; motif graph undirected edges 58043 ; motif_max within-TF 0.5353
+mHSC-E ok; motif graph undirected edges 14231 ; motif_max within-TF 0.5548
+selfcheck passed
+['w22_panda_hESC\ttarget AUROC 0.6485 AUPRC 0.2186 within 0.5406\t0.1 min']
+['w22_panda_hHEP\ttarget AUROC 0.6202 AUPRC 0.4514 within 0.5434\t0.1 min']
+['w22_panda_mESC\ttarget AUROC 0.5200 AUPRC 0.3309 within 0.5147\t0.1 min']
+['w22_panda-noppi_hESC\ttarget AUROC 0.6412 AUPRC 0.2185 within 0.5444\t0.1 min']
+['w22_panda-noppi_hHEP\ttarget AUROC 0.6198 AUPRC 0.4537 within 0.5368\t0.1 min']
+['w22_panda-noppi_mESC\ttarget AUROC 0.5060 AUPRC 0.3268 within 0.5101\t0.1 min']
+['w22_panda-noppi_mHSC-E\ttarget AUROC 0.5198 AUPRC 0.5829 within 0.5387\t0.0 min']
+[2026-11-17T02:15:17.793] error: *** JOB 86481 ON gnode056 CANCELLED AT 2026-11-17T02:15:17 DUE to SIGNAL Terminated ***

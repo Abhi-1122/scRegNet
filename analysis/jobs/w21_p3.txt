@@ -1,0 +1,144 @@
+--name w21_ss_hESC-hHEP__abl-bce_gate_lr1e-4_mk50_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --loss bce
+--name w21_ss_hESC-hHEP__abl-bce_gate_lr1e-4_mk50_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --loss bce
+--name w21_ss_hESC-hHEP__abl-bce_gate_lr1e-4_mk50_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --loss bce
+--name w21_ss_hESC-hHEP__abl-vd0_gate_lr1e-4_mk50_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --vdrop 0
+--name w21_ss_hESC-hHEP__abl-vd0_gate_lr1e-4_mk50_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --vdrop 0
+--name w21_ss_hESC-hHEP__abl-vd0_gate_lr1e-4_mk50_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --vdrop 0
+--name w21_ss_hESC-hHEP__abl-c0.1_gate_lr1e-4_mk50_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.1
+--name w21_ss_hESC-hHEP__abl-c0.1_gate_lr1e-4_mk50_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.1
+--name w21_ss_hESC-hHEP__abl-c0.1_gate_lr1e-4_mk50_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.1
+--name w21_ss_hESC-hHEP__abl-c0.5_gate_lr1e-4_mk50_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.5
+--name w21_ss_hESC-hHEP__abl-c0.5_gate_lr1e-4_mk50_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.5
+--name w21_ss_hESC-hHEP__abl-c0.5_gate_lr1e-4_mk50_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.5
+--name w21_ss_hESC-hHEP__abl-c0.1t_gate_lr1e-4_mk50_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.1 --cons_tgt 1
+--name w21_ss_hESC-hHEP__abl-c0.1t_gate_lr1e-4_mk50_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.1 --cons_tgt 1
+--name w21_ss_hESC-hHEP__abl-c0.1t_gate_lr1e-4_mk50_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.1 --cons_tgt 1
+--name w21_ss_hESC-hHEP__abl-c0.5t_gate_lr1e-4_mk50_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.5 --cons_tgt 1
+--name w21_ss_hESC-hHEP__abl-c0.5t_gate_lr1e-4_mk50_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.5 --cons_tgt 1
+--name w21_ss_hESC-hHEP__abl-c0.5t_gate_lr1e-4_mk50_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 50 --ck 5 --cabs 1 --cons 0.5 --cons_tgt 1
+--name w21_ss_hHEP-hESC__abl-bce_gate_lr1e-4_mk0_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --loss bce
+--name w21_ss_hHEP-hESC__abl-bce_gate_lr1e-4_mk0_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --loss bce
+--name w21_ss_hHEP-hESC__abl-bce_gate_lr1e-4_mk0_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --loss bce
+--name w21_ss_hHEP-hESC__abl-vd0_gate_lr1e-4_mk0_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_hHEP-hESC__abl-vd0_gate_lr1e-4_mk0_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_hHEP-hESC__abl-vd0_gate_lr1e-4_mk0_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_hHEP-hESC__abl-c0.1_gate_lr1e-4_mk0_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_hHEP-hESC__abl-c0.1_gate_lr1e-4_mk0_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_hHEP-hESC__abl-c0.1_gate_lr1e-4_mk0_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_hHEP-hESC__abl-c0.5_gate_lr1e-4_mk0_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_hHEP-hESC__abl-c0.5_gate_lr1e-4_mk0_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_hHEP-hESC__abl-c0.5_gate_lr1e-4_mk0_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_hHEP-hESC__abl-c0.1t_gate_lr1e-4_mk0_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_hHEP-hESC__abl-c0.1t_gate_lr1e-4_mk0_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_hHEP-hESC__abl-c0.1t_gate_lr1e-4_mk0_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_hHEP-hESC__abl-c0.5t_gate_lr1e-4_mk0_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_ss_hHEP-hESC__abl-c0.5t_gate_lr1e-4_mk0_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_ss_hHEP-hESC__abl-c0.5t_gate_lr1e-4_mk0_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_ss_mESC-mHSC-E__abl-bce_gate_lr1e-4_mk50_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_ss_mESC-mHSC-E__abl-bce_gate_lr1e-4_mk50_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_ss_mESC-mHSC-E__abl-bce_gate_lr1e-4_mk50_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_ss_mESC-mHSC-E__abl-vd0_gate_lr1e-4_mk50_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_mESC-mHSC-E__abl-vd0_gate_lr1e-4_mk50_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_mESC-mHSC-E__abl-vd0_gate_lr1e-4_mk50_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_mESC-mHSC-E__abl-c0.1_gate_lr1e-4_mk50_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_mESC-mHSC-E__abl-c0.1_gate_lr1e-4_mk50_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_mESC-mHSC-E__abl-c0.1_gate_lr1e-4_mk50_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_mESC-mHSC-E__abl-c0.5_gate_lr1e-4_mk50_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_mESC-mHSC-E__abl-c0.5_gate_lr1e-4_mk50_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_mESC-mHSC-E__abl-c0.5_gate_lr1e-4_mk50_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_mESC-mHSC-E__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_mESC-mHSC-E__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_mESC-mHSC-E__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_mESC-mHSC-E__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_ss_mESC-mHSC-E__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_ss_mESC-mHSC-E__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_ss_mHSC-E-mESC__abl-bce_gate_lr1e-4_mk50_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_ss_mHSC-E-mESC__abl-bce_gate_lr1e-4_mk50_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_ss_mHSC-E-mESC__abl-bce_gate_lr1e-4_mk50_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_ss_mHSC-E-mESC__abl-vd0_gate_lr1e-4_mk50_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_mHSC-E-mESC__abl-vd0_gate_lr1e-4_mk50_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_mHSC-E-mESC__abl-vd0_gate_lr1e-4_mk50_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_ss_mHSC-E-mESC__abl-c0.1_gate_lr1e-4_mk50_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_mHSC-E-mESC__abl-c0.1_gate_lr1e-4_mk50_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_mHSC-E-mESC__abl-c0.1_gate_lr1e-4_mk50_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_ss_mHSC-E-mESC__abl-c0.5_gate_lr1e-4_mk50_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_mHSC-E-mESC__abl-c0.5_gate_lr1e-4_mk50_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_mHSC-E-mESC__abl-c0.5_gate_lr1e-4_mk50_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_ss_mHSC-E-mESC__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_mHSC-E-mESC__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_mHSC-E-mESC__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_ss_mHSC-E-mESC__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_ss_mHSC-E-mESC__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_ss_mHSC-E-mESC__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_hESC__abl-bce_gate_lr1e-4_mk50_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_loo_hESC__abl-bce_gate_lr1e-4_mk50_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_loo_hESC__abl-bce_gate_lr1e-4_mk50_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_loo_hESC__abl-vd0_gate_lr1e-4_mk50_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_hESC__abl-vd0_gate_lr1e-4_mk50_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_hESC__abl-vd0_gate_lr1e-4_mk50_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_hESC__abl-c0.1_gate_lr1e-4_mk50_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_hESC__abl-c0.1_gate_lr1e-4_mk50_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_hESC__abl-c0.1_gate_lr1e-4_mk50_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_hESC__abl-c0.5_gate_lr1e-4_mk50_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_hESC__abl-c0.5_gate_lr1e-4_mk50_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_hESC__abl-c0.5_gate_lr1e-4_mk50_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_hESC__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_hESC__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_hESC__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_hESC__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_hESC__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_hESC__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_hHEP__abl-bce_gate_lr1e-4_mk0_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --loss bce
+--name w21_loo_hHEP__abl-bce_gate_lr1e-4_mk0_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --loss bce
+--name w21_loo_hHEP__abl-bce_gate_lr1e-4_mk0_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --loss bce
+--name w21_loo_hHEP__abl-vd0_gate_lr1e-4_mk0_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_hHEP__abl-vd0_gate_lr1e-4_mk0_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_hHEP__abl-vd0_gate_lr1e-4_mk0_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_hHEP__abl-c0.1_gate_lr1e-4_mk0_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_hHEP__abl-c0.1_gate_lr1e-4_mk0_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_hHEP__abl-c0.1_gate_lr1e-4_mk0_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_hHEP__abl-c0.5_gate_lr1e-4_mk0_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_hHEP__abl-c0.5_gate_lr1e-4_mk0_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_hHEP__abl-c0.5_gate_lr1e-4_mk0_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_hHEP__abl-c0.1t_gate_lr1e-4_mk0_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_hHEP__abl-c0.1t_gate_lr1e-4_mk0_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_hHEP__abl-c0.1t_gate_lr1e-4_mk0_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_hHEP__abl-c0.5t_gate_lr1e-4_mk0_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_hHEP__abl-c0.5t_gate_lr1e-4_mk0_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_hHEP__abl-c0.5t_gate_lr1e-4_mk0_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model gate --lr 1e-4 --mk 0 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_mESC__abl-bce_gate_lr1e-4_mk50_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --loss bce
+--name w21_loo_mESC__abl-bce_gate_lr1e-4_mk50_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --loss bce
+--name w21_loo_mESC__abl-bce_gate_lr1e-4_mk50_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --loss bce
+--name w21_loo_mESC__abl-vd0_gate_lr1e-4_mk50_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --vdrop 0
+--name w21_loo_mESC__abl-vd0_gate_lr1e-4_mk50_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --vdrop 0
+--name w21_loo_mESC__abl-vd0_gate_lr1e-4_mk50_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --vdrop 0
+--name w21_loo_mESC__abl-c0.1_gate_lr1e-4_mk50_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.1
+--name w21_loo_mESC__abl-c0.1_gate_lr1e-4_mk50_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.1
+--name w21_loo_mESC__abl-c0.1_gate_lr1e-4_mk50_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.1
+--name w21_loo_mESC__abl-c0.5_gate_lr1e-4_mk50_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.5
+--name w21_loo_mESC__abl-c0.5_gate_lr1e-4_mk50_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.5
+--name w21_loo_mESC__abl-c0.5_gate_lr1e-4_mk50_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.5
+--name w21_loo_mESC__abl-c0.1t_gate_lr1e-4_mk50_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.1 --cons_tgt 1
+--name w21_loo_mESC__abl-c0.1t_gate_lr1e-4_mk50_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.1 --cons_tgt 1
+--name w21_loo_mESC__abl-c0.1t_gate_lr1e-4_mk50_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.1 --cons_tgt 1
+--name w21_loo_mESC__abl-c0.5t_gate_lr1e-4_mk50_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.5 --cons_tgt 1
+--name w21_loo_mESC__abl-c0.5t_gate_lr1e-4_mk50_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.5 --cons_tgt 1
+--name w21_loo_mESC__abl-c0.5t_gate_lr1e-4_mk50_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 1 --cons 0.5 --cons_tgt 1
+--name w21_loo_mHSC-E__abl-bce_gate_lr1e-4_mk50_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_loo_mHSC-E__abl-bce_gate_lr1e-4_mk50_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_loo_mHSC-E__abl-bce_gate_lr1e-4_mk50_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --loss bce
+--name w21_loo_mHSC-E__abl-vd0_gate_lr1e-4_mk50_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_mHSC-E__abl-vd0_gate_lr1e-4_mk50_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_mHSC-E__abl-vd0_gate_lr1e-4_mk50_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --vdrop 0
+--name w21_loo_mHSC-E__abl-c0.1_gate_lr1e-4_mk50_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_mHSC-E__abl-c0.1_gate_lr1e-4_mk50_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_mHSC-E__abl-c0.1_gate_lr1e-4_mk50_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1
+--name w21_loo_mHSC-E__abl-c0.5_gate_lr1e-4_mk50_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_mHSC-E__abl-c0.5_gate_lr1e-4_mk50_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_mHSC-E__abl-c0.5_gate_lr1e-4_mk50_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5
+--name w21_loo_mHSC-E__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_mHSC-E__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_mHSC-E__abl-c0.1t_gate_lr1e-4_mk50_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.1 --cons_tgt 1
+--name w21_loo_mHSC-E__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_mHSC-E__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1
+--name w21_loo_mHSC-E__abl-c0.5t_gate_lr1e-4_mk50_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model gate --lr 1e-4 --mk 50 --ck 20 --cabs 0 --cons 0.5 --cons_tgt 1

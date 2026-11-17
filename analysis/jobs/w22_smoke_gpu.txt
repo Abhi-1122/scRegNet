@@ -1,0 +1,2 @@
+--name w22_smoke_hESC-hHEP__scr-tuned__s42 --src hESC --tgt hHEP --recipe tuned --seed 42 --max_epochs 3
+--name w22_smoke_loo_mHSC-E__scr-paper__s42 --src hESC hHEP mESC --tgt mHSC-E --recipe paper --seed 42 --max_epochs 5

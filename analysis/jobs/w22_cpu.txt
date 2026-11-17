@@ -1,0 +1,16 @@
+--panda hESC
+--panda hHEP
+--panda mESC
+--panda mHSC-E
+--panda hESC --noppi
+--panda hHEP --noppi
+--panda mESC --noppi
+--panda mHSC-E --noppi
+--genie3 hESC --method et --n_jobs 12
+--genie3 hHEP --method et --n_jobs 12
+--genie3 mESC --method et --n_jobs 12
+--genie3 mHSC-E --method et --n_jobs 12
+--genie3 hESC --method gbm --n_jobs 12
+--genie3 hHEP --method gbm --n_jobs 12
+--genie3 mESC --method gbm --n_jobs 12
+--genie3 mHSC-E --method gbm --n_jobs 12

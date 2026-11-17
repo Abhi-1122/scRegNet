@@ -1,0 +1,48 @@
+--name w22_loo_hESC__scr-tuned__s42 --src hHEP mESC mHSC-E --tgt hESC --recipe tuned --seed 42
+--name w22_loo_hESC__scr-tuned__s44 --src hHEP mESC mHSC-E --tgt hESC --recipe tuned --seed 44
+--name w22_loo_mESC__scr-paper__s44 --src hESC hHEP mHSC-E --tgt mESC --recipe paper --seed 44
+--name w22_loo_hESC__scr-paper__s42 --src hHEP mESC mHSC-E --tgt hESC --recipe paper --seed 42
+--name w22_loo_mESC__scr-paper__s43 --src hESC hHEP mHSC-E --tgt mESC --recipe paper --seed 43
+--name w22_loo_mHSC-E__scr-tuned__s43 --src hESC hHEP mESC --tgt mHSC-E --recipe tuned --seed 43
+--name w22_ss_mHSC-E-mESC__scr-paper__s42 --src mHSC-E --tgt mESC --recipe paper --seed 42
+--name w22_ss_mESC-mHSC-E__scr-paper__s42 --src mESC --tgt mHSC-E --recipe paper --seed 42
+--name w22_loo_mHSC-E__scr-tuned__s42 --src hESC hHEP mESC --tgt mHSC-E --recipe tuned --seed 42
+--name w22_ss_mESC-mHSC-E__scr-paper__s43 --src mESC --tgt mHSC-E --recipe paper --seed 43
+--name w22_ss_mESC-mHSC-E__scr-paper__s44 --src mESC --tgt mHSC-E --recipe paper --seed 44
+--name w22_ss_mHSC-E-mESC__scr-tuned__s44 --src mHSC-E --tgt mESC --recipe tuned --seed 44
+--name w22_ss_mHSC-E-mESC__scr-paper__s44 --src mHSC-E --tgt mESC --recipe paper --seed 44
+--name w22_loo_mESC__scr-tuned__s42 --src hESC hHEP mHSC-E --tgt mESC --recipe tuned --seed 42
+--name w22_ss_hHEP-hESC__scr-paper__s44 --src hHEP --tgt hESC --recipe paper --seed 44
+--name w22_ss_hHEP-hESC__scr-tuned__s42 --src hHEP --tgt hESC --recipe tuned --seed 42
+--name w22_loo_mESC__scr-tuned__s43 --src hESC hHEP mHSC-E --tgt mESC --recipe tuned --seed 43
+--name w22_ss_hHEP-hESC__scr-tuned__s43 --src hHEP --tgt hESC --recipe tuned --seed 43
+--name w22_ss_mHSC-E-mESC__scr-tuned__s42 --src mHSC-E --tgt mESC --recipe tuned --seed 42
+--name w22_ss_hHEP-hESC__scr-paper__s42 --src hHEP --tgt hESC --recipe paper --seed 42
+--name w22_ss_mESC-mHSC-E__scr-tuned__s44 --src mESC --tgt mHSC-E --recipe tuned --seed 44
+--name w22_loo_hHEP__scr-tuned__s42 --src hESC mESC mHSC-E --tgt hHEP --recipe tuned --seed 42
+--name w22_ss_hESC-hHEP__scr-tuned__s42 --src hESC --tgt hHEP --recipe tuned --seed 42
+--name w22_loo_mESC__scr-paper__s42 --src hESC hHEP mHSC-E --tgt mESC --recipe paper --seed 42
+--name w22_loo_mHSC-E__scr-tuned__s44 --src hESC hHEP mESC --tgt mHSC-E --recipe tuned --seed 44
+--name w22_ss_mESC-mHSC-E__scr-tuned__s43 --src mESC --tgt mHSC-E --recipe tuned --seed 43
+--name w22_loo_mHSC-E__scr-paper__s44 --src hESC hHEP mESC --tgt mHSC-E --recipe paper --seed 44
+--name w22_loo_hESC__scr-tuned__s43 --src hHEP mESC mHSC-E --tgt hESC --recipe tuned --seed 43
+--name w22_loo_hHEP__scr-tuned__s44 --src hESC mESC mHSC-E --tgt hHEP --recipe tuned --seed 44
+--name w22_ss_hESC-hHEP__scr-tuned__s44 --src hESC --tgt hHEP --recipe tuned --seed 44
+--name w22_ss_hESC-hHEP__scr-paper__s44 --src hESC --tgt hHEP --recipe paper --seed 44
+--name w22_loo_mHSC-E__scr-paper__s42 --src hESC hHEP mESC --tgt mHSC-E --recipe paper --seed 42
+--name w22_loo_hHEP__scr-paper__s44 --src hESC mESC mHSC-E --tgt hHEP --recipe paper --seed 44
+--name w22_loo_hHEP__scr-paper__s43 --src hESC mESC mHSC-E --tgt hHEP --recipe paper --seed 43
+--name w22_ss_hESC-hHEP__scr-paper__s42 --src hESC --tgt hHEP --recipe paper --seed 42
+--name w22_ss_hHEP-hESC__scr-tuned__s44 --src hHEP --tgt hESC --recipe tuned --seed 44
+--name w22_ss_mESC-mHSC-E__scr-tuned__s42 --src mESC --tgt mHSC-E --recipe tuned --seed 42
+--name w22_loo_mESC__scr-tuned__s44 --src hESC hHEP mHSC-E --tgt mESC --recipe tuned --seed 44
+--name w22_loo_mHSC-E__scr-paper__s43 --src hESC hHEP mESC --tgt mHSC-E --recipe paper --seed 43
+--name w22_ss_mHSC-E-mESC__scr-paper__s43 --src mHSC-E --tgt mESC --recipe paper --seed 43
+--name w22_loo_hHEP__scr-tuned__s43 --src hESC mESC mHSC-E --tgt hHEP --recipe tuned --seed 43
+--name w22_ss_hESC-hHEP__scr-tuned__s43 --src hESC --tgt hHEP --recipe tuned --seed 43
+--name w22_ss_mHSC-E-mESC__scr-tuned__s43 --src mHSC-E --tgt mESC --recipe tuned --seed 43
+--name w22_loo_hESC__scr-paper__s44 --src hHEP mESC mHSC-E --tgt hESC --recipe paper --seed 44
+--name w22_loo_hESC__scr-paper__s43 --src hHEP mESC mHSC-E --tgt hESC --recipe paper --seed 43
+--name w22_loo_hHEP__scr-paper__s42 --src hESC mESC mHSC-E --tgt hHEP --recipe paper --seed 42
+--name w22_ss_hHEP-hESC__scr-paper__s43 --src hHEP --tgt hESC --recipe paper --seed 43
+--name w22_ss_hESC-hHEP__scr-paper__s43 --src hESC --tgt hHEP --recipe paper --seed 43

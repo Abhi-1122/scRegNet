@@ -3436,3 +3436,173 @@ does not transfer anything TF-specific.
 Report `python3.12 analysis/w20_xcell_report.py` -> `analysis/out/w20_xcell.txt`; write-up
 `analysis/out/W20_learned_panda.md`; runs `analysis/out/xcell/`; jobs `analysis/jobs/w20_p1.txt`,
 `analysis/jobs/w20_p2.txt`; code `src/xcell_gnn.py` (`--selfcheck`, `--baselines <cell>`).
+
+## 38. Fair baselines for complete network inference: PANDA, GENIE3 with motif pruning, scRegNet on a motif graph
+
+**Question.** The published scRegNet used the target cell's own ChIP training edges as its graph, so
+it is not a fair baseline for complete network inference. How strong are standard methods that use
+only label-free inputs: PANDA, GENIE3-style regression with motif pruning (the SCENIC recipe), and
+scRegNet with the motif graph in place of the ChIP graph?
+
+**Method.**
+- PANDA: a numpy port of netZooPy's loop (netZooPy is not on ada). Prior = binary `motif_hits > 0`,
+  PPI = STRING TF-TF edges plus the diagonal (identity for "no PPI"), co-expression = Pearson of the
+  cell's expression; alpha 0.1, stop at hamming < 0.001. On hESC the port gives W20's netZooPy
+  network to r = 1.000000 (max difference 2.4e-7).
+- GENIE3: per gene, ExtraTrees (500 trees, sqrt features) on the expression of all TFs; also a
+  GRNBoost2-style gradient boosting with arboreto's settings. Motif pruning: hard (motif-supported
+  pairs first, importance rank inside each group) and soft (within-TF rank mean of importance and
+  `motif_max`). All settings fixed in advance.
+- scRegNet-motif: the published GCN 227/29/34 with Geneformer after the GCN and the additive
+  decoder. Changes: graph = `motif_hits > 0` made undirected; GCN input = W20's 12 expression
+  statistics; trained on all labelled source pairs with W20's 20% source-TF validation. Published SGD
+  and Adam-tuned recipes, chosen on source validation. Seeds 42-44.
+- Same targets, splits and evaluation as W20. Paired per-TF Wilcoxon against motif alone.
+
+**Results** (within-TF AUROC, all labelled target TFs; p against motif alone)
+
+Unsupervised, per cell (hESC / hHEP / mESC / mHSC-E):
+
+| Method | hESC | hHEP | mESC | mHSC-E |
+|---|---|---|---|---|
+| motif alone | **0.602** | **0.552** | **0.535** | **0.555** |
+| PANDA | 0.541 (7e-6) | 0.543 (0.73) | 0.515 (0.024) | 0.541 (0.93) |
+| PANDA without PPI | 0.544 | 0.537 | 0.510 | 0.539 |
+| GENIE3 / + hard / + soft motif | 0.464 / 0.517 / 0.539 | 0.517 / 0.542 / 0.546 | 0.498 / 0.512 / 0.521 | 0.510 / 0.552 / 0.551 |
+| GBM / + hard / + soft motif | 0.494 / 0.540 / 0.574 | 0.509 / 0.540 / 0.550 | 0.505 / 0.521 / 0.533 | 0.497 / 0.537 / 0.539 |
+
+Supervised transfer:
+
+| Setting | motif | scRegNet-motif (chosen recipe) | W20 full | W20 MLP |
+|---|---|---|---|---|
+| hESC -> hHEP | 0.552 | **0.598** (0.005) | 0.562 | 0.579 |
+| hHEP -> hESC | **0.602** | 0.526 (0.007) | 0.512 | 0.529 |
+| mESC -> mHSC-E | 0.555 | **0.634** (0.005) | 0.588 | 0.575 |
+| mHSC-E -> mESC | 0.535 | **0.598** (8e-5) | 0.596 | 0.598 |
+| others -> hESC | 0.602 | 0.599 (0.46) | 0.582 | 0.581 |
+| others -> hHEP | 0.552 | **0.615** (7e-4) | 0.596 | 0.606 |
+| others -> mESC | 0.535 | **0.629** (5e-10) | 0.592 | 0.595 |
+| others -> mHSC-E | 0.555 | **0.644** (0.003) | 0.630 | 0.621 |
+
+- scRegNet-motif minus W20 full: +0.003 to +0.047, never negative, p < 0.01 in 3 of 8 settings.
+- The two recipes differ by at most 0.003 on source validation and 0.010 on the target.
+- TFs with a motif: scRegNet-motif beats motif alone in 3 of 8 settings and loses in hHEP -> hESC
+  (0.545 vs 0.619). TFs without a motif: 0.59-0.65 except hESC targets.
+- Pooled AUROC on human targets stays below motif alone (hHEP 0.50 / 0.51, hESC 0.56 / 0.62, vs 0.66).
+- PANDA on TFs without a motif (PPI edges only): 0.44-0.50.
+
+**Why.**
+- Measured: the additive decoder gives every TF the same gene ranking (within-TF AUROC equals that
+  of the TF-averaged grid in all 48 runs). scRegNet-motif is a learned gene prior. It wins through
+  TFs without a motif and cannot use the TF-specific motif signal.
+- Measured: this gene prior transfers at least as well as W20's learned PANDA and its MLP, which
+  section 37 showed are also mostly gene priors.
+- Measured: expression-only regression is at or below chance. Motif pruning lifts it but never
+  above motif alone on TFs with a motif. PANDA lowers the motif signal on hESC and mESC, and the PPI
+  changes it by less than 0.007.
+- Guess, not tested: hESC resists transfer because its motif prior is the strongest of the four
+  cells and its target frequencies differ most from the other datasets.
+
+**Caveats.** scRegNet-motif uses W20's protocol (within-TF selection, no refit) and 12 expression
+statistics instead of the expression profile. GENIE3 uses ExtraTrees with 500 trees; the GBM follows
+arboreto's settings in scikit-learn; motif pruning uses per-pair promoter scans, not SCENIC's
+cisTarget. PANDA rows cover all TF.csv TFs (netZooPy's own run, which drops TFs without motif or
+PPI, is within 0.011). No multiplicity correction. W21 is not included.
+
+**Verdict.** scRegNet on the motif graph is the strongest fair baseline: it beats motif alone in 6
+of 8 transfer settings (+0.05 to +0.09) and is never below W20's learned PANDA. It does so as a pure
+gene prior. PANDA and GENIE3-style regression, with or without motif pruning, beat the motif prior
+on no cell.
+
+Report `python3.12 analysis/w22_report.py` -> `analysis/out/w22_baselines.txt`; write-up
+`analysis/out/W22_baselines.md`; code `src/xcell_base.py` (`--selfcheck`, `--panda_check`); runs
+`analysis/out/xcell_base/`; jobs `analysis/jobs/w22_gpu.txt`, `analysis/jobs/w22_cpu.txt`; ada
+wrapper `analysis/ada_w22.sh`.
+
+## 39. Two-view model: motif + PPI graph and co-expression graph
+
+**Question.** Models trained on source cells score 0.70-0.79 on source-validation TFs but near motif
+alone on the target. Does a second view of each gene, the target cell's own co-expression graph,
+narrow that gap and beat the single-graph model, motif alone and a feature-only MLP?
+
+**Method.**
+- View A: one graph per cell with motif edges TF -> gene (and reverse; hits > 0 or top 50 per TF)
+  and STRING TF-TF edges, 2-layer relational encoder, hidden 256. View B: mutual kNN on the cell's
+  Pearson correlation (k 5/10/20, positive r or |r|, weight = r), 2-layer weighted SAGE with its own
+  weights. Co-expression never scores a pair directly. Node features as section 37.
+- Fusions: concat, per-gene gate, early (co-expression as a fourth relation in encoder A). Arms:
+  view A only, view B only, feature-only MLP. Decoder: MLP on the Hadamard product plus motif pair
+  features.
+- TF-balanced BCE (every source TF weighs the same, positives and negatives within a TF too), view
+  dropout 0.2. Ablations on the best fusion: plain BCE, no view dropout, InfoNCE between the two views
+  of a gene (0.1 or 0.5) on source graphs only or also on the target graph (no target labels).
+- Section 37's source-validation split; lr, motif graph, co-expression graph and epoch chosen on
+  source-validation within-TF, seeds 42-44. Best fusion for the ablations (gate) also chosen there.
+  Nothing chosen on the target. 3384 runs on one 2080 Ti on ada.
+
+**Results** (within-TF over all labelled target TFs; W20 = section 37's full model):
+
+| Setting | motif | MLP | view A | view B | concat | gate | early | W20 |
+|---|---|---|---|---|---|---|---|---|
+| hESC -> hHEP | 0.552 | 0.554 | **0.578** | 0.560 | 0.540 | 0.550 | 0.558 | 0.562 |
+| hHEP -> hESC | **0.602** | 0.527 | 0.523 | 0.533 | 0.546 | 0.530 | 0.528 | 0.512 |
+| mESC -> mHSC-E | 0.555 | 0.614 | 0.616 | 0.604 | **0.622** | 0.614 | 0.614 | 0.588 |
+| mHSC-E -> mESC | 0.535 | 0.598 | 0.597 | **0.603** | 0.598 | 0.595 | 0.583 | 0.596 |
+| others -> hESC | 0.602 | 0.608 | 0.585 | 0.595 | **0.612** | 0.608 | 0.600 | 0.582 |
+| others -> hHEP | 0.552 | **0.623** | 0.605 | 0.616 | 0.607 | 0.603 | 0.610 | 0.596 |
+| others -> mESC | 0.535 | 0.606 | 0.580 | **0.627** | 0.608 | 0.608 | 0.577 | 0.592 |
+| others -> mHSC-E | 0.555 | **0.661** | 0.657 | 0.644 | 0.641 | 0.649 | 0.631 | 0.630 |
+| mean of 8 | 0.561 | **0.599** | 0.593 | 0.598 | 0.597 | 0.595 | 0.588 | 0.582 |
+
+Paired per-TF Wilcoxon, counts of settings with p < 0.05 (better / worse):
+
+| Fusion | vs motif | vs view A | vs MLP | mean minus view A |
+|---|---|---|---|---|
+| concat | 5 / 1 | 3 / 2 | 1 / 2 | +0.004 |
+| gate | 5 / 1 | 1 / 1 | 0 / 2 | +0.002 |
+| early | 5 / 1 | 0 / 3 | 0 / 4 | −0.005 |
+
+| Arm | source-val | target | gap |
+|---|---|---|---|
+| MLP | 0.717 | 0.599 | 0.118 |
+| view A | 0.742 | 0.593 | 0.149 |
+| view B | 0.721 | 0.598 | 0.124 |
+| concat / gate / early | 0.739 / 0.743 / 0.746 | 0.597 / 0.595 / 0.588 | 0.142 / 0.148 / 0.159 |
+| W20 full | 0.749 | 0.582 | 0.167 |
+
+| Ablation of gate | mean change | p < 0.05 (better / worse) |
+|---|---|---|
+| plain BCE | −0.005 | 1 / 1 |
+| no view dropout | −0.001 | 2 / 1 |
+| consistency 0.1 / 0.5, source | −0.006 / −0.013 | 0 / 0, 1 / 3 |
+| consistency 0.1 / 0.5, source + target | −0.023 / −0.032 | 0 / 3, 0 / 5 |
+
+Pooled AUROC on the human targets stays below motif alone for every arm (0.52-0.65 vs 0.66). The MLP,
+view A and view B arms use the TF-balanced loss, W20 used plain BCE. The plain-BCE ablation (−0.005)
+covers about half of the 0.010 between view A and W20.
+
+**Why.**
+- Measured: co-expression does not close the gap. Fusions keep a gap of 0.142-0.159 against 0.149
+  for view A. The MLP has the smallest gap and the highest target mean.
+- Measured: view B alone matches view A on the target (0.598 vs 0.593), and the gate puts 0.67-0.88
+  of the weight on view A in 7 of 8 settings. The views substitute for each other.
+- Measured: averaging each run's grid over TFs lowers within-TF by at most 0.043 and raises it on
+  mESC targets. Like section 37, the models are mostly gene priors.
+- Measured: the consistency loss lowers source validation (−0.034 to −0.078) and the target. On the
+  target graph it hurts most, so aligning the target's views does not adapt the prior.
+- Guess, not tested: the co-expression neighbourhood carries the same expression-level information
+  as the 12 expression statistics, so view B adds little on top.
+
+**Caveats.** Source validation is small (6-7 TFs for a single human source); fusions select among 36
+configurations, view A among 6. No refit on all source TFs. The plain-BCE ablation ran on the gate
+model only. No multiplicity correction. Section 38's scRegNet on the motif graph averages 0.605 over
+the same 8 settings, above every arm here.
+
+**Verdict.** Fail. The two-view model ties view A only (concat +0.004, gate +0.002) and never beats
+the feature-only MLP overall. The gap between source and target is unchanged. It beats motif alone in 5 of 8 settings
+through the gene prior, like every learned arm. Label-free consistency, including on the target
+graph, hurts.
+
+Report `python3.12 analysis/w21_report.py` -> `analysis/out/w21_2view.txt`; write-up
+`analysis/out/W21_2view.md`; code `src/xcell_2view.py` (`--selfcheck`); runs `analysis/out/xcell2/`;
+jobs `analysis/jobs/w21_p1.txt`, `w21_p2.txt`, `w21_p3.txt`; ada wrapper `analysis/ada_w21.sh`.

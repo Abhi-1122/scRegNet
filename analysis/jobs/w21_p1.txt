@@ -1,0 +1,648 @@
+--name w21_ss_hESC-hHEP__mlp_lr1e-4__s42 --src hESC --tgt hHEP --seed 42 --model mlp --lr 1e-4
+--name w21_ss_hESC-hHEP__mlp_lr3e-4__s42 --src hESC --tgt hHEP --seed 42 --model mlp --lr 3e-4
+--name w21_ss_hESC-hHEP__mlp_lr1e-3__s42 --src hESC --tgt hHEP --seed 42 --model mlp --lr 1e-3
+--name w21_ss_hESC-hHEP__A_lr1e-4_mk0__s42 --src hESC --tgt hHEP --seed 42 --model A --lr 1e-4 --mk 0
+--name w21_ss_hESC-hHEP__A_lr1e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --model A --lr 1e-4 --mk 50
+--name w21_ss_hESC-hHEP__A_lr3e-4_mk0__s42 --src hESC --tgt hHEP --seed 42 --model A --lr 3e-4 --mk 0
+--name w21_ss_hESC-hHEP__A_lr3e-4_mk50__s42 --src hESC --tgt hHEP --seed 42 --model A --lr 3e-4 --mk 50
+--name w21_ss_hESC-hHEP__A_lr1e-3_mk0__s42 --src hESC --tgt hHEP --seed 42 --model A --lr 1e-3 --mk 0
+--name w21_ss_hESC-hHEP__A_lr1e-3_mk50__s42 --src hESC --tgt hHEP --seed 42 --model A --lr 1e-3 --mk 50
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck5p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck10p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck10a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck20p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck20a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck5p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck10p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck10a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck20p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck20a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck5p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck5a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck10p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck10a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck20p__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck20a__s42 --src hESC --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_hESC-hHEP__mlp_lr1e-4__s43 --src hESC --tgt hHEP --seed 43 --model mlp --lr 1e-4
+--name w21_ss_hESC-hHEP__mlp_lr3e-4__s43 --src hESC --tgt hHEP --seed 43 --model mlp --lr 3e-4
+--name w21_ss_hESC-hHEP__mlp_lr1e-3__s43 --src hESC --tgt hHEP --seed 43 --model mlp --lr 1e-3
+--name w21_ss_hESC-hHEP__A_lr1e-4_mk0__s43 --src hESC --tgt hHEP --seed 43 --model A --lr 1e-4 --mk 0
+--name w21_ss_hESC-hHEP__A_lr1e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --model A --lr 1e-4 --mk 50
+--name w21_ss_hESC-hHEP__A_lr3e-4_mk0__s43 --src hESC --tgt hHEP --seed 43 --model A --lr 3e-4 --mk 0
+--name w21_ss_hESC-hHEP__A_lr3e-4_mk50__s43 --src hESC --tgt hHEP --seed 43 --model A --lr 3e-4 --mk 50
+--name w21_ss_hESC-hHEP__A_lr1e-3_mk0__s43 --src hESC --tgt hHEP --seed 43 --model A --lr 1e-3 --mk 0
+--name w21_ss_hESC-hHEP__A_lr1e-3_mk50__s43 --src hESC --tgt hHEP --seed 43 --model A --lr 1e-3 --mk 50
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck5p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck10p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck10a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck20p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck20a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck5p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck10p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck10a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck20p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck20a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck5p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck5a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck10p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck10a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck20p__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck20a__s43 --src hESC --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_hESC-hHEP__mlp_lr1e-4__s44 --src hESC --tgt hHEP --seed 44 --model mlp --lr 1e-4
+--name w21_ss_hESC-hHEP__mlp_lr3e-4__s44 --src hESC --tgt hHEP --seed 44 --model mlp --lr 3e-4
+--name w21_ss_hESC-hHEP__mlp_lr1e-3__s44 --src hESC --tgt hHEP --seed 44 --model mlp --lr 1e-3
+--name w21_ss_hESC-hHEP__A_lr1e-4_mk0__s44 --src hESC --tgt hHEP --seed 44 --model A --lr 1e-4 --mk 0
+--name w21_ss_hESC-hHEP__A_lr1e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --model A --lr 1e-4 --mk 50
+--name w21_ss_hESC-hHEP__A_lr3e-4_mk0__s44 --src hESC --tgt hHEP --seed 44 --model A --lr 3e-4 --mk 0
+--name w21_ss_hESC-hHEP__A_lr3e-4_mk50__s44 --src hESC --tgt hHEP --seed 44 --model A --lr 3e-4 --mk 50
+--name w21_ss_hESC-hHEP__A_lr1e-3_mk0__s44 --src hESC --tgt hHEP --seed 44 --model A --lr 1e-3 --mk 0
+--name w21_ss_hESC-hHEP__A_lr1e-3_mk50__s44 --src hESC --tgt hHEP --seed 44 --model A --lr 1e-3 --mk 50
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck5p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck10p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck10a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck20p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-4_ck20a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck5p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck10p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck10a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck20p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr3e-4_ck20a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck5p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck5a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck10p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck10a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck20p__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_hESC-hHEP__B_lr1e-3_ck20a__s44 --src hESC --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__mlp_lr1e-4__s42 --src hHEP --tgt hESC --seed 42 --model mlp --lr 1e-4
+--name w21_ss_hHEP-hESC__mlp_lr3e-4__s42 --src hHEP --tgt hESC --seed 42 --model mlp --lr 3e-4
+--name w21_ss_hHEP-hESC__mlp_lr1e-3__s42 --src hHEP --tgt hESC --seed 42 --model mlp --lr 1e-3
+--name w21_ss_hHEP-hESC__A_lr1e-4_mk0__s42 --src hHEP --tgt hESC --seed 42 --model A --lr 1e-4 --mk 0
+--name w21_ss_hHEP-hESC__A_lr1e-4_mk50__s42 --src hHEP --tgt hESC --seed 42 --model A --lr 1e-4 --mk 50
+--name w21_ss_hHEP-hESC__A_lr3e-4_mk0__s42 --src hHEP --tgt hESC --seed 42 --model A --lr 3e-4 --mk 0
+--name w21_ss_hHEP-hESC__A_lr3e-4_mk50__s42 --src hHEP --tgt hESC --seed 42 --model A --lr 3e-4 --mk 50
+--name w21_ss_hHEP-hESC__A_lr1e-3_mk0__s42 --src hHEP --tgt hESC --seed 42 --model A --lr 1e-3 --mk 0
+--name w21_ss_hHEP-hESC__A_lr1e-3_mk50__s42 --src hHEP --tgt hESC --seed 42 --model A --lr 1e-3 --mk 50
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck5p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck5a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck10p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck10a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck20a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck5p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck5a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck10p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck10a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck20a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck5p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck5a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck10p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck10a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck20p__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck20a__s42 --src hHEP --tgt hESC --seed 42 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__mlp_lr1e-4__s43 --src hHEP --tgt hESC --seed 43 --model mlp --lr 1e-4
+--name w21_ss_hHEP-hESC__mlp_lr3e-4__s43 --src hHEP --tgt hESC --seed 43 --model mlp --lr 3e-4
+--name w21_ss_hHEP-hESC__mlp_lr1e-3__s43 --src hHEP --tgt hESC --seed 43 --model mlp --lr 1e-3
+--name w21_ss_hHEP-hESC__A_lr1e-4_mk0__s43 --src hHEP --tgt hESC --seed 43 --model A --lr 1e-4 --mk 0
+--name w21_ss_hHEP-hESC__A_lr1e-4_mk50__s43 --src hHEP --tgt hESC --seed 43 --model A --lr 1e-4 --mk 50
+--name w21_ss_hHEP-hESC__A_lr3e-4_mk0__s43 --src hHEP --tgt hESC --seed 43 --model A --lr 3e-4 --mk 0
+--name w21_ss_hHEP-hESC__A_lr3e-4_mk50__s43 --src hHEP --tgt hESC --seed 43 --model A --lr 3e-4 --mk 50
+--name w21_ss_hHEP-hESC__A_lr1e-3_mk0__s43 --src hHEP --tgt hESC --seed 43 --model A --lr 1e-3 --mk 0
+--name w21_ss_hHEP-hESC__A_lr1e-3_mk50__s43 --src hHEP --tgt hESC --seed 43 --model A --lr 1e-3 --mk 50
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck5p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck5a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck10p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck10a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck20a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck5p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck5a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck10p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck10a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck20a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck5p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck5a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck10p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck10a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck20p__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck20a__s43 --src hHEP --tgt hESC --seed 43 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__mlp_lr1e-4__s44 --src hHEP --tgt hESC --seed 44 --model mlp --lr 1e-4
+--name w21_ss_hHEP-hESC__mlp_lr3e-4__s44 --src hHEP --tgt hESC --seed 44 --model mlp --lr 3e-4
+--name w21_ss_hHEP-hESC__mlp_lr1e-3__s44 --src hHEP --tgt hESC --seed 44 --model mlp --lr 1e-3
+--name w21_ss_hHEP-hESC__A_lr1e-4_mk0__s44 --src hHEP --tgt hESC --seed 44 --model A --lr 1e-4 --mk 0
+--name w21_ss_hHEP-hESC__A_lr1e-4_mk50__s44 --src hHEP --tgt hESC --seed 44 --model A --lr 1e-4 --mk 50
+--name w21_ss_hHEP-hESC__A_lr3e-4_mk0__s44 --src hHEP --tgt hESC --seed 44 --model A --lr 3e-4 --mk 0
+--name w21_ss_hHEP-hESC__A_lr3e-4_mk50__s44 --src hHEP --tgt hESC --seed 44 --model A --lr 3e-4 --mk 50
+--name w21_ss_hHEP-hESC__A_lr1e-3_mk0__s44 --src hHEP --tgt hESC --seed 44 --model A --lr 1e-3 --mk 0
+--name w21_ss_hHEP-hESC__A_lr1e-3_mk50__s44 --src hHEP --tgt hESC --seed 44 --model A --lr 1e-3 --mk 50
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck5p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck5a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck10p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck10a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-4_ck20a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck5p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck5a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck10p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck10a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr3e-4_ck20a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck5p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck5a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck10p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck10a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck20p__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_hHEP-hESC__B_lr1e-3_ck20a__s44 --src hHEP --tgt hESC --seed 44 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__mlp_lr1e-4__s42 --src mESC --tgt mHSC-E --seed 42 --model mlp --lr 1e-4
+--name w21_ss_mESC-mHSC-E__mlp_lr3e-4__s42 --src mESC --tgt mHSC-E --seed 42 --model mlp --lr 3e-4
+--name w21_ss_mESC-mHSC-E__mlp_lr1e-3__s42 --src mESC --tgt mHSC-E --seed 42 --model mlp --lr 1e-3
+--name w21_ss_mESC-mHSC-E__A_lr1e-4_mk0__s42 --src mESC --tgt mHSC-E --seed 42 --model A --lr 1e-4 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr1e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --model A --lr 1e-4 --mk 50
+--name w21_ss_mESC-mHSC-E__A_lr3e-4_mk0__s42 --src mESC --tgt mHSC-E --seed 42 --model A --lr 3e-4 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr3e-4_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --model A --lr 3e-4 --mk 50
+--name w21_ss_mESC-mHSC-E__A_lr1e-3_mk0__s42 --src mESC --tgt mHSC-E --seed 42 --model A --lr 1e-3 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr1e-3_mk50__s42 --src mESC --tgt mHSC-E --seed 42 --model A --lr 1e-3 --mk 50
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck5p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck5a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck10p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck10a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck20a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck5p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck5a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck10p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck10a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck20a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck5p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck5a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck10p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck10a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck20p__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck20a__s42 --src mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__mlp_lr1e-4__s43 --src mESC --tgt mHSC-E --seed 43 --model mlp --lr 1e-4
+--name w21_ss_mESC-mHSC-E__mlp_lr3e-4__s43 --src mESC --tgt mHSC-E --seed 43 --model mlp --lr 3e-4
+--name w21_ss_mESC-mHSC-E__mlp_lr1e-3__s43 --src mESC --tgt mHSC-E --seed 43 --model mlp --lr 1e-3
+--name w21_ss_mESC-mHSC-E__A_lr1e-4_mk0__s43 --src mESC --tgt mHSC-E --seed 43 --model A --lr 1e-4 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr1e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --model A --lr 1e-4 --mk 50
+--name w21_ss_mESC-mHSC-E__A_lr3e-4_mk0__s43 --src mESC --tgt mHSC-E --seed 43 --model A --lr 3e-4 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr3e-4_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --model A --lr 3e-4 --mk 50
+--name w21_ss_mESC-mHSC-E__A_lr1e-3_mk0__s43 --src mESC --tgt mHSC-E --seed 43 --model A --lr 1e-3 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr1e-3_mk50__s43 --src mESC --tgt mHSC-E --seed 43 --model A --lr 1e-3 --mk 50
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck5p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck5a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck10p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck10a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck20a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck5p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck5a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck10p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck10a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck20a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck5p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck5a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck10p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck10a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck20p__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck20a__s43 --src mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__mlp_lr1e-4__s44 --src mESC --tgt mHSC-E --seed 44 --model mlp --lr 1e-4
+--name w21_ss_mESC-mHSC-E__mlp_lr3e-4__s44 --src mESC --tgt mHSC-E --seed 44 --model mlp --lr 3e-4
+--name w21_ss_mESC-mHSC-E__mlp_lr1e-3__s44 --src mESC --tgt mHSC-E --seed 44 --model mlp --lr 1e-3
+--name w21_ss_mESC-mHSC-E__A_lr1e-4_mk0__s44 --src mESC --tgt mHSC-E --seed 44 --model A --lr 1e-4 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr1e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --model A --lr 1e-4 --mk 50
+--name w21_ss_mESC-mHSC-E__A_lr3e-4_mk0__s44 --src mESC --tgt mHSC-E --seed 44 --model A --lr 3e-4 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr3e-4_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --model A --lr 3e-4 --mk 50
+--name w21_ss_mESC-mHSC-E__A_lr1e-3_mk0__s44 --src mESC --tgt mHSC-E --seed 44 --model A --lr 1e-3 --mk 0
+--name w21_ss_mESC-mHSC-E__A_lr1e-3_mk50__s44 --src mESC --tgt mHSC-E --seed 44 --model A --lr 1e-3 --mk 50
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck5p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck5a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck10p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck10a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-4_ck20a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck5p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck5a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck10p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck10a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr3e-4_ck20a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck5p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck5a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck10p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck10a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck20p__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_mESC-mHSC-E__B_lr1e-3_ck20a__s44 --src mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__mlp_lr1e-4__s42 --src mHSC-E --tgt mESC --seed 42 --model mlp --lr 1e-4
+--name w21_ss_mHSC-E-mESC__mlp_lr3e-4__s42 --src mHSC-E --tgt mESC --seed 42 --model mlp --lr 3e-4
+--name w21_ss_mHSC-E-mESC__mlp_lr1e-3__s42 --src mHSC-E --tgt mESC --seed 42 --model mlp --lr 1e-3
+--name w21_ss_mHSC-E-mESC__A_lr1e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --model A --lr 1e-4 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr1e-4_mk50__s42 --src mHSC-E --tgt mESC --seed 42 --model A --lr 1e-4 --mk 50
+--name w21_ss_mHSC-E-mESC__A_lr3e-4_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --model A --lr 3e-4 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr3e-4_mk50__s42 --src mHSC-E --tgt mESC --seed 42 --model A --lr 3e-4 --mk 50
+--name w21_ss_mHSC-E-mESC__A_lr1e-3_mk0__s42 --src mHSC-E --tgt mESC --seed 42 --model A --lr 1e-3 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr1e-3_mk50__s42 --src mHSC-E --tgt mESC --seed 42 --model A --lr 1e-3 --mk 50
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck5p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck5a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck10p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck10a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck20a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck5p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck5a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck10p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck10a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck20a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck5p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck5a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck10p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck10a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck20p__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck20a__s42 --src mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__mlp_lr1e-4__s43 --src mHSC-E --tgt mESC --seed 43 --model mlp --lr 1e-4
+--name w21_ss_mHSC-E-mESC__mlp_lr3e-4__s43 --src mHSC-E --tgt mESC --seed 43 --model mlp --lr 3e-4
+--name w21_ss_mHSC-E-mESC__mlp_lr1e-3__s43 --src mHSC-E --tgt mESC --seed 43 --model mlp --lr 1e-3
+--name w21_ss_mHSC-E-mESC__A_lr1e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --model A --lr 1e-4 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr1e-4_mk50__s43 --src mHSC-E --tgt mESC --seed 43 --model A --lr 1e-4 --mk 50
+--name w21_ss_mHSC-E-mESC__A_lr3e-4_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --model A --lr 3e-4 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr3e-4_mk50__s43 --src mHSC-E --tgt mESC --seed 43 --model A --lr 3e-4 --mk 50
+--name w21_ss_mHSC-E-mESC__A_lr1e-3_mk0__s43 --src mHSC-E --tgt mESC --seed 43 --model A --lr 1e-3 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr1e-3_mk50__s43 --src mHSC-E --tgt mESC --seed 43 --model A --lr 1e-3 --mk 50
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck5p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck5a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck10p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck10a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck20a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck5p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck5a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck10p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck10a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck20a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck5p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck5a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck10p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck10a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck20p__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck20a__s43 --src mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__mlp_lr1e-4__s44 --src mHSC-E --tgt mESC --seed 44 --model mlp --lr 1e-4
+--name w21_ss_mHSC-E-mESC__mlp_lr3e-4__s44 --src mHSC-E --tgt mESC --seed 44 --model mlp --lr 3e-4
+--name w21_ss_mHSC-E-mESC__mlp_lr1e-3__s44 --src mHSC-E --tgt mESC --seed 44 --model mlp --lr 1e-3
+--name w21_ss_mHSC-E-mESC__A_lr1e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --model A --lr 1e-4 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr1e-4_mk50__s44 --src mHSC-E --tgt mESC --seed 44 --model A --lr 1e-4 --mk 50
+--name w21_ss_mHSC-E-mESC__A_lr3e-4_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --model A --lr 3e-4 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr3e-4_mk50__s44 --src mHSC-E --tgt mESC --seed 44 --model A --lr 3e-4 --mk 50
+--name w21_ss_mHSC-E-mESC__A_lr1e-3_mk0__s44 --src mHSC-E --tgt mESC --seed 44 --model A --lr 1e-3 --mk 0
+--name w21_ss_mHSC-E-mESC__A_lr1e-3_mk50__s44 --src mHSC-E --tgt mESC --seed 44 --model A --lr 1e-3 --mk 50
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck5p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck5a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck10p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck10a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-4_ck20a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck5p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck5a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck10p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck10a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr3e-4_ck20a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck5p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck5a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck10p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck10a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck20p__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_ss_mHSC-E-mESC__B_lr1e-3_ck20a__s44 --src mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_hESC__mlp_lr1e-4__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model mlp --lr 1e-4
+--name w21_loo_hESC__mlp_lr3e-4__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model mlp --lr 3e-4
+--name w21_loo_hESC__mlp_lr1e-3__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model mlp --lr 1e-3
+--name w21_loo_hESC__A_lr1e-4_mk0__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model A --lr 1e-4 --mk 0
+--name w21_loo_hESC__A_lr1e-4_mk50__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model A --lr 1e-4 --mk 50
+--name w21_loo_hESC__A_lr3e-4_mk0__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model A --lr 3e-4 --mk 0
+--name w21_loo_hESC__A_lr3e-4_mk50__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model A --lr 3e-4 --mk 50
+--name w21_loo_hESC__A_lr1e-3_mk0__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model A --lr 1e-3 --mk 0
+--name w21_loo_hESC__A_lr1e-3_mk50__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model A --lr 1e-3 --mk 50
+--name w21_loo_hESC__B_lr1e-4_ck5p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck5a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr1e-4_ck10p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck10a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr1e-4_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck20a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck5p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck5a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck10p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck10a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck20a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck5p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck5a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck10p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck10a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck20p__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck20a__s42 --src hHEP mESC mHSC-E --tgt hESC --seed 42 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_hESC__mlp_lr1e-4__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model mlp --lr 1e-4
+--name w21_loo_hESC__mlp_lr3e-4__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model mlp --lr 3e-4
+--name w21_loo_hESC__mlp_lr1e-3__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model mlp --lr 1e-3
+--name w21_loo_hESC__A_lr1e-4_mk0__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model A --lr 1e-4 --mk 0
+--name w21_loo_hESC__A_lr1e-4_mk50__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model A --lr 1e-4 --mk 50
+--name w21_loo_hESC__A_lr3e-4_mk0__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model A --lr 3e-4 --mk 0
+--name w21_loo_hESC__A_lr3e-4_mk50__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model A --lr 3e-4 --mk 50
+--name w21_loo_hESC__A_lr1e-3_mk0__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model A --lr 1e-3 --mk 0
+--name w21_loo_hESC__A_lr1e-3_mk50__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model A --lr 1e-3 --mk 50
+--name w21_loo_hESC__B_lr1e-4_ck5p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck5a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr1e-4_ck10p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck10a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr1e-4_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck20a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck5p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck5a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck10p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck10a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck20a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck5p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck5a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck10p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck10a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck20p__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck20a__s43 --src hHEP mESC mHSC-E --tgt hESC --seed 43 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_hESC__mlp_lr1e-4__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model mlp --lr 1e-4
+--name w21_loo_hESC__mlp_lr3e-4__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model mlp --lr 3e-4
+--name w21_loo_hESC__mlp_lr1e-3__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model mlp --lr 1e-3
+--name w21_loo_hESC__A_lr1e-4_mk0__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model A --lr 1e-4 --mk 0
+--name w21_loo_hESC__A_lr1e-4_mk50__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model A --lr 1e-4 --mk 50
+--name w21_loo_hESC__A_lr3e-4_mk0__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model A --lr 3e-4 --mk 0
+--name w21_loo_hESC__A_lr3e-4_mk50__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model A --lr 3e-4 --mk 50
+--name w21_loo_hESC__A_lr1e-3_mk0__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model A --lr 1e-3 --mk 0
+--name w21_loo_hESC__A_lr1e-3_mk50__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model A --lr 1e-3 --mk 50
+--name w21_loo_hESC__B_lr1e-4_ck5p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck5a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr1e-4_ck10p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck10a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr1e-4_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr1e-4_ck20a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck5p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck5a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck10p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck10a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr3e-4_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr3e-4_ck20a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck5p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck5a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck10p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck10a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_hESC__B_lr1e-3_ck20p__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_hESC__B_lr1e-3_ck20a__s44 --src hHEP mESC mHSC-E --tgt hESC --seed 44 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_hHEP__mlp_lr1e-4__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model mlp --lr 1e-4
+--name w21_loo_hHEP__mlp_lr3e-4__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model mlp --lr 3e-4
+--name w21_loo_hHEP__mlp_lr1e-3__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model mlp --lr 1e-3
+--name w21_loo_hHEP__A_lr1e-4_mk0__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model A --lr 1e-4 --mk 0
+--name w21_loo_hHEP__A_lr1e-4_mk50__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model A --lr 1e-4 --mk 50
+--name w21_loo_hHEP__A_lr3e-4_mk0__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model A --lr 3e-4 --mk 0
+--name w21_loo_hHEP__A_lr3e-4_mk50__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model A --lr 3e-4 --mk 50
+--name w21_loo_hHEP__A_lr1e-3_mk0__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model A --lr 1e-3 --mk 0
+--name w21_loo_hHEP__A_lr1e-3_mk50__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model A --lr 1e-3 --mk 50
+--name w21_loo_hHEP__B_lr1e-4_ck5p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck5a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr1e-4_ck10p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck10a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr1e-4_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck20a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck5p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck5a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck10p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck10a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck20a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck5p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck5a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck10p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck10a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck20p__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck20a__s42 --src hESC mESC mHSC-E --tgt hHEP --seed 42 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_hHEP__mlp_lr1e-4__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model mlp --lr 1e-4
+--name w21_loo_hHEP__mlp_lr3e-4__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model mlp --lr 3e-4
+--name w21_loo_hHEP__mlp_lr1e-3__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model mlp --lr 1e-3
+--name w21_loo_hHEP__A_lr1e-4_mk0__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model A --lr 1e-4 --mk 0
+--name w21_loo_hHEP__A_lr1e-4_mk50__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model A --lr 1e-4 --mk 50
+--name w21_loo_hHEP__A_lr3e-4_mk0__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model A --lr 3e-4 --mk 0
+--name w21_loo_hHEP__A_lr3e-4_mk50__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model A --lr 3e-4 --mk 50
+--name w21_loo_hHEP__A_lr1e-3_mk0__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model A --lr 1e-3 --mk 0
+--name w21_loo_hHEP__A_lr1e-3_mk50__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model A --lr 1e-3 --mk 50
+--name w21_loo_hHEP__B_lr1e-4_ck5p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck5a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr1e-4_ck10p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck10a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr1e-4_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck20a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck5p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck5a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck10p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck10a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck20a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck5p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck5a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck10p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck10a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck20p__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck20a__s43 --src hESC mESC mHSC-E --tgt hHEP --seed 43 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_hHEP__mlp_lr1e-4__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model mlp --lr 1e-4
+--name w21_loo_hHEP__mlp_lr3e-4__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model mlp --lr 3e-4
+--name w21_loo_hHEP__mlp_lr1e-3__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model mlp --lr 1e-3
+--name w21_loo_hHEP__A_lr1e-4_mk0__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model A --lr 1e-4 --mk 0
+--name w21_loo_hHEP__A_lr1e-4_mk50__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model A --lr 1e-4 --mk 50
+--name w21_loo_hHEP__A_lr3e-4_mk0__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model A --lr 3e-4 --mk 0
+--name w21_loo_hHEP__A_lr3e-4_mk50__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model A --lr 3e-4 --mk 50
+--name w21_loo_hHEP__A_lr1e-3_mk0__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model A --lr 1e-3 --mk 0
+--name w21_loo_hHEP__A_lr1e-3_mk50__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model A --lr 1e-3 --mk 50
+--name w21_loo_hHEP__B_lr1e-4_ck5p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck5a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr1e-4_ck10p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck10a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr1e-4_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr1e-4_ck20a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck5p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck5a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck10p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck10a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr3e-4_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr3e-4_ck20a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck5p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck5a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck10p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck10a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_hHEP__B_lr1e-3_ck20p__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_hHEP__B_lr1e-3_ck20a__s44 --src hESC mESC mHSC-E --tgt hHEP --seed 44 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_mESC__mlp_lr1e-4__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model mlp --lr 1e-4
+--name w21_loo_mESC__mlp_lr3e-4__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model mlp --lr 3e-4
+--name w21_loo_mESC__mlp_lr1e-3__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model mlp --lr 1e-3
+--name w21_loo_mESC__A_lr1e-4_mk0__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model A --lr 1e-4 --mk 0
+--name w21_loo_mESC__A_lr1e-4_mk50__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model A --lr 1e-4 --mk 50
+--name w21_loo_mESC__A_lr3e-4_mk0__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model A --lr 3e-4 --mk 0
+--name w21_loo_mESC__A_lr3e-4_mk50__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model A --lr 3e-4 --mk 50
+--name w21_loo_mESC__A_lr1e-3_mk0__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model A --lr 1e-3 --mk 0
+--name w21_loo_mESC__A_lr1e-3_mk50__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model A --lr 1e-3 --mk 50
+--name w21_loo_mESC__B_lr1e-4_ck5p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck5a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr1e-4_ck10p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck10a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr1e-4_ck20p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck5p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck5a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck10p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck10a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck20p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck5p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck5a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck10p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck10a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck20p__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck20a__s42 --src hESC hHEP mHSC-E --tgt mESC --seed 42 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_mESC__mlp_lr1e-4__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model mlp --lr 1e-4
+--name w21_loo_mESC__mlp_lr3e-4__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model mlp --lr 3e-4
+--name w21_loo_mESC__mlp_lr1e-3__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model mlp --lr 1e-3
+--name w21_loo_mESC__A_lr1e-4_mk0__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model A --lr 1e-4 --mk 0
+--name w21_loo_mESC__A_lr1e-4_mk50__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model A --lr 1e-4 --mk 50
+--name w21_loo_mESC__A_lr3e-4_mk0__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model A --lr 3e-4 --mk 0
+--name w21_loo_mESC__A_lr3e-4_mk50__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model A --lr 3e-4 --mk 50
+--name w21_loo_mESC__A_lr1e-3_mk0__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model A --lr 1e-3 --mk 0
+--name w21_loo_mESC__A_lr1e-3_mk50__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model A --lr 1e-3 --mk 50
+--name w21_loo_mESC__B_lr1e-4_ck5p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck5a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr1e-4_ck10p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck10a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr1e-4_ck20p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck5p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck5a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck10p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck10a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck20p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck5p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck5a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck10p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck10a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck20p__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck20a__s43 --src hESC hHEP mHSC-E --tgt mESC --seed 43 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_mESC__mlp_lr1e-4__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model mlp --lr 1e-4
+--name w21_loo_mESC__mlp_lr3e-4__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model mlp --lr 3e-4
+--name w21_loo_mESC__mlp_lr1e-3__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model mlp --lr 1e-3
+--name w21_loo_mESC__A_lr1e-4_mk0__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model A --lr 1e-4 --mk 0
+--name w21_loo_mESC__A_lr1e-4_mk50__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model A --lr 1e-4 --mk 50
+--name w21_loo_mESC__A_lr3e-4_mk0__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model A --lr 3e-4 --mk 0
+--name w21_loo_mESC__A_lr3e-4_mk50__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model A --lr 3e-4 --mk 50
+--name w21_loo_mESC__A_lr1e-3_mk0__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model A --lr 1e-3 --mk 0
+--name w21_loo_mESC__A_lr1e-3_mk50__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model A --lr 1e-3 --mk 50
+--name w21_loo_mESC__B_lr1e-4_ck5p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck5a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr1e-4_ck10p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck10a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr1e-4_ck20p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr1e-4_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck5p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck5a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck10p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck10a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr3e-4_ck20p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr3e-4_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck5p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck5a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck10p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck10a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_mESC__B_lr1e-3_ck20p__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_mESC__B_lr1e-3_ck20a__s44 --src hESC hHEP mHSC-E --tgt mESC --seed 44 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__mlp_lr1e-4__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model mlp --lr 1e-4
+--name w21_loo_mHSC-E__mlp_lr3e-4__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model mlp --lr 3e-4
+--name w21_loo_mHSC-E__mlp_lr1e-3__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model mlp --lr 1e-3
+--name w21_loo_mHSC-E__A_lr1e-4_mk0__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model A --lr 1e-4 --mk 0
+--name w21_loo_mHSC-E__A_lr1e-4_mk50__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model A --lr 1e-4 --mk 50
+--name w21_loo_mHSC-E__A_lr3e-4_mk0__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model A --lr 3e-4 --mk 0
+--name w21_loo_mHSC-E__A_lr3e-4_mk50__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model A --lr 3e-4 --mk 50
+--name w21_loo_mHSC-E__A_lr1e-3_mk0__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model A --lr 1e-3 --mk 0
+--name w21_loo_mHSC-E__A_lr1e-3_mk50__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model A --lr 1e-3 --mk 50
+--name w21_loo_mHSC-E__B_lr1e-4_ck5p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck5a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-4_ck10p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck10a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-4_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck20a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck5p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck5a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck10p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck10a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck20a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck5p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck5a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck10p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck10a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck20p__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck20a__s42 --src hESC hHEP mESC --tgt mHSC-E --seed 42 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__mlp_lr1e-4__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model mlp --lr 1e-4
+--name w21_loo_mHSC-E__mlp_lr3e-4__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model mlp --lr 3e-4
+--name w21_loo_mHSC-E__mlp_lr1e-3__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model mlp --lr 1e-3
+--name w21_loo_mHSC-E__A_lr1e-4_mk0__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model A --lr 1e-4 --mk 0
+--name w21_loo_mHSC-E__A_lr1e-4_mk50__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model A --lr 1e-4 --mk 50
+--name w21_loo_mHSC-E__A_lr3e-4_mk0__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model A --lr 3e-4 --mk 0
+--name w21_loo_mHSC-E__A_lr3e-4_mk50__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model A --lr 3e-4 --mk 50
+--name w21_loo_mHSC-E__A_lr1e-3_mk0__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model A --lr 1e-3 --mk 0
+--name w21_loo_mHSC-E__A_lr1e-3_mk50__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model A --lr 1e-3 --mk 50
+--name w21_loo_mHSC-E__B_lr1e-4_ck5p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck5a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-4_ck10p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck10a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-4_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck20a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck5p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck5a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck10p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck10a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck20a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck5p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck5a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck10p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck10a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck20p__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck20a__s43 --src hESC hHEP mESC --tgt mHSC-E --seed 43 --model B --lr 1e-3 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__mlp_lr1e-4__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model mlp --lr 1e-4
+--name w21_loo_mHSC-E__mlp_lr3e-4__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model mlp --lr 3e-4
+--name w21_loo_mHSC-E__mlp_lr1e-3__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model mlp --lr 1e-3
+--name w21_loo_mHSC-E__A_lr1e-4_mk0__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model A --lr 1e-4 --mk 0
+--name w21_loo_mHSC-E__A_lr1e-4_mk50__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model A --lr 1e-4 --mk 50
+--name w21_loo_mHSC-E__A_lr3e-4_mk0__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model A --lr 3e-4 --mk 0
+--name w21_loo_mHSC-E__A_lr3e-4_mk50__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model A --lr 3e-4 --mk 50
+--name w21_loo_mHSC-E__A_lr1e-3_mk0__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model A --lr 1e-3 --mk 0
+--name w21_loo_mHSC-E__A_lr1e-3_mk50__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model A --lr 1e-3 --mk 50
+--name w21_loo_mHSC-E__B_lr1e-4_ck5p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck5a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-4_ck10p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck10a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-4_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-4_ck20a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-4 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck5p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck5a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck10p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck10a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr3e-4_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr3e-4_ck20a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 3e-4 --ck 20 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck5p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 5 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck5a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 5 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck10p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 10 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck10a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 10 --cabs 1
+--name w21_loo_mHSC-E__B_lr1e-3_ck20p__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 20 --cabs 0
+--name w21_loo_mHSC-E__B_lr1e-3_ck20a__s44 --src hESC hHEP mESC --tgt mHSC-E --seed 44 --model B --lr 1e-3 --ck 20 --cabs 1

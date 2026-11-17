@@ -1,0 +1,6 @@
+hESC ok: graphs and features label-free, perfect grid within-TF 1, TF weights sum to 1
+hHEP ok: graphs and features label-free, perfect grid within-TF 1, TF weights sum to 1
+mESC ok: graphs and features label-free, perfect grid within-TF 1, TF weights sum to 1
+mHSC-E ok: graphs and features label-free, perfect grid within-TF 1, TF weights sum to 1
+w21_selfcheck	ep 1	val 0.6414	target AUROC 0.5649 AUPRC 0.4335 within 0.6052	0.1 min
+selfcheck passed
